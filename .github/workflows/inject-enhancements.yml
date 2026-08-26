@@ -29,16 +29,22 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
+
+          # Keep a single v8 shell asset, but bump the query string so mobile browsers
+          # cannot keep serving the previous layout from cache.
+          s = s.replace('./enhancements-v8.css?v=8', './enhancements-v8.css?v=9')
+          s = s.replace('./enhancements-v8.js?v=8', './enhancements-v8.js?v=9')
+
           assets = [
               ('</head>', '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'),
               ('</head>', '<link rel="stylesheet" href="./enhancements-v6.css?v=6">'),
               ('</head>', '<link rel="stylesheet" href="./enhancements-v7.css?v=7">'),
-              ('</head>', '<link rel="stylesheet" href="./enhancements-v8.css?v=8">'),
+              ('</head>', '<link rel="stylesheet" href="./enhancements-v8.css?v=9">'),
               ('</body>', '<script src="./enhancements-v3.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
               ('</body>', '<script src="./enhancements-v7.js?v=7"></script>'),
-              ('</body>', '<script src="./enhancements-v8.js?v=8"></script>'),
+              ('</body>', '<script src="./enhancements-v8.js?v=9"></script>'),
           ]
           changed = False
           for marker, asset in assets:
@@ -48,7 +54,9 @@ jobs:
                   raise SystemExit(f'missing {marker}')
               s = s.replace(marker, asset + marker, 1)
               changed = True
-          if changed:
+
+          original = p.read_text(encoding='utf-8')
+          if s != original:
               p.write_text(s, encoding='utf-8')
           PY
       - name: Commit injected index
