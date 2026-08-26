@@ -52,6 +52,10 @@
     const link = document.createElement('link');
     link.rel = 'stylesheet'; link.href = './enhancements-v5.css?v=5'; link.dataset.v5Style = '1';
     document.head.appendChild(link);
+    if (!$('link[rel="icon"]')) {
+      const icon=document.createElement('link');icon.rel='icon';icon.type='image/png';icon.href='./og.png';document.head.appendChild(icon);
+      const touch=document.createElement('link');touch.rel='apple-touch-icon';touch.href='./og.png';document.head.appendChild(touch);
+    }
   }
 
   function chapterHref(n) { return `./?v=5&chapter=${n}#chapter-${n}`; }
