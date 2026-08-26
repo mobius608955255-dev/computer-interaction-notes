@@ -1,0 +1,111 @@
+/* v8: one page shell, one directory, no chapter-map/count chrome */
+.v8-hidden { display: none !important; }
+
+/* Remove obsolete/redundant navigation and count UI even before JS cleanup runs. */
+#catalogue,
+#excel-catalogue,
+.catalogue.section-shell,
+.course-catalogue,
+.hero-stats,
+.hero-score,
+.exam-ribbon,
+#v6-chapter-catalogue,
+.v6-catalogue-host,
+.v6-knowledge-catalogue,
+[data-v7-count],
+.chapter-menu-trigger,
+.study-hub-trigger,
+.chapter-drawer,
+.study-hub {
+  display: none !important;
+}
+
+/* The top-right unified directory is the only chapter navigation control. */
+.chapter-nav,
+.course-topbar nav,
+.topbar .outline-link,
+.topbar .chapter-jump {
+  display: none !important;
+}
+
+/* Give all four chapters the same compact header rhythm. */
+.v8-single-page .topbar,
+.v8-single-page .course-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 64px;
+  padding: 0 max(18px, calc((100vw - 1080px) / 2));
+  border-bottom: 1px solid rgba(115,109,124,.15);
+  background: rgba(255,253,251,.94);
+  backdrop-filter: blur(16px);
+}
+
+.v8-single-page .course-topbar .course-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #28232f;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.v8-single-page .course-topbar .course-brand > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #28232f;
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+/* Bring the chapter 2/3 hero into the same content width and spacing family as 1/4. */
+.v8-single-page .course-hero-inner {
+  width: min(100% - 36px, 1080px);
+  margin-inline: auto;
+}
+
+.v8-single-page .course-hero {
+  min-height: 0;
+  padding-block: clamp(54px, 8vw, 84px);
+}
+
+.v8-single-page .course-hero h1 {
+  margin-bottom: 16px;
+}
+
+/* With the catalogue removed, the first knowledge section should not look detached. */
+.v8-single-page .course-module:first-of-type,
+.v8-single-page .concept:first-of-type,
+.v8-single-page .excel-concept:first-of-type {
+  scroll-margin-top: 82px;
+}
+
+/* Keep the single directory clear of the shared sticky header. */
+#v7-directory-trigger {
+  top: max(10px, env(safe-area-inset-top)) !important;
+  right: max(12px, env(safe-area-inset-right)) !important;
+  bottom: auto !important;
+}
+
+@media (max-width: 720px) {
+  .v8-single-page .topbar,
+  .v8-single-page .course-topbar {
+    min-height: 58px;
+    padding-inline: 14px;
+  }
+
+  .v8-single-page .course-hero-inner {
+    width: calc(100% - 24px);
+  }
+
+  .v8-single-page .course-hero {
+    padding-block: 48px;
+  }
+}
