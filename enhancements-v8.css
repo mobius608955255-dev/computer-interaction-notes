@@ -94,6 +94,99 @@
   bottom: auto !important;
 }
 
+/* Hero text is now title-first: remove the explanatory paragraph and the old “start from …” CTA. */
+.v8-single-page .hero-copy,
+.v8-single-page .course-hero p,
+.v8-single-page .primary-link {
+  display: none !important;
+}
+
+/* After removing hero copy/CTA, do not leave a tall empty cover block. */
+.v8-single-page .hero {
+  min-height: 0 !important;
+  padding-top: clamp(52px, 7vw, 76px) !important;
+  padding-bottom: clamp(44px, 6vw, 66px) !important;
+}
+
+.v8-single-page .course-hero {
+  padding-block: 0 !important;
+}
+
+.v8-single-page .course-hero-inner {
+  min-height: 0 !important;
+  padding-block: clamp(52px, 7vw, 76px) !important;
+  align-items: center !important;
+}
+
+/* Never let Excel controls enlarge the page viewport. Wide data stays inside the component. */
+html,
+body,
+#root,
+#notes-custom-root,
+.v8-single-page,
+.v8-single-page .excel-page {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.v8-single-page .excel-page .section-shell,
+.v8-single-page .excel-page .concept-copy,
+.v8-single-page .excel-page .lab-card,
+.v8-single-page .excel-page .excel-lab {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.v8-single-page .excel-page .section-shell {
+  width: min(calc(100% - 36px), 1080px);
+}
+
+.v8-single-page .excel-page :where(
+  .workbook-demo,
+  .sheet-canvas,
+  .excel-window,
+  .resize-table,
+  .mini-table,
+  .fill-row,
+  .condition-table,
+  .list-demo,
+  .subtotal-list,
+  .pivot-builder,
+  .chart-gallery,
+  .combo-chart,
+  .spark-row,
+  .print-preview,
+  .formula-result,
+  .operation-stage
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.v8-single-page .excel-page :where(
+  .resize-table,
+  .mini-table,
+  .fill-row,
+  .condition-table,
+  .subtotal-list,
+  .spark-row
+) {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.v8-single-page .excel-page :where(code, strong, span, p, button, input, select) {
+  min-width: 0;
+}
+
+.v8-single-page .excel-page code,
+.v8-single-page .excel-page .formula-input,
+.v8-single-page .excel-page .formula-result code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 @media (max-width: 720px) {
   .v8-single-page .topbar,
   .v8-single-page .course-topbar {
@@ -103,9 +196,47 @@
 
   .v8-single-page .course-hero-inner {
     width: calc(100% - 24px);
+    padding-block: 44px !important;
   }
 
-  .v8-single-page .course-hero {
-    padding-block: 48px;
+  .v8-single-page .hero {
+    padding: 44px 16px 40px !important;
+  }
+
+  .v8-single-page .course-hero h1,
+  .v8-single-page .hero h1 {
+    margin-bottom: 0 !important;
+  }
+
+  .v8-single-page .excel-page .section-shell {
+    width: calc(100% - 24px);
+  }
+
+  .v8-single-page .excel-page .excel-window {
+    grid-template-columns: 82px minmax(0, 1fr);
+  }
+
+  .v8-single-page .excel-page .condition-table > div {
+    grid-template-columns: minmax(0, 1fr) 54px 66px;
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  .v8-single-page .excel-page .subtotal-list > div {
+    grid-template-columns: 62px minmax(0, 1fr) 54px;
+    padding-inline: 8px;
+  }
+
+  .v8-single-page .excel-page .formula-result {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .v8-single-page .excel-page .formula-result p {
+    grid-column: 1;
+  }
+
+  .v8-single-page .excel-page .chart-gallery,
+  .v8-single-page .excel-page .pivot-builder {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
