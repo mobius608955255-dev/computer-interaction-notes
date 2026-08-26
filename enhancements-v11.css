@@ -1,0 +1,102 @@
+/* v11: make correct/incorrect pitfall notes instantly distinguishable */
+.v10-pitfall-list > div,
+.v9-pitfall-list > div {
+  position: relative;
+  padding: 14px 14px 14px 52px !important;
+  border-width: 1.5px !important;
+  box-shadow: 0 4px 14px rgba(38, 30, 43, .04);
+}
+
+.v10-pitfall-list > div.is-correct,
+.v9-pitfall-list > div.is-correct {
+  background: #f3fbf7 !important;
+  border-color: #9ed6b8 !important;
+}
+
+.v10-pitfall-list > div.is-wrong,
+.v9-pitfall-list > div.is-wrong {
+  background: #fff5f5 !important;
+  border-color: #efb2b2 !important;
+}
+
+.pitfall-state-icon {
+  position: absolute;
+  left: 13px;
+  top: 13px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.is-correct > .pitfall-state-icon {
+  color: #18734a;
+  background: #dff4e8;
+  border: 1px solid #92cfad;
+}
+
+.is-wrong > .pitfall-state-icon {
+  color: #b43b3b;
+  background: #fde2e2;
+  border: 1px solid #e9a2a2;
+}
+
+.v10-pitfall-list > div.is-correct > b,
+.v9-pitfall-list > div.is-correct > b {
+  color: #18734a !important;
+  background: #dff4e8;
+  border: 1px solid #a2d7bb;
+}
+
+.v10-pitfall-list > div.is-wrong > b,
+.v9-pitfall-list > div.is-wrong > b {
+  color: #b43b3b !important;
+  background: #fde2e2;
+  border: 1px solid #ebb0b0;
+}
+
+.v10-pitfall-list > div > b,
+.v9-pitfall-list > div > b {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px !important;
+  font-weight: 900;
+  letter-spacing: .06em;
+}
+
+.v10-pitfall-list > div > p,
+.v9-pitfall-list > div > p {
+  margin-top: 9px !important;
+  font-weight: 750;
+  color: #342e39 !important;
+}
+
+.v10-pitfall-list > div.is-correct > small,
+.v9-pitfall-list > div.is-correct > small {
+  color: #426653 !important;
+}
+
+.v10-pitfall-list > div.is-wrong > small,
+.v9-pitfall-list > div.is-wrong > small {
+  color: #7b4d4d !important;
+}
+
+@media (max-width: 720px) {
+  .v10-pitfall-list > div,
+  .v9-pitfall-list > div {
+    padding: 13px 12px 13px 48px !important;
+  }
+  .pitfall-state-icon {
+    left: 11px;
+    top: 12px;
+    width: 27px;
+    height: 27px;
+  }
+}
