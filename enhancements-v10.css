@@ -1,0 +1,84 @@
+/* v10: make chapters 2/3 actual notes: concept first, pitfalls last */
+.v10-concept-note {
+  display: grid;
+  gap: 14px;
+  margin: 16px 0 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(118,82,184,.16);
+  border-radius: 20px;
+  background: linear-gradient(150deg,#fbf8ff,#fff 68%);
+}
+.v10-concept-note > div { display:grid; gap:7px; }
+.v10-concept-note span {
+  color:#7652b8;
+  font-size:12px;
+  font-weight:850;
+  letter-spacing:.06em;
+}
+.v10-concept-note p {
+  margin:0;
+  color:#47414e;
+  font-size:16px;
+  line-height:1.82;
+}
+
+.windows-page .course-module .module-grid,
+.word-page .course-module .module-grid {
+  grid-template-columns:minmax(0,1fr)!important;
+}
+.windows-page .course-module .knowledge-card,
+.word-page .course-module .knowledge-card {
+  order:1!important;
+}
+
+.v10-pitfall-note {
+  margin-top:18px;
+}
+.v10-pitfall-note details {
+  border:1px solid #eadfe9;
+  border-radius:16px;
+  background:#fffbfd;
+  overflow:hidden;
+}
+.v10-pitfall-note summary {
+  padding:13px 15px;
+  cursor:pointer;
+  color:#746b7d;
+  font-size:13px;
+  font-weight:800;
+}
+.v10-pitfall-list {
+  display:grid;
+  gap:9px;
+  padding:0 12px 12px;
+}
+.v10-pitfall-list > div {
+  padding:12px 13px;
+  border:1px solid #eee6ec;
+  border-radius:13px;
+  background:#fff;
+}
+.v10-pitfall-list b {
+  color:#7652b8;
+  font-size:11px;
+}
+.v10-pitfall-list p {
+  margin:5px 0 4px;
+  color:#403a46;
+  line-height:1.62;
+}
+.v10-pitfall-list small {
+  display:block;
+  color:#746d79;
+  line-height:1.55;
+}
+
+@media (max-width:720px) {
+  .v10-concept-note {
+    margin:12px 0 16px;
+    padding:15px 16px;
+    border-radius:17px;
+  }
+  .v10-concept-note p { font-size:15px; line-height:1.75; }
+  .v10-pitfall-note { margin-top:14px; }
+}
