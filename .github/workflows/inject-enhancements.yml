@@ -1,0 +1,51 @@
+name: Inject exam enhancements
+
+on:
+  push:
+    paths:
+      - 'enhancements-v3.js'
+      - 'enhancements-v3.css'
+      - '.github/workflows/inject-enhancements.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject enhancement assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          css = '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'
+          js = '<script src="./enhancements-v3.js?v=3"></script>'
+          changed = False
+          if css not in s:
+              if '</head>' not in s:
+                  raise SystemExit('missing </head>')
+              s = s.replace('</head>', css + '</head>', 1)
+              changed = True
+          if js not in s:
+              if '</body>' not in s:
+                  raise SystemExit('missing </body>')
+              s = s.replace('</body>', js + '</body>', 1)
+              changed = True
+          if changed:
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit injected index
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'No index change needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Inject exam-driven enhancement assets'
+          git push
