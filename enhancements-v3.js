@@ -454,6 +454,7 @@
 
   function addHanEncoding() {
     const section=q('#concept-10');
+    if(!section)return;
     afterLab(section, `
       ${sectionHeader('真题加深','汉字编码：输入、交换、机内、字形四层不要混','现有页面已经有四层框架；这里补上真题常考的“谁负责什么”和字形码分类。')}
       <div class="encoding-map">
