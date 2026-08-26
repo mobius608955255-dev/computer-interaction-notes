@@ -8,6 +8,8 @@ on:
       - 'enhancements-v3-bootstrap.js'
       - 'enhancements-v6.js'
       - 'enhancements-v6.css'
+      - 'enhancements-v7.js'
+      - 'enhancements-v7.css'
       - '.github/workflows/inject-enhancements.yml'
   workflow_dispatch:
 
@@ -28,9 +30,11 @@ jobs:
           assets = [
               ('</head>', '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'),
               ('</head>', '<link rel="stylesheet" href="./enhancements-v6.css?v=6">'),
+              ('</head>', '<link rel="stylesheet" href="./enhancements-v7.css?v=7">'),
               ('</body>', '<script src="./enhancements-v3.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
+              ('</body>', '<script src="./enhancements-v7.js?v=7"></script>'),
           ]
           changed = False
           for marker, asset in assets:
