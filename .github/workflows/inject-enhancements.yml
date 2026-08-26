@@ -6,6 +6,8 @@ on:
       - 'enhancements-v3.js'
       - 'enhancements-v3.css'
       - 'enhancements-v3-bootstrap.js'
+      - 'enhancements-v6.js'
+      - 'enhancements-v6.css'
       - '.github/workflows/inject-enhancements.yml'
   workflow_dispatch:
 
@@ -23,24 +25,20 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          css = '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'
-          js = '<script src="./enhancements-v3.js?v=3"></script>'
-          bootstrap = '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'
+          assets = [
+              ('</head>', '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'),
+              ('</head>', '<link rel="stylesheet" href="./enhancements-v6.css?v=6">'),
+              ('</body>', '<script src="./enhancements-v3.js?v=3"></script>'),
+              ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
+              ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
+          ]
           changed = False
-          if css not in s:
-              if '</head>' not in s:
-                  raise SystemExit('missing </head>')
-              s = s.replace('</head>', css + '</head>', 1)
-              changed = True
-          if js not in s:
-              if '</body>' not in s:
-                  raise SystemExit('missing </body>')
-              s = s.replace('</body>', js + '</body>', 1)
-              changed = True
-          if bootstrap not in s:
-              if '</body>' not in s:
-                  raise SystemExit('missing </body>')
-              s = s.replace('</body>', bootstrap + '</body>', 1)
+          for marker, asset in assets:
+              if asset in s:
+                  continue
+              if marker not in s:
+                  raise SystemExit(f'missing {marker}')
+              s = s.replace(marker, asset + marker, 1)
               changed = True
           if changed:
               p.write_text(s, encoding='utf-8')
