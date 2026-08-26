@@ -18,6 +18,8 @@ on:
       - 'enhancements-v10.css'
       - 'enhancements-v11.js'
       - 'enhancements-v11.css'
+      - 'enhancements-v12.js'
+      - 'enhancements-v12.css'
       - '.github/workflows/inject-enhancements.yml'
   workflow_dispatch:
 
@@ -44,6 +46,7 @@ jobs:
               ('</head>', '<link rel="stylesheet" href="./enhancements-v9.css?v=10">'),
               ('</head>', '<link rel="stylesheet" href="./enhancements-v10.css?v=11">'),
               ('</head>', '<link rel="stylesheet" href="./enhancements-v11.css?v=12">'),
+              ('</head>', '<link rel="stylesheet" href="./enhancements-v12.css?v=13">'),
               ('</body>', '<script src="./enhancements-v3.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
@@ -52,6 +55,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v9.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v10.js?v=11"></script>'),
               ('</body>', '<script src="./enhancements-v11.js?v=12"></script>'),
+              ('</body>', '<script src="./enhancements-v12.js?v=13"></script>'),
           ]
           for marker, asset in assets:
               if asset in s:
