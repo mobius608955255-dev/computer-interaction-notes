@@ -56,6 +56,10 @@ jobs:
           s = s.replace('真题驱动 · 交互练习 · 随学随测',
                         '概念讲解 · 核心规则 · 操作演示 · 真题校验')
 
+          # v24 was structurally consolidated; force browsers to fetch the new script instead of a cached v25 URL.
+          s = s.replace('<script src="./enhancements-v24.js?v=25"></script>',
+                        '<script src="./enhancements-v24.js?v=26"></script>')
+
           assets = [
               ('</head>', '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'),
               ('</head>', '<link rel="stylesheet" href="./enhancements-v6.css?v=6">'),
@@ -85,7 +89,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v21.js?v=22"></script>'),
               ('</body>', '<script src="./enhancements-v22.js?v=23"></script>'),
               ('</body>', '<script src="./enhancements-v23.js?v=24"></script>'),
-              ('</body>', '<script src="./enhancements-v24.js?v=25"></script>'),
+              ('</body>', '<script src="./enhancements-v24.js?v=26"></script>'),
           ]
           for marker, asset in assets:
               if asset in s:
