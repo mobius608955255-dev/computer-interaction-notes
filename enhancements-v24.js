@@ -24,6 +24,28 @@
       const node = $(id);
       if (node) node.remove();
     });
+
+    // Earlier v24 briefly placed the PAGE-field note under mail merge (word-18).
+    // Keep the marker only in the canonical fields section (word-16).
+    const misplacedPageField = $('#word-18 [data-v24="page-field"]');
+    if (misplacedPageField) misplacedPageField.remove();
+  }
+
+  function normalizeOlderLayers() {
+    // v20 added an account note under the generic dialog/settings module.
+    // v21 later introduced the fuller canonical “用户账户与 UAC” module, so hide the old duplicate.
+    const oldAccountNote = $('[data-v20-note="accounts"]');
+    if (oldAccountNote && $('#windows-17')) oldAccountNote.hidden = true;
+
+    // v18 already explains the pivot value-area default aggregation boundary in detail.
+    // Keep v23 for its genuinely new date-grouping point and suppress its repeated aggregation paragraph.
+    const pivotDate = $('[data-v23="pivot-date"]');
+    if (pivotDate) {
+      const title = $('.lab-heading h3', pivotDate);
+      if (title) title.textContent = '数据透视表日期分组';
+      const ps = $$('.note-body p', pivotDate);
+      ps.forEach((p, i) => { p.hidden = i > 0; });
+    }
   }
 
   function chapter1() {
@@ -75,12 +97,6 @@
       '正常卸载会移除程序主体和已注册组件，但用户文档、配置文件、缓存或第三方插件等内容不一定全部自动删除。',
       '因此“卸载后绝无任何残留”过于绝对；同样，卸载应用和删除由该应用创建的个人文档也不是一回事。'
     ]);
-
-    appendNote('#windows-23','cleanup-remote','磁盘清理与远程桌面：管理对象完全不同',[
-      '<strong>磁盘清理</strong>用于释放磁盘空间，可清理符合条件的临时文件、缩略图缓存、回收站内容等；它不是磁盘碎片整理、驱动更新或应用卸载的同义词。',
-      '<strong>远程桌面</strong>用于在系统支持、功能已启用、网络可达且账户具有权限等条件满足时远程登录/控制另一台计算机。知道 IP 地址并不意味着一定可以连接。',
-      '任务管理器的核心仍是本机进程、性能、启动项等管理。系统存在远程桌面功能，并不能推出“任务管理器是普通的远程电脑控制工具”。'
-    ]);
   }
 
   function word() {
@@ -105,7 +121,7 @@
       '当固定值行距小于图片实际所需高度时，图片上下部分可能被行框裁切/遮住。解决方向通常是调整行距、调整图片尺寸，或根据版式需求改用适当的浮动环绕方式；这不是“双击图片”能够直接解决的问题。'
     ]);
 
-    appendNote('#word-18','page-field','PAGE 域：页码是一类可自动更新的动态内容',[
+    appendNote('#word-16','page-field','PAGE 域：页码是一类可自动更新的动态内容',[
       '页码可以由 <strong>PAGE 域</strong>等机制生成。域不是普通静态文字，而是 Word 按规则计算或更新的动态内容。',
       '题注编号、交叉引用、目录和页码都可能涉及域，但“域”只是实现机制，不表示这些功能的用途相同。需要在文本框等文本容器中显示当前页码时，也可以按题目场景插入相应域。'
     ]);
@@ -146,19 +162,19 @@
 
     appendNote('#excel-16','pivot-report-filter','数据透视表的报表筛选：筛整张分析视图，不是普通自动筛选',[
       '数据透视表字段区域中的<strong>筛选/报表筛选</strong>可以用某个字段的项目限制整张透视表，例如只查看某一专业的汇总。',
-      '行、列、值、筛选四个区域职责不同：行列负责分组展示，值负责汇总计算，筛选负责限定整张报表。它属于数据透视表字段布局，不等于直接在源数据标题行上做普通“自动筛选”。',
-      '日期字段还可以按年、季度、月等进行组合/分组；值区域的汇总方式可在求和、计数、平均值等之间调整。这里与原知识点共同组成完整的“字段布局—分组—汇总—筛选”链。'
+      '行、列、值、筛选四个区域职责不同：行列负责分组展示，值负责汇总计算，筛选负责限定整张报表。它属于数据透视表字段布局，不等于直接在源数据标题行上做普通“自动筛选”。'
     ]);
 
-    appendNote('#excel-18','validation-details','数据验证/数据有效性：不仅限制值，还能给输入提示',[
+    appendNote('#excel-18','validation-details','数据验证/数据有效性：规则之外还有输入提示',[
       '<strong>数据验证</strong>（旧版本/教材中也常称“数据有效性”）可以限制整数、小数、列表、日期、时间、文本长度，或使用自定义公式；“列表”规则可以生成下拉选项。',
-      '它还可以设置<strong>输入信息</strong>，在选中单元格时提示用户，并设置无效输入时的出错警告。不同警告样式的阻止程度不同，因此“有验证规则就任何非法值都绝对无法输入”也要结合具体设置判断。',
+      '它还可以设置<strong>输入信息</strong>，在选中单元格时提示用户。无效值到底是被阻止还是仍可确认输入，要继续看错误警告样式；这一边界在本节已有的“停止 / 警告 / 信息”说明中判断。',
       '数据验证控制“允许输入什么”，工作表保护控制“谁能改什么”，二者不能混为一谈。'
     ]);
   }
 
   function apply() {
     removeLegacyV24Modules();
+    normalizeOlderLayers();
     chapter1();
     windows();
     word();
