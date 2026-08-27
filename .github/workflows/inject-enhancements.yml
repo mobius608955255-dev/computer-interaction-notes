@@ -56,6 +56,12 @@ jobs:
           s = s.replace('真题驱动 · 交互练习 · 随学随测',
                         '概念讲解 · 核心规则 · 操作演示 · 真题校验')
 
+          # Hierarchy audit updated the directory reader and the single-page course ordering.
+          s = s.replace('<script src="./enhancements-v7.js?v=7"></script>',
+                        '<script src="./enhancements-v7.js?v=8"></script>')
+          s = s.replace('<script src="./enhancements-v8.js?v=9"></script>',
+                        '<script src="./enhancements-v8.js?v=10"></script>')
+
           # v24 was consolidated and then audited again; always collapse older cache keys to the newest one.
           for old in ('25', '26'):
               s = s.replace(f'<script src="./enhancements-v24.js?v={old}"></script>',
@@ -73,8 +79,8 @@ jobs:
               ('</body>', '<script src="./enhancements-v3.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
-              ('</body>', '<script src="./enhancements-v7.js?v=7"></script>'),
-              ('</body>', '<script src="./enhancements-v8.js?v=9"></script>'),
+              ('</body>', '<script src="./enhancements-v7.js?v=8"></script>'),
+              ('</body>', '<script src="./enhancements-v8.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v9.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v10.js?v=11"></script>'),
               ('</body>', '<script src="./enhancements-v11.js?v=12"></script>'),
