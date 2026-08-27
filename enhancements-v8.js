@@ -13,6 +13,24 @@
     4: { name: '第4章 Excel 2016', prefix: 'excel' },
   };
 
+  // Stable IDs stay unchanged for old links and enhancement hooks. Only the visible
+  // learning sequence is normalized here, so later coverage modules sit beside the
+  // concepts they extend instead of being dumped at the end of a chapter.
+  const COURSE_ORDER = {
+    2: [
+      'windows-1','windows-2','windows-3','windows-4',
+      'windows-5','windows-6','windows-7','windows-8','windows-9','windows-22','windows-15',
+      'windows-10','windows-17','windows-18','windows-11','windows-12','windows-23',
+      'windows-13','windows-14','windows-19','windows-21','windows-20',
+      'windows-16',
+    ],
+    3: [
+      'word-1','word-2','word-3','word-4','word-5','word-21','word-6','word-7',
+      'word-8','word-9','word-10','word-11','word-12','word-13','word-14','word-22','word-23',
+      'word-15','word-16','word-17','word-18','word-19','word-20',
+    ],
+  };
+
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
@@ -149,6 +167,40 @@
     $$('.chapter-nav, .course-topbar nav').forEach(el => el.setAttribute('aria-hidden', 'true'));
   }
 
+  function normalizeCourseModuleOrder(n = currentChapter()) {
+    if (n !== 2 && n !== 3) return;
+    const page = n === 2 ? $('.windows-page', ensureCustomRoot()) : $('.word-page', ensureCustomRoot());
+    const footer = page && $('.course-footer', page);
+    if (!page || !footer) return;
+
+    const modules = $$('.course-module[id]', page);
+    if (!modules.length) return;
+    const byId = new Map(modules.map(module => [module.id, module]));
+    const desiredIds = COURSE_ORDER[n].filter(id => byId.has(id));
+    const unknownIds = modules.map(module => module.id).filter(id => !COURSE_ORDER[n].includes(id));
+
+    // Preserve any future unknown module instead of deleting it. Keep the Windows
+    // synthesis module and Word final-check module at the very end whenever present.
+    const terminalId = n === 2 ? 'windows-16' : 'word-20';
+    const terminalIndex = desiredIds.indexOf(terminalId);
+    if (unknownIds.length) {
+      if (terminalIndex >= 0) desiredIds.splice(terminalIndex, 0, ...unknownIds);
+      else desiredIds.push(...unknownIds);
+    }
+
+    const currentIds = modules.map(module => module.id);
+    if (currentIds.join('|') !== desiredIds.join('|')) {
+      desiredIds.forEach(id => footer.before(byId.get(id)));
+    }
+
+    // IDs remain stable, but visible ordinal numbers should follow the learning order.
+    $$('.course-module[id]', page).forEach((module, index) => {
+      const badge = $('.module-head > span', module);
+      const number = String(index + 1).padStart(2, '0');
+      if (badge && badge.textContent.trim() !== number) badge.textContent = number;
+    });
+  }
+
   function normalizeDocument(n = currentChapter()) {
     const label = CHAPTERS[n]?.name || CHAPTERS[1].name;
     document.title = `${label}｜山东专升本计算机交互笔记`;
@@ -162,6 +214,7 @@
     const normalized = `${target.pathname}${target.search}${target.hash}`;
     if (here !== normalized) history.replaceState(history.state, '', desired);
 
+    normalizeCourseModuleOrder(n);
     normalizeTextAndChrome();
     document.dispatchEvent(new CustomEvent('notes:chapterchange', { detail: { chapter: n } }));
   }
@@ -296,6 +349,7 @@
         normalizeTextAndChrome();
         const chapter = currentChapter();
         showContainers(chapter);
+        if (chapter === 2 || chapter === 3) normalizeCourseModuleOrder(chapter);
         if ((chapter === 2 || chapter === 3) && ensureCustomRoot().children.length) normalizeDocument(chapter);
       });
     });
