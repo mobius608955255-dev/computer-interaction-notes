@@ -11,11 +11,50 @@
     { n: 4, name: '第4章 Excel 2016' },
   ];
 
-  // Only use overrides where the original topic label is too vague for retrieval.
-  // Content stays in its original module; this map only gives the directory a precise canonical name.
+  // Original React cards sometimes use an explanatory teaching headline as h2.
+  // Keep directory labels deterministic and retrieval-oriented instead of depending
+  // on whichever headline/kicker happens to be rendered by the current React build.
   const TITLE_OVERRIDES = {
+    'concept-1': '信息与数据',
+    'concept-2': '信息技术',
+    'concept-3': '信息社会',
+    'concept-4': '计算机文化',
+    'concept-5': '计算机的起源与发展',
+    'concept-6': '计算机的特点与分类',
+    'concept-7': '计算机的应用',
+    'concept-8': '计算机的发展趋势',
+    'concept-9': '数制及其转换',
+    'concept-10': '信息的编码',
+    'concept-11': '计算机工作原理',
+    'concept-12': '计算机硬件系统',
+    'concept-13': '计算机软件系统',
+    'concept-14': '计算机的主要性能指标',
+    'concept-15': '常见微型计算机的硬件设备',
+    'concept-16': '多媒体基础',
+    'concept-21': '面向对象基础',
+    'concept-21-queue': '队列与栈',
+    'excel-1': 'Excel 2016 窗口界面',
+    'excel-2': '工作簿与工作表',
+    'excel-3': '单元格和单元格区域',
+    'excel-4': '工作表管理',
+    'excel-5': '输入和编辑数据',
+    'excel-6': '行、列和单元格管理',
     'excel-7': '公式与引用',
+    'excel-8': '常见函数',
+    'excel-9': '批注',
+    'excel-10': '格式化工作表',
+    'excel-11': '自动套用格式和条件格式',
+    'excel-12': '数据清单',
+    'excel-13': '排序和筛选',
+    'excel-14': '分类汇总',
+    'excel-15': '合并计算',
+    'excel-16': '数据透视表',
+    'excel-17': '模拟分析',
     'excel-18': '数据清理、验证与外部导入',
+    'excel-19': '图表简介',
+    'excel-20': '创建和编辑图表',
+    'excel-21': '迷你图',
+    'excel-22': '页面布局与打印',
   };
 
   function currentChapter() {
@@ -43,12 +82,9 @@
   function sectionTitle(section) {
     if (TITLE_OVERRIDES[section.id]) return TITLE_OVERRIDES[section.id];
 
-    // Windows / Word modules store the real topic name in module-head h2.
     const moduleTitle = $('.module-head h2', section);
     if (moduleTitle) return cleanTitle(moduleTitle.textContent) || section.id;
 
-    // Original React chapter 1 / 4 cards use h2 for a teaching headline, while the
-    // actual topic name lives in a kicker such as “07 · 使用公式”. Prefer that label.
     const kicker = $('.concept-copy .kicker', section);
     if (kicker) {
       const raw = kicker.textContent.trim();
@@ -56,7 +92,6 @@
       if (topic?.[1]) return cleanTitle(topic[1]) || section.id;
     }
 
-    // Added concept modules use h2 as the topic name and a generic CONCEPT kicker.
     const heading = $('.concept-copy h2, h2, .section-heading h3, h3', section);
     return cleanTitle(heading?.textContent) || section.id;
   }
