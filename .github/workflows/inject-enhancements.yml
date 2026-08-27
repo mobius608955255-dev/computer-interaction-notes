@@ -56,16 +56,17 @@ jobs:
           s = s.replace('真题驱动 · 交互练习 · 随学随测',
                         '概念讲解 · 核心规则 · 操作演示 · 真题校验')
 
-          # Hierarchy audit updated the directory reader and the single-page course ordering.
-          s = s.replace('<script src="./enhancements-v7.js?v=7"></script>',
-                        '<script src="./enhancements-v7.js?v=8"></script>')
+          # Hierarchy audit: deterministic directory names + normalized single-page order.
+          for old in ('7', '8'):
+              s = s.replace(f'<script src="./enhancements-v7.js?v={old}"></script>',
+                            '<script src="./enhancements-v7.js?v=9"></script>')
           s = s.replace('<script src="./enhancements-v8.js?v=9"></script>',
                         '<script src="./enhancements-v8.js?v=10"></script>')
 
-          # v24 was consolidated and then audited again; always collapse older cache keys to the newest one.
-          for old in ('25', '26'):
+          # v24 consolidates duplicate notes and now also splits the unrelated OOP / queue concepts.
+          for old in ('25', '26', '27'):
               s = s.replace(f'<script src="./enhancements-v24.js?v={old}"></script>',
-                            '<script src="./enhancements-v24.js?v=27"></script>')
+                            '<script src="./enhancements-v24.js?v=28"></script>')
 
           assets = [
               ('</head>', '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'),
@@ -79,7 +80,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v3.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
-              ('</body>', '<script src="./enhancements-v7.js?v=8"></script>'),
+              ('</body>', '<script src="./enhancements-v7.js?v=9"></script>'),
               ('</body>', '<script src="./enhancements-v8.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v9.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v10.js?v=11"></script>'),
@@ -96,7 +97,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v21.js?v=22"></script>'),
               ('</body>', '<script src="./enhancements-v22.js?v=23"></script>'),
               ('</body>', '<script src="./enhancements-v23.js?v=24"></script>'),
-              ('</body>', '<script src="./enhancements-v24.js?v=27"></script>'),
+              ('</body>', '<script src="./enhancements-v24.js?v=28"></script>'),
           ]
           for marker, asset in assets:
               if asset in s:
