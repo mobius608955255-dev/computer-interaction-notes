@@ -11,6 +11,13 @@
     { n: 4, name: '第4章 Excel 2016' },
   ];
 
+  // Only use overrides where the original topic label is too vague for retrieval.
+  // Content stays in its original module; this map only gives the directory a precise canonical name.
+  const TITLE_OVERRIDES = {
+    'excel-7': '公式与引用',
+    'excel-18': '数据清理、验证与外部导入',
+  };
+
   function currentChapter() {
     const hash = location.hash.match(/^#chapter-([1-4])/);
     if (hash) return Number(hash[1]);
@@ -26,12 +33,32 @@
     return `./?v=7&chapter=${n}#chapter-${n}`;
   }
 
-  function sectionTitle(section) {
-    const heading = $('h2, .section-heading h3, h3', section);
-    return (heading?.textContent || section.id)
+  function cleanTitle(text) {
+    return (text || '')
       .trim()
       .replace(/^\d+[.、]?\s*/, '')
       .replace(/^Concept\s*\d+[:：]?\s*/i, '');
+  }
+
+  function sectionTitle(section) {
+    if (TITLE_OVERRIDES[section.id]) return TITLE_OVERRIDES[section.id];
+
+    // Windows / Word modules store the real topic name in module-head h2.
+    const moduleTitle = $('.module-head h2', section);
+    if (moduleTitle) return cleanTitle(moduleTitle.textContent) || section.id;
+
+    // Original React chapter 1 / 4 cards use h2 for a teaching headline, while the
+    // actual topic name lives in a kicker such as “07 · 使用公式”. Prefer that label.
+    const kicker = $('.concept-copy .kicker', section);
+    if (kicker) {
+      const raw = kicker.textContent.trim();
+      const topic = raw.match(/^\s*\d+\s*[·.、]\s*(.+)$/);
+      if (topic?.[1]) return cleanTitle(topic[1]) || section.id;
+    }
+
+    // Added concept modules use h2 as the topic name and a generic CONCEPT kicker.
+    const heading = $('.concept-copy h2, h2, .section-heading h3, h3', section);
+    return cleanTitle(heading?.textContent) || section.id;
   }
 
   function currentSections() {
