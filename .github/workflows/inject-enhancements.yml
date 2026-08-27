@@ -20,6 +20,7 @@ on:
       - 'enhancements-v11.css'
       - 'enhancements-v12.js'
       - 'enhancements-v12.css'
+      - 'enhancements-v13.js'
       - '.github/workflows/inject-enhancements.yml'
   workflow_dispatch:
 
@@ -37,6 +38,12 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
+
+          # Keep the static/share description aligned with the actual product: notes first, not exercises.
+          s = s.replace('山东专升本计算机交互笔记：真题驱动、交互练习、随学随测',
+                        '山东专升本计算机互动笔记：概念讲解、核心规则、操作演示、真题校验与易错点整理。')
+          s = s.replace('真题驱动 · 交互练习 · 随学随测',
+                        '概念讲解 · 核心规则 · 操作演示 · 真题校验')
 
           assets = [
               ('</head>', '<link rel="stylesheet" href="./enhancements-v3.css?v=3">'),
@@ -56,6 +63,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v10.js?v=11"></script>'),
               ('</body>', '<script src="./enhancements-v11.js?v=12"></script>'),
               ('</body>', '<script src="./enhancements-v12.js?v=13"></script>'),
+              ('</body>', '<script src="./enhancements-v13.js?v=14"></script>'),
           ]
           for marker, asset in assets:
               if asset in s:
