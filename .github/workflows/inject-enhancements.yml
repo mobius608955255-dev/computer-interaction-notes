@@ -30,6 +30,7 @@ on:
       - 'enhancements-v20.js'
       - 'enhancements-v21.js'
       - 'enhancements-v22.js'
+      - 'enhancements-v23.js'
       - '.github/workflows/inject-enhancements.yml'
   workflow_dispatch:
 
@@ -82,6 +83,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v20.js?v=21"></script>'),
               ('</body>', '<script src="./enhancements-v21.js?v=22"></script>'),
               ('</body>', '<script src="./enhancements-v22.js?v=23"></script>'),
+              ('</body>', '<script src="./enhancements-v23.js?v=24"></script>'),
           ]
           for marker, asset in assets:
               if asset in s:
