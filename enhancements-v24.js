@@ -48,6 +48,65 @@
     }
   }
 
+  function normalizeChapter1Hierarchy() {
+    const oop = $('#concept-21');
+    if (!oop) return;
+
+    if (oop.dataset.v24Hierarchy !== '1') {
+      oop.dataset.v24Hierarchy = '1';
+
+      const title = $('.concept-copy h2', oop);
+      if (title) title.textContent = '面向对象基础';
+
+      const intro = $$('.concept-copy > p', oop).find(p => !p.classList.contains('kicker'));
+      if (intro) intro.textContent = '面向对象这一知识点只讨论类、对象及其基本特征，不再和队列/栈混在同一个模块中。';
+
+      const noteParts = $$('.v10-concept-note > div', oop);
+      const what = noteParts[0] && $('p', noteParts[0]);
+      const use = noteParts[1] && $('p', noteParts[1]);
+      if (what) what.textContent = '面向对象把数据和相关操作组织为对象；类用于描述一类对象共有的属性和行为，对象则是类的具体实例。';
+      if (use) use.textContent = '用于判断类与对象的关系，以及封装、继承、多态分别解决什么问题，并理解对象之间通过方法调用等方式发生交互。';
+
+      const rules = $('.lab-card .note-body ul', oop);
+      if (rules) rules.innerHTML = [
+        '类可以看作对象的抽象模板，对象是类的具体实例；类与对象不能直接画等号。',
+        '封装把数据和相关操作组织在一起并控制访问；继承用于复用和扩展已有类型；多态允许同一接口表现出不同实现。',
+        '对象之间可以通过消息或方法调用发生交互；“对象”不是只有数据而没有行为的静态记录。'
+      ].map(x => `<li>${x}</li>`).join('');
+
+      const memory = $('.memory-line strong', oop);
+      if (memory) memory.textContent = '类是抽象模板，对象是具体实例；封装管边界，继承管复用，多态管同一接口的不同表现。';
+    }
+
+    if (!$('#concept-21-queue')) {
+      oop.insertAdjacentHTML('afterend', `
+        <section id="concept-21-queue" class="concept v22-matrix-concept v24-hierarchy-concept" data-v24-hierarchy="queue-stack">
+          <div class="section-shell">
+            <div class="concept-index">22</div>
+            <div class="concept-copy">
+              <p class="kicker">CONCEPT 22</p>
+              <h2>队列与栈</h2>
+              <p>队列和栈都是受限线性结构，但允许插入、删除的位置和元素离开的顺序不同，应该单独建立一组规则。</p>
+              <div class="v10-concept-note">
+                <div><span>是什么</span><p>队列通常在队尾入队、队头出队，遵循 FIFO（先进先出）；栈通常只在栈顶进行压入和弹出，遵循 LIFO（后进先出）。</p></div>
+                <div><span>有什么用</span><p>用于判断一串元素经过入队、出队、入栈、出栈操作后的先后次序，并区分两类结构的操作端和删除规则。</p></div>
+              </div>
+              <div class="lab-card">
+                <div class="lab-heading"><span class="lab-dot"></span><div><p>核心规则</p><h3>先看允许在哪一端进入、在哪一端删除</h3></div></div>
+                <div class="note-body"><ul>
+                  <li>队列遵循 FIFO：先进入队列的元素通常先离开；常见模型是在队尾入队、队头出队。</li>
+                  <li>栈遵循 LIFO：后进入栈的元素先离开；常见模型只允许在栈顶进行压栈和出栈。</li>
+                  <li>队列的“队头/队尾”和栈的“栈顶”是抽象操作位置，不表示它们必须对应某个固定的物理内存方向。</li>
+                  <li>判断操作结果时先写进入顺序，再按 FIFO 或 LIFO 规则逐个确定离开顺序，不要把队列和栈的删除规则互换。</li>
+                </ul></div>
+              </div>
+              <div class="memory-line"><span>一条线记住</span><strong>队列先进先出，栈后进先出；先看允许在哪一端进入、在哪一端删除。</strong></div>
+            </div>
+          </div>
+        </section>`);
+    }
+  }
+
   function chapter1() {
     appendNote('#concept-1','data-information','数据与信息：有联系，但不能直接画等号',[
       '<strong>数据</strong>是信息的表示和载体之一，文字、数字、图像、声音等都可以作为数据形式；<strong>信息</strong>强调从数据中获得的有意义内容。',
@@ -175,6 +234,7 @@
   function apply() {
     removeLegacyV24Modules();
     normalizeOlderLayers();
+    normalizeChapter1Hierarchy();
     chapter1();
     windows();
     word();
