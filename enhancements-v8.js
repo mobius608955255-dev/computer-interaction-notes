@@ -337,7 +337,10 @@
     // deep link was therefore labelled as chapter 4 by v8 but could still retain
     // chapter 1's React DOM.  Preserve a specific Excel anchor before requesting
     // the React route so #excel-7 and similar deep links are restored below.
-    const requestedHash = validSectionHash(n);
+    // route-bootstrap-v29 stores a deep Excel anchor while changing the initial
+    // hash to #chapter-4 before React mounts. Restore that specific point below.
+    const requestedHash = window.__notesRequestedSectionHash || validSectionHash(n);
+    delete window.__notesRequestedSectionHash;
     if (n === 4 && !$('.excel-page')) switchReactChapter(4);
     showContainers(n);
     normalizeTextAndChrome();
