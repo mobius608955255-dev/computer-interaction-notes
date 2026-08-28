@@ -333,12 +333,23 @@
     installNavigation();
 
     const n = currentChapter();
+    // The React base only looks at #chapter-4 on its first render.  A query-only
+    // deep link was therefore labelled as chapter 4 by v8 but could still retain
+    // chapter 1's React DOM.  Preserve a specific Excel anchor before requesting
+    // the React route so #excel-7 and similar deep links are restored below.
+    const requestedHash = validSectionHash(n);
+    if (n === 4 && !$('.excel-page')) switchReactChapter(4);
     showContainers(n);
     normalizeTextAndChrome();
 
     // v5 initializes chapters 2/3 in a 0ms task after DOMContentLoaded.
     // Its #root lookup is redirected by the prototype patch above.
-    if (n === 1 || n === 4) requestAnimationFrame(() => normalizeDocument(n));
+    if (n === 1 || n === 4) requestAnimationFrame(() => {
+      if (n === 4 && location.hash !== requestedHash) {
+        history.replaceState(history.state, '', chapterUrl(4, requestedHash));
+      }
+      normalizeDocument(n);
+    });
 
     let scheduled = false;
     const observer = new MutationObserver(() => {
