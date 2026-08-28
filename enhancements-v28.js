@@ -74,16 +74,18 @@
       '</div><div class="v28-grid"><div class="v28-cell"><span>编辑限制状态</span><code data-lock-edit></code></div><div class="v28-cell"><span>滚动视图状态</span><code data-lock-view></code></div></div><p class="v28-live" aria-live="polite" data-lock-result></p>'
     );
     if (!lab) return;
-    const state = { scope: 'row', property: false, protect: false, freeze: 'none' };
+    const state = { scope: 'row', lockedScope: '', protectedSheet: false, freeze: 'none' };
     function render() {
-      const object = state.scope === 'row' ? '所选整行中的单元格' : '所选整列中的单元格';
-      let edit = '仍可编辑';
-      let message = 'Locked 是单元格属性；只设置属性而未保护工作表时，编辑不会被真正限制。';
-      if (state.property && state.protect) {
-        edit = object + '受保护，不能直接编辑';
+      const selectedObject = state.scope === 'row' ? '所选整行中的单元格' : '所选整列中的单元格';
+      const lockedObject = state.lockedScope === 'row' ? '已选整行中的单元格' : '已选整列中的单元格';
+      let edit = '当前选区仍可编辑';
+      let message = '先选择整行或整列，再设置 Locked 属性。仅设置属性而未保护工作表时，编辑不会被真正限制。';
+      if (state.lockedScope && state.protectedSheet) {
+        edit = lockedObject + '受保护，不能直接编辑';
         message = '现在才真正生效：先选中整行或整列所含单元格设置 Locked，再保护工作表。它限制编辑，不固定滚动位置。';
-      } else if (state.property) {
-        edit = object + '已标记 Locked，但仍可编辑';
+      } else if (state.lockedScope) {
+        edit = lockedObject + '已标记 Locked，但仍可编辑';
+        message = '已为' + lockedObject + '设置 Locked；下一步保护工作表后才会限制编辑。当前选区是' + selectedObject + '。';
       }
       const view = state.freeze === 'top' ? '滚动时首行仍显示' : state.freeze === 'left' ? '滚动时首列仍显示' : '不冻结，滚动时行列正常离开视图';
       $('[data-lock-edit]', lab).textContent = edit;
@@ -91,19 +93,23 @@
       $('[data-lock-result]', lab).textContent = message + ' 冻结窗格只改变查看方式，不会阻止任何人编辑数据。';
       setActive(lab, 'data-lock-scope', state.scope);
       setActive(lab, 'data-freeze', state.freeze);
-      $('[data-lock-property]', lab).disabled = state.property;
-      $('[data-lock-protect]', lab).disabled = state.protect;
+      $('[data-lock-property]', lab).disabled = Boolean(state.lockedScope) || state.protectedSheet;
+      $('[data-lock-protect]', lab).disabled = !state.lockedScope || state.protectedSheet;
     }
     lab.addEventListener('click', event => {
       const scope = event.target.closest('[data-lock-scope]');
       const freeze = event.target.closest('[data-freeze]');
       if (scope) state.scope = scope.dataset.lockScope;
       if (freeze) state.freeze = freeze.dataset.freeze;
-      if (event.target.closest('[data-lock-property]')) state.property = true;
-      if (event.target.closest('[data-lock-protect]')) state.protect = true;
+      if (event.target.closest('[data-lock-property]') && !state.lockedScope && !state.protectedSheet) {
+        state.lockedScope = state.scope;
+      }
+      if (event.target.closest('[data-lock-protect]') && state.lockedScope && !state.protectedSheet) {
+        state.protectedSheet = true;
+      }
       if (event.target.closest('[data-lock-reset]')) {
-        state.property = false;
-        state.protect = false;
+        state.lockedScope = '';
+        state.protectedSheet = false;
         state.freeze = 'none';
       }
       if (scope || freeze || event.target.closest('[data-lock-property]') || event.target.closest('[data-lock-protect]') || event.target.closest('[data-lock-reset]')) render();
@@ -234,12 +240,13 @@
       }
     };
     const state = { scenario: 'position', method: '' };
-    function table(title, rows) {
-      return '<div><div class="v28-caption"><strong>' + title + '</strong><em>最左列是分类线索</em></div><div class="v28-sheet">' + simpleTable(['类别', '金额'], rows) + '</div></div>';
+    function table(title, rows, hint) {
+      return '<div><div class="v28-caption"><strong>' + title + '</strong><em>' + hint + '</em></div><div class="v28-sheet">' + simpleTable(['类别', '金额'], rows) + '</div></div>';
     }
     function render() {
       const current = cases[state.scenario];
-      $('[data-merge-sources]', lab).innerHTML = table(current.labelLeft, current.left) + table(current.labelRight, current.right);
+      const hint = state.scenario === 'position' ? '相对位置是匹配线索' : '最左列标签是匹配线索';
+      $('[data-merge-sources]', lab).innerHTML = table(current.labelLeft, current.left, hint) + table(current.labelRight, current.right, hint);
       setActive(lab, 'data-merge-case', state.scenario);
       setActive(lab, 'data-merge-method', state.method);
       const result = $('[data-merge-result]', lab);
