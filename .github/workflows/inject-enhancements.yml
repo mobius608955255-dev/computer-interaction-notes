@@ -51,23 +51,26 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
 
-          # Keep the static/share description aligned with the actual product: notes first, not exercises.
+          # Keep the product explicitly note-first.
           s = s.replace('山东专升本计算机交互笔记：真题驱动、交互练习、随学随测',
                         '山东专升本计算机互动笔记：概念讲解、核心规则、操作演示、真题校验与易错点整理。')
           s = s.replace('真题驱动 · 交互练习 · 随学随测',
                         '概念讲解 · 核心规则 · 操作演示 · 真题校验')
 
-          # Hierarchy audit: deterministic directory names + normalized single-page order.
-          for old in ('7', '8'):
-              s = s.replace(f'<script src="./enhancements-v7.js?v={old}"></script>',
-                            '<script src="./enhancements-v7.js?v=9"></script>')
-          s = s.replace('<script src="./enhancements-v8.js?v=9"></script>',
-                        '<script src="./enhancements-v8.js?v=10"></script>')
+          # Normalize the SPA shell to exactly one v8 script. A previous injector could
+          # append an older cache key beside v36 and cause duplicate observers/navigation.
+          s = re.sub(r'<script src="\./enhancements-v8\.js\?v=\d+"></script>', '', s)
 
-          # v24 consolidates duplicate notes and now also splits the unrelated OOP / queue concepts.
+          # v28 was an experimental exercise-heavy layer. It conflicts with the user's
+          # note-first requirement, so keep the source file for history but never load it.
+          s = re.sub(r'<script src="\./enhancements-v28\.js\?v=\d+"></script>', '', s)
+
+          # v24 consolidates duplicate notes and splits unrelated OOP / queue concepts.
           for old in ('25', '26', '27'):
               s = s.replace(f'<script src="./enhancements-v24.js?v={old}"></script>',
                             '<script src="./enhancements-v24.js?v=28"></script>')
@@ -92,7 +95,7 @@ jobs:
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
               ('</body>', '<script src="./enhancements-v7.js?v=9"></script>'),
-              ('</body>', '<script src="./enhancements-v8.js?v=10"></script>'),
+              ('</body>', '<script src="./enhancements-v8.js?v=36"></script>'),
               ('</body>', '<script src="./enhancements-v9.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v10.js?v=11"></script>'),
               ('</body>', '<script src="./enhancements-v11.js?v=12"></script>'),
