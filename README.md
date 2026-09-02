@@ -16,4 +16,4 @@
 - 65道题无遗漏、无重复地归入对应章节
 - 窄栏连续阅读、本章搜索、章节与题号目录、阅读进度和移动端底部导航
 
-线上版本：[打开2020真题来源笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=10)
+线上版本：[打开2020真题来源笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=11)
