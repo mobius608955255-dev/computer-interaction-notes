@@ -19,7 +19,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 116px; }
 body { margin: 0; overflow-x: hidden; background: var(--page); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; text-rendering: optimizeLegibility; }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 a { color: inherit; text-decoration: none; }
 button, a { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid rgba(91,80,183,.28); outline-offset: 3px; }
@@ -34,10 +34,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .brand-copy strong { font-size: 14px; }
 .brand-copy small { margin-top: 3px; color: var(--faint); font-size: 11px; }
 .header-actions { display: flex; gap: 6px; min-width: 0; }
-.header-actions button, .chapter-select-wrap { min-height: 36px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--muted); font-size: 12px; font-weight: 700; }
+.header-actions button, .chapter-select-wrap, .year-select-wrap { min-height: 36px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--muted); font-size: 12px; font-weight: 700; }
 .header-actions button { padding: 7px 11px; cursor: pointer; }
-.chapter-select-wrap { display: flex; align-items: center; min-width: 0; padding: 0 7px; }
-.chapter-select-wrap select { width: min(280px, 32vw); min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+.chapter-select-wrap, .year-select-wrap { display: flex; align-items: center; min-width: 0; padding: 0 7px; }
+.chapter-select-wrap select, .year-select-wrap select { min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+.chapter-select-wrap select { width: min(250px, 29vw); }
+.year-select-wrap select { width: 64px; }
 .progress { position: fixed; z-index: 55; top: calc(var(--header) - 2px); left: 0; width: 100%; height: 2px; }
 .progress i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #6656cc, #c35d7c); }
 
@@ -120,11 +122,12 @@ h1 { margin: 0; font-size: clamp(34px, 7vw, 54px); line-height: 1.15; letter-spa
   :root { --header: 56px; }
   html { scroll-padding-top: 108px; }
   .site-header { padding: 0 10px; }
-  .brand-copy small { display: none; }
+  .brand-copy { display: none; }
   .header-actions { gap: 4px; }
   .header-actions button { padding-inline: 8px; white-space: nowrap; }
-  .chapter-select-wrap { padding-inline: 5px; }
-  .chapter-select-wrap select { width: min(42vw, 170px); font-size: 11px; }
+  .chapter-select-wrap, .year-select-wrap { padding-inline: 5px; }
+  .chapter-select-wrap select { width: min(32vw, 150px); font-size: 11px; }
+  .year-select-wrap select { width: 58px; font-size: 11px; }
   main, .site-footer { width: calc(100% - 16px); }
   .chapter-intro { margin-top: 8px; padding: 28px 20px 24px; }
   h1 { font-size: clamp(32px, 11vw, 46px); }
