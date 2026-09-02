@@ -290,48 +290,27 @@
   ];
 
   const allModules = GROUPS.flatMap(group => group.modules.map(module => ({ ...module, group })));
-  const STORAGE_KEY = 'computer-notes-chapter1-v2-mastery';
-  const LAST_KEY = 'computer-notes-chapter1-v2-last';
-  let state = loadState();
-  let activeFilter = 'all';
+  const NOTE_INTERACTIONS = new Set(['base-converter', 'storage-converter', 'encoding', 'image-size', 'instruction-cycle', 'memory-hierarchy', 'media-size', 'algorithm-runner']);
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const fmt = value => new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 3 }).format(value);
 
-  function loadState() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
-  }
-  function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  function statusOf(id) { return state[id] || 'new'; }
-
   function render() {
     $('#route-grid').innerHTML = GROUPS.map(group => `
-      <a class="route-card" href="#group-${group.id}" style="--accent:${group.accent}">
-        <span>${group.number} · ${group.modules.length}个模块</span><h3>${group.title}</h3><p>${group.route}</p><i>↘</i>
-      </a>`).join('');
-
-    $('#filter-pills').innerHTML = `<button class="active" type="button" data-filter="all">全部</button>` + GROUPS.map(group =>
-      `<button type="button" data-filter="${group.id}">${group.short}</button>`).join('');
+      <li><a class="route-card" href="#group-${group.id}" style="--accent:${group.accent}">
+        <span>${group.number}</span><strong>${group.title}</strong><small>${group.route}</small>
+      </a></li>`).join('');
 
     $('#knowledge-content').innerHTML = GROUPS.map(group => `
       <section class="knowledge-group" id="group-${group.id}" data-group="${group.id}" style="--accent:${group.accent}">
-        <header class="group-head"><span class="group-number">${group.number}</span><div><p>${group.short.toUpperCase()} · ${group.modules.length} MODULES</p><h2>${group.title}</h2></div></header>
+        <header class="group-head"><span class="group-number">${group.number}</span><div><p>${group.short} · ${group.modules.length}节笔记</p><h2>${group.title}</h2></div></header>
         ${group.modules.map((module, index) => renderModule(module, group, index)).join('')}
-      </section>`).join('') + `
-      <section class="chapter-check" id="chapter-finish">
-        <div><p class="eyebrow">CHAPTER CHECK</p><h2>学完不等于掌握：把不确定项重新筛出来</h2><p>目录中的黄色标记表示“还不确定”，绿色表示“已掌握”。状态只保存在当前设备中，不上传任何个人数据。</p></div>
-        <button type="button" id="show-weak">只看未掌握模块</button>
-      </section>
-      <footer class="app-footer"><p>范围依据：山东省2026年普通高等教育专科升本科招生考试《计算机（公共课）考试要求》第一、二部分；2027年版本说明保持Office相关版本不变。</p><p><a href="https://www.sdzk.cn/NewsInfo.aspx?BCID=1195&CID=1133&NewsID=7081" target="_blank" rel="noreferrer">查看官方考试要求</a></p></footer>`;
+      </section>`).join('');
 
     renderDirectory();
     bindCoreEvents();
     bindLabs();
-    updateProgress();
-    updateContinue();
-    appendMobileNav();
     $('#chapter1-app').dataset.ready = 'true';
   }
 
@@ -341,49 +320,33 @@
       <header class="module-top">
         <span class="module-number">${number}</span>
         <div class="module-title"><p>${module.label}</p><h3>${module.title}</h3><p class="module-summary">${module.summary}</p></div>
-        ${renderMastery(module.id)}
       </header>
       <div class="module-body">
         <div class="knowledge-grid">${module.blocks.map(([title, points], i) => `<section class="knowledge-block${module.blocks.length === 1 || (module.blocks.length % 2 && i === module.blocks.length - 1) ? ' wide' : ''}"><strong>${title}</strong><ul>${points.map(point => `<li>${point}</li>`).join('')}</ul></section>`).join('')}</div>
         <div class="exam-boundary"><span>易错边界</span><p>${module.boundary}</p></div>
         <div class="memory-line"><span>一条线记住</span><strong>${module.memory}</strong></div>
-        ${module.lab ? renderLab(module.lab) : ''}
+        ${module.lab && NOTE_INTERACTIONS.has(module.lab) ? renderLab(module.lab) : ''}
       </div>
     </article>`;
-  }
-
-  function renderMastery(id) {
-    const current = statusOf(id);
-    const labels = { new: '未学', unsure: '不确定', mastered: '已掌握' };
-    return `<div class="mastery-control" role="group" aria-label="学习状态">
-      ${Object.keys(labels).map(key => `<button type="button" data-state="${key}" data-module-state="${id}" class="${current === key ? 'active' : ''}" title="${labels[key]}" aria-label="标记为${labels[key]}" aria-pressed="${current === key}">${key === 'new' ? '○' : key === 'unsure' ? '?' : '✓'}</button>`).join('')}
-    </div>`;
   }
 
   function renderDirectory() {
     $('#directory-nav').innerHTML = GROUPS.map(group => `<div class="directory-group" data-directory-group="${group.id}"><strong>${group.number} · ${group.title}</strong>${group.modules.map(module => {
       const n = String(allModules.findIndex(item => item.id === module.id) + 1).padStart(2, '0');
-      return `<a href="#${module.id}" data-directory-module="${module.id}" data-state="${statusOf(module.id)}"><span>${n}</span><b>${module.title}</b><i aria-hidden="true"></i></a>`;
+      return `<a href="#${module.id}" data-directory-module="${module.id}"><span>${n}</span><b>${module.title}</b></a>`;
     }).join('')}</div>`).join('');
   }
 
   function renderLab(type) {
     const heads = {
-      'info-chain': ['语境实验', '同一组数据，怎样变成不同信息'],
-      generation: ['时间轴实验', '按核心元器件辨认计算机代际'],
-      classification: ['分类实验', '先选标准，再给计算机归类'],
-      'base-converter': ['数制实验', '输入一个数，查看结果与关键步骤'],
-      'storage-converter': ['容量实验', '在 bit、Byte、KB、MB、GB 间换算'],
-      encoding: ['编码实验', '观察字符的码点与UTF-8字节'],
-      'image-size': ['图像实验', '计算未压缩位图的理论数据量'],
-      'instruction-cycle': ['执行实验', '逐步运行取指—译码—执行循环'],
-      'bus-router': ['总线实验', '判断信号应走哪类总线'],
-      'memory-hierarchy': ['层次实验', '按速度排列存储器并查看角色'],
-      'device-sorter': ['设备实验', '从系统角度判断输入与输出'],
-      bottleneck: ['整机实验', '不同任务的性能瓶颈在哪里'],
-      'media-size': ['媒体实验', '计算音频原始数据量与压缩后大小'],
-      'ct-workflow': ['抽象实验', '从真实问题提取输入、输出与约束'],
-      'algorithm-runner': ['算法实验', '让分支与循环在输入数据上真正运行']
+      'base-converter': ['随文换算', '输入一个数，查看结果与关键步骤'],
+      'storage-converter': ['随文换算', '在 bit、Byte、KB、MB、GB 间换算'],
+      encoding: ['动态示意', '观察字符的码点与UTF-8字节'],
+      'image-size': ['随文换算', '计算未压缩位图的理论数据量'],
+      'instruction-cycle': ['动态示意', '逐步查看取指—译码—执行循环'],
+      'memory-hierarchy': ['动态示意', '点选存储层，比较速度、容量与作用'],
+      'media-size': ['随文换算', '计算音频原始数据量与压缩后大小'],
+      'algorithm-runner': ['动态示意', '让分支与循环在输入数据上真正运行']
     };
     const [tag, title] = heads[type];
     return `<section class="lab" data-lab="${type}"><header class="lab-head"><div><span>${tag}</span><strong>${title}</strong></div></header><div class="lab-body">${labBody(type)}</div></section>`;
@@ -391,43 +354,24 @@
 
   function labBody(type) {
     const bodies = {
-      'info-chain': `<div class="choice-grid" data-info-choice><button type="button" data-context="clinic">体温 39.2℃ · 临床</button><button type="button" data-context="weather">气温 39.2℃ · 天气</button></div><div class="lab-output" data-output>先选择语境。数字相同，但对象、正常范围和决策目的不同。</div>`,
-      generation: `<div class="lab-controls" data-generation>${['电子管','晶体管','中小规模集成电路','大规模/超大规模集成电路'].map((x,i)=>`<button type="button" data-gen="${i}">${i+1}代</button>`).join('')}</div><div class="lab-output" data-output>选择一代计算机，查看核心依据。</div>`,
-      classification: `<div class="lab-controls"><select data-class-standard aria-label="分类标准"><option value="use">按用途</option><option value="data">按处理对象</option><option value="scale">按规模性能</option></select></div><div class="choice-grid" data-class-options></div><div class="lab-output" data-output>选择分类标准后判断“天气数值预报专用机”。</div>`,
-      'base-converter': `<div class="lab-controls"><input data-base-input value="101101.01" inputmode="decimal" aria-label="待转换数字"><select data-base-from aria-label="原进制"><option value="2">二进制</option><option value="8">八进制</option><option value="10">十进制</option><option value="16">十六进制</option></select><select data-base-to aria-label="目标进制"><option value="10">转十进制</option><option value="2">转二进制</option><option value="8">转八进制</option><option value="16" selected>转十六进制</option></select><button type="button" data-run-base>转换</button></div><div class="lab-output" data-output></div>`,
+      'base-converter': `<div class="lab-controls"><input data-base-input value="101101.01" inputmode="text" aria-label="待转换数字"><select data-base-from aria-label="原进制"><option value="2">二进制</option><option value="8">八进制</option><option value="10">十进制</option><option value="16">十六进制</option></select><select data-base-to aria-label="目标进制"><option value="10">转十进制</option><option value="2">转二进制</option><option value="8">转八进制</option><option value="16" selected>转十六进制</option></select><button type="button" data-run-base>转换</button></div><div class="lab-output" data-output></div>`,
       'storage-converter': `<div class="lab-controls"><input data-storage-value type="number" value="100" min="0" step="any"><select data-storage-from><option>Mbps</option><option>bit</option><option>Byte</option><option>KB</option><option>MB</option><option>GB</option></select><select data-storage-to><option>MB/s</option><option>bit</option><option>Byte</option><option>KB</option><option>MB</option><option>GB</option></select><button type="button" data-run-storage>换算</button></div><div class="lab-output" data-output></div>`,
       encoding: `<div class="lab-controls"><input data-encoding-input value="A医" maxlength="12" aria-label="输入字符"></div><div class="lab-output" data-output></div>`,
       'image-size': `<div class="lab-controls"><input data-image-w type="number" value="1920" min="1" aria-label="水平像素"><input data-image-h type="number" value="1080" min="1" aria-label="垂直像素"><select data-image-depth><option value="1">1位</option><option value="8">8位</option><option value="24" selected>24位</option><option value="32">32位</option></select><button type="button" data-run-image>计算</button></div><div class="lab-output" data-output></div>`,
       'instruction-cycle': `<div class="step-flow" data-cycle>${[['1','PC给出地址'],['2','取入指令'],['3','译码'],['4','执行/访存'],['5','保存结果']].map(([n,t],i)=>`<div class="step-node${i===0?' active':''}"><b>${n} · ${t}</b><small>${['下一条指令在哪里','存入指令寄存器','识别操作码和对象','运算器/存储器工作','更新状态并继续'][i]}</small></div>`).join('')}</div><div class="lab-controls" style="margin-top:12px"><button type="button" data-cycle-next>下一步</button></div><div class="lab-output" data-output>程序计数器 PC 保存下一条指令地址。</div>`,
-      'bus-router': `<div class="lab-controls" data-bus-question><button type="button" data-bus="address">CPU指出内存单元 2048</button><button type="button" data-bus="data">把数值37送入CPU</button><button type="button" data-bus="control">发出“写入”信号</button></div><div class="lab-output" data-output>点击一个信号，观察它走哪类总线。</div>`,
-      'memory-hierarchy': `<div class="choice-grid" data-memory-choice>${['外存','Cache','寄存器','主存'].map(x=>`<button type="button" data-memory="${x}">${x}</button>`).join('')}</div><div class="lab-output" data-output>请按“通常速度由快到慢”依次点击四层。</div>`,
-      'device-sorter': `<div class="lab-controls" data-device-question>${['扫描仪','显示器','触摸屏','SSD'].map(x=>`<button type="button" data-device="${x}">${x}</button>`).join('')}</div><div class="lab-output" data-output>点击设备查看分类理由。</div>`,
-      bottleneck: `<div class="lab-controls" data-task-choice>${['同时开很多程序','大型3D游戏','复制超大文件','单线程旧软件'].map((x,i)=>`<button type="button" data-task="${i}">${x}</button>`).join('')}</div><div class="lab-output" data-output>选择任务。这里给出“优先排查项”，不是宣称只有一个因素。</div>`,
+      'memory-hierarchy': `<div class="choice-grid" data-memory-choice>${['寄存器','Cache','主存','外存'].map((x,i)=>`<button type="button" data-memory="${x}"${i===0?' class="active"':''}>${i+1} · ${x}</button>`).join('')}</div><div class="lab-output" data-output><strong>寄存器：</strong>位于CPU内部，保存当前最急需的数据、地址或状态；速度最快，容量最小。</div>`,
       'media-size': `<div class="lab-controls"><select data-audio-rate><option value="44100">44.1 kHz</option><option value="48000" selected>48 kHz</option><option value="96000">96 kHz</option></select><select data-audio-depth><option value="16" selected>16 bit</option><option value="24">24 bit</option></select><select data-audio-channel><option value="1">单声道</option><option value="2" selected>双声道</option></select><input data-audio-time type="number" value="60" min="1" aria-label="秒数"><input data-audio-ratio type="number" value="4" min="1" aria-label="压缩比"><button type="button" data-run-media>计算</button></div><div class="lab-output" data-output></div>`,
-      'ct-workflow': `<div class="lab-controls" data-ct-choice>${['判断是否发热','安排一周复习','给照片美化'].map((x,i)=>`<button type="button" data-ct="${i}">${x}</button>`).join('')}</div><div class="lab-output" data-output>选择一个问题，查看怎样抽象成可计算结构。</div>`,
       'algorithm-runner': `<div class="lab-controls"><input data-algo-list value="3,8,1,9,6" aria-label="整数列表"><input data-algo-threshold type="number" value="5" aria-label="阈值"><button type="button" data-run-algo>运行</button></div><div class="lab-output" data-output></div>`
     };
     return bodies[type] || '';
   }
 
   function bindCoreEvents() {
-    $$('[data-module-state]').forEach(button => button.addEventListener('click', () => {
-      const id = button.dataset.moduleState;
-      state[id] = button.dataset.state;
-      saveState();
-      $$(`[data-module-state="${id}"]`).forEach(item => {
-        item.classList.toggle('active', item.dataset.state === state[id]);
-        item.setAttribute('aria-pressed', String(item.dataset.state === state[id]));
-      });
-      const directoryLink = $(`[data-directory-module="${id}"]`);
-      if (directoryLink) directoryLink.dataset.state = state[id];
-      updateProgress();
-      applySearch();
-    }));
-
     const open = () => { $('#directory-panel').classList.add('open'); $('#directory-scrim').classList.add('open'); $('#open-directory').setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; setTimeout(() => $('#directory-search-input').focus(), 120); };
     const close = () => { $('#directory-panel').classList.remove('open'); $('#directory-scrim').classList.remove('open'); $('#open-directory').setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; };
     $('#open-directory').addEventListener('click', open);
+    $('#mobile-directory').addEventListener('click', open);
+    $('#mobile-search').addEventListener('click', () => { $('#content-search').focus(); $('#content-search').scrollIntoView({ behavior: 'smooth', block: 'center' }); });
     $('#close-directory').addEventListener('click', close);
     $('#directory-scrim').addEventListener('click', close);
     $('#directory-nav').addEventListener('click', event => { if (event.target.closest('a')) close(); });
@@ -435,85 +379,27 @@
 
     $('#content-search').addEventListener('input', applySearch);
     $('#directory-search-input').addEventListener('input', applyDirectorySearch);
-    $('#weak-only').addEventListener('change', applyDirectorySearch);
-    $('#filter-pills').addEventListener('click', event => {
-      const button = event.target.closest('[data-filter]'); if (!button) return;
-      activeFilter = button.dataset.filter;
-      $$('#filter-pills button').forEach(item => item.classList.toggle('active', item === button));
-      applySearch();
-    });
-    $('#show-weak').addEventListener('click', () => { activeFilter = 'weak'; $('#content-search').value = ''; applySearch(); window.scrollTo({ top: $('#knowledge-content').offsetTop - 110, behavior: 'smooth' }); });
-    $('#reset-progress').addEventListener('click', () => {
-      if (!confirm('确定清除第一章在本设备上的全部学习标记吗？')) return;
-      state = {}; saveState();
-      $$('[data-module-state]').forEach(button => { const on = button.dataset.state === 'new'; button.classList.toggle('active', on); button.setAttribute('aria-pressed', String(on)); });
-      $$('[data-directory-module]').forEach(link => link.dataset.state = 'new');
-      updateProgress(); updateContinue(); applySearch(); toast('学习状态已重置');
-    });
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries.filter(entry => entry.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      const id = visible.target.id; const item = allModules.find(module => module.id === id); if (!item) return;
-      localStorage.setItem(LAST_KEY, id); $('#current-module').textContent = `${String(allModules.indexOf(item)+1).padStart(2,'0')} · ${item.title}`;
-      updateSectionRail(item.group);
-    }, { rootMargin: '-25% 0px -60% 0px', threshold: [0,.25,.5] });
-    $$('.module-card').forEach(card => observer.observe(card));
-  }
-
-  function appendMobileNav() {
-    const nav = document.createElement('nav'); nav.className = 'mobile-nav'; nav.setAttribute('aria-label','移动端快捷导航');
-    nav.innerHTML = `<a href="#chapter-top"><span>⌂</span>章首</a><button type="button" data-mobile-directory><span>☰</span>目录</button><a id="mobile-continue" href="#concept-1"><span>→</span>继续</a><a href="#chapter-finish"><span>✓</span>状态</a>`;
-    document.body.appendChild(nav);
-    $('[data-mobile-directory]').addEventListener('click', () => $('#open-directory').click());
-  }
-
-  function updateProgress() {
-    const mastered = allModules.filter(module => statusOf(module.id) === 'mastered').length;
-    const percent = Math.round(mastered / allModules.length * 100);
-    $('#mastery-percent').textContent = `${percent}%`;
-    $('#progress-ring').style.setProperty('--progress', `${percent * 3.6}deg`);
-    $('#directory-progress').textContent = `${mastered} / ${allModules.length}`;
-    updateContinue();
-  }
-
-  function updateContinue() {
-    const last = localStorage.getItem(LAST_KEY);
-    const firstWeak = allModules.find(module => statusOf(module.id) !== 'mastered');
-    const target = (last && allModules.some(module => module.id === last)) ? allModules.find(module => module.id === last) : firstWeak || allModules[0];
-    const link = $('#continue-learning');
-    link.href = `#${target.id}`; link.textContent = state[target.id] ? `继续：${target.title}` : `从第1节开始`;
-    const mobile = $('#mobile-continue'); if (mobile) mobile.href = `#${target.id}`;
-  }
-
-  function updateSectionRail(group) {
-    const mastered = group.modules.filter(module => statusOf(module.id) === 'mastered').length;
-    const percent = mastered / group.modules.length * 100;
-    $('#section-progress').style.width = `${percent}%`;
-    $('#section-progress-text').textContent = `${group.short}进度 ${mastered} / ${group.modules.length}`;
   }
 
   function applySearch() {
     const query = $('#content-search').value.trim().toLowerCase();
     let shown = 0;
     $$('.module-card').forEach(card => {
-      const groupMatch = activeFilter === 'all' || activeFilter === 'weak' || activeFilter === card.dataset.group;
-      const weakMatch = activeFilter !== 'weak' || statusOf(card.dataset.module) !== 'mastered';
       const textMatch = !query || card.textContent.toLowerCase().includes(query);
-      const visible = groupMatch && weakMatch && textMatch;
+      const visible = textMatch;
       card.classList.toggle('search-hidden', !visible); if (visible) shown++;
     });
     $$('.knowledge-group').forEach(group => group.classList.toggle('search-hidden', !$$('.module-card:not(.search-hidden)', group).length));
-    $('#result-count').textContent = `显示 ${shown} 个模块`;
+    $('#result-count').textContent = `${shown}节`;
   }
 
   function applyDirectorySearch() {
-    const query = $('#directory-search-input').value.trim().toLowerCase(); const weak = $('#weak-only').checked;
+    const query = $('#directory-search-input').value.trim().toLowerCase();
     $$('[data-directory-module]').forEach(link => {
       const item = allModules.find(module => module.id === link.dataset.directoryModule);
-      const match = (!query || `${item.title} ${item.summary} ${item.memory}`.toLowerCase().includes(query)) && (!weak || statusOf(item.id) !== 'mastered');
+      const match = !query || `${item.title} ${item.summary} ${item.memory} ${JSON.stringify(item.blocks)} ${item.boundary}`.toLowerCase().includes(query);
       link.classList.toggle('hidden', !match);
     });
     $$('[data-directory-group]').forEach(group => group.hidden = !$$('a:not(.hidden)', group).length);
@@ -525,27 +411,9 @@
   }
 
   function bindLabs() {
-    bindSimpleLabs();
     bindBaseConverter(); bindStorageConverter(); bindEncoding(); bindImageSize(); bindCycle(); bindMemory(); bindMedia(); bindAlgorithm();
     $$('[data-run-base],[data-run-storage],[data-run-image],[data-run-media],[data-run-algo]').forEach(button => button.click());
     $('[data-encoding-input]').dispatchEvent(new Event('input'));
-  }
-
-  function bindSimpleLabs() {
-    $('[data-info-choice]').addEventListener('click', event => { const b=event.target.closest('button'); if(!b)return; const clinic=b.dataset.context==='clinic'; setActive(b); output(b, clinic ? '<strong>临床信息：</strong>患者体温39.2℃，高于常见正常范围，提示发热，需要结合症状继续判断。' : '<strong>天气信息：</strong>环境气温39.2℃，属于高温天气，需要关注中暑风险。'); });
-    $('[data-generation]').addEventListener('click', event => { const b=event.target.closest('button'); if(!b)return; setActive(b); const rows=[['第一代','电子管','ENIAC是代表之一；体积大、功耗高。'],['第二代','晶体管','可靠性提高，体积和功耗下降。'],['第三代','中小规模集成电路','多个元件集成在芯片上，操作系统进一步发展。'],['第四代','大规模/超大规模集成电路','微处理器出现并推动微型计算机普及。']]; const r=rows[+b.dataset.gen]; output(b, `<span class="result-big">${r[0]} · ${r[1]}</span>${r[2]}`); });
-    const classOptions={use:['通用计算机','专用计算机'],data:['数字计算机','模拟计算机','混合计算机'],scale:['巨型机','大型机','小型机','微型机']};
-    const classAnswer={use:'专用计算机',data:'数字计算机',scale:'不由题干确定'};
-    const classSelect=$('[data-class-standard]'), classGrid=$('[data-class-options]');
-    const drawClass=()=>{const k=classSelect.value; classGrid.innerHTML=classOptions[k].map(x=>`<button type="button" data-class="${x}">${x}</button>`).join('')+(k==='scale'?'<button type="button" data-class="不由题干确定">信息不足</button>':''); output(classSelect,'请选择。题干对象是“天气数值预报专用机”。');};
-    classSelect.addEventListener('change',drawClass); classGrid.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const answer=classAnswer[classSelect.value],ok=b.dataset.class===answer; b.classList.add(ok?'correct':'wrong'); output(b,ok?`<strong>正确：</strong>按当前标准应判断为“${answer}”。`:`<strong>不对：</strong>按当前标准应判断为“${answer}”。同一对象换标准会得到另一种归类。`);}); drawClass();
-    $('[data-bus-question]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return; const names={address:'地址总线',data:'数据总线',control:'控制总线'}; setActive(b); output(b,`<span class="result-big">${names[b.dataset.bus]}</span>分类依据是传递信息的性质。`);});
-    const devices={扫描仪:'主要输入设备：把纸面图像送入计算机。',显示器:'主要输出设备：把处理结果呈现给用户。',触摸屏:'输入/输出设备：既显示，又接收触控坐标。',SSD:'外存储器，也执行读写式输入/输出；不要硬塞进“纯输入”或“纯输出”。'};
-    $('[data-device-question]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return; setActive(b); output(b,`<strong>${b.dataset.device}：</strong>${devices[b.dataset.device]}`);});
-    const tasks=[['内存容量与后台占用','如果CPU并不繁忙却频繁换页，优先检查内存。'],['GPU、显存与CPU协同','大型3D游戏还受分辨率、散热和优化影响。'],['存储顺序吞吐与接口','源盘、目标盘、接口和文件系统都可能成为瓶颈。'],['CPU单核性能与程序效率','核心更多未必能让不能并行的旧软件同比加速。']];
-    $('[data-task-choice]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return; setActive(b); const t=tasks[+b.dataset.task]; output(b,`<span class="result-big">优先看：${t[0]}</span>${t[1]}`);});
-    const ct=[['输入：体温与测量条件','输出：是否达到设定发热阈值','约束：年龄、部位、误差和临床标准'],['输入：可用时间、任务、截止日','输出：每天的任务安排','约束：课程、睡眠、任务依赖与缓冲'],['输入：原图和目标效果','输出：处理后图像','约束：分辨率、真实度、版权和文件格式']];
-    $('[data-ct-choice]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setActive(b);output(b,`<strong>${b.textContent}</strong><br>${ct[+b.dataset.ct].join('<br>')}<br><br>抽象保留了影响结果的变量，没有保留无关细节。`);});
   }
 
   function bindBaseConverter() {
@@ -562,13 +430,11 @@
   function bindEncoding(){ $('[data-encoding-input]').addEventListener('input',e=>{const value=e.target.value,rows=[...value].map(ch=>{const cp=ch.codePointAt(0),bytes=[...new TextEncoder().encode(ch)].map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' ');return `<tr><td>${ch===' '?'空格':ch}</td><td>U+${cp.toString(16).padStart(4,'0').toUpperCase()}</td><td>${bytes}</td><td>${new TextEncoder().encode(ch).length}</td></tr>`;}).join('');output(e.target,value?`<table class="mini-table"><thead><tr><th>字符</th><th>Unicode码点</th><th>UTF-8字节（十六进制）</th><th>字节数</th></tr></thead><tbody>${rows}</tbody></table>`:'请输入字符。');}); }
   function bindImageSize(){ $('[data-run-image]').addEventListener('click',e=>{const lab=e.target.closest('.lab'),w=+$('[data-image-w]',lab).value,h=+$('[data-image-h]',lab).value,d=+$('[data-image-depth]',lab).value;if(!w||!h)return output(e.target,'像素尺寸必须大于0。');const bytes=w*h*d/8,mib=bytes/1024**2;output(e.target,`<span class="result-big">约 ${fmt(mib)} MiB</span>${fmt(w)} × ${fmt(h)} × ${d} bit ÷ 8 = ${fmt(bytes)} Byte。未计文件头，也未压缩。`);}); }
   function bindCycle(){let step=0;$('[data-cycle-next]').addEventListener('click',e=>{const nodes=$$('.step-node',e.target.closest('.lab'));step=(step+1)%nodes.length;nodes.forEach((n,i)=>n.classList.toggle('active',i===step));const notes=['PC给出下一条指令地址。','控制器从存储器取指，送入指令寄存器。','译码器识别操作码、操作数或地址信息。','相关部件完成运算、传输或存储访问。','结果和状态被保存，PC指向后续指令。'];output(e.target,`<strong>第${step+1}步：</strong>${notes[step]}`);});}
-  function bindMemory(){let picks=[];$('[data-memory-choice]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||picks.includes(b.dataset.memory))return;picks.push(b.dataset.memory);b.classList.add('active');const answer=['寄存器','Cache','主存','外存'];const ok=picks.every((x,i)=>x===answer[i]);if(!ok){output(b,`<strong>顺序中断：</strong>正确主链是寄存器 → Cache → 主存 → 外存。`);$$('[data-memory]',b.parentElement).forEach(x=>x.classList.remove('active'));picks=[];}else if(picks.length===4)output(b,`<span class="result-big">排列正确</span>速度通常递减，容量通常递增。`);else output(b,`前${picks.length}层正确，请继续。`);});}
+  function bindMemory(){const notes={寄存器:'位于CPU内部，保存当前最急需的数据、地址或状态；速度最快，容量最小。',Cache:'保存主存中近期可能使用的数据副本，用来缓和CPU与主存之间的速度差。',主存:'正在运行的程序和数据主要在这里；RAM通常可读写且断电易失。',外存:'SSD、硬盘、U盘等负责长期保存；容量大、断电不丢失，但通常慢于主存。'};$('[data-memory-choice]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('[data-memory]',b.parentElement).forEach(x=>x.classList.toggle('active',x===b));output(b,`<strong>${b.dataset.memory}：</strong>${notes[b.dataset.memory]}<br>总顺序仍是：寄存器 → Cache → 主存 → 外存。`);});}
   function bindMedia(){ $('[data-run-media]').addEventListener('click',e=>{const lab=e.target.closest('.lab'),rate=+$('[data-audio-rate]',lab).value,depth=+$('[data-audio-depth]',lab).value,ch=+$('[data-audio-channel]',lab).value,time=+$('[data-audio-time]',lab).value,ratio=+$('[data-audio-ratio]',lab).value;if(time<=0||ratio<1)return output(e.target,'时长需大于0，压缩比不能小于1。');const raw=rate*depth*ch*time/8/1024**2,compressed=raw/ratio;output(e.target,`<span class="result-big">原始约 ${fmt(raw)} MiB</span>${fmt(rate)} × ${depth} bit × ${ch}声道 × ${time}秒 ÷ 8 ÷ 1024²。<br>若压缩比约${ratio}:1，压缩后约 <strong>${fmt(compressed)} MiB</strong>；实际大小还受编码器与内容影响。`);}); }
   function bindAlgorithm(){ $('[data-run-algo]').addEventListener('click',e=>{const lab=e.target.closest('.lab'),values=$('[data-algo-list]',lab).value.split(',').map(x=>Number(x.trim())).filter(Number.isFinite),threshold=+$('[data-algo-threshold]',lab).value;if(!values.length)return output(e.target,'请输入用英文逗号分隔的整数。');let count=0,trace=[];for(const value of values){const hit=value>threshold;if(hit)count++;trace.push(`${value}${hit?' > ':' ≤ '}${threshold}${hit?'，计数+1':''}`);}output(e.target,`<span class="result-big">结果：${count}个数大于${threshold}</span><code>count ← 0<br>FOR 每个数 x<br>　IF x &gt; ${threshold} THEN count ← count + 1</code><br><br>${trace.join('；')}。<br>这里同时出现顺序、分支和循环；扫描${values.length}个输入，时间随输入数量线性增长，可记作 O(n)，额外只使用计数器等少量变量，可记作 O(1) 额外空间。`);}); }
 
-  function setActive(button){$$('button',button.parentElement).forEach(b=>b.classList.toggle('active',b===button));}
   function output(source,html){const lab=source.closest('.lab');const el=$('[data-output]',lab);if(el)el.innerHTML=html;}
-  function toast(message){let el=$('.toast');if(!el){el=document.createElement('div');el.className='toast';document.body.appendChild(el);}el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),1800);}
 
   render();
 })();

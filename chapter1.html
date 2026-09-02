@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#081626">
+  <meta name="theme-color" content="#f1f3f7">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="山东专升本计算机第一章：信息与计算机基础、数制与编码、计算机系统、多媒体和计算思维交互笔记。">
-  <title>第一章 计算机基础｜山东专升本计算机交互笔记</title>
-  <link rel="stylesheet" href="./chapter1.css?v=1">
+  <meta name="description" content="山东专升本计算机第一章系统笔记：信息与计算机基础、数制与编码、计算机系统、多媒体和计算思维。">
+  <title>第一章 计算机基础｜山东专升本计算机笔记</title>
+  <link rel="stylesheet" href="./chapter1.css?v=2">
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到正文</a>
@@ -15,7 +15,7 @@
     <header class="app-header">
       <a class="brand" href="#chapter-top" aria-label="返回第一章顶部">
         <span class="brand-mark" aria-hidden="true">01</span>
-        <span><b>计算机交互笔记</b><small>山东专升本 · 第一章</small></span>
+        <span><b>计算机笔记</b><small>山东专升本 · 第一章</small></span>
       </a>
       <nav class="chapter-switch" aria-label="章节切换">
         <a class="active" href="./chapter1.html?chapter=1#chapter-top" aria-current="page">基础</a>
@@ -32,14 +32,13 @@
 
     <aside class="directory" id="directory-panel" aria-label="第一章目录">
       <div class="directory-head">
-        <div><span>学习地图</span><strong id="directory-progress">0 / 24</strong></div>
+        <div><span>第一章</span><strong>笔记目录</strong></div>
         <button id="close-directory" type="button" aria-label="关闭目录">×</button>
       </div>
       <div class="directory-search">
         <label for="directory-search-input">查找知识点</label>
         <div><span aria-hidden="true">⌕</span><input id="directory-search-input" type="search" placeholder="如：补码、Cache、UTF-8" autocomplete="off"></div>
       </div>
-      <label class="weak-toggle"><input id="weak-only" type="checkbox"><span>只看未掌握</span></label>
       <nav id="directory-nav"></nav>
     </aside>
     <button class="directory-scrim" id="directory-scrim" type="button" aria-label="关闭目录"></button>
@@ -47,70 +46,33 @@
     <main id="main-content">
       <section class="chapter-dashboard" id="chapter-top" aria-labelledby="chapter-title">
         <span class="anchor-alias" id="chapter-1" aria-hidden="true"></span>
-        <div class="dashboard-copy">
-          <p class="eyebrow">2026考纲口径 · 2027版本说明已核对</p>
-          <h1 id="chapter-title"><span>第一章</span>计算机基础</h1>
-          <p class="chapter-lead">不是把术语背成一串孤立句子，而是建立五条能推导、能判断、能计算的知识链。</p>
-          <div class="dashboard-actions">
-            <a class="primary-action" id="continue-learning" href="#concept-1">从第1节开始</a>
-            <button class="secondary-action" id="reset-progress" type="button">重置学习状态</button>
-          </div>
-        </div>
-        <div class="mastery-card" aria-label="第一章学习进度">
-          <div class="progress-ring" id="progress-ring"><strong id="mastery-percent">0%</strong><span>已掌握</span></div>
-          <dl>
-            <div><dt>知识模块</dt><dd>24</dd></div>
-            <div><dt>交互实验</dt><dd id="lab-count">15</dd></div>
-            <div><dt>考纲板块</dt><dd>5</dd></div>
-          </dl>
-        </div>
+        <p class="eyebrow">山东专升本计算机 · 系统笔记</p>
+        <h1 id="chapter-title"><span>第一章</span>计算机基础</h1>
+        <p class="chapter-lead">信息与数据、数制与编码、计算机系统、多媒体、计算思维。正文按概念关系连续展开，易错边界和动态示意嵌在对应知识点下面。</p>
+        <div class="chapter-meta"><span>5个知识板块</span><span>24节笔记</span><span>按2026考试要求核对</span></div>
       </section>
 
       <section class="route-map" aria-labelledby="route-title">
         <div class="section-heading compact">
-          <p>CHAPTER ROUTE</p>
-          <h2 id="route-title">先看整张地图，再进入细节</h2>
+          <p>本章提纲</p>
+          <h2 id="route-title">知识结构</h2>
         </div>
-        <div class="route-grid" id="route-grid"></div>
+        <ol class="route-grid" id="route-grid"></ol>
       </section>
 
-      <section class="study-toolbar" aria-label="知识点筛选">
+      <section class="study-toolbar" aria-label="搜索第一章笔记">
         <div class="search-box">
           <span aria-hidden="true">⌕</span>
           <label class="sr-only" for="content-search">搜索正文</label>
-          <input id="content-search" type="search" placeholder="搜索本章全部知识，如“地址总线”" autocomplete="off">
+          <input id="content-search" type="search" placeholder="搜索本章笔记，如：地址总线、补码、UTF-8" autocomplete="off">
           <kbd>/</kbd>
         </div>
-        <div class="filter-pills" id="filter-pills" aria-label="板块筛选"></div>
-        <span class="result-count" id="result-count">显示 24 个模块</span>
+        <span class="result-count" id="result-count">24节</span>
       </section>
 
       <div class="content-shell">
         <div id="knowledge-content"></div>
-        <aside class="study-rail" aria-label="当前学习状态">
-          <div class="rail-card">
-            <span class="rail-label">当前模块</span>
-            <strong id="current-module">01 · 信息与数据</strong>
-            <div class="rail-progress"><i id="section-progress"></i></div>
-            <small id="section-progress-text">板块进度 0 / 7</small>
-          </div>
-          <div class="rail-card rail-legend">
-            <span class="rail-label">阅读标记</span>
-            <p><i class="dot new"></i>未学：尚未确认</p>
-            <p><i class="dot unsure"></i>模糊：需要回看</p>
-            <p><i class="dot mastered"></i>掌握：能够解释</p>
-          </div>
-        </aside>
       </div>
-
-      <section class="chapter-check" id="chapter-check">
-        <div>
-          <p class="eyebrow">CHAPTER CHECK</p>
-          <h2>把24个模块连成一条主线</h2>
-          <p>信息被数字化后，以二进制编码进入计算机系统；硬件在软件和指令控制下处理数据；算法把人的解题思路变成可执行步骤。</p>
-        </div>
-        <button id="show-unmastered" type="button">定位未掌握模块</button>
-      </section>
     </main>
 
     <footer class="app-footer">
@@ -119,15 +81,14 @@
     </footer>
 
     <nav class="mobile-nav" aria-label="移动端快捷导航">
-      <a href="#chapter-top"><span aria-hidden="true">⌂</span>总览</a>
+      <a href="#chapter-top"><span aria-hidden="true">↑</span>章首</a>
       <button id="mobile-directory" type="button"><span aria-hidden="true">☰</span>目录</button>
       <button id="mobile-search" type="button"><span aria-hidden="true">⌕</span>搜索</button>
-      <button id="mobile-weak" type="button"><span aria-hidden="true">◐</span>未掌握</button>
+      <a href="#concept-24"><span aria-hidden="true">↓</span>章末</a>
     </nav>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
-  <noscript>本页需要启用 JavaScript，才能使用交互演示和学习进度。</noscript>
-  <script src="./chapter1.js?v=1" defer></script>
+  <noscript>本页需要启用 JavaScript 才能显示正文和动态示意。</noscript>
+  <script src="./chapter1.js?v=2" defer></script>
 </body>
 </html>
