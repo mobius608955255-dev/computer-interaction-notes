@@ -6,7 +6,8 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 13;
+  const demos = window.NOTE_DEMOS;
+  const version = 14;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
 
@@ -62,6 +63,7 @@
 
   function renderNote(note) {
     const sources = note.sources.map(source => `<span>${source.year} · 第${source.q}题</span>`).join('');
+    const demo = demos[note.id];
     return `<article class="note-item" id="${note.id}">
       <div class="note-source">${sources}<small>${note.topic}</small></div>
       <h3>${note.title}</h3>
@@ -69,8 +71,110 @@
       <p class="conclusion"><b>核心结论：</b>${note.conclusion}</p>
       <ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>
       <p class="boundary"><b>易错边界：</b>${note.boundary}</p>
+      ${renderDemo(note, demo)}
       ${note.version ? `<span class="version-note">${note.version}</span>` : ''}
     </article>`;
+  }
+
+  function renderDemo(note, demo) {
+    if (!demo) return '';
+    const bodyId = `demo-${note.id}`;
+    const types = [...new Set(note.sources.map(source => source.type))];
+    const isOperation = types.some(type => type === '操作' || type === '分析' || type === '综合');
+    const label = isOperation ? '操作题重点演示' : `${types.join('、')}考法演示`;
+    return `<section class="exam-demo ${isOperation ? 'operation-demo' : ''}" data-exam-demo data-kind="${demo.kind}" data-progress="0">
+      <button class="demo-toggle" type="button" aria-expanded="false" aria-controls="${bodyId}">
+        <span><small>${label}</small><b>${demo.title}</b></span><i aria-hidden="true">开始操作</i>
+      </button>
+      <div class="demo-body" id="${bodyId}" hidden>
+        <p class="demo-task">${demo.task}</p>
+        ${renderDemoControls(demo)}
+      </div>
+    </section>`;
+  }
+
+  function renderDemoControls(demo) {
+    if (demo.kind === 'sequence') {
+      const order = demo.steps.map((_, index) => index);
+      if (order.length > 1) order.push(order.shift());
+      return `<div class="sequence-meter"><i data-sequence-meter></i></div>
+        <div class="sequence-path" data-sequence-path><span>按正确顺序点击下方步骤</span></div>
+        <div class="demo-controls sequence-controls">${order.map(index => `<button type="button" data-sequence-step="${index}">${demo.steps[index].label}</button>`).join('')}</div>
+        <div class="demo-stage" data-demo-stage aria-live="polite"><small>等待操作</small><strong>先找第一步</strong><p>完成一步后会显示它为什么必须放在这里。</p></div>
+        <button class="demo-reset" type="button" data-demo-reset>重新演示</button>`;
+    }
+    const items = demo.kind === 'choose' ? demo.options : demo.actions;
+    return `<div class="demo-controls">${items.map((item, index) => `<button type="button" data-demo-action="${index}" aria-pressed="false">${item.label}</button>`).join('')}</div>
+      <div class="demo-stage" data-demo-stage aria-live="polite"><small>${demo.kind === 'choose' ? '等待判断' : '当前状态'}</small><strong>${demo.kind === 'choose' ? '点一个选项，看判断依据' : demo.initial}</strong><p>${demo.kind === 'choose' ? '这里不计分，只展示考试为什么这样判断。' : '选择上方操作，观察状态怎样改变。'}</p></div>`;
+  }
+
+  $('#notes-root').addEventListener('click', event => {
+    const card = event.target.closest('[data-exam-demo]');
+    if (!card) return;
+    const noteId = card.closest('.note-item').id;
+    const demo = demos[noteId];
+
+    const toggle = event.target.closest('.demo-toggle');
+    if (toggle) {
+      const body = card.querySelector('.demo-body');
+      const opening = body.hidden;
+      body.hidden = !opening;
+      toggle.setAttribute('aria-expanded', String(opening));
+      toggle.querySelector('i').textContent = opening ? '收起演示' : '开始操作';
+      return;
+    }
+
+    const action = event.target.closest('[data-demo-action]');
+    if (action) {
+      const item = (demo.kind === 'choose' ? demo.options : demo.actions)[Number(action.dataset.demoAction)];
+      card.querySelectorAll('[data-demo-action]').forEach(button => {
+        const active = button === action;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      setStage(card, demo.kind === 'choose' ? '操作结果' : item.stage, item.label, item.result, item.tone);
+      return;
+    }
+
+    const stepButton = event.target.closest('[data-sequence-step]');
+    if (stepButton) {
+      const progress = Number(card.dataset.progress);
+      const chosen = Number(stepButton.dataset.sequenceStep);
+      const expected = demo.steps[progress];
+      if (chosen !== progress) {
+        setStage(card, '顺序提示', '这一步还没到', `当前应先完成：${expected.label}`, 'bad');
+        stepButton.classList.remove('nudge');
+        requestAnimationFrame(() => stepButton.classList.add('nudge'));
+        return;
+      }
+      stepButton.disabled = true;
+      stepButton.classList.add('done');
+      const nextProgress = progress + 1;
+      card.dataset.progress = String(nextProgress);
+      const path = card.querySelector('[data-sequence-path]');
+      if (progress === 0) path.innerHTML = '';
+      path.insertAdjacentHTML('beforeend', `<span>${progress + 1}. ${expected.label}</span>`);
+      card.querySelector('[data-sequence-meter]').style.width = `${nextProgress / demo.steps.length * 100}%`;
+      setStage(card, `第${progress + 1}步`, expected.label, expected.detail, nextProgress === demo.steps.length ? 'good' : '');
+      if (nextProgress === demo.steps.length) card.querySelector('[data-demo-stage] small').textContent = '操作完成';
+      return;
+    }
+
+    if (event.target.closest('[data-demo-reset]')) resetSequence(card);
+  });
+
+  function setStage(card, label, title, text, tone = '') {
+    const stage = card.querySelector('[data-demo-stage]');
+    stage.className = `demo-stage ${tone ? `tone-${tone}` : ''}`;
+    stage.innerHTML = `<small>${label}</small><strong>${title}</strong><p>${text}</p>`;
+  }
+
+  function resetSequence(card) {
+    card.dataset.progress = '0';
+    card.querySelectorAll('[data-sequence-step]').forEach(button => { button.disabled = false; button.classList.remove('done', 'nudge'); });
+    card.querySelector('[data-sequence-meter]').style.width = '0';
+    card.querySelector('[data-sequence-path]').innerHTML = '<span>按正确顺序点击下方步骤</span>';
+    setStage(card, '等待操作', '先找第一步', '完成一步后会显示它为什么必须放在这里。');
   }
 
   const open = () => { $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; };
