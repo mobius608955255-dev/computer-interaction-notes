@@ -62,13 +62,10 @@ jobs:
           s = s.replace('真题驱动 · 交互练习 · 随学随测',
                         '概念讲解 · 核心规则 · 操作演示 · 真题校验')
 
-          # Normalize the SPA shell to exactly one v8 script. A previous injector could
-          # append an older cache key beside v36 and cause duplicate observers/navigation.
+          # Strip unstable/obsolete UI layers before rebuilding the intended order.
           s = re.sub(r'<script src="\./enhancements-v8\.js\?v=\d+"></script>', '', s)
-
-          # v28 was an experimental exercise-heavy layer. It conflicts with the user's
-          # note-first requirement, so keep the source file for history but never load it.
           s = re.sub(r'<script src="\./enhancements-v28\.js\?v=\d+"></script>', '', s)
+          s = re.sub(r'<script src="\./enhancements-v29\.js\?v=\d+"></script>', '', s)
 
           # v24 consolidates duplicate notes and splits unrelated OOP / queue concepts.
           for old in ('25', '26', '27'):
@@ -95,7 +92,6 @@ jobs:
               ('</body>', '<script src="./enhancements-v3-bootstrap.js?v=3"></script>'),
               ('</body>', '<script src="./enhancements-v6.js?v=6"></script>'),
               ('</body>', '<script src="./enhancements-v7.js?v=9"></script>'),
-              ('</body>', '<script src="./enhancements-v8.js?v=36"></script>'),
               ('</body>', '<script src="./enhancements-v9.js?v=10"></script>'),
               ('</body>', '<script src="./enhancements-v10.js?v=11"></script>'),
               ('</body>', '<script src="./enhancements-v11.js?v=12"></script>'),
@@ -115,7 +111,6 @@ jobs:
               ('</body>', '<script src="./enhancements-v25.js?v=29"></script>'),
               ('</body>', '<script src="./enhancements-v26.js?v=31"></script>'),
               ('</body>', '<script src="./enhancements-v27.js?v=34"></script>'),
-              ('</body>', '<script src="./enhancements-v29.js?v=35"></script>'),
           ]
           for marker, asset in assets:
               if asset in s:
@@ -123,6 +118,14 @@ jobs:
               if marker not in s:
                   raise SystemExit(f'missing {marker}')
               s = s.replace(marker, asset + marker, 1)
+
+          # v8 must sit immediately after v7; v29 must be the final JS layer.
+          v7 = '<script src="./enhancements-v7.js?v=9"></script>'
+          v8 = '<script src="./enhancements-v8.js?v=36"></script>'
+          if v7 not in s:
+              raise SystemExit('missing v7 anchor')
+          s = s.replace(v7, v7 + v8, 1)
+          s = s.replace('</body>', '<script src="./enhancements-v29.js?v=35"></script></body>', 1)
 
           original = p.read_text(encoding='utf-8')
           if s != original:
