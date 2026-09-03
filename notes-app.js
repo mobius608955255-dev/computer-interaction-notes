@@ -214,7 +214,16 @@
     refreshSequenceAvailability(card, demo);
     updateFeedback(card, demo.steps[progress].detail, complete ? '操作完成' : `第${progress + 1}步完成`);
     applyStepEffect(card, id, progress, complete);
+    keepCurrentStageVisible(card);
     return true;
+  }
+
+  function keepCurrentStageVisible(card) {
+    requestAnimationFrame(() => {
+      const currentStage = $$('[data-v25-stage],[data-stage-view]', card)
+        .find(stage => getComputedStyle(stage).display !== 'none');
+      currentStage?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
   }
 
   let activeGesture = null;
