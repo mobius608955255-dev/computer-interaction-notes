@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 16;
+  const version = 17;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -624,8 +624,8 @@
         '列表中没有发现设备。先检查连接，再执行“扫描检测硬件改动”。'
       ][index]); break;
       case 'y2026q34': {
-        const host = ['DESKTOP-DRD','没有远程地址入口','REMOTE-LAB-02','集中管理控制台'][index];
-        text('.machine-chip strong', host);
+        const state = ['进程已结束','已定位 WINWORD.EXE','启动项已禁用','请转到“应用和功能”','没有远程地址入口'][index];
+        text('.machine-chip strong', state);
         break;
       }
       case 'y2026q41': {
@@ -678,7 +678,10 @@
         break;
       }
       case 'y2020q48': if(index===2) $$('[data-fill-row]',card).forEach((cell,i)=>cell.textContent=String(20260001+i)); break;
-      case 'y2026q49': if(index===1||index===2) { text('[data-sum-result]','=SUM(A1:A3) → 329'); $$('.text-cell',card).forEach(x=>x.classList.add('converted')); } break;
+      case 'y2026q49':
+        if(index===1||index===2) { text('[data-sum-result]','=SUM(A1:A3) → 329'); $$('.text-cell',card).forEach(x=>x.classList.add('converted')); }
+        if(index===3) text('[data-sum-result]','=AVERAGEIF(B2:B6,"男",C2:C6) → 86');
+        break;
       case 'y2020q56': {
         const presets=[[3,4],[2,4],[3,2],[1,4]][index];
         if(index<3){ $('[data-mid-start]',card).value=presets[0]; $('[data-mid-count]',card).value=presets[1]; updateMid(card); }
@@ -732,7 +735,7 @@
         text('[data-recall]', values[0]); text('[data-precision]', values[1]);
         break;
       }
-      case 'y2026q39': if(index===0){text('[data-vcpu]','8');text('[data-vram]','16 GB');text('[data-bill]','¥1.28/h');} else if(index===2){text('[data-instance-state]','已释放');text('[data-bill]','¥0.00/h');} break;
+      case 'y2026q39': if(index===0){text('[data-vcpu]','8');text('[data-vram]','16 GB');text('[data-bill]','¥1.28/h');} else if(index===4){text('[data-instance-state]','已释放');text('[data-bill]','¥0.00/h');} break;
       case 'y2026q16':
         text('[data-cia-a]',index===0?'0%':'100%'); text('[data-cia-c]',index===1?'0%':'100%'); text('[data-cia-i]',index===2?'0%':'100%'); break;
       case 'merged-16': text('[data-firewall-log]', index===0?'ALLOW 203.0.113.27:3389 — 规则过宽':index===1?'ALLOW 10.20.8.16:3389 — 管理网段匹配':index===2?'BLOCK 203.0.113.27:3389 — 已记录':'防火墙在线，但漏洞仍未修补'); break;

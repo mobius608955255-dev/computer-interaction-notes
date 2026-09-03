@@ -172,7 +172,7 @@
       return win('本地组策略编辑器', `<div class="policy-editor"><aside><b>计算机配置</b><span>管理模板</span><span>系统</span><strong>可移动存储访问</strong></aside><main><header>策略设置</header><div class="policy-row"><b>可移动磁盘：拒绝读取权限</b><span data-read-policy>未配置</span></div><div class="policy-row"><b>可移动磁盘：拒绝写入权限</b><span data-write-policy>未配置</span></div><div class="policy-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="usb-test"><i>USB</i><span data-usb-read>可读取</span><span data-usb-write>可写入</span></div></main></div>`)+feedback('读权限和写权限是两条独立策略，可以形成三种不同限制组合。');
     },
     y2026q26(demo) {
-      return `<div class="taskbar-anatomy"><div class="wallpaper-icons"><span>此电脑</span><span>回收站</span></div><div class="anatomy-bar"><button type="button">⊞</button>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="taskbar-zone zone-${i}"><i>${['▦','W','◉','▧'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}<time>10:28</time></div><div class="zone-labels"><span>启动</span><span>切换</span><span>系统状态</span></div></div>${feedback('直接点任务栏区域，看它负责启动、切换还是显示状态；桌面背景设置不在这里。')}`;
+      return `<div class="taskbar-anatomy"><div class="wallpaper-icons"><span>此电脑</span><span>回收站</span></div><div class="anatomy-bar"><button type="button">⊞</button>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="taskbar-zone zone-${i}"><i>${['⌕','▦','W','◉','▧'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}<time>10:28</time></div><div class="zone-labels"><span>搜索与启动</span><span>切换应用</span><span>系统状态</span></div></div>${feedback('搜索框、任务视图、应用图标和通知区域都属于任务栏；桌面背景设置不在这里。')}`;
     },
     y2026q34(demo) {
       return win('任务管理器', `<div class="task-manager"><div class="tm-tabs"><b>进程</b><span>性能</span><span>应用历史记录</span><span>启动</span></div><div class="machine-chip">当前计算机：<strong>DESKTOP-DRD</strong></div><table><thead><tr><th>名称</th><th>CPU</th><th>内存</th></tr></thead><tbody><tr><td>Microsoft Word</td><td>2.1%</td><td>286 MB</td></tr><tr><td>浏览器</td><td>8.4%</td><td>1,204 MB</td></tr><tr><td>系统</td><td>0.3%</td><td>92 MB</td></tr></tbody></table><div class="tm-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>`)+feedback('窗口始终标出“当前计算机”；远程桌面里打开的任务管理器，管理的是远程会话所在主机。');
@@ -195,8 +195,8 @@
       return office('Word','考试说明.docx','插入',commands,`<div class="word-page header-page"><div class="header-zone" data-header-zone><input type="text" data-sequence-input="2" aria-label="页眉文字" placeholder="[在此键入页眉]" autocomplete="off" disabled></div><div class="page-body"><h4>考试说明</h4><p>考生应在规定时间内完成所有操作。</p></div><div class="page-boundary">页眉距顶端 1.5 cm</div></div>`,'',0)+coach('操作位置','先点真实的“插入”选项卡，再从功能区打开页眉；然后在页眉区域完整输入“山东专升本计算机”。')+feedback('从真正的“插入”选项卡进入功能区，输入内容后必须退出页眉编辑，才能回到正文。');
     },
     'merged-7'(demo) {
-      const commands = `<div class="font-box"><select aria-label="字体"><option>宋体</option></select>${choice(demo,0,'font-size-button')}${choice(demo,1,'bold-button')}</div><div class="paragraph-box">${choice(demo,2,'align-button')}${choice(demo,3,'space-button')}</div>`;
-      return office('Word','通知.docx','开始',commands,`<div class="word-page formatting-page"><div class="selection-mark"><h4 data-format-title>关于开展计算机技能竞赛的通知</h4></div><p>各班级：</p><p>为提高同学们的计算机应用能力，现组织技能竞赛。</p></div>`)+feedback('标题看起来是一行文字，但“居中”改变的是它所在的整个段落。');
+      const commands = `<div class="font-box"><select aria-label="字体"><option>宋体</option></select>${choice(demo,1,'font-size-button')}${choice(demo,2,'underline-button')}</div><div class="paragraph-box">${choice(demo,3,'align-button')}</div>`;
+      return office('Word','通知.docx','开始',commands,`<div class="word-page formatting-page"><div class="selection-mark"><h4 data-format-title>关于开展计算机技能竞赛的通知</h4></div><p>各班级：</p><p>为提高同学们的计算机应用能力，现组织技能竞赛。</p></div>`,`<div class="zoom-status"><span>显示比例</span>${choice(demo,0,'zoom-button')}<small>100%</small></div>`)+coach('错误做法','“敲空格推到中间”是练习对照，不属于Word格式按钮。',choice(demo,4,'space-button'))+feedback('显示比例只改变屏幕观察大小；字号和双下划线属于字符格式，居中属于段落格式。');
     },
     y2020q43(demo) {
       const commands = `<div class="paragraph-dialog"><header>段落</header><div class="dialog-fields"><label>左侧缩进 <input value="0 字符" readonly></label><label>特殊格式 <select data-indent-select><option>（无）</option><option>首行缩进</option><option>悬挂缩进</option></select></label><label>度量值 <input value="2 字符" readonly></label></div>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="dialog-choice">${escapeHTML(item.label)}</button>`).join('')}</div>`;
@@ -259,7 +259,7 @@
     },
     y2026q49(demo) {
       const commands = getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="ribbon-command">${escapeHTML(item.label)}</button>`).join('');
-      return office('Excel','导入数据.xlsx','开始',commands,`<div class="excel-sheet text-number-sheet"><div class="formula-bar"><b>fx</b><span>'128</span></div><div class="excel-grid single-column"><b>A</b><button class="text-cell">128<i>◤</i></button><button class="text-cell">96<i>◤</i></button><button class="text-cell">105<i>◤</i></button><strong data-sum-result>=SUM(A1:A3) → 0</strong></div><div class="error-menu"><b>此单元格中的数字为文本格式</b><span>转换为数字</span><span>忽略错误</span></div></div>`)+feedback('显示格式只改变数值怎样呈现；文本要先完成“类型转换”，才能正常参与数值计算。');
+      return office('Excel','导入数据.xlsx','开始',commands,`<div class="excel-sheet text-number-sheet"><div class="formula-bar"><b>fx</b><span>'128</span></div><div class="excel-grid single-column"><b>A</b><button class="text-cell">128<i>◤</i></button><button class="text-cell">96<i>◤</i></button><button class="text-cell">105<i>◤</i></button><strong data-sum-result>=SUM(A1:A3) → 0</strong></div><div class="error-menu"><b>此单元格中的数字为文本格式</b><span>转换为数字</span><span>忽略错误</span></div><div class="averageif-map"><b>AVERAGEIF</b><span>B2:B6　条件区域</span><span>"男"　条件</span><span>C2:C6　平均区域</span></div></div>`)+feedback('文本型数字要先转换才能稳定参与计算；AVERAGEIF的三个参数依次是条件区域、条件、平均区域。');
     },
     'merged-10'(demo) {
       const commands = getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="reference-control"><code>${escapeHTML(item.label)}</code></button>`).join('');
@@ -474,6 +474,117 @@
     },
     y2026q5(demo) {
       return `<div class="control-flow-theatre"><div class="flowchart" data-flowchart><div class="flow-node start">开始</div><i>↓</i><div class="flow-node input">读取 x</div><i>↓</i><div class="flow-node branch">x &gt; 0？</div><div class="flow-split"><section><span>是</span><div class="flow-node loop">重复输出 x 次</div></section><section><span>否</span><div class="flow-node output">输出“无效”</div></section></div><i>↓</i><div class="flow-node end">结束</div></div><div class="structure-controls">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="structure structure-${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="execution-cursor" data-execution-cursor>●</div></div>${feedback('顺序、分支、循环可以互相嵌套；结构化控制保持清晰入口、出口和可追踪路径。')}`;
+    },
+
+    y2025q23(demo) {
+      return `<div class="v25-info-lab"><div class="raw-data"><small>原始符号</small><b>80</b></div><div class="context-slots">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><span>${escapeHTML(item.label)}</span><i>${['?','kg','分'][i]||'?'}</i></button>`).join('')}</div><div class="meaning-screen"><small>解释结果</small><b>数据 + 语境 → 信息</b></div></div>${feedback('数据负责承载，语境和解释让它产生信息。')}`;
+    },
+    y2025q21(demo) {
+      return `<div class="v25-eniac"><div class="eniac-wall">${Array.from({length:18},(_,i)=>`<i style="--i:${i}"></i>`).join('')}<b>ENIAC · 1946</b></div><div class="eniac-console">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['◎','10','⎇','RAM'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="eniac-cable">插线与开关编程</div></div>${feedback('观察电子管、十进制计数和插线编程：不要把后来的存储程序结构倒套给ENIAC。')}`;
+    },
+    y2025q2(demo) {
+      return `<div class="v25-encoding"><div class="glyph-card"><small>待编码字符</small><b>医</b></div><div class="encoding-gates">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="gate-${i}"><span>${escapeHTML(item.label)}</span><code>${['ERROR','D2 BD','E5 8C BB','0000533B'][i]}</code></button>`).join('')}</div></div>${feedback('ASCII闸机装不下汉字；GB18030和Unicode编码形式可以。')}`;
+    },
+    y2025q41(demo) {
+      return `<div class="v25-placevalue"><div class="place-bits">${['1','0','0','0','1'].map((bit,i)=>`<button type="button" data-sim-step="${i===0?0:i===4?3:i===1?1:2}" class="bit bit-${i}"><b>${bit}</b><small>2<sup>${4-i}</sup></small></button>`).join('')}</div><div class="place-sum"><span>16</span><i>+</i><span>1</span><i>=</i><b>17</b></div></div>${feedback('从右向左标位权，只把数位为1的位权相加。')}`;
+    },
+    y2025q1(demo) {
+      return `<div class="v25-clock"><div class="clock-dial"><i></i><b>3.20</b><span>GHz</span><small>CPU CLOCK</small></div><div class="clock-specs">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><span>${escapeHTML(item.label)}</span></button>`).join('')}</div></div>${feedback('GHz是每秒周期数；它不是容量单位，也不能独自代表整机速度。')}`;
+    },
+    y2025q31(demo) {
+      return `<div class="v25-storage-race"><div class="drive hdd"><div class="platter"><i></i></div><b>HDD</b><span>机械寻道</span></div><div class="race-tasks">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="drive ssd"><div class="nand">${Array.from({length:8},()=>'<i></i>').join('')}</div><b>SSD</b><span>电子访问</span></div></div>${feedback('同一任务下，SSD省去了磁头寻道与盘片旋转等待。')}`;
+    },
+
+    y2025q6(demo) {
+      return `<div class="v25-usability"><div class="task-path"><b>找到网络设置</b><span>开始</span><i>→</i><span>设置</span><i>→</i><span>网络</span></div><div class="ux-controls">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['▦','?','文','≡≡≡'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="ux-meter"><span>操作负担</span><i></i></div></div>${feedback('易用性体现在容易找、容易学、容易纠错；无意义的复杂层级只会增加负担。')}`;
+    },
+    y2025q7(demo) {
+      return `<div class="v25-batch"><div class="batch-reader"><b>批处理队列</b>${['工资结算','成绩统计','夜间备份'].map((x,i)=>`<span><i>${i+1}</i>${x}</span>`).join('')}</div><div class="batch-cpu"><strong>AUTO RUN</strong><i></i><small>提交后连续处理</small></div><div class="batch-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('批处理擅长吞吐，不擅长让用户在执行过程中随时对话和干预。')}`;
+    },
+    y2025q26(demo) {
+      return win('控制面板', `<div class="v25-control-panel"><header><span>控制面板</span><label>查看方式：<select><option>类别</option><option>大图标</option><option>小图标</option></select></label></header><div class="cp-categories">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['▦','▣','▪','?'][i]}</i><b>${escapeHTML(item.label)}</b></button>`).join('')}</div></div>`)+feedback('三种标准查看方式只重排入口，不改变设置内容。');
+    },
+    y2025q32(demo) {
+      return `<div class="v25-stage-shell v25-settings-stages"><section data-v25-stage="0">${win('显示设置',`<div class="v25-dialog"><label>缩放比例 <select><option>125%</option></select></label><button data-sim-step="0">修改为125%</button></div>`,false)}</section><section data-v25-stage="1">${win('显示设置',`<div class="v25-dialog"><p>缩放比例：125%</p><div><button data-sim-step="1">应用</button><button>确定</button></div></div>`,false)}</section><section data-v25-stage="2">${win('显示设置',`<div class="v25-dialog"><p class="applied">设置已生效，对话框仍在</p><label>缩放比例 <select><option>150%</option></select></label><button data-sim-step="2">再次修改</button></div>`,false)}</section><section data-v25-stage="3">${win('显示设置',`<div class="v25-dialog"><p>缩放比例：150%</p><button data-sim-step="3">确定</button></div>`,false)}</section><section data-v25-stage="4"><div class="v25-desktop-result"><b>150%</b><span>设置已生效，对话框已关闭</span></div></section></div>${feedback('“应用”与“确定”都可使设置生效，关键差异是前者通常不关闭对话框。')}`;
+    },
+    y2025q33(demo) {
+      return win('Windows 10 桌面', `<div class="v25-sleep"><div class="clipboard"><small>剪贴板</small><b>复习计划</b></div><div class="power-state"><i>☾</i><span>当前会话仍在内存</span></div><div>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>`)+feedback('睡眠保留会话，正常唤醒不会必然清空剪贴板。');
+    },
+    y2025q34(demo) {
+      return win('截图和草图', `<div class="v25-snipping"><div class="snip-canvas"><b>课程资料</b><span class="watermark">示例水印</span><i class="crop-corner"></i></div><div class="snip-tools">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['▱','⌗','✎','AI'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div></div>`)+feedback('截图工具截取、裁剪和标注可见画面，不会自动重建水印覆盖的内容。');
+    },
+
+    y2025q48(demo) {
+      return `<div class="v25-stage-shell v25-word-stages"><section data-v25-stage="0">${office('Word','长城介绍.docx','开始','<button data-sim-step="0" class="ribbon-command">替换</button>','<div class="word-page v25-doc"><p>长城是世界文化遗产，<b>长城</b>横跨北方。</p></div>')}</section><section data-v25-stage="1">${office('Word','长城介绍.docx','开始','<span>查找和替换</span>','<div class="v25-find-dialog"><label>查找内容 <input value="长城" readonly></label><label>替换为 <button data-sim-step="1" class="fake-input">长城｜</button></label><button>更多 ≫</button></div>')}</section><section data-v25-stage="2">${office('Word','长城介绍.docx','开始','<span>查找和替换</span>','<div class="v25-find-dialog"><p>光标位于“替换为”</p><button data-sim-step="2">更多 ≫</button></div>')}</section><section data-v25-stage="3">${office('Word','长城介绍.docx','开始','<span>格式条件</span>','<div class="v25-font-dialog"><b>字体</b><label>字形 <select><option>常规</option></select></label><button data-sim-step="3">确定</button></div>')}</section><section data-v25-stage="4">${office('Word','长城介绍.docx','开始','<span>查找和替换</span>','<div class="v25-find-dialog"><small>替换为格式：非加粗，常规</small><button data-sim-step="4">全部替换</button></div>')}</section><section data-v25-stage="5">${office('Word','长城介绍.docx','开始','<span>完成</span>','<div class="word-page v25-doc"><p>长城是世界文化遗产，长城横跨北方。</p><i class="success-mark">已替换 2 处</i></div>')}</section></div>${feedback('格式条件必须挂在“替换为”框；最后才执行全部替换。')}`;
+    },
+    y2025q47(demo) {
+      return `<div class="v25-stage-shell v25-word-stages"><section data-v25-stage="0">${office('Word','长城介绍.docx','开始','<span>开始</span>','<div class="word-page v25-wrap-page"><button data-sim-step="0" class="v25-photo"><i></i><b>长城图片</b><small>嵌入型</small></button><p>长城是中华民族的重要文化遗产。</p></div>')}</section><section data-v25-stage="1">${office('Word','长城介绍.docx','图片工具/格式','<button data-sim-step="1" class="ribbon-command">环绕文字</button>','<div class="word-page v25-wrap-page selected"><div class="v25-photo"><i></i><b>长城图片</b></div><p>长城是中华民族的重要文化遗产。</p></div>')}</section><section data-v25-stage="2">${office('Word','长城介绍.docx','图片工具/格式','<div class="wrap-menu"><span>嵌入型</span><span>四周型</span><button data-sim-step="2">紧密型</button><span>浮于文字上方</span></div>','<div class="word-page v25-wrap-page selected"><div class="v25-photo"><i></i><b>长城图片</b></div><p>长城是中华民族的重要文化遗产。</p></div>')}</section><section data-v25-stage="3">${office('Word','长城介绍.docx','图片工具/格式','<span>紧密型环绕</span>','<div class="word-page v25-wrap-page tight"><div class="v25-photo"><i></i><b>长城图片</b><small>紧密型</small></div><p>长城是中华民族的重要文化遗产。文字现在沿图片轮廓附近排布，而不是把图片当成一枚字符。</p></div>')}</section></div>${feedback('命令位于真实图片工具或右键“环绕文字”中，教学按钮没有混进文档正文。')}`;
+    },
+    y2025q56(demo) {
+      return office('Word','通勤示意图.docx','绘图工具/格式','<button data-sim-step="2" class="ribbon-command">置于顶层</button>',`<div class="word-page v25-layer-page"><div class="layer-shape city-a">淄博</div><div class="layer-arrow back" data-layer-arrow>→</div><div class="layer-shape time">6:00<br>16:00</div><div class="layer-arrow">→</div><div class="layer-shape city-b">济南</div></div>`,`<aside class="v25-selection-pane"><b>选择窗格</b><button data-sim-step="0">圆角矩形 3</button><button data-sim-step="1">箭头 2（被遮挡）</button><span>圆角矩形 2</span><span>箭头 1</span></aside>`)+feedback('选择窗格给出真实层级证据；置于顶层只改变前后关系，不移动箭头。');
+    },
+    y2025q36(demo) {
+      return `<div class="v25-stage-shell v25-word-stages"><section data-v25-stage="0">${office('Word','收件人.docx','插入','<span>表格</span>','<div class="word-page"><table class="v25-source-table"><tr><th>姓名</th><th>专业</th></tr><tr><td>王宁</td><td>临床医学</td></tr><tr><td>李悦</td><td>护理学</td></tr></table><button data-sim-step="0" class="page-save">保存数据源</button></div>')}</section><section data-v25-stage="1">${office('Word','录取通知书.docx','邮件','<button data-sim-step="1" class="ribbon-command">选择收件人</button>','<div class="word-page"><p>«姓名»同学：</p><p>欢迎进入«专业»专业学习。</p></div>')}</section><section data-v25-stage="2">${office('Word','录取通知书.docx','邮件','<div class="recipient-menu"><button data-sim-step="2">使用现有列表…</button><span>键入新列表</span><span>从Outlook选择</span></div>','<div class="word-page"><p>«姓名»同学：</p><p>欢迎进入«专业»专业学习。</p></div>')}</section><section data-v25-stage="3">${office('Word','录取通知书.docx','邮件','<span>选择数据源</span>','<div class="v25-file-picker"><b>选择数据源</b><span>收件人.xlsx</span><button data-sim-step="3">收件人.docx</button><span>通讯录.mdb</span></div>')}</section><section data-v25-stage="4">${office('Word','录取通知书.docx','邮件','<button data-sim-step="4" class="ribbon-command">预览结果</button>','<div class="word-page"><p>«姓名»同学：</p><p>欢迎进入«专业»专业学习。</p></div>')}</section><section data-v25-stage="5">${office('Word','录取通知书.docx','邮件','<span>记录 1 / 2</span>','<div class="word-page"><p>王宁同学：</p><p>欢迎进入临床医学专业学习。</p></div>')}</section></div>${feedback('附件答案表与标准功能冲突：这里用真实流程证明Word表格文档可作为数据源。')}`;
+    },
+
+    y2025q50(demo) {
+      const commands=getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="formula-chip"><code>${escapeHTML(item.label)}</code></button>`).join('');
+      return office('Excel','客流量.xlsx','公式',commands,`<div class="excel-sheet v25-month-sheet"><div class="formula-bar">fx　<span>=MONTH(B3)&amp;"月"</span></div><table><tr><th></th><th>B</th><th>E</th></tr><tr><th>3</th><td>2014/3/15</td><td class="result">3月</td></tr></table><div class="date-wheel"><span>年 2014</span><b>月 3</b><span>日 15</span></div></div>`)+feedback('MONTH取月份数字，&负责把它与文字“月”连接。');
+    },
+    y2025q52(demo) {
+      return `<div class="v25-stage-shell v25-excel-stages"><section data-v25-stage="0">${office('Excel','景区客流.xlsx','开始','<span>剪贴板　字体　对齐方式</span>','<div class="excel-sheet v25-rule-sheet"><table><tr><th>景区</th><th>日期</th><th>容量</th><th>客流量</th><th>月份</th><th>备注</th></tr><tr><td>A</td><td>2024/3/15</td><td>6000</td><td>3261</td><td>3月</td><td></td></tr></table><button data-sim-step="0" class="range-overlay">选择 A3:F7002</button></div>')}</section><section data-v25-stage="1">${office('Excel','景区客流.xlsx','开始','<button data-sim-step="1" class="ribbon-command">条件格式→新建规则</button>','<div class="excel-sheet v25-rule-sheet"><div class="selected-range">A3:F7002 已选择</div></div>')}</section><section data-v25-stage="2">${office('Excel','景区客流.xlsx','开始','<span>条件格式</span>','<div class="v25-rule-dialog"><b>使用公式确定要设置格式的单元格</b><button data-sim-step="2" class="formula-input">=$D3&gt;VLOOKUP($A3,\'2023\'!$A$2:$C$22,3,0)</button></div>')}</section><section data-v25-stage="3">${office('Excel','景区客流.xlsx','开始','<span>字体设置</span>','<div class="v25-format-dialog"><b>字形</b><span class="bold-italic">加粗 倾斜</span><button data-sim-step="3">确定</button></div>')}</section><section data-v25-stage="4">${office('Excel','景区客流.xlsx','开始','<span>规则已应用</span>','<div class="excel-sheet v25-rule-sheet"><table><tr><th>景区</th><th>日期</th><th>容量</th><th>客流量</th><th>月份</th><th>备注</th></tr><tr class="matched-rule"><td>A</td><td>2024/3/15</td><td>6000</td><td>3261</td><td>3月</td><td></td></tr></table></div>')}</section></div>${feedback('整块区域决定格式作用范围；$D3与$A3锁列不锁行，规则才能逐行判断整行。')}`;
+    },
+    y2025q51(demo) {
+      return office('Excel','景区客流.xlsx','数据','<div class="v25-sort-controls">'+getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')+'</div>',`<div class="excel-sheet v25-chart-link"><table><tr><th>景区</th><th>客流量</th></tr><tr><td>A</td><td>3261</td></tr><tr><td>B</td><td>2311</td></tr><tr><td>C</td><td>3261</td></tr></table><svg viewBox="0 0 260 130" aria-label="折线图"><polyline points="20,35 125,90 235,35"/><circle cx="20" cy="35" r="5"/><circle cx="125" cy="90" r="5"/><circle cx="235" cy="35" r="5"/></svg><b>A → B → C</b></div>`)+feedback('图表引用源区域；排序会改变类别连接顺序，即使数值本身没有改。');
+    },
+
+    y2025q10(demo) {
+      return office('PowerPoint','泰山简介.pptx','开始','<div class="v25-section-menu">'+getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')+'</div>',`<div class="v25-section-list"><section><header>⌄ 绪论　2张</header><span>01 封面</span><span>02 背景</span></section><section><header>⌄ 实验　4张</header><span>03 数据</span><span>04 方法</span></section><section><header>⌄ 结论　2张</header><span>07 结论</span><span>08 致谢</span></section></div>`)+feedback('节只组织缩略图列表；折叠不会删除任何幻灯片。');
+    },
+    y2025q53(demo) {
+      const nodes = ['泰山日出','云海玉盘','晚霞夕照','黄河锦带'].map((x,i)=>`<button ${i===3?'data-sim-step="0"':''} class="smart-node">${x}</button>`).join('');
+      return `<div class="v25-stage-shell v25-ppt-stages"><section data-v25-stage="0">${office('PowerPoint','泰山简介.pptx','开始','<span>开始</span>',`<div class="ppt-main-slide v25-smartart"><div class="smart-root">四大奇观</div>${nodes}</div>`)}</section><section data-v25-stage="1">${office('PowerPoint','泰山简介.pptx','SmartArt工具/格式','<button data-sim-step="1" class="ribbon-command">更改形状</button>','<div class="ppt-main-slide v25-smartart"><div class="smart-root">四大奇观</div><button class="smart-node selected">黄河锦带</button></div>')}</section><section data-v25-stage="2">${office('PowerPoint','泰山简介.pptx','SmartArt工具/格式','<div class="shape-gallery"><button data-sim-step="2">圆角矩形</button><span>椭圆</span><span>菱形</span></div>','<div class="ppt-main-slide v25-smartart"><button class="smart-node selected">黄河锦带</button></div>')}</section><section data-v25-stage="3">${office('PowerPoint','泰山简介.pptx','SmartArt工具/格式','<span>更改形状完成</span>','<div class="ppt-main-slide v25-smartart"><button class="smart-node rounded">黄河锦带</button></div>')}</section></div>${feedback('“更改形状”保留节点文字与层次；“快速样式”只改变视觉风格。')}`;
+    },
+
+    y2025q13(demo) {
+      return `<div class="v25-network-route"><div class="campus-lan"><b>校园网</b><i>PC</i><i>服务器</i><i>Wi‑Fi</i></div><div class="network-devices">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['SW','R','BR','AMP'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="internet-cloud"><b>Internet</b><code>203.0.113.8</code></div></div>${feedback('跨IP网络要读取路由表选择下一跳；交换和信号放大解决的是别的问题。')}`;
+    },
+    y2025q37(demo) {
+      return `<div class="v25-literature"><aside><input value="人工智能 医学影像" readonly><span>检索结果 128 条</span></aside><article><h4>深度学习辅助肺结节识别研究</h4><p>作者：王宁　期刊：医学信息学</p><div class="record-tabs">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="pdf-access">PDF全文 <b>机构权限</b></div></article></div>${feedback('全文数据库能检索多层信息；是否可获取全文还取决于收录和授权。')}`;
+    },
+    y2025q38(demo) {
+      return `<div class="v25-patent"><div class="patent-card"><small>CN 2025 1 0123456</small><b>一种医学影像分析装置</b><span>申请中</span></div><div class="patent-tasks">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['#','⌕','§','!'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="legal-timeline"><span>申请</span><i></i><span>公开</span><i></i><span>审查</span><i></i><span>授权/失效</span></div></div>${feedback('技术相关性与权利是否有效是两条线；专利检索必须看法律状态。')}`;
+    },
+
+    y2025q30(demo) {
+      return `<div class="v25-defense-map"><div class="protected-core">数据系统</div>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="defense-${i}"><i>${['脸','🔒','IDS','✍'][i]}</i><b>${escapeHTML(item.label)}</b><small>${['认证','机密性','检测','来源与完整性'][i]}</small></button>`).join('')}</div>${feedback('四种技术分别保护不同安全目标，组合起来才形成纵深防御。')}`;
+    },
+
+    y2025q18(demo) {
+      return `<div class="v25-video-mine"><div class="surveillance-screen"><span>CAM 03</span><i class="event-dot"></i><b>24:00:00</b></div><div class="video-tape">${Array.from({length:48},(_,i)=>`<i class="${i===31?'valuable':''}"></i>`).join('')}</div><div class="value-readout"><b>12 秒</b><span>有用片段 / 86400 秒总视频</span></div><div class="video-actions">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('价值密度低说的是有用信息占比低，不是最终信息没有价值。')}`;
+    },
+    y2025q40(demo) {
+      return `<div class="v25-causality"><div class="book-node a">买书A</div><div class="book-node b">买书B</div><div class="interest-node">共同兴趣</div><i class="corr-line">相关</i><i class="cause-a">↙</i><i class="cause-b">↘</i><div class="causal-actions">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('A与B共同出现可能来自第三个因素；相关性可预测，但不能单独证明因果。')}`;
+    },
+    y2025q20(demo) {
+      return `<div class="v25-ai-editor"><div class="prompt-pane"><small>原句</small><p>某疗法可能改善症状。</p><button data-sim-choice="0">生成润色稿</button></div><div class="ai-draft"><span>AI草稿</span><p>这项疗法能够保证彻底治愈。</p><i>⚠ “可能改善”被夸大为“保证治愈”</i></div><div class="verify-pane">${getItems(demo).slice(1).map((item,i)=>`<button data-sim-choice="${i+1}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('润色属于自然语言生成，但任何事实变化都必须回到证据核验。')}`;
+    },
+
+    y2025q12(demo) {
+      return `<div class="v25-stage-shell v25-sql-stages"><section data-v25-stage="0"><div class="v25-sql"><pre><span>INSERT INTO</span> 新生信息 (<button data-sim-step="0">学号, 姓名, 专业</button>)</pre><table><tr><th>学号</th><th>姓名</th><th>专业</th></tr></table></div></section><section data-v25-stage="1"><div class="v25-sql"><pre>INSERT INTO 新生信息 (学号, 姓名, 专业)\n<span>VALUES</span> (<button data-sim-step="1">'2025001','王宁','临床医学'</button>);</pre></div></section><section data-v25-stage="2"><div class="v25-sql"><pre>INSERT INTO 新生信息 (...) VALUES (...);</pre><button data-sim-step="2" class="run-query">▶ 执行INSERT</button><div class="constraint-check">主键 ✓　非空 ✓　外键 ✓</div></div></section><section data-v25-stage="3"><div class="v25-sql"><button data-sim-step="3">SELECT * FROM 新生信息;</button><table><tr><th>学号</th><th>姓名</th><th>专业</th></tr><tr><td>2025001</td><td>王宁</td><td>临床医学</td></tr></table></div></section><section data-v25-stage="4"><div class="v25-sql success"><b>1 row inserted</b><span>新记录已验证</span></div></section></div>${feedback('INSERT负责新增记录；字段、值和约束必须同时匹配。')}`;
+    },
+    y2025q42(demo) {
+      return `<div class="v25-dba-console"><aside><b>生产数据库</b><span>状态：在线</span><span>备份：昨夜成功</span><span>告警：1</span></aside><main><div class="role-badge">DBA 值班</div><div class="dba-tasks">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><i>${['↻','🔑','◇','{ }'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="uptime">运行时间 128 天</div></main></div>${feedback('DBA守住运行、权限、备份和性能；需求分析与页面开发由其他角色主导。')}`;
+    },
+    y2025q11(demo) {
+      return `<div class="v25-stage-shell v25-design-stages"><section data-v25-stage="0"><button data-sim-step="0" class="design-card"><i>01</i><b>需求分析</b><span>对象、查询、规则</span></button></section><section data-v25-stage="1"><button data-sim-step="1" class="design-card"><i>02</i><b>概念结构</b><span>E‑R图，不绑定DBMS</span></button></section><section data-v25-stage="2"><button data-sim-step="2" class="design-card"><i>03</i><b>逻辑结构</b><span>关系表、主键、外键</span></button></section><section data-v25-stage="3"><button data-sim-step="3" class="design-card"><i>04</i><b>物理结构</b><span>文件、索引、存储方法</span></button></section><section data-v25-stage="4"><div class="design-complete"><b>数据库设计完成</b><span>规模小也要走完必要思考</span></div></section></div>${feedback('从需求到物理存储逐层收敛；小型数据库可以简化过程，不能跳过设计。')}`;
+    },
+
+    y2025q4(demo) {
+      return `<div class="v25-ct-workbench"><div class="clinical-problem"><b>高风险患者识别</b><span>10万份病例</span></div><div class="ct-steps">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><i>${['拆','抽','跑','×'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="ct-pipeline"><span>病例</span><i>→</i><span>特征</span><i>→</i><span>规则</span><i>→</i><span>复核</span></div></div>${feedback('计算思维是跨专业的问题求解方式：分解、抽象，再把明确步骤自动化。')}`;
+    },
+    y2025q24(demo) {
+      return `<div class="v25-oop"><div class="class-card"><header>class 患者</header><span>姓名</span><span>体温</span><b>计算风险()</b></div><div class="object-card"><header>患者A</header><span>姓名：王宁</span><span>体温：39.2℃</span><button data-sim-choice="3">调用 计算风险()</button></div><div class="oop-actions">${getItems(demo).slice(0,3).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="message-arrow">对象 → 消息 → 方法</div></div>${feedback('类是模板，对象是实例；封装把数据和方法放在一起，对象通过消息协作。')}`;
     }
   };
 
