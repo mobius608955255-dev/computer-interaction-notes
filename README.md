@@ -21,4 +21,4 @@
 - 以教材11章为唯一主目录，章节页可从页首直接切换
 - 窄栏连续阅读、本章搜索、题号目录、阅读进度和100个定制拟真场景
 
-线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=15)
+线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=16)
