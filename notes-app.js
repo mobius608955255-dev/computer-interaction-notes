@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 21;
+  const version = 22;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -72,7 +72,6 @@
       <ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>
       <p class="boundary"><b>易错边界：</b>${note.boundary}</p>
       ${renderSimulation(note)}
-      ${note.version ? `<span class="version-note">${note.version}</span>` : ''}
     </article>`;
   }
 
@@ -770,6 +769,28 @@
       }
       case 'y2026q45': text('[data-real-tops]', ['82 TOPS','31 TOPS','24 TOPS','指标不可直接混比'][index]); break;
       case 'merged-20': renderRelation(card,index); break;
+      case 'y2024q41':
+        text('[data-op-readout]', ['ADD → 算术加法','R1 → 寄存器操作数','2048 → 存储器地址','字段职责混淆：无法正确译码'][index]);
+        break;
+      case 'y2024q10':
+        text('[data-clear-formula]', index === 0 || index === 2 ? '' : index === 3 ? '下一行上移到A2' : '128');
+        break;
+      case 'y2024q11': {
+        const values = [['2*3','2*3 · 文本'],['=2*3','6'],['=2×3','#NAME?'],["'=2*3",'=2*3 · 文本']][index];
+        text('[data-parse-input]', values[0]); text('[data-parse-result]', values[1]);
+        break;
+      }
+      case 'y2024q49':
+        text('[data-server-load]', ['200,000 req/s · 过载','异常流量已告警','恶意流量被清洗','等待日志证据'][index]);
+        break;
+      case 'y2024q36':
+        text('[data-sql-command]', ["DELETE FROM student WHERE 班级='一班';",'DELETE FROM student;','DROP TABLE student;',"SELECT * FROM student WHERE 班级='一班';"][index]);
+        break;
+      case 'y2026q41': {
+        const values = [['10001₂','17₁₀'],['11.11₂','3.C₁₆'],['0.1₁₀','0.000110011…₂'],['F₁₆','1111₂']][index];
+        text('[data-radix-source]', values[0]); text('[data-radix-result]', values[1]);
+        break;
+      }
       default: break;
     }
   }
