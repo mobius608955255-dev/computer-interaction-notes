@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 22;
+  const version = 23;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -163,6 +163,12 @@
   });
 
   $('#notes-root').addEventListener('dblclick', event => {
+    const doubleStep = event.target.closest('[data-sim-double-step]');
+    if (doubleStep) {
+      const card = doubleStep.closest('[data-sim-id]');
+      completeSequenceStep(card, card.dataset.simId, simulation.demos[card.dataset.simId], doubleStep, Number(doubleStep.dataset.simDoubleStep));
+      return;
+    }
     const handle = event.target.closest('[data-fill-handle]');
     if (!handle) return;
     const card = handle.closest('[data-sim-id]');
@@ -588,9 +594,10 @@
     const card = event.target.closest('[data-sim-id]');
     if (!card) return;
     const id = card.dataset.simId;
-    if (id === 'y2020q41' && event.target.matches('[data-sequence-input="2"]')) {
-      const expected = '山东专升本计算机';
-      if (event.target.value.trim() === expected) completeSequenceStep(card, id, simulation.demos[id], event.target, 2);
+    if (id === 'y2020q41' && event.target.matches('[data-sequence-input]')) {
+      const stepIndex = Number(event.target.dataset.sequenceInput);
+      const expected = stepIndex === 4 ? '牡丹' : '山东专升本计算机';
+      if (event.target.value.trim() === expected) completeSequenceStep(card, id, simulation.demos[id], event.target, stepIndex);
       else updateFeedback(card, `继续输入完整页眉：“${expected}”。`, '正在编辑页眉');
       return;
     }
@@ -814,7 +821,7 @@
         }
         break;
       }
-      case 'y2020q41': if(stepIndex===1)$('[data-sequence-input="2"]',card)?.focus(); break;
+      case 'y2020q41': if(stepIndex===3)$('[data-sequence-input="4"]',card)?.focus(); break;
       case 'y2020q61': if(stepIndex===0) text('[data-break-before]','✓ 前分节符'); if(stepIndex===1) text('[data-break-after]','✓ 后分节符'); break;
       case 'y2020q60': if(complete) $('[data-border-table]',card)?.classList.add('all-borders-applied'); break;
       case 'y2020q62': if(complete) $('[data-repeated-header]',card)?.classList.add('visible'); break;
@@ -842,8 +849,8 @@
   function refreshSequenceAvailability(card, demo) {
     if (demo?.kind !== 'sequence') return;
     const progress = Number(card.dataset.progress);
-    $$('[data-sim-step],[data-sequence-input]', card).forEach(node => {
-      const index = Number(node.dataset.simStep ?? node.dataset.sequenceInput);
+    $$('[data-sim-step],[data-sim-double-step],[data-sequence-input]', card).forEach(node => {
+      const index = Number(node.dataset.simStep ?? node.dataset.simDoubleStep ?? node.dataset.sequenceInput);
       node.classList.toggle('is-current-step', index === progress);
       node.classList.toggle('is-past-step', index < progress);
       node.classList.toggle('is-future-step', index > progress);
