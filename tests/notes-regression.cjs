@@ -330,7 +330,7 @@ test('firewall matches the unchanged packet across source, port, direction and p
 });
 test('dragging firewall rules changes first-match behavior without changing the packet',()=>{
  const e=env(8),c=open(e,'merged-16');change(e,c,'source','10.20.8.16');click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/允许通过/);
- const rows=[...c.querySelectorAll('[data-lab-drop]')];rows.forEach((el,i)=>el.getBoundingClientRect=()=>({left:100,right:400,top:100+i*100,bottom:200+i*100}));const h=c.querySelector('[data-key="2"]');const p=(type,x,y)=>h.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y}));p('pointerdown',180,250);p('pointermove',180,150);p('pointerup',180,150);const afterDrop=e.w.Date.now()+500;e.w.Date.now=()=>afterDrop;click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/10.20.8.16.*已阻止.*第1条/);e.dom.window.close();
+ const rows=[...c.querySelectorAll('[data-lab-drop]')];rows.forEach((el,i)=>el.getBoundingClientRect=()=>({left:100,right:400,top:100+i*100,bottom:200+i*100}));const h=c.querySelector('[data-key="2"]');const p=(type,x,y)=>h.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y}));p('pointerdown',180,250);p('pointermove',180,150);p('pointerup',180,150);c.querySelector('[data-lab-act="send"]').dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/10.20.8.16.*已阻止.*第1条/);e.dom.window.close();
 });
 const settle=async fn=>{for(let i=0;i<250;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}assert.fail('async model did not finish');};
 test('real signature UI verifies original, rejects tampering and rejects a different public key',async()=>{

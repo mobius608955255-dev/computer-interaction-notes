@@ -263,6 +263,8 @@
       });
       root.addEventListener('pointerdown',e=>{
         pointerTarget=e.target.closest('button,input,select,textarea');
+        // A fresh press on another command is intentional, not the drag's ghost click.
+        if(pointerTarget?.dataset.labAct&&!pointerTarget.dataset.labDrag)suppressUntil=0;
         const el=e.target.closest('[data-lab-drag]');if(!el||![0,2].includes(e.button))return;if(e.target.closest('input,textarea,select')&&el!==e.target)return;
         const s=states.get(root);gesture={el,kind:el.dataset.labDrag,x:e.clientX,y:e.clientY,moved:false,key:el.dataset.key,first:s.first,rest:s.rest,button:e.button,startValue:s[el.dataset.key]};
         el.setPointerCapture(e.pointerId);
