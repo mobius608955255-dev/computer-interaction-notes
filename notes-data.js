@@ -127,12 +127,30 @@
 
   const unique = all.filter(note => !used.has(`${note.sources[0].year}-${note.q}`));
   const sectionOrder = new Map(chapters.flatMap(chapter => chapter.sections.map((section, index) => [`${chapter.number}-${section.id}`, index])));
-  const notes = [...unique, ...merged].sort((a, b) =>
+  const combined = [...unique, ...merged];
+  for (const source of window.NOTES2022.notes) {
+    if (source.target) {
+      const target = combined.find(note => note.id === source.target);
+      if (!target) throw new Error(`Missing 2022 merge target: ${source.target}`);
+      target.sources.push({year:2022,q:source.q,type:source.type});
+      target.points = [...new Set([...target.points, ...source.points])];
+    } else combined.push(prepare(2022,source));
+  }
+  const notes = combined.sort((a, b) =>
     a.chapter - b.chapter ||
     (sectionOrder.get(`${a.chapter}-${a.section}`) ?? 99) - (sectionOrder.get(`${b.chapter}-${b.section}`) ?? 99) ||
     a.sources[0].year - b.sources[0].year ||
     a.sources[0].q - b.sources[0].q
   );
 
-  window.NOTES = {chapters, notes, sourceCount:all.length, years:[2020, 2023, 2024, 2025, 2026]};
+  // Keep merged headings aligned with all represented concepts, not the first exam wording.
+  const headings = {
+    y2020q14:'一对一、一对多和多对多联系要双向判断',
+    y2020q52:'条件格式可突出阈值以内或高于平均值的数据',
+    y2020q10:'浏览、普通、备注页和阅读视图的用途',
+    y2025q1:'字长、主频、核心与指令速度是不同性能指标'
+  };
+  notes.forEach(note => { if (headings[note.id]) note.title = headings[note.id]; });
+
+  window.NOTES = {chapters, notes, sourceCount:all.length + window.NOTES2022.notes.length, years:[2020, 2022, 2023, 2024, 2025, 2026]};
 })();

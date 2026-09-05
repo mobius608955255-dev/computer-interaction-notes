@@ -252,7 +252,7 @@
 .simulation-mount { min-height:0;padding:18px;overflow-x:auto;overflow-y:visible;font-size:14px; }
 .simulation-mount :is(button,input,select,textarea,label,th,td) { font-size:13px!important;line-height:1.45; }
 .simulation-mount :is(small,.diagram-caption,.office-tabs,.office-titlebar,.office-status,.win-title,.win-taskbar) { font-size:12px!important;line-height:1.4; }
-.simulation-mount :is(div,section,aside,article,header,footer) { font-size:inherit!important; }
+.simulation-mount :is(div,section,aside,article,header,footer) { font-size:inherit; }
 .simulation-mount :is(span,em) { font-size:max(12px,1em)!important;line-height:1.45; }
 .simulation-mount :is(b,strong,code,pre) { font-size:max(12px,1em)!important;line-height:1.45; }
 .simulation-mount :is(p,.cell-tip,.record-validator,.device-properties p,.restore-header span) { font-size:14px!important;line-height:1.65; }

@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 24;
+  const version = 25;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -22,11 +22,11 @@
       </div>
     </header>
     <div class="progress" aria-hidden="true"><i id="progress-bar"></i></div>
-    <aside class="drawer" id="drawer" aria-label="本章知识点目录">
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="本章知识点目录" aria-hidden="true" inert>
       <div class="drawer-head"><div><small id="drawer-chapter"></small><strong>本章目录</strong></div><button id="close-drawer" type="button" aria-label="关闭目录">×</button></div>
       <ol class="note-list" id="note-list"></ol>
     </aside>
-    <button class="scrim" id="scrim" type="button" aria-label="关闭目录"></button>
+    <button class="scrim" id="scrim" type="button" aria-label="关闭目录" tabindex="-1" aria-hidden="true"></button>
     <main id="main-content">
       <section class="chapter-intro" id="chapter-top">
         <p class="chapter-kicker" id="chapter-kicker"></p><h1 id="chapter-title"></h1><p class="chapter-summary" id="chapter-summary"></p>
@@ -60,17 +60,18 @@
 
   $('#chapter-select').innerHTML = data.chapters.map(item => `<option value="${item.number}" ${item.number === chapterNumber ? 'selected' : ''}>第${item.number}章　${item.title}</option>`).join('');
   $('#chapter-select').addEventListener('change', event => { location.href = chapterUrl(event.target.value); });
-  $('#note-list').innerHTML = notes.map(note => `<li><a href="#${note.id}"><span>${note.sources.length > 1 ? note.sources.length + '题' : note.sources[0].year}</span><b>${note.title}</b></a></li>`).join('');
+  $('#note-list').innerHTML = notes.map(note => `<li><a href="#${note.id}"><span>${note.section}</span><b>${note.title}</b></a></li>`).join('');
 
   function renderNote(note) {
     const sources = note.sources.map(source => `<span>${source.year} · 第${source.q}题</span>`).join('');
+    const references = (window.NOTE_REFERENCES?.[note.id] || []).map(([title,url])=>`<p><a href="${url}" target="_blank" rel="noreferrer">${title} ↗</a></p>`).join('');
     return `<article class="note-item" id="${note.id}">
-      <div class="note-source">${sources}<small>${note.topic}</small></div>
+      <div class="note-topic">${note.topic}</div>
       <h3>${note.title}</h3>
-      <p class="trigger">${note.trigger}</p>
       <p class="conclusion"><b>核心结论：</b>${note.conclusion}</p>
       <ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>
       <p class="boundary"><b>易错边界：</b>${note.boundary}</p>
+      <details class="note-provenance"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
       ${renderSimulation(note)}
     </article>`;
   }
@@ -82,7 +83,6 @@
     const bodyId = `simulation-${note.id}`;
     const types = [...new Set(note.sources.map(source => source.type))];
     const operation = types.some(type => /操作|分析|综合/.test(type));
-    const sourceLabel = note.sources.map(source => `${source.year}第${source.q}题`).join('、');
     return `<section class="reality-demo chapter-sim-${note.chapter} ${operation ? 'is-operation' : 'is-concept'}" data-sim-id="${note.id}" data-state="-1" data-progress="0" data-tone="">
       <button class="simulation-toggle" type="button" aria-expanded="false" aria-controls="${bodyId}">
         <span class="simulation-icon" aria-hidden="true"><i></i><b>${String(note.chapter).padStart(2,'0')}</b></span>
@@ -90,8 +90,8 @@
         <span class="simulation-open"><i>打开</i><b>›</b></span>
       </button>
       <div class="simulation-body" id="${bodyId}" hidden>
-        <header class="simulation-brief"><span>真题任务</span><p>${simulation.escapeHTML(demo.task)}</p><small>来源：${sourceLabel}</small></header>
-        <div class="simulation-mount" data-sim-mount>${scene(demo)}</div>
+        <header class="simulation-brief"><span>动手理解</span><p>${simulation.escapeHTML(demo.task)}</p></header>
+        <div class="simulation-mount" data-sim-mount></div>
         <footer class="simulation-footer"><span>直接操作画面；不计分</span><button type="button" data-sim-reset>↻ 恢复初始状态</button></footer>
       </div>
     </section>`;
@@ -109,7 +109,11 @@
       body.hidden = !opening;
       toggle.setAttribute('aria-expanded', String(opening));
       $('.simulation-open i', toggle).textContent = opening ? '收起' : '打开';
-      if (opening && !card.dataset.mounted) { card.dataset.mounted = '1'; initialiseSpecialScene(card, id); refreshSequenceAvailability(card, demo); }
+      if (opening && !card.dataset.mounted) {
+        card.dataset.mounted = '1';
+        $('[data-sim-mount]', card).innerHTML = simulation.scenes[id](demo);
+        initialiseSpecialScene(card, id); refreshSequenceAvailability(card, demo);
+      }
       return;
     }
     if (event.target.closest('[data-sim-reset]')) { resetSimulation(card, id, demo); return; }
@@ -206,6 +210,7 @@
     const progress = Number(card.dataset.progress);
     if (picked !== progress) {
       const expected = demo.steps[progress];
+      if (!expected) { updateFeedback(card,'本次操作已完成。可恢复初始状态重新尝试。','操作已完成'); return false; }
       updateFeedback(card, `当前先在画面中完成“${expected.label}”。`, '操作顺序还没到这里', 'bad');
       control.classList.remove('nudge');
       requestAnimationFrame(() => control.classList.add('nudge'));
@@ -643,12 +648,6 @@
         text('.machine-chip strong', state);
         break;
       }
-      case 'y2026q41': {
-        const values = [['7','0111'],['A','1010'],['F','1111'],['2F','0010 1111']][index];
-        text('[data-hex-value]', values[0]);
-        html('[data-bit-cells]', values[1].split('').map(bit => bit === ' ' ? '<span></span>' : `<i class="bit-${bit}">${bit}</i>`).join(''));
-        break;
-      }
       case 'y2026q3':
         if (index === 0) { html('[data-ram-bits]','······<br>内容已丢失<br>等待重新装入'); text('[data-ram-led]','○ 断电'); }
         else { html('[data-ram-bits]','101101<br>重新装入程序<br>新的临时数据'); text('[data-ram-led]','● 通电'); }
@@ -869,6 +868,7 @@
   function refreshSequenceAvailability(card, demo) {
     if (demo?.kind !== 'sequence') return;
     const progress = Number(card.dataset.progress);
+    $$('[data-v25-stage]',card).forEach(stage => { stage.hidden = Number(stage.dataset.v25Stage) !== progress; });
     $$('[data-sim-step],[data-sim-double-step],[data-sequence-input]', card).forEach(node => {
       const index = Number(node.dataset.simStep ?? node.dataset.simDoubleStep ?? node.dataset.sequenceInput);
       node.classList.toggle('is-current-step', index === progress);
@@ -879,7 +879,7 @@
     });
   }
 
-  function initialiseSpecialScene(card, id) { if (id === 'y2020q56') updateMid(card); if (id === 'y2026q42') updatePseudo(card); }
+  function initialiseSpecialScene(card, id) { if (id === 'y2020q56') updateMid(card); if (id === 'y2026q42') updatePseudo(card); window.NOTE_LABS?.mount(card); }
   function updateCjk(card) {
     const compact = !$$('[data-cjk-toggle],[data-num-toggle]',card).some(x=>x.checked);
     card.classList.toggle('cjk-compact',compact); $('[data-line-count]',card).textContent=compact?'2':'3';
@@ -907,11 +907,17 @@
     $('[data-relation-result]',card).innerHTML=`<b>结果关系</b>${results[index]}`;
   }
 
-  const openDrawer = () => { $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; };
-  const closeDrawer = () => { $('#drawer').classList.remove('open'); $('#scrim').classList.remove('open'); document.body.style.overflow = ''; };
+  const openDrawer = () => { $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
+  const closeDrawer = () => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); document.body.style.overflow = ''; $('#open-drawer').focus(); };
   $('#open-drawer').addEventListener('click', openDrawer); $('#close-drawer').addEventListener('click', closeDrawer); $('#scrim').addEventListener('click', closeDrawer);
   $('#drawer').addEventListener('click', event => { if (event.target.closest('a')) closeDrawer(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); if (event.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) { event.preventDefault(); $('#search-input').focus(); } });
+  $('#drawer').addEventListener('keydown',event=>{
+    if(event.key!=='Tab')return;
+    const items=$$('button,a', $('#drawer'));const first=items[0],last=items.at(-1);
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  });
   const applySearch = () => {
     const query = $('#search-input').value.trim().toLowerCase(); let shown = 0;
     $$('.note-item').forEach(item => { const visible = !query || item.textContent.toLowerCase().includes(query); item.classList.toggle('hidden', !visible); if (visible) shown++; });
