@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 23;
+  const version = 24;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -776,6 +776,26 @@
       }
       case 'y2026q45': text('[data-real-tops]', ['82 TOPS','31 TOPS','24 TOPS','指标不可直接混比'][index]); break;
       case 'merged-20': renderRelation(card,index); break;
+      case 'merged-4':
+        text('[data-v26-file-name]', index === 0 ? 'report' : 'report.docx');
+        break;
+      case 'y2023q18':
+        text('[data-buffer-label]', ['缓冲 8.4 秒','缓冲 2.1 秒','缓冲 0 秒 · 卡顿','HTTPS 传输 · 缓冲 8.4 秒'][index]);
+        break;
+      case 'y2023q35':
+        text('[data-media-page]', ['当前页','切换到下一页','第 2 页继续播放','重新开始'][index]);
+        text('[data-media-playing]', index === 1 ? '视频随页面离开而停止' : '音频：持续播放');
+        break;
+      case 'y2023q45': {
+        const states = [
+          ['.pptx','进入编辑界面','编辑模式'],
+          ['.ppsx','直接开始放映','放映模式'],
+          ['.potx','以此创建新演示文稿','模板模式'],
+          ['.ppsm','直接放映并允许宏','启用宏的放映']
+        ][index] || ['.pptx','进入编辑界面','编辑模式'];
+        text('[data-ppt-ext]', states[0]); text('[data-ppt-action]', states[1]); text('[data-launch-mode]', states[2]);
+        break;
+      }
       case 'y2024q41':
         text('[data-op-readout]', ['ADD → 算术加法','R1 → 寄存器操作数','2048 → 存储器地址','字段职责混淆：无法正确译码'][index]);
         break;

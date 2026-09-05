@@ -750,5 +750,214 @@
     }
   });
 
+  Object.assign(scenes, {
+    y2026q7(demo) {
+      return `<div class="v26-os-features"><div class="os-feature-screen"><div class="feature-timeline"><b>CPU 调度现场</b><div><i>A</i><i>B</i><i>A</i><i>B</i><i>A</i></div><small>完成顺序会随事件与调度变化</small></div><div class="feature-memory"><span>进程 A</span><span>进程 B</span><b>各自看到独立地址空间</b></div><div class="feature-printer"><b>共享打印机</b><span>A 文档</span><span>B 文档</span></div></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><i>${['并发','共享','虚拟','异步'][i]}</i><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('先问现象关注“同时推进、共同使用、逻辑映射”还是“完成先后不可预知”。')}`;
+    },
+    'merged-4'(demo) {
+      return win('文件资源管理器', `<div class="v26-file-layers"><div class="v26-explorer-list"><header><span>名称</span><span>类型</span><span>属性</span></header><article><i>W</i><b data-v26-file-name>report.docx</b><span>Word 文档</span><small>—</small></article><article class="folder-row"><i>▰</i><b>课程资料</b><span>文件夹</span><small>只读 ◼</small></article></div><aside><b>检查层级</b>${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><span>${escapeHTML(item.label)}</span><small>${escapeHTML(item.stage)}</small></button>`).join('')}</aside><div class="v26-child-folder">▰ 新建文件夹 <b>已创建</b></div></div>`)+feedback('扩展名负责类型标识，关联负责打开程序，属性和访问权限又是另外两层。');
+    },
+    'merged-5'(demo) {
+      const commands=getItems(demo).map((item,i)=>`<button data-sim-choice="${i}" class="ribbon-command"><i>${['▤','☷','▯','!','H1'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('');
+      return office('Word','计算机复习笔记.docx','视图',commands,`<div class="v26-word-structure"><aside><header>导航</header><div class="nav-empty">此文档不包含标题</div><div class="nav-ready"><b>第一章 信息技术</b><span>1.1 信息与数据</span><b>第二章 Windows</b></div></aside><div class="word-page"><h4 class="fake-heading">第一章 信息技术</h4><p>数据是信息的符号化表示。正文内容保持不变。</p><h4>第二章 Windows</h4><p>标题外观相同，但当前还没有结构。</p></div></div>`)+feedback('大纲视图用于重组；导航窗格能否识别标题，取决于样式或大纲级别。');
+    },
+    y2025q26(demo) {
+      return win('控制面板', `<div class="v26-control-panel"><header><span>控制面板 › 所有控制面板项</span><b data-v26-view>查看方式：类别</b></header><div class="cp-tasks"><article><i>盾</i><b>系统和安全</b><small>防火墙 · 系统</small></article><article><i>程</i><b>程序</b><small>卸载程序</small></article><article class="account"><i>人</i><b>用户账户</b><small>管理员 · 标准账户</small></article></div><aside>${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</aside><div class="uac-card"><b>用户账户控制</b><span>是否允许此应用对你的设备进行更改？</span><button>是</button><button>否</button></div></div>`)+feedback('改变查看方式只重排入口；进入管理员任务时，UAC仍会要求明确提升。');
+    },
+    y2024q32(demo) {
+      return `<div class="v26-media-size"><div class="media-scope"><section class="wave-block"><b>10 秒音频</b><svg viewBox="0 0 420 90"><path d="M0 45 Q25 2 50 45 T100 45 T150 45 T200 45 T250 45 T300 45 T350 45 T400 45"/></svg><div class="sampling-pins">${Array.from({length:16},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><small>采样率 × 位深 × 声道 × 时长</small></section><section class="pixel-block"><b>相邻像素</b><div>${Array.from({length:36},(_,i)=>`<i style="--tone:${i%6<4?1:2}"></i>`).join('')}</div><small>大片相似颜色＝空间冗余</small></section></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><i>${['16k','▦','MIDI','JPEG'][i]}</i><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('原始数据量、冗余和压缩文件大小是三个不同层面。')}`;
+    },
+    y2020q28(demo) {
+      return `<div class="v26-malware-lab"><div class="infected-machine"><header>LAB-PC-07</header><div class="system-health"><b>文件完整性</b><i></i><b>系统性能</b><i></i></div><div class="virus-core">VIRUS<small>潜伏 → 触发 → 破坏</small></div></div><div class="defense-stack">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}" class="d${i}"><i>${['!','✉','↻','钥','盾'][i]}</i><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('“删除文件、拖慢系统”描述病毒特征；补丁、权限、备份等描述防护层。')}`;
+    },
+    y2025q18(demo) {
+      return `<div class="v26-bigdata-v"><div class="v-wheel"><span class="v-center">BIG<br>DATA</span><i class="volume">Volume</i><i class="velocity">Velocity</i><i class="variety">Variety</i><i class="value">Value</i><div class="data-stream"><b>TXT</b><b>IMG</b><b>WAV</b><b>LOG</b></div></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('看到“格式种类多”先想到Variety；看到“海量中只有少量有用”再想到低价值密度。')}`;
+    },
+    y2025q53(demo) {
+      const art=(state,control='')=>`<div class="ppt-main-slide v26-smartart ${state}"><div class="smart-root">课程体系</div><div class="smart-row"><div class="smart-node n1">公共基础</div><div class="smart-node n2">专业基础</div><div class="smart-node n3">实践课程</div></div>${control}</div>`;
+      const pages=[
+        office('PowerPoint','课程体系.pptx','开始','<span>SmartArt</span>',art('select-one','<button data-sim-step="0" class="node-control c1">单击节点边框</button>')),
+        office('PowerPoint','课程体系.pptx','SmartArt工具/设计','<span>已选中 1 个形状</span>',art('select-two','<button data-sim-step="1" class="node-control c2">Ctrl＋单击第二个节点</button>')),
+        office('PowerPoint','课程体系.pptx','SmartArt工具/设计','<button data-sim-step="2" class="ribbon-command">降级</button>',art('two-selected')),
+        office('PowerPoint','课程体系.pptx','SmartArt工具/设计','<span>两个节点已降到下一层</span>',art('demoted','<button data-sim-step="3" class="node-control c3">重新选择“实践课程”</button>')),
+        office('PowerPoint','课程体系.pptx','插入','<button data-sim-step="4" class="ribbon-command">超链接</button>',art('one-selected')),
+        office('PowerPoint','课程体系.pptx','插入','<span>插入超链接</span>','<div class="v26-link-dialog"><header>插入超链接</header><b>现有文件或网页</b><p>当前文件夹</p><button data-sim-step="5">课程体系.docx</button></div>'),
+        office('PowerPoint','课程体系.pptx','幻灯片放映','<span>第 1 页</span>',art('slideshow','<a>实践课程 ↗</a>'))
+      ];
+      return `<div class="v25-stage-shell v26-smart-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('SmartArt最关键的不是记按钮，而是先看清当前选中了文字、单个形状、多个形状还是整体。')}`;
+    },
+    y2024q67(demo) {
+      const fieldList=active=>`<div class="v26-pivot-fields"><header>数据透视表字段</header><div class="field-source"><span>☑ 班级</span><span>☑ 日期</span><span>☑ 成绩</span></div><div class="field-zones"><section><b>筛选器</b><span>${active>0?'班级':'拖到此处'}</span></section><section><b>列</b><span>日期</span></section><section><b>行</b><span>姓名</span></section><section><b>值</b><span>${active>1?'平均值项:成绩':'拖到此处'}</span></section></div></div>`;
+      const sheet=label=>`<div class="excel-sheet v26-pivot-sheet"><header>${label}</header><table><tr><th>班级筛选</th><th>全部</th></tr><tr><td>2023/3/1</td><td>82</td></tr><tr><td>2023/3/5</td><td>76</td></tr><tr><td>2024/3/2</td><td>91</td></tr></table></div>`;
+      const pages=[
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>字段列表</span>',sheet('按日显示'),fieldList(0).replace('拖到此处',`<button data-sim-step="0">拖入班级</button>`)),
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>班级已在筛选器</span>',sheet('筛选：全部班级'),fieldList(1).replace('拖到此处',`<button data-sim-step="1">拖入成绩</button>`)),
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>值字段</span>',sheet('当前：求和项'),`<div class="v26-value-dialog"><b>值字段设置</b><button data-sim-step="2">改为平均值</button></div>`),
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>平均值项:成绩</span>',`<div class="excel-sheet v26-pivot-sheet"><table><tr><th>日期</th><th>平均成绩</th></tr><tr><td><button data-sim-step="3">2023/3/1　右键→组合</button></td><td>82</td></tr><tr><td>2024/3/2</td><td>91</td></tr></table></div>`),
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>组合</span>','<div class="v26-group-dialog"><b>组合</b><label>☑ 年</label><label>☑ 月</label><label>☐ 日</label><button data-sim-step="4">选择年和月</button></div>'),
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>组合：年＋月</span>','<div class="v26-group-dialog"><b>日期分组</b><p>年、月已选中</p><button data-sim-step="5">确定</button></div>'),
+        office('Excel','成绩分析.xlsx','数据透视表分析','<span>分组完成</span>','<div class="excel-sheet v26-pivot-sheet result"><table><tr><th>班级：全部</th><th>平均成绩</th></tr><tr><td>2023　3月</td><td>79</td></tr><tr><td>2024　3月</td><td>91</td></tr></table></div>')
+      ];
+      return `<div class="v25-stage-shell v26-pivot-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('筛选器决定看哪一班，值区域决定算什么，日期组合决定按多粗的时间层级展示。')}`;
+    },
+    y2020q57(demo) {
+      const pages=[
+        office('Excel','学生名单.xlsx','开始','<span>当前单元格 B2</span>','<div class="excel-sheet v26-vlookup"><table><tr><th>A 学号</th><th>B 姓名</th></tr><tr><td>2023008</td><td><button data-sim-step="0">选中 B2</button></td></tr><tr><td>2023012</td><td></td></tr></table></div>'),
+        office('Excel','学生名单.xlsx','公式','<span>公式栏</span>','<div class="v26-formula"><code>=VLOOKUP(<button data-sim-step="1">A2</button>, …)</code><small>查找值随行变化</small></div>'),
+        office('Excel','学生名单.xlsx','公式','<span>选择表数组</span>','<div class="v26-formula"><code>=VLOOKUP(A2,<button data-sim-step="2">档案!$A$1:$C$1012</button>, …)</code><small>首列必须是学号</small></div>'),
+        office('Excel','学生名单.xlsx','公式','<span>完整公式</span>','<div class="v26-formula"><code>=VLOOKUP(A2,档案!$A$1:$C$1012,<button data-sim-step="3">2,0</button>)</code><small>返回第2列，精确匹配</small></div>'),
+        office('Excel','学生名单.xlsx','公式','<span>结果：王宁</span>','<div class="excel-sheet v26-vlookup"><table><tr><th>学号</th><th>姓名</th></tr><tr><td>2023008</td><td>王宁</td></tr><tr><td>2023012</td><td><button data-sim-step="4">向下填充</button></td></tr></table></div>'),
+        office('Excel','学生名单.xlsx','公式','<span>填充完成</span>','<div class="excel-sheet v26-vlookup done"><table><tr><th>学号</th><th>姓名</th></tr><tr><td>2023008</td><td>王宁</td></tr><tr><td>2023012</td><td>李悦</td></tr></table><i>A2→A3，档案区域未移动</i></div>')
+      ];
+      return `<div class="v25-stage-shell v26-excel-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('精确查找四件事：查找值、首列、返回列序号、FALSE/0；填充前再锁定表数组。')}`;
+    },
+
+    y2023q7(demo) {
+      const formula=(body,control='')=>`<div class="word-page v26-formula-page"><p>设函数</p><div class="equation">${body}</div>${control}<p>其中 a、b、c 为常数。</p></div>`;
+      const pages=[
+        office('Word','数学笔记.docx','插入','<button data-sim-step="0" class="ribbon-command">公式 π</button>',formula('□')),
+        office('Word','数学笔记.docx','公式工具/设计','<button data-sim-step="1" class="ribbon-command">分数 ▼</button>',formula('<span class="fraction"><i>□</i><i>□</i></span>')),
+        office('Word','数学笔记.docx','公式工具/设计','<span>分数结构</span>',formula('<span class="fraction"><i><button data-sim-step="2">a + b</button></i><i>c</i></span>')),
+        office('Word','数学笔记.docx','公式工具/设计','<button data-sim-step="3" class="ribbon-command">专业型 / 线性</button>',formula('<span class="fraction"><i>a + b</i><i>c</i></span>')),
+        office('Word','数学笔记.docx','公式工具/设计','<button data-sim-step="4" class="ribbon-command">另存为新公式</button>',formula('(a+b)/c','<small>线性输入与专业结构可互相转换</small>')),
+        office('Word','数学笔记.docx','公式工具/设计','<span>公式库已保存</span>',formula('<span class="fraction"><i>a + b</i><i>c</i></span>','<b class="done-label">结构完整 · 可复用</b>'))
+      ];
+      return `<div class="v25-stage-shell v26-word-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('Word内置公式从“插入→公式”进入；结构占位符会自动处理分子、分母和基线。')}`;
+    },
+    y2023q10(demo) {
+      const preview=centred=>`<div class="v26-print-preview"><article><div class="sheet-print ${centred?'centred':''}"><table><tr><th>姓名</th><th>成绩</th></tr><tr><td>王宁</td><td>86</td></tr><tr><td>李悦</td><td>91</td></tr></table></div></article><aside><b>打印预览</b><span>A4 纵向</span><small>工作表单元格没有移动</small></aside></div>`;
+      const pages=[
+        office('Excel','成绩表.xlsx','页面布局','<button data-sim-step="0" class="ribbon-command">页面设置 ↘</button>','<div class="excel-sheet v26-page-sheet"><table><tr><th>A</th><th>B</th></tr><tr><td>姓名</td><td>成绩</td></tr><tr><td>王宁</td><td>86</td></tr></table></div>'),
+        office('Excel','成绩表.xlsx','页面布局','<span>页面设置</span>','<div class="v26-page-dialog"><nav><span>页面</span><button data-sim-step="1">页边距</button><span>页眉/页脚</span><span>工作表</span></nav><p>切换到页边距设置。</p></div>'),
+        office('Excel','成绩表.xlsx','页面布局','<span>页边距</span>','<div class="v26-page-dialog"><b>居中方式</b><label><input type="checkbox"> 垂直</label><button data-sim-step="2">☐ 水平</button></div>'),
+        office('Excel','成绩表.xlsx','页面布局','<button data-sim-step="3" class="ribbon-command">打印预览</button>',preview(false)),
+        office('Excel','成绩表.xlsx','文件','<span>打印</span>',preview(true))
+      ];
+      return `<div class="v25-stage-shell v26-excel-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('打印居中发生在纸张页边距之间，不会改动工作表中的列宽、单元格或对齐方式。')}`;
+    },
+    y2023q11(demo) {
+      const tabs=(target=false)=>`<div class="v26-workbook-tabs"><span>Sheet1</span><b>总表</b>${target?'<i>目标：归档.xlsx</i>':''}</div>`;
+      const pages=[
+        office('Excel','成绩汇总.xlsx','开始','<button data-sim-step="0" class="ribbon-command">打开 归档.xlsx</button>',`<div class="excel-sheet v26-book-sheet"><b>两个工作簿窗口</b><span>成绩汇总.xlsx</span><span>归档.xlsx</span></div>${tabs()}`),
+        office('Excel','成绩汇总.xlsx','开始','<span>工作表标签</span>',`<div class="excel-sheet v26-book-sheet"><table><tr><th>姓名</th><th>总分</th></tr><tr><td>王宁</td><td>276</td></tr></table></div>${tabs()}<button data-sim-step="1" class="tab-menu">右击“总表”→移动或复制</button>`),
+        office('Excel','成绩汇总.xlsx','开始','<span>移动或复制</span>','<div class="v26-move-dialog"><label>工作簿 <button data-sim-step="2">归档.xlsx</button></label><label>下列选定工作表之前 <span>Sheet1</span></label></div>'),
+        office('Excel','成绩汇总.xlsx','开始','<span>移动或复制</span>','<div class="v26-move-dialog"><label><button data-sim-step="3">☐ 建立副本</button></label><small>不勾选会移动原工作表</small></div>'),
+        office('Excel','归档.xlsx','开始','<span>准备复制</span>',`<div class="v26-move-dialog"><b>目标：归档.xlsx</b><button data-sim-step="4">确定</button></div>${tabs(true)}`),
+        office('Excel','归档.xlsx','开始','<span>复制完成</span>',`<div class="excel-sheet v26-book-sheet done"><b>总表已复制</b><small>检查跨工作簿公式链接</small></div>${tabs(true)}`)
+      ];
+      return `<div class="v25-stage-shell v26-excel-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('目标工作簿只有在打开时才会出现在列表中；“建立副本”决定复制还是移动。')}`;
+    },
+    y2023q13(demo) {
+      const slide=(n,time,control='')=>`<div class="v26-rehearsal"><div class="ppt-main-slide"><small>${n}/3</small><h4>${['研究背景','研究方法','结论'][n-1]}</h4></div><div class="timer-bar"><span>本页 ${time}</span><span>累计 ${n===1?'00:00:24':n===2?'00:01:10':'00:01:43'}</span>${control}</div></div>`;
+      const pages=[
+        office('PowerPoint','答辩.pptx','幻灯片放映','<button data-sim-step="0" class="ribbon-command">排练计时</button>','<div class="ppt-main-slide"><h4>毕业答辩</h4></div>'),
+        slide(1,'00:00:24','<button data-sim-step="1">下一张</button>'),
+        slide(2,'00:00:46','<button data-sim-step="2">完成剩余页面</button>'),
+        slide(3,'00:00:33','<button data-sim-step="3">结束放映</button>'),
+        `<div class="v26-timing-dialog"><b>幻灯片放映总时间为 00:01:43</b><p>是否保留新的幻灯片排练时间？</p><button data-sim-step="4">是</button><span>否</span></div>`,
+        office('PowerPoint','答辩.pptx','切换','<span>换片方式</span>','<div class="v26-timing-result"><article><b>1</b><span>00:24</span></article><article><b>2</b><span>00:46</span></article><article><b>3</b><span>00:33</span></article><small>每页时间均可继续修改</small></div>')
+      ];
+      return `<div class="v25-stage-shell v26-ppt-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('排练时同时显示本页时间与累计时间；选择保存后，每页时间才写入自动换片设置。')}`;
+    },
+    y2023q14(demo) {
+      return `<div class="v26-relation-table"><table><thead><tr><th>学号</th><th>姓名</th><th>专业</th></tr></thead><tbody><tr><td>23001</td><td>王宁</td><td>临床医学</td></tr><tr><td>23002</td><td>李悦</td><td>护理学</td></tr></tbody></table><div class="domain-drawer"><b>专业域</b><span>{ 临床医学，护理学，口腔医学，… }</span></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('一行是元组，一列是属性；域不是表格中的某一块，而是该属性允许取值的集合。')}`;
+    },
+    y2023q15(demo) {
+      const rows=updated=>`<table><tr><th>学号</th><th>姓名</th><th>班级</th></tr><tr class="target"><td>2023008</td><td>王宁</td><td>${updated?'临床2班':'临床1班'}</td></tr><tr><td>2023012</td><td>李悦</td><td>临床1班</td></tr></table>`;
+      const pages=[
+        `<div class="v26-sql-update"><pre>SELECT * FROM student<br>WHERE 学号='2023008';</pre>${rows(false)}<button data-sim-step="0">预览命中范围：1 行</button></div>`,
+        `<div class="v26-sql-update"><pre><button data-sim-step="1">UPDATE student</button><br>SET 班级='临床2班'<br>WHERE 学号='2023008';</pre>${rows(false)}</div>`,
+        `<div class="v26-sql-update"><pre>UPDATE student<br><button data-sim-step="2">SET 班级='临床2班'</button><br>WHERE 学号='2023008';</pre>${rows(false)}</div>`,
+        `<div class="v26-sql-update"><pre>UPDATE student<br>SET 班级='临床2班'<br><button data-sim-step="3">WHERE 学号='2023008'</button>;</pre><aside>没有 WHERE 将更新全部记录</aside>${rows(false)}</div>`,
+        `<div class="v26-sql-update"><pre>UPDATE student SET 班级='临床2班'<br>WHERE 学号='2023008';</pre>${rows(false)}<button data-sim-step="4">执行并复查</button></div>`,
+        `<div class="v26-sql-update success"><pre>1 row updated</pre>${rows(true)}<b>其他记录未改变</b></div>`
+      ];
+      return `<div class="v25-stage-shell v26-sql-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('UPDATE改已有记录；最危险的错误不是拼错命令，而是忘记先核对WHERE范围。')}`;
+    },
+    y2023q16(demo) {
+      return `<div class="v26-https"><div class="browser-card"><header>🔒 https://example.edu.cn</header><b>浏览器</b><small>证书验证</small></div><div class="tls-tunnel"><span>ClientHello</span><i></i><b>TLS 加密通道</b><i></i><span>HTTP 数据</span></div><div class="server-card"><b>Web 服务器</b><small>证书 + 私钥</small></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('HTTPS保护浏览器与服务器之间的传输；证书验证的是站点身份，不替你判断页面观点是否真实。')}`;
+    },
+    y2023q17(demo) {
+      const bits=Array.from({length:32},(_,i)=>`<i class="${i<24?'one':'zero'}">${i<24?'1':'0'}</i>`).join('');
+      return `<div class="v26-mask-lab"><div class="mask-display"><b>255.255.255.0</b><span>/24</span><div>${bits}</div><small>网络位 24　　　　　　　　 主机位 8</small></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('255就是8个连续的1；三个255加一个0，正好得到24个网络位。')}`;
+    },
+    y2023q18(demo) {
+      return `<div class="v26-stream-lab"><div class="video-frame"><b>LIVE</b><span>远程手术教学直播</span><i class="playhead"></i></div><div class="buffer-track"><span class="downloaded"></span><i class="play-pos">播放</i><i class="download-pos">下载</i></div><div class="buffer-readout"><b data-buffer-label>缓冲 8.4 秒</b><span>播放头不能追上下载位置</span></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('边传边播靠的是下载位置始终领先播放位置；缓冲区就是两者之间的安全距离。')}`;
+    },
+    y2023q19(demo) {
+      const pixels=Array.from({length:100},(_,i)=>`<i class="p${(i%10>2&&i%10<7&&Math.floor(i/10)>1&&Math.floor(i/10)<8)?1:0}"></i>`).join('');
+      return `<div class="v26-vector-raster"><section><header>矢量路径</header><svg viewBox="0 0 120 120"><path d="M60 8 L74 42 L111 44 L82 67 L92 104 L60 83 L28 104 L38 67 L9 44 L46 42 Z"/></svg><small>放大时重新计算边缘</small></section><section><header>位图像素</header><div class="pixel-zoom">${pixels}</div><small>放大时像素块显现</small></section><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('矢量保存路径，位图保存像素；只换扩展名不能把一种内部表示变成另一种。')}`;
+    },
+    y2023q35(demo) {
+      return `<div class="v26-media-slides"><aside>${[1,2,3].map((n,i)=>`<article class="s${n}"><b>${n}</b><span>${['媒体页','分析页','结论页'][i]}</span></article>`).join('')}</aside><main><div class="ppt-main-slide"><div class="video-object">▶ VIDEO<small>00:05 / 00:20</small></div><div class="audio-object">♫ AUDIO · 跨幻灯片</div></div><div class="slide-state"><span data-media-page>当前：第1页</span><b data-media-playing>视频与音频均在播放</b></div></main><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('裁剪只改媒体片段；真正切换到下一页后，音频可继续，普通视频会停止。')}`;
+    },
+    y2023q39(demo) {
+      const states=[['校外电脑','未连接','连接VPN网关并认证'],['身份验证','MFA ✓','协商密钥并建立隧道'],['加密隧道','AES-GCM','访问授权的内网资源'],['校园内网','图书馆数据库 ✓','断开VPN'],['连接已断开','临时路由已撤销','']];
+      return `<div class="v25-stage-shell v26-vpn-stages">${states.map((s,i)=>`<section data-v25-stage="${i}"><div class="v26-vpn"><div class="remote-device"><b>${s[0]}</b><small>${s[1]}</small></div><div class="vpn-path ${i>1&&i<4?'active':''}"><i></i><span>公共互联网</span></div><div class="intranet"><b>校园内网</b><span>仅授权资源</span></div>${i<4?`<button data-sim-step="${i}">${s[2]}</button>`:'<strong>公网仍是公网 · 受保护逻辑连接已结束</strong>'}</div></section>`).join('')}</div>${feedback('VPN是在公共网络上建立受保护的逻辑通道，不是把互联网物理改造成专线。')}`;
+    },
+    y2023q45(demo) {
+      return `<div class="v26-ppt-files"><div class="file-launcher"><div class="ppt-file"><i>P</i><b data-ppt-ext>.pptx</b><small data-ppt-action>进入编辑界面</small></div><div class="launch-window"><span>PowerPoint 2016</span><b data-launch-mode>编辑模式</b></div></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('.ppsx改变默认打开行为，不会把内容变成不可编辑，也不提供加密保护。')}`;
+    },
+    y2023q47(demo) {
+      const groups=Array.from({length:8},(_,i)=>`<span><b>${['2001','0DB8','0000','0000','0000','8A2E','0370','7334'][i]}</b><small>16 bit</small></span>`).join('<i>:</i>');
+      return `<div class="v26-ipv6-lab"><div class="ipv6-address">${groups}</div><div class="ipv6-meter"><span>8组 × 16 bit</span><b>128 bit = 16 Byte</b></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('“::”只是把连续的全零组省写；还原后仍然是8组、128位。')}`;
+    },
+    y2023q52(demo) {
+      const doc=gap=>`<div class="word-page v26-style-page ${gap?'gap':''}"><h4>第一章 信息技术</h4><p>正文段落。</p><h4>第二章 Windows</h4><p>正文段落。</p><h4>第三章 Word</h4></div>`;
+      const pages=[
+        office('Word','复习提纲.docx','开始','<div class="style-chip"><button data-sim-step="0">标题 1　右击</button></div>',doc(false)),
+        office('Word','复习提纲.docx','开始','<span>样式菜单</span>','<div class="v26-style-menu"><span>更新标题1以匹配所选内容</span><button data-sim-step="1">修改…</button></div>'),
+        office('Word','复习提纲.docx','开始','<span>修改样式</span>','<div class="v26-style-dialog"><b>修改样式：标题 1</b><button data-sim-step="2">格式 → 段落</button></div>'),
+        office('Word','复习提纲.docx','开始','<span>段落</span>','<div class="v26-style-dialog"><label>段前 <button data-sim-step="3">20 磅</button></label><label>段后 0 磅</label></div>'),
+        office('Word','复习提纲.docx','开始','<span>实时预览</span>',`${doc(true)}<button data-sim-step="4" class="apply-style">确定</button>`),
+        office('Word','复习提纲.docx','视图','<span>导航窗格</span>',`<div class="v26-style-result"><aside><b>第一章 信息技术</b><b>第二章 Windows</b><b>第三章 Word</b></aside>${doc(true)}</div>`)
+      ];
+      return `<div class="v25-stage-shell v26-word-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('修改样式是改规则：所有标题1同步更新，之后新建的标题1也会继承。')}`;
+    },
+    y2023q55(demo) {
+      return office('Word','论文初稿.docx','审阅','<span>校对语言：中文（中国）</span>',`<div class="word-page v26-proof-page"><p>本研究分析了<span class="spell">ChatGTP</span>在医学教育中的应用。</p><p>模型输出<span class="grammar">需要被仔细的核验</span>。</p><p>这是真正的<span class="underline">下划线格式</span>。</p><div class="print-preview-note">打印预览：波浪提示已隐藏，格式下划线仍保留。</div></div>`)+coach('校对检查','点线条类型，观察它是编辑提示还是正文格式。',`<div class="proof-actions">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div>`)+feedback('校对提示默认不打印；字体下划线属于文档内容，会进入打印稿。');
+    },
+    y2023q56(demo) {
+      const doc=(mode,control='')=>`<div class="word-page v26-track-page"><h4>治疗方案说明</h4><p>该方案<span class="deleted">一定能够治愈</span><span class="inserted">可能改善部分症状</span>。</p>${control}<small>${mode}</small></div>`;
+      const pages=[
+        office('Word','方案说明.docx','审阅','<button data-sim-step="0" class="ribbon-command">修订</button>',doc('修订：关闭')),
+        office('Word','方案说明.docx','审阅','<span>修订：开启</span>',doc('准备记录编辑','<button data-sim-step="1">删除旧句并输入新句</button>')),
+        office('Word','方案说明.docx','审阅','<button data-sim-step="2" class="ribbon-command">所有标记</button>',doc('删除＝红色删除线　插入＝蓝色下划线')),
+        office('Word','方案说明.docx','审阅','<span>更改</span>',doc('逐项处理','<button data-sim-step="3">接受这两处修订</button>')),
+        office('Word','方案说明.docx','审阅','<button data-sim-step="4" class="ribbon-command">无标记</button>','<div class="word-page v26-track-page accepted"><h4>治疗方案说明</h4><p>该方案可能改善部分症状。</p><small>修订记录：0</small></div>'),
+        office('Word','方案说明.docx','审阅','<span>最终稿</span>','<div class="word-page v26-track-page accepted"><h4>治疗方案说明</h4><p>该方案可能改善部分症状。</p><b>修订已处理，不是暂时隐藏</b></div>')
+      ];
+      return `<div class="v25-stage-shell v26-word-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('打开修订负责记录，显示模式负责观看，接受/拒绝才真正决定最终文本。')}`;
+    },
+    y2023q57(demo) {
+      const table=done=>`<div class="excel-sheet v26-consolidate-sheet"><table><tr><th>学号</th><th>计算机</th><th>英语</th></tr><tr><td>23001</td><td>${done?'86':'—'}</td><td>${done?'79':'—'}</td></tr><tr><td>23002</td><td>${done?'91':'—'}</td><td>${done?'84':'—'}</td></tr></table></div>`;
+      const pages=[
+        office('Excel','总成绩.xlsx','开始','<span>汇总工作表</span>',`${table(false)}<button data-sim-step="0" class="range-select">选中 A1</button>`),
+        office('Excel','总成绩.xlsx','数据','<button data-sim-step="1" class="ribbon-command">合并计算</button>',table(false)),
+        office('Excel','总成绩.xlsx','数据','<span>合并计算</span>','<div class="v26-consolidate-dialog"><b>引用位置</b><span>计算机!$A$1:$B$101</span><span>英语!$A$1:$B$101</span><span>高数!$A$1:$B$101</span><button data-sim-step="2">添加五张课程表区域</button></div>'),
+        office('Excel','总成绩.xlsx','数据','<span>合并计算</span>','<div class="v26-consolidate-dialog"><b>标签位置</b><button data-sim-step="3">☐ 首行　☐ 最左列</button><small>按学号和课程名对齐</small></div>'),
+        office('Excel','总成绩.xlsx','数据','<span>函数：求和</span>','<div class="v26-consolidate-dialog"><b>5 个引用区域</b><button data-sim-step="4">确定</button></div>'),
+        office('Excel','总成绩.xlsx','数据','<span>合并完成</span>',`${table(true)}<i class="done-label">标签顺序不同也已正确对齐</i>`)
+      ];
+      return `<div class="v25-stage-shell v26-excel-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('合并计算是按位置或标签聚合，不是把五张表首尾粘在一起。')}`;
+    },
+    y2023q60(demo) {
+      const sheet=filled=>`<div class="excel-sheet v26-blank-sheet"><table><tr><th>学号</th><th>成绩</th></tr><tr><td>23001</td><td>86</td></tr><tr><td>23002</td><td class="blank">${filled?'缺考':''}</td></tr><tr><td>23003</td><td>74</td></tr></table></div>`;
+      const pages=[
+        office('Excel','成绩登记.xlsx','开始','<span>成绩区域</span>',`${sheet(false)}<button data-sim-step="0" class="range-select">选中 B2:B101</button>`),
+        office('Excel','成绩登记.xlsx','开始','<span>键盘操作</span>',sheet(false))+coach('快捷键','打开“查找和替换”，快捷键不在工作表画布内。','<button data-sim-step="1"><kbd>Ctrl</kbd>＋<kbd>H</kbd></button>'),
+        office('Excel','成绩登记.xlsx','开始','<span>查找和替换</span>','<div class="v26-replace-dialog"><label>查找内容 <button data-sim-step="2">（留空）</button></label><label>替换为 <input value=""></label></div>'),
+        office('Excel','成绩登记.xlsx','开始','<span>查找和替换</span>','<div class="v26-replace-dialog"><label>查找内容 <span>（空白）</span></label><label>替换为 <button data-sim-step="3">缺考</button></label></div>'),
+        office('Excel','成绩登记.xlsx','开始','<span>查找和替换</span>','<div class="v26-replace-dialog"><b>范围：所选成绩区域</b><button data-sim-step="4">全部替换</button></div>'),
+        office('Excel','成绩登记.xlsx','开始','<span>完成 1 处替换</span>',`${sheet(true)}<small class="done-label">“缺考”是文本，统计时要区别空白与文本</small>`)
+      ];
+      return `<div class="v25-stage-shell v26-excel-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('先限定选区再替换，才能避免把标题、间隔和表外空白一起写成“缺考”。')}`;
+    },
+    y2023q69(demo) {
+      const states=[['i = 1','C = 0','初始化'],['i <= 45','第45名仍进入循环','边界'],['score[i]','读取第 i 名成绩','输入'],['score < 60','C = C + 1','分支计数'],['i = i + 1','回到循环条件','推进'],['完成','C = 7','不及格人数']];
+      return `<div class="v25-stage-shell v26-loop-stages">${states.map((s,i)=>`<section data-v25-stage="${i}"><div class="v26-loop-runner"><div class="loop-code"><code>${s[0]}</code><code>${s[1]}</code></div><div class="student-tape">${Array.from({length:8},(_,j)=>`<i class="${j===Math.min(i,4)?'current':''} ${j===2?'fail':''}">${j+1}</i>`).join('')}<span>… 45</span></div><b>${s[2]}</b>${i<5?`<button data-sim-step="${i}">${escapeHTML(demo.steps[i].label)}</button>`:'<strong>45 人全部处理 · 不及格 7 人</strong>'}</div></section>`).join('')}</div>${feedback('循环题不能只盯着一个空：初值、边界、分支、累加器和推进语句必须闭合。')}`;
+    }
+  });
+
   window.NOTE_SIMULATIONS = { demos, scenes, escapeHTML, choice, choices, step, toolbar, office, win, feedback, genericInitial };
 })();
