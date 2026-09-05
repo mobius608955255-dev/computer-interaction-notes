@@ -6,7 +6,7 @@
 const frame=document.getElementById('preview'),width=document.getElementById('width'),chapter=document.getElementById('chapter'),note=document.getElementById('note');
 chapter.innerHTML=Array.from({length:11},(_,i)=>`<option value="${i+1}">第${i+1}章</option>`).join('');
 chapter.value='4';
-function load(){frame.src=`../chapter${chapter.value}.html?v=29`;}
+function load(){frame.src=`../chapter${chapter.value}.html?v=30`;}
 chapter.onchange=load;width.onchange=()=>frame.width=width.value;
 frame.onload=()=>{note.innerHTML=[...frame.contentDocument.querySelectorAll('.note-item')].map(n=>`<option value="${n.id}">${n.querySelector('h3').textContent}</option>`).join('');};
 document.getElementById('open').onclick=()=>{const c=frame.contentDocument.getElementById(note.value);if(!c)return;const b=c.querySelector('.simulation-toggle');if(b.getAttribute('aria-expanded')==='false')b.click();b.scrollIntoView({block:'start'});};
