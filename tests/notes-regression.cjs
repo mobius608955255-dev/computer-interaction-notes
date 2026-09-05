@@ -8,10 +8,11 @@ const root=path.resolve(__dirname,'..');
 const files=[2020,2021,2022,2023,2024,2025,2026].map(y=>`notes-${y}-data.js`).concat(['notes-data.js','demos-data.js','simulations.js','note-labs.js','note-labs-2021.js','note-labs-audit.js','notes-standard.js']);
 function env(chapter=4){
   const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
-  const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
+  const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;Object.defineProperty(w.crypto,'subtle',{value:require('node:crypto').webcrypto.subtle});w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
   for(const f of files)w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   if([3,4].includes(chapter))for(const f of ['notes-study.js','note-labs-study.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   if([1,2,5].includes(chapter))for(const f of ['notes-core.js',chapter===5?'note-labs-presentation.js':'note-labs-core.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
+  if(chapter>=6){w.eval(fs.readFileSync(path.join(root,'notes-extended.js'),'utf8'));const m={6:'network',7:'media',8:'security',10:'data',11:'data'}[chapter];if(m)w.eval(fs.readFileSync(path.join(root,'note-labs-'+m+'.js'),'utf8'));}
   w.eval(fs.readFileSync(path.join(root,'notes-app.js'),'utf8'));
   return {dom,w,d:w.document};
 }
@@ -297,4 +298,60 @@ test('Transitions use the entering slide settings; animation timing controls com
 });
 test('Playback keyboard handling preserves native buttons and grouped notes retain all source points',()=>{
  const e=env(5),m=e.w.NOTE_LABS.registry['merged-11'],s=structuredClone(m.initial);s.show=true;let prevented=false;const button=e.d.createElement('button');assert.equal(m.keydown(s,{key:'Enter',target:button,preventDefault:()=>prevented=true}),undefined);assert.equal(prevented,false);for(const id of ['merged-11','y2020q11']){const n=e.w.NOTES.notes.find(x=>x.id===id);assert.deepEqual(Array.from(n.pointGroups.flatMap(g=>g.indices)).sort((a,b)=>a-b),Array.from({length:n.points.length},(_,i)=>i));assert.equal(e.d.querySelectorAll('#'+id+' .note-point-group li').length,n.points.length);}e.dom.window.close();
+});
+
+test('network transfer uses the bottleneck, payload proportion and actual elapsed time',()=>{
+ const e=env(6),r=e.w.NOTE_LABS.registry.y2020q26,s=structuredClone(r.initial),calc=e.w.NOTE_LABS.networkMath.transfer;
+ let x=calc(s);assert.equal(x.capacity,20);assert.equal(x.goodput,16);assert.equal(x.bits,16777216);
+ s.first='1000';assert.equal(calc(s).seconds,x.seconds);s.second='40';assert.equal(calc(s).seconds,x.seconds/2);
+ s.second='0';assert.equal(calc(s),null);s.second='20';let now=1000;e.w.Date.now=()=>now;r.action(s,'start');now=1200;r.tick(s);assert.equal(s.elapsed,.2);assert.match(r.render(s),/aria-valuenow="0"/);now=5000;r.tick(s);assert.equal(s.running,false);assert.match(r.render(s),/aria-valuenow="100"/);e.dom.window.close();
+});
+test('URL resolution treats a trailing slash, queries and fragments separately',()=>{
+ const e=env(6),c=open(e,'y2026q14');change(e,c,'base','https://notes.example/course/');change(e,c,'target','page.html?q=1#part');assert.match(c.querySelector('.ext-address').textContent,/\/course\/page.html\?q=1#part/);change(e,c,'base','https://notes.example/course');assert.match(c.querySelector('.ext-address').textContent,/https:\/\/notes.example\/page.html/);change(e,c,'target','javascript:alert(1)');assert.equal(c.querySelector('.ext-address'),null);assert.match(c.textContent,/有效的HTTP/);e.dom.window.close();
+});
+test('IPv6 canonicalization handles zero runs, legal single-group compression and invalid forms',()=>{
+ const e=env(6),parse=e.w.NOTE_LABS.networkMath.ipv6;
+ assert.equal(parse('::').full,'0000:0000:0000:0000:0000:0000:0000:0000');assert.equal(parse('2001:0:0:1:0:0:1:1').canonical,'2001::1:0:0:1:1');assert.equal(parse('1:2:3:4:5:6::8').canonical,'1:2:3:4:5:6:0:8');assert.equal(parse('2001:DB8::1').canonical,'2001:db8::1');
+ for(const raw of ['1::2::3','1:2:3:4:5:6:7:8:9','1:2:3:4:5:6:7:8::','::ffff:192.0.2.1','g::1'])assert.equal(parse(raw),null,raw);e.dom.window.close();
+});
+test('PCM byte counts preserve channels and reject fractional samples; quantization uses finite levels',()=>{
+ const e=env(7),m=e.w.NOTE_LABS.mediaMath,s=structuredClone(e.w.NOTE_LABS.registry.y2024q32.initial);
+ assert.equal(m.pcm(s).bytes,10584000);s.channels='2';assert.equal(m.pcm(s).bytes,21168000);s.duration='.001';assert.equal(m.pcm(s),null);
+ const levels=new Set(m.samples(s).map(x=>x.q));assert.ok(levels.size<=8);assert.ok(m.samples(s).every(x=>x.q>=-1&&x.q<=1));const c=open(e,'y2024q32');change(e,c,'mode','pcm');change(e,c,'channels','2');assert.match(c.textContent,/21,168,000/);e.dom.window.close();
+});
+test('run-length coding restores its input but cannot recover earlier grayscale reduction',()=>{
+ const e=env(7),m=e.w.NOTE_LABS.mediaMath;assert.deepEqual(JSON.parse(JSON.stringify(m.runLength([1,1,2,3,3]))),[[1,2],[2,1],[3,2]]);assert.equal(m.parsePixels('0,256'),null);
+ const c=open(e,'merged-14');change(e,c,'raw','30,31,30,31');assert.match(c.textContent,/这次反而变大/);change(e,c,'mode','reduce');assert.match(c.textContent,/否，编码前已丢失灰度差别/);assert.match(c.textContent,/是，游程可逐项还原/);e.dom.window.close();
+});
+test('firewall matches the unchanged packet across source, port, direction and protocol',()=>{
+ const e=env(8),c=open(e,'merged-16'),m=e.w.NOTE_LABS.securityMath;
+ assert.equal(m.cidr('10.20.8.0/   '),null);assert.equal(m.cidr('10.20.8.0/0x10'),null);assert.equal(m.cidr('10.20.8.0/1e1'),null);assert.equal(m.inSubnet('203.0.113.27','0.0.0.0/0'),true);assert.equal(m.inSubnet('10.20.8.16','10.20.8.16/32'),true);assert.equal(m.inSubnet('10.20.8.17','10.20.8.16/32'),false);
+ click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/203.0.113.27.*已阻止/);change(e,c,'source','10.20.9.16');click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/允许通过/);change(e,c,'protocol','UDP');click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/没有命中/);change(e,c,'protocol','TCP');change(e,c,'direction','out');click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/出站.*已阻止/);e.dom.window.close();
+});
+test('dragging firewall rules changes first-match behavior without changing the packet',()=>{
+ const e=env(8),c=open(e,'merged-16');change(e,c,'source','10.20.8.16');click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/允许通过/);
+ const rows=[...c.querySelectorAll('[data-lab-drop]')];rows.forEach((el,i)=>el.getBoundingClientRect=()=>({left:100,right:400,top:100+i*100,bottom:200+i*100}));const h=c.querySelector('[data-key="2"]');const p=(type,x,y)=>h.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y}));p('pointerdown',180,250);p('pointermove',180,150);p('pointerup',180,150);const afterDrop=e.w.Date.now()+500;e.w.Date.now=()=>afterDrop;click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/10.20.8.16.*已阻止.*第1条/);e.dom.window.close();
+});
+const settle=async fn=>{for(let i=0;i<250;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}assert.fail('async model did not finish');};
+test('real signature UI verifies original, rejects tampering and rejects a different public key',async()=>{
+ const e=env(8),c=open(e,'merged-15');click(c,'keys');await settle(()=>c.querySelector('.lab-output').textContent.includes('新密钥已生成'));click(c,'sign');await settle(()=>c.querySelector('.lab-output').textContent.includes('已用发送方私钥签名'));click(c,'verify');await settle(()=>c.querySelector('.lab-output').textContent.includes('验签通过'));
+ change(e,c,'received','被篡改的消息');click(c,'verify');await settle(()=>c.querySelector('.lab-output').textContent.includes('验签失败'));change(e,c,'received','本周学习计算机网络');change(e,c,'signer','other');click(c,'verify');await settle(()=>c.querySelector('.lab-output').textContent.includes('验签失败'));e.dom.window.close();
+});
+test('real RSA-OAEP restores messages, rejects modified ciphertext and displays empty plaintext',async()=>{
+ const e=env(8),r=e.w.NOTE_LABS.registry['merged-15'],s=structuredClone(r.initial);await r.action(s,'keys');s.mode='encryption';s.text='实际密文';await r.action(s,'encrypt');assert.equal(s.cipher.length,512);await r.action(s,'decrypt');assert.equal(s.clear,'实际密文');s.cipher=(s.cipher[0]==='0'?'1':'0')+s.cipher.slice(1);await r.action(s,'decrypt');assert.equal(s.decrypted,false);assert.match(s.message,/解密失败/);s.text='';await r.action(s,'encrypt');await r.action(s,'decrypt');assert.equal(s.decrypted,true);assert.match(r.render(s),/空字符串/);s.mode='hash';s.text='abc';await r.action(s,'hash');assert.equal(s.digest,'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');e.dom.window.close();
+});
+test('natural join matches all shared attributes and projection removes actual duplicates',()=>{
+ const e=env(10),c=open(e,'merged-20');let tables=c.querySelectorAll('.note-lab table');assert.equal(tables[2].querySelectorAll('tbody tr').length,2);assert.doesNotMatch(tables[2].textContent,/91/);change(e,c,'mode','project');tables=c.querySelectorAll('.note-lab table');assert.equal(tables[2].querySelectorAll('tbody tr').length,2);change(e,c,'left','01,甲,A\n02,乙,A');tables=c.querySelectorAll('.note-lab table');assert.equal(tables[2].querySelectorAll('tbody tr').length,1);change(e,c,'mode','select');change(e,c,'filter','Z');assert.match(c.textContent,/结果为空关系/);e.dom.window.close();
+});
+test('SQL operations accumulate, preserve NULL semantics and never revive a dropped table',()=>{
+ const e=env(10),m=e.w.NOTE_LABS.dataMath,db=m.initialDB();m.sqlExecute(db,'DELETE FROM students WHERE score < 60;');assert.deepEqual(Array.from(db.rows,r=>r.id),[1,3,4]);assert.equal(m.sqlExecute(db,'DELETE FROM students WHERE score < 60;').message,'DELETE删除了0行；表、字段和约束仍保留。');m.sqlExecute(db,'ALTER TABLE students ADD COLUMN remark TEXT;');m.sqlExecute(db,"INSERT INTO students (id,name,score) VALUES (5,'O''Brien',75);");assert.equal(db.rows.at(-1).name,"O'Brien");assert.equal(db.rows.at(-1).remark,null);m.sqlExecute(db,'UPDATE students SET score = 60 WHERE score IS NULL;');assert.equal(db.rows.find(r=>r.id===4).score,60);m.sqlExecute(db,'DELETE FROM students;');assert.equal(db.exists,true);assert.equal(db.columns.length,4);m.sqlExecute(db,'DROP TABLE students;');assert.equal(db.exists,false);assert.throws(()=>m.sqlExecute(db,'SELECT * FROM students;'),/已被DROP/);e.dom.window.close();
+});
+test('SQL invalid numeric precision and identifiers cannot silently change the table',()=>{
+ const e=env(10),c=open(e,'y2024q36');for(const sql of ['UPDATE students SET score=9007199254740993;','UPDATE students SET score='+ '9'.repeat(400)+';','UPDATE students SET score=1.1234567;','ALTER TABLE students ADD COLUMN select TEXT;']){change(e,c,'sql',sql);click(c,'execute');assert.equal(c.querySelector('.note-lab table').querySelectorAll('tbody tr').length,4);assert.match(c.querySelector('.note-lab table').textContent,/88/);assert.match(c.querySelector('.lab-output').textContent,/不执行|不支持/);}change(e,c,'example','drop');click(c,'execute');assert.match(c.textContent,/表不存在/);click(c,'undo');assert.equal(c.querySelector('.note-lab table').querySelectorAll('tbody tr').length,4);e.dom.window.close();
+});
+test('bubble sorting computes one pass, both directions and stable equal values',()=>{
+ const e=env(11),r=e.w.NOTE_LABS.registry.y2024q69,s=structuredClone(r.initial);r.action(s,'load');r.action(s,'pass');assert.deepEqual(Array.from(s.items,x=>x.value),[5,2,8,7,3,9]);assert.equal(s.comparisons,5);assert.equal(s.done,false);r.action(s,'all');assert.deepEqual(Array.from(s.items,x=>x.value),[2,3,5,7,8,9]);s.raw='3,1,3,-2';s.direction='desc';r.action(s,'load');r.action(s,'all');assert.deepEqual(Array.from(s.items,x=>x.value),[3,3,1,-2]);assert.deepEqual(Array.from(s.items.filter(x=>x.value===3),x=>x.origin),[1,3]);s.raw='1,2,3';s.direction='asc';r.action(s,'load');r.action(s,'all');assert.equal(s.pass,1);assert.equal(s.swaps,0);e.dom.window.close();
+});
+test('released cloud instance cannot resume billing through its resize action',()=>{
+ const e=env(9),c=open(e,'y2026q39');c.querySelector('[data-sim-choice="4"]').click();assert.equal(c.querySelector('[data-instance-state]').textContent,'已释放');const resize=c.querySelector('[data-sim-choice="0"]');assert.equal(resize.disabled,true);resize.click();assert.equal(c.querySelector('[data-bill]').textContent,'¥0.00/h');c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-instance-state]').textContent,'运行中');assert.equal(c.querySelector('[data-sim-choice="0"]').disabled,false);e.dom.window.close();
 });

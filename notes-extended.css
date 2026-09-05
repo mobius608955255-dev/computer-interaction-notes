@@ -1,0 +1,33 @@
+/* Shared readable chrome for network, media, security and data workspaces. */
+.note-lab :is(.ext-route,.ext-transfer,.ext-address,.ext-browser,.ext-ipv6,.ext-wave,.ext-dataset,.ext-crypto,.ext-database,.ext-sort){min-width:0;max-width:100%;box-sizing:border-box}
+.note-lab .ext-route{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.note-lab .ext-route span{padding:12px 8px;text-align:center;border:1px solid #c6a2cd;border-radius:10px;background:#fbf2fb;font-size:14px}
+.note-lab .ext-transfer{padding:18px;border:1px solid #cbaed3;border-radius:12px;background:#fff;text-align:center}
+.ext-transfer [role=progressbar]{height:18px;border-radius:12px;background:#ede5f1;overflow:hidden;margin-bottom:12px}
+.ext-transfer [role=progressbar] i{display:block;height:100%;background:linear-gradient(90deg,#c55397,#8251ac);transition:width .1s linear}
+.ext-transfer strong{font-size:24px;color:#6d3c82}
+.note-lab .ext-address{padding:14px;background:#f8f2fa;border:1px solid #ccb8d3;border-radius:8px;margin:12px 0;overflow-wrap:anywhere}
+.ext-address b,.ext-address code{display:block;margin:4px 0;white-space:normal}
+.note-lab .ext-browser{border:1px solid #aa9db7;border-radius:10px;background:#fff;padding:14px}
+.ext-browser>header{padding-bottom:12px;border-bottom:1px solid #d6ccd9}
+.note-lab .ext-ipv6{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+.ext-ipv6>div{display:grid;gap:6px;padding:12px;border:1px solid #cab4d1;border-radius:9px;background:#fff}
+.ext-ipv6 code{font-size:22px;color:#774184}.ext-ipv6 span{font:13px ui-monospace,monospace;overflow-wrap:anywhere}.ext-ipv6 small{font-size:13px;color:#685d70}
+.note-lab .ext-wave{display:block;width:100%;height:auto;border:1px solid #cdb7d4;border-radius:10px;background:#fff;margin:12px 0}
+.note-lab .ext-swatch-row{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.ext-swatch-row>div{flex:1 0 38px;max-width:74px;min-height:68px;display:flex;flex-direction:column;justify-content:space-between;text-align:center;border:1px solid #9d87a5;border-radius:6px;overflow:hidden;background:#fff}
+.ext-swatch-row i{height:35px;display:block}.ext-swatch-row b{font-size:13px;padding:4px}
+.note-lab .ext-dataset{padding:14px;border:1px solid #cdb8d6;border-radius:10px;background:#fff;margin:14px 0}
+.note-lab .ext-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.ext-metrics>div{padding:12px;border-radius:8px;background:#f4eaf6;overflow-wrap:anywhere}.ext-metrics b,.ext-metrics span{display:block}.ext-metrics span{font-size:20px;color:#653678;margin-top:6px}
+.note-lab .ext-key{padding:12px;border:1px dashed #ac84b8;border-radius:9px;background:#fbf4fc;overflow-wrap:anywhere;margin:10px 0}
+.note-lab .ext-code{display:block;width:100%;box-sizing:border-box;font:14px/1.7 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #bdacc8;border-radius:8px;padding:14px;background:#fcfaff;color:#34273f;margin:12px 0}
+.note-lab .ext-sort-array{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin:18px 0}
+.ext-sort-array>div{min-width:52px;padding:10px 6px;display:grid;gap:6px;text-align:center;border:2px solid #c7b0d0;border-radius:8px;background:#fff}
+.ext-sort-array b{font-size:23px}.ext-sort-array small{font-size:12px}.ext-sort-array .active{border-color:#b35191;background:#fce9f5;transform:translateY(-5px)}.ext-sort-array .settled{border-color:#6e9384;background:#edf7f1}
+.note-lab .ext-step-log{padding-left:24px;max-height:260px;overflow:auto;font-size:14px;line-height:1.8}
+.note-lab .ext-rule-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px;border:1px solid #c4b1cf;border-radius:9px;margin:10px 0;background:#fff}
+.ext-rule-row p{margin:4px 0}.ext-rule-row.match{border:2px solid #a45b92;background:#fff0fa}
+.note-lab .ext-rule-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.note-lab .ext-rule-actions [data-lab-drag="object"]{touch-action:none;cursor:grab;user-select:none}
+@media(max-width:700px){.note-lab .ext-route{grid-template-columns:repeat(2,minmax(0,1fr))}.note-lab .ext-metrics{grid-template-columns:minmax(0,1fr)}.note-lab .ext-rule-row{grid-template-columns:minmax(0,1fr)}.ext-ipv6 span{font-size:12px}.ext-ipv6>div{padding:9px}.ext-sort-array>div{min-width:42px}.ext-sort-array b{font-size:20px}}

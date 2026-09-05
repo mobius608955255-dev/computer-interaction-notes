@@ -21,7 +21,7 @@
 - 以教材11章为唯一主目录，章节页可从页首直接切换
 - 窄栏连续阅读、本章搜索、章节切换、本章目录、折叠来源与按需加载演示
 
-线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=36)
+线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=37)
 
 ## 2022补充与回归
 
@@ -62,3 +62,7 @@
 ### v35 窄屏补修
 
 全站220张卡片逐章检查，修复9类旧演示控件裁切；三个精修章节同时通过760px布局检查。详见 CORE-REFINEMENT.md。
+
+## 第6—11章精修（v37）
+
+复核78条笔记，精修18条正文和17张概念对照表；重建10个输入驱动演示，覆盖网络计算、采样压缩、真实密码运算、规则匹配、SQL状态和冒泡排序。97项回归检查通过，详见 [EXTENDED-REFINEMENT.md](EXTENDED-REFINEMENT.md)。

@@ -1,0 +1,48 @@
+/* Ordered packet rules and real browser cryptography; all data stays in this card. */
+(() => {
+ 'use strict';
+ const {register,registry,ui}=window.NOTE_LABS;
+ const {btn,field,select,table,coach,output,esc}=ui;
+ const controls=x=>`<div class="lab-controls">${x}</div>`;
+ const area=(k,l,v,disabled=false)=>`<label>${l}<textarea data-field="${k}" rows="3" ${disabled?'disabled':''}>${esc(v)}</textarea></label>`;
+ function ip4(raw){const p=String(raw).split('.');return p.length===4&&p.every(v=>/^\d{1,3}$/.test(v)&&Number(v)<=255)?p.reduce((a,v)=>a*256+Number(v),0):null;}
+ function cidr(raw){if(raw==='*')return {network:0,mask:0};const p=raw.split('/'),ip=ip4(p[0]),bits=p.length===1?32:Number(p[1]);if(ip===null||p.length>2||(p.length===2&&!/^\d{1,2}$/.test(p[1]))||!Number.isInteger(bits)||bits<0||bits>32)return null;const mask=bits===0?0:(0xffffffff<<(32-bits))>>>0;return {network:(ip&mask)>>>0,mask};}
+ const inSubnet=(ip,range)=>{const x=ip4(ip),net=cidr(range);return x!==null&&net!==null&&((x&net.mask)>>>0)===net.network;};
+ function matchRule(s,r){return inSubnet(s.source,r.source)&&(r.direction==='any'||r.direction===s.direction)&&(r.protocol==='any'||r.protocol===s.protocol)&&(r.port==='*'||Number(r.port)===Number(s.port));}
+ const defaults=[{id:1,source:'10.20.0.0/16',direction:'in',protocol:'TCP',port:'3389',action:'allow'},{id:2,source:'*',direction:'in',protocol:'TCP',port:'3389',action:'deny'},{id:3,source:'*',direction:'in',protocol:'TCP',port:'443',action:'allow'}];
+ function reorder(s,from,to){const i=s.rules.findIndex(r=>r.id===from);if(i<0||to<0||to>=s.rules.length)return;const [r]=s.rules.splice(i,1);s.rules.splice(to,0,r);s.last=null;}
+ register(['merged-16'],'同一份请求穿过规则：来源、方向、端口一起判断','修改请求、添加规则或真正拖动规则次序，再发送请求观察首条命中。',{
+   source:'203.0.113.27',destination:'192.0.2.10',direction:'in',protocol:'TCP',port:'3389',rules:defaults,nextId:4,fallback:'deny',last:null,error:'',draftSource:'10.20.0.0/16',draftDirection:'in',draftProtocol:'TCP',draftPort:'3389',draftAction:'allow'
+ },s=>controls(field('source','请求来源IPv4',s.source)+select('direction','相对受保护主机的方向',s.direction,[['in','入站'],['out','出站']])+select('protocol','请求协议',s.protocol,[['TCP','TCP'],['UDP','UDP']])+field('port','目标端口',s.port,'number','min="1" max="65535"')+btn('发送这份请求','send'))+
+   `<div class="ext-address"><b>当前请求</b><code>${esc(s.source)} → ${s.destination} : ${esc(s.port)} / ${esc(s.protocol)} · ${s.direction==='in'?'入站':'出站'}</code></div><h4>从上向下：本例首条匹配决定动作</h4>${s.rules.map((r,i)=>`<section class="ext-rule-row ${s.last?.rule===r.id?'match':''}" data-lab-drop="${i}"><div><b>第${i+1}条 · ${r.action==='allow'?'允许':'阻止'}</b><p>来源 ${esc(r.source==='*'?'任意':r.source)}；${{in:'入站',out:'出站',any:'任意方向'}[r.direction]}；${esc(r.protocol)}；端口 ${esc(r.port)}</p></div><div class="ext-rule-actions"><button type="button" data-lab-drag="object" data-key="${r.id}" aria-label="拖动第${i+1}条规则">拖动排序</button>${btn('上移','up',r.id,i?'':'disabled')}${btn('下移','down',r.id,i<s.rules.length-1?'':'disabled')}${btn('移除','remove',r.id)}</div></section>`).join('')}`+controls(select('fallback','没有命中时',s.fallback,[['deny','默认阻止'],['allow','默认允许']]))+
+   `<section class="ext-dataset"><h4>添加一条规则</h4>${controls(field('draftSource','来源IP或CIDR（*表示任意）',s.draftSource)+select('draftDirection','规则方向',s.draftDirection,[['in','入站'],['out','出站'],['any','任意方向']])+select('draftProtocol','规则协议',s.draftProtocol,[['TCP','TCP'],['UDP','UDP'],['any','任意协议']])+field('draftPort','规则端口（*表示任意）',s.draftPort)+select('draftAction','匹配动作',s.draftAction,[['allow','允许'],['deny','阻止']])+btn('加到规则末尾','add'))}</section>`+
+   output(s.error|| (s.last?`${s.last.packet}：${s.last.action==='allow'?'允许通过':'已阻止'}。${s.last.rule?'命中第'+s.last.position+'条':'没有命中，采用默认动作'}。`:'发送前先核对来源、方向、协议和端口。更改规则或请求后需重新发送。'))+coach('这是按“首条匹配”处理的有序访问控制模型，不是Windows防火墙的规则优先级仿真。不同产品的冲突处理方式不同。端口获准不等于应用没有漏洞，也不会自动证明请求者身份。'),
+ (s,a,v)=>{s.error='';if(a==='send'){if(ip4(s.source)===null||!/^\d+$/.test(s.port)||Number(s.port)<1||Number(s.port)>65535){s.last=null;s.error='请提供有效IPv4和1—65535端口。';return;}const index=s.rules.findIndex(r=>matchRule(s,r)),r=s.rules[index];s.last={packet:`${s.source} → ${s.destination}:${s.port}/${s.protocol} · ${s.direction==='in'?'入站':'出站'}`,rule:r?.id,position:index+1,action:r?.action||s.fallback};}
+   if(a==='add'){if(s.rules.length>=12){s.error='本例最多12条规则，请先移除不需要的规则。';return;}if(!cidr(s.draftSource)||!(s.draftPort==='*'||/^\d+$/.test(s.draftPort)&&Number(s.draftPort)>=1&&Number(s.draftPort)<=65535)){s.error='规则来源须为IPv4、CIDR或*，端口须为1—65535或*。';return;}s.rules.push({id:s.nextId++,source:s.draftSource,direction:s.draftDirection,protocol:s.draftProtocol,port:s.draftPort,action:s.draftAction});s.last=null;}
+   if(a==='remove'){s.rules=s.rules.filter(r=>r.id!==Number(v));s.last=null;}if(a==='up'||a==='down'){const index=s.rules.findIndex(r=>r.id===Number(v));reorder(s,Number(v),index+(a==='up'?-1:1));}
+ },(s,k,v)=>{s[k]=v;s.error='';s.last=null;});
+ registry['merged-16'].gesture=(s,g,root)=>{if(g.kind!=='object'||!g.moved)return;const target=[...root.querySelectorAll('[data-lab-drop]')].find(el=>{const r=el.getBoundingClientRect();return g.endX>=r.left&&g.endX<=r.right&&g.endY>=r.top&&g.endY<=r.bottom;});if(target)reorder(s,Number(g.key),Number(target.dataset.labDrop));};
+
+ const hex=buffer=>Array.from(new Uint8Array(buffer),v=>v.toString(16).padStart(2,'0')).join('');
+ const unhex=text=>/^(?:[0-9a-f]{2})+$/i.test(text)?new Uint8Array(text.match(/../g).map(v=>parseInt(v,16))):null;
+ const bytes=text=>new TextEncoder().encode(text);
+ register(['merged-15'],'亲自签名、篡改和验签，再比较加密与摘要','本卡调用浏览器密码API计算；修改原文、换公钥或改密文，结果会真实变化。',{
+   mode:'signature',text:'本周学习计算机网络',received:'本周学习计算机网络',signer:'sender',keys:null,busy:false,signature:'',cipher:'',clear:'',decrypted:false,digest:'',message:'先生成本次示例密钥。密钥与内容只保留在本次卡片内。'
+ },s=>{const disabled=s.busy?'disabled':'',ready=s.keys&&!s.busy;let body='';
+   if(s.mode==='signature')body=area('text','发送方要签名的原文',s.text,s.busy)+controls(btn('使用发送方私钥签名','sign','',ready?'':'disabled'))+(s.signature?`<code class="ext-code">签名（十六进制）：${s.signature}</code>`:'')+area('received','收到的原文（可改字模拟篡改）',s.received,s.busy)+controls(select('signer','用谁的公钥验证',s.signer,[['sender','发送方公钥'],['other','另一人的公钥']])+btn('验证收到的原文与签名','verify','',ready&&s.signature?'':'disabled'));
+   if(s.mode==='encryption')body=area('text','发给接收方的短消息',s.text,s.busy)+controls(btn('用接收方公钥加密','encrypt','',ready?'':'disabled'))+area('cipher','密文（十六进制，可改动后再尝试解密）',s.cipher,s.busy)+controls(btn('用接收方私钥解密','decrypt','',ready&&s.cipher?'':'disabled'))+(s.decrypted?`<section class="ext-dataset"><h4>实际解密结果</h4><p>${esc(s.clear||'空字符串')}</p></section>`:'')+coach('本例直接用RSA-OAEP加密短消息，UTF-8最多190字节；真实大文件通常使用对称加密，并通过非对称机制保护或协商密钥。签名和加密使用不同算法与密钥。');
+   if(s.mode==='hash')body=area('text','计算摘要的原文',s.text,s.busy)+controls(btn('计算SHA-256摘要','hash','',disabled))+(s.digest?`<code class="ext-code">${s.digest}</code><p>256 bit = 32 B；十六进制写成64个字符。</p>`:'')+coach('摘要没有对应的解密操作；没有密钥的摘要本身不能证明发送者身份。收到文本和摘要后，攻击者若能同时替换二者，仅重算比对摘要不足以认证来源。');
+   return controls(select('mode','比较的机制',s.mode,[['signature','数字签名：原文与身份绑定'],['encryption','公钥加密：保密传输'],['hash','摘要：数据指纹']])+btn(s.busy?'计算中…':s.keys?'重新生成示例密钥':'生成本次示例密钥','keys','',disabled))+`<div class="ext-key">${s.keys?'已生成发送方、另一人的签名密钥，以及接收方的加密密钥。':'尚未生成示例密钥。'}</div>`+body+output(esc(s.message))+coach('签名私钥属于签名者，验证使用其公钥；加密使用接收方公钥，解密由接收方私钥完成。真实场景还需核验公钥与身份的可信绑定。本例使用Web Crypto：ECDSA P-256、RSA-OAEP/SHA-256与SHA-256，不向网络发送内容。');
+ },async(s,a)=>{
+   if(s.busy)return;const api=window.crypto?.subtle;if(!api){s.message='当前浏览器未提供安全环境中的Web Crypto，无法执行此卡计算。';return;}s.busy=true;s.message='正在计算…';
+   try{
+     if(a==='keys'){const [sender,other,receiver]=await Promise.all([api.generateKey({name:'ECDSA',namedCurve:'P-256'},false,['sign','verify']),api.generateKey({name:'ECDSA',namedCurve:'P-256'},false,['sign','verify']),api.generateKey({name:'RSA-OAEP',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'},false,['encrypt','decrypt'])]);s.keys={sender,other,receiver};s.signature=s.cipher=s.clear=s.digest='';s.decrypted=false;s.message='新密钥已生成，旧签名与密文已清空。';}
+     if(a==='hash'){if(bytes(s.text).length>20000)throw Error('text');s.digest=hex(await api.digest('SHA-256',bytes(s.text)));s.message='摘要已由当前原文计算。改变任一字符后重新计算，可比较结果。';}
+     if(a==='sign'&&s.keys){if(bytes(s.text).length>20000)throw Error('text');s.signature=hex(await api.sign({name:'ECDSA',hash:'SHA-256'},s.keys.sender.privateKey,bytes(s.text)));s.received=s.text;s.message='已用发送方私钥签名；原文仍是可读文本，签名不把原文变成密文。';}
+     if(a==='verify'&&s.keys&&s.signature){const valid=await api.verify({name:'ECDSA',hash:'SHA-256'},s.keys[s.signer].publicKey,unhex(s.signature),bytes(s.received));s.message=valid?'验签通过：此原文与签名匹配所选公钥。公钥属于谁仍需可信来源。':'验签失败：收到的原文被改动，或所选公钥与签名者不匹配。';}
+     if(a==='encrypt'&&s.keys){if(bytes(s.text).length>190){s.message='本例RSA-OAEP短消息上限为190个UTF-8字节，请缩短原文。';return;}s.cipher=hex(await api.encrypt({name:'RSA-OAEP'},s.keys.receiver.publicKey,bytes(s.text)));s.clear='';s.decrypted=false;s.message='已用接收方公钥生成实际密文；私钥仍留在接收方。';}
+     if(a==='decrypt'&&s.keys){s.clear='';s.decrypted=false;const b=unhex(s.cipher);if(!b||b.length!==256){s.message='本例RSA密文应为256字节，即512个十六进制字符。';return;}s.clear=new TextDecoder().decode(await api.decrypt({name:'RSA-OAEP'},s.keys.receiver.privateKey,b));s.decrypted=true;s.message='已用接收方私钥解出原文。';}
+   }catch{s.message=a==='decrypt'?'解密失败：密文被改动或不属于本次密钥。':'计算未完成，请检查输入长度并重试。';}finally{s.busy=false;}
+ },(s,k,v)=>{if(s.busy)return;s[k]=v;s.message='内容或机制已改变，请重新执行对应操作。';if(k==='text')s.digest='';if(k==='cipher'||k==='mode'){s.clear='';s.decrypted=false;}});
+ window.NOTE_LABS.securityMath={ip4,cidr,inSubnet,matchRule,reorder};
+})();

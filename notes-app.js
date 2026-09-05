@@ -8,7 +8,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 36;
+  const version = 37;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -756,7 +756,7 @@
         text('[data-recall]', values[0]); text('[data-precision]', values[1]);
         break;
       }
-      case 'y2026q39': if(index===0){text('[data-vcpu]','8');text('[data-vram]','16 GB');text('[data-bill]','¥1.28/h');} else if(index===4){text('[data-instance-state]','已释放');text('[data-bill]','¥0.00/h');} break;
+      case 'y2026q39': if(index===0){text('[data-vcpu]','8');text('[data-vram]','16 GB');text('[data-bill]','¥1.28/h');} else if(index===4){text('[data-instance-state]','已释放');text('[data-vcpu]','—');text('[data-vram]','—');text('[data-bill]','¥0.00/h');const resize=$('[data-sim-choice="0"]',card);if(resize)resize.disabled=true;} break;
       case 'y2026q16':
         text('[data-cia-a]',index===0?'0%':'100%'); text('[data-cia-c]',index===1?'0%':'100%'); text('[data-cia-i]',index===2?'0%':'100%'); break;
       case 'merged-16': text('[data-firewall-log]', index===0?'ALLOW 203.0.113.27:3389 — 规则过宽':index===1?'ALLOW 10.20.8.16:3389 — 管理网段匹配':index===2?'BLOCK 203.0.113.27:3389 — 已记录':'防火墙在线，但漏洞仍未修补'); break;

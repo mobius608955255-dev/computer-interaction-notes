@@ -244,7 +244,13 @@
           if(value===initial)return;
           if(model.change)model.change(s,x.dataset.field,value);else s[x.dataset.field]=value;
         });
-        model.action(s,a,v);render(root);
+        const pending=model.action(s,a,v);render(root);
+        if(pending&&typeof pending.then==='function')pending.then(()=>{
+          if(root.isConnected&&states.get(root)===s)render(root);
+        }).catch(()=>{
+          s.busy=false;s.message='本次操作未完成，请重试。';
+          if(root.isConnected&&states.get(root)===s)render(root);
+        });
       };
       root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
       root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"],[data-lab-drag="file"]')){e.preventDefault();act('menu');}});
