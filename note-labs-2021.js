@@ -18,7 +18,7 @@
   register(['y2021q10'],'在空白幻灯片上真正拖出文本框','先选择文本框工具，在画布内按住拖动，再输入文字。',{tool:false,box:null,text:'',message:'单击空白背景不会自动建立文本对象。'},s=>
     office('PowerPoint','插入',btn('文本框','tool','',`aria-pressed="${s.tool}"`),`<div class="lab-draw-slide" data-lab-drag="box" aria-label="空白幻灯片画布">${s.box?`<div class="lab-drawn-box" style="left:${s.box.x}%;top:${s.box.y}%;width:${s.box.w}%;height:${s.box.h}%">${area('text','文本框内容',s.text,'aria-label="文本框内容"')}</div>`:'<span class="lab-canvas-hint">在这里拖出文本区域</span>'}</div>`)+`<div class="lab-controls">${btn('键盘辅助：创建文本框','create')}${btn('删除文本框','delete','',s.box?'':'disabled')}</div>${output(s.message)}`,
     (s,a)=>{if(a==='tool'){s.tool=true;s.message='文本框工具已就绪，请在画布内拖动。';}if(a==='create'){s.box={x:10,y:20,w:75,h:45};s.tool=false;s.message='已创建文本框，可在对象内输入。';}if(a==='delete'){s.box=null;s.text='';s.message='文本对象已删除，幻灯片背景仍保留。';}});
-  registry.y2021q10.gesture=(s,g)=>{if(g.kind==='box'&&s.tool&&g.box){const b=g.box;b.x=Math.min(b.x,75);b.y=Math.min(b.y,60);b.w=Math.max(25,Math.min(b.w,100-b.x));b.h=Math.max(35,Math.min(b.h,100-b.y));s.box=b;s.tool=false;s.message='拖动创建了一个文本框；文字属于此对象，不属于背景。';}};
+  registry.y2021q10.gesture=(s,g)=>{if(g.kind==='box'&&s.tool&&g.box){const b=g.box,minW=Math.min(100,Math.max(25,120/(g.rect?.width||480)*100)),minH=Math.min(100,Math.max(35,110/(g.rect?.height||300)*100));b.x=Math.min(b.x,100-minW);b.y=Math.min(b.y,100-minH);b.w=Math.max(minW,Math.min(b.w,100-b.x));b.h=Math.max(minH,Math.min(b.h,100-b.y));s.box=b;s.tool=false;s.message='拖动创建了一个文本框；文字属于此对象，不属于背景。';}};
 
   register(['y2021q15'],'跟随一帧数据离开本机','选择同网或异网目的地，逐段看网卡、交换机、网关的工作。',{remote:true,step:0,random:false},s=>{
     const route=s.remote?['本机网卡','交换机','默认网关 / 路由器','目标网络主机']:['本机网卡','交换机','同网主机'];

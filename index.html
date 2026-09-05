@@ -9,12 +9,12 @@
   <meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:title" content="山东专升本计算机系统笔记"><meta property="og:description" content="按教材章节归纳计算机知识，配合可操作的文档、表格与系统演示。"><meta property="og:image" content="https://mobius608955255-dev.github.io/computer-interaction-notes/og.png">
   <link rel="canonical" href="https://mobius608955255-dev.github.io/computer-interaction-notes/">
   <title>山东专升本计算机系统笔记</title>
-  <script>(function(){var q=new URLSearchParams(location.search),c=Number(q.get('chapter'));if(c>=1&&c<=11){location.replace('./chapter'+c+'.html?v=30#chapter-top');}})();</script>
-  <link rel="stylesheet" href="./notes-2020.css?v=30">
+  <script>(function(){var q=new URLSearchParams(location.search),c=Number(q.get('chapter'));if(c>=1&&c<=11){location.replace('./chapter'+c+'.html?v=31#chapter-top');}})();</script>
+  <link rel="stylesheet" href="./notes-2020.css?v=31">
 </head>
 <body class="home-page">
   <header class="site-header">
-    <a class="brand" href="./index.html?v=30"><span class="brand-mark">11</span><span class="brand-copy"><strong>计算机系统笔记</strong><small>教材统一目录</small></span></a>
+    <a class="brand" href="./index.html?v=31"><span class="brand-mark">11</span><span class="brand-copy"><strong>计算机系统笔记</strong><small>教材统一目录</small></span></a>
     <a class="official-link" href="https://www.sdzk.cn/NewsInfo.aspx?BCID=1195&amp;CID=1133&amp;NewsID=7081" target="_blank" rel="noreferrer">现行考试要求</a>
   </header>
   <main class="home-main">
@@ -30,12 +30,12 @@
       <noscript>请启用JavaScript查看章节目录。</noscript>
     </section>
   </main>
-  <footer class="site-footer"><a href="./chapter1.html?v=30">从第一章开始</a></footer>
-  <script src="./notes-2020-data.js?v=30"></script><script src="./notes-2021-data.js?v=30"></script><script src="./notes-2022-data.js?v=30"></script><script src="./notes-2023-data.js?v=30"></script>
-  <script src="./notes-2024-data.js?v=30"></script>
-  <script src="./notes-2025-data.js?v=30"></script>
-  <script src="./notes-2026-data.js?v=30"></script>
-  <script src="./notes-data.js?v=30"></script>
+  <footer class="site-footer"><a href="./chapter1.html?v=31">从第一章开始</a></footer>
+  <script src="./notes-2020-data.js?v=31"></script><script src="./notes-2021-data.js?v=31"></script><script src="./notes-2022-data.js?v=31"></script><script src="./notes-2023-data.js?v=31"></script>
+  <script src="./notes-2024-data.js?v=31"></script>
+  <script src="./notes-2025-data.js?v=31"></script>
+  <script src="./notes-2026-data.js?v=31"></script>
+  <script src="./notes-data.js?v=31"></script>
   <script>
     (function(){
       var d=window.NOTES,g=document.getElementById('chapter-grid');
@@ -43,7 +43,7 @@
       document.getElementById('note-total').textContent=d.notes.length+'条知识笔记';
       g.innerHTML=d.chapters.map(function(c){
         var notes=d.notes.filter(function(x){return x.chapter===c.number}),sources=notes.reduce(function(sum,n){return sum+n.sources.length},0);
-        return '<a class="home-chapter" href="./chapter'+c.number+'.html?v=30"><span class="home-number">'+String(c.number).padStart(2,'0')+'</span><span class="home-copy"><strong>'+c.title+'</strong><small>'+c.sections.map(function(s){return s.id+' '+s.title}).join(' · ')+'</small></span><span class="home-count">'+notes.length+'条 · '+sources+'题</span></a>';
+        return '<a class="home-chapter" href="./chapter'+c.number+'.html?v=31"><span class="home-number">'+String(c.number).padStart(2,'0')+'</span><span class="home-copy"><strong>'+c.title+'</strong><small>'+c.sections.map(function(s){return s.id+' '+s.title}).join(' · ')+'</small></span><span class="home-count">'+notes.length+'条 · '+sources+'题</span></a>';
       }).join('');
     })();
   </script>
