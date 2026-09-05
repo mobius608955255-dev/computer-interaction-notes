@@ -214,9 +214,19 @@
       if(states.has(root))return;
       states.set(root,fresh(root.dataset.lab));render(root);
       let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
-      const act=(a,v)=>{registry[root.dataset.lab].action(states.get(root),a,v);render(root);};
+      const act=(a,v)=>{
+        const model=registry[root.dataset.lab],s=states.get(root);
+        root.querySelectorAll('input[data-field],textarea[data-field]').forEach(x=>{
+          const value=x.type==='checkbox'?x.checked:x.value,initial=x.type==='checkbox'?x.defaultChecked:x.defaultValue;
+          if(value===initial)return;
+          if(model.change)model.change(s,x.dataset.field,value);else s[x.dataset.field]=value;
+        });
+        model.action(s,a,v);render(root);
+      };
       root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;if(!b||b.disabled){if(dirty){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
       root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"]')){e.preventDefault();act('menu');}});
+      // Capture typing immediately; do not depend on blur/change before a toolbar click.
+      root.addEventListener('input',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;});
       root.addEventListener('change',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;if(pointerTarget&&pointerTarget!==x){dirty=true;return;}render(root);});
       root.addEventListener('keydown',e=>{
         const h=e.target.closest('[data-lab-drag="ruler"]');if(!h||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const s=states.get(root),k=h.dataset.key,delta=e.key==='ArrowRight'?2:-2;if(k==='both'){const change=number(s.rest+delta,0,55)-s.rest;s.rest+=change;s.first=number(s.first+change,0,60);}else s[k]=number(s[k]+delta,0,60);render(root);root.querySelector(`[data-key="${k}"]`)?.focus();

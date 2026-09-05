@@ -97,3 +97,6 @@ test('blur caused by a pointer click does not detach the clicked action',()=>{
 test('Excel wildcard replacement works without an invented option',()=>{
   const e=env(),c=open(e,'y2024q57');click(c,'open');click(c,'replace');assert.match(c.querySelector('table').textContent,/销售部/);assert.doesNotMatch(c.querySelector('table').textContent,/销售部-01/);assert.match(c.querySelector('table').textContent,/DD-001/);e.dom.window.close();
 });
+test('input state is current even before blur/change fires',()=>{
+  const e=env(),c=open(e,'y2022q58'),input=c.querySelector('[data-field="multiplier"]');input.value='1.2';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'copy');assert.match(c.querySelector('.lab-output').textContent,/已复制 1.2/);e.dom.window.close();
+});
