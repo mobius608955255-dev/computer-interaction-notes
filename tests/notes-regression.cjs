@@ -5,10 +5,10 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {JSDOM}=require('jsdom');
 const root=path.resolve(__dirname,'..');
-const files=[2020,2022,2023,2024,2025,2026].map(y=>`notes-${y}-data.js`).concat(['notes-data.js','demos-data.js','simulations.js','note-labs.js']);
+const files=[2020,2021,2022,2023,2024,2025,2026].map(y=>`notes-${y}-data.js`).concat(['notes-data.js','demos-data.js','simulations.js','note-labs.js','note-labs-2021.js','note-labs-audit.js','notes-standard.js']);
 function env(chapter=4){
   const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
-  const w=dom.window;w.structuredClone=structuredClone;w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
+  const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
   for(const f of files)w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   w.eval(fs.readFileSync(path.join(root,'notes-app.js'),'utf8'));
   return {dom,w,d:w.document};
@@ -16,9 +16,9 @@ function env(chapter=4){
 function open(e,id){const c=e.d.getElementById(id);assert.ok(c,`note ${id}`);c.querySelector('.simulation-toggle').click();return c;}
 function click(c,action,value){const s=`[data-lab-act="${action}"]${value!==undefined?`[data-value="${value}"]`:''}`;const b=c.querySelector(s);assert.ok(b,s);b.click();}
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
-test('400 unique sources; 2022 questions 1—75 exactly once; all 204 notes have simulations',()=>{
-  const e=env();const notes=e.w.NOTES.notes;assert.equal(notes.length,204);assert.equal(e.w.NOTES.sourceCount,400);
-  const keys=notes.flatMap(n=>n.sources.map(s=>`${s.year}-${s.q}`));assert.equal(new Set(keys).size,400);
+test('460 unique sources; all seven years mapped; all 220 notes have simulations',()=>{
+  const e=env();const notes=e.w.NOTES.notes;assert.equal(notes.length,220);assert.equal(e.w.NOTES.sourceCount,460);
+  const keys=notes.flatMap(n=>n.sources.map(s=>`${s.year}-${s.q}`));assert.equal(new Set(keys).size,460);
   assert.deepEqual(Array.from(notes.flatMap(n=>n.sources).filter(s=>s.year===2022).map(s=>s.q).sort((a,b)=>a-b)),Array.from({length:75},(_,i)=>i+1));
   for(const n of notes){assert.ok(e.w.NOTE_SIMULATIONS.demos[n.id],n.id);assert.equal(typeof e.w.NOTE_SIMULATIONS.scenes[n.id],'function');assert.ok(e.w.NOTES.chapters[n.chapter-1].sections.some(s=>s.id===n.section),n.id);}
   e.dom.window.close();
@@ -99,4 +99,60 @@ test('Excel wildcard replacement works without an invented option',()=>{
 });
 test('input state is current even before blur/change fires',()=>{
   const e=env(),c=open(e,'y2022q58'),input=c.querySelector('[data-field="multiplier"]');input.value='1.2';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'copy');assert.match(c.querySelector('.lab-output').textContent,/已复制 1.2/);e.dom.window.close();
+});
+test('each year is continuous and every HTML chapter loads the complete scripts',()=>{
+ const e=env();for(const [year,count] of [[2020,65],[2021,60],[2022,75],[2023,70],[2024,70],[2025,60],[2026,60]])assert.deepEqual(Array.from(e.w.NOTES.notes.flatMap(n=>n.sources).filter(s=>s.year===year).map(s=>s.q).sort((a,b)=>a-b)),Array.from({length:count},(_,i)=>i+1));
+ for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');for(const script of files)assert.ok(html.includes(script),`${ch}: ${script}`);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}e.dom.window.close();
+});
+test('directory navigation reveals a search-hidden note; shortcuts respect editable context',()=>{
+ const e=env(3),search=e.d.querySelector('#search-input');search.value='不存在的搜索';search.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#open-drawer').click();e.d.querySelector('#drawer a[href="#y2026q47"]').click();assert.equal(e.d.querySelector('#y2026q47').classList.contains('hidden'),false);assert.equal(search.value,'');
+ const editable=e.d.createElement('div');editable.contentEditable='true';editable.setAttribute('contenteditable','true');e.d.body.append(editable);const event=new e.w.KeyboardEvent('keydown',{key:'/',bubbles:true,cancelable:true});editable.dispatchEvent(event);assert.equal(event.defaultPrevented,false);e.dom.window.close();
+});
+test('Word revision survives disabling tracking and can still be rejected',()=>{
+ const e=env(3),c=open(e,'y2023q56');click(c,'track');change(e,c,'draft','明显改善');click(c,'track');assert.match(c.querySelector('del').textContent,/可能产生改善/);click(c,'reject');assert.match(c.querySelector('.lab-paper').textContent,/可能产生改善/);assert.equal(c.querySelector('ins'),null);e.dom.window.close();
+});
+test('advanced filtering cancellation keeps applied criteria; clear restores source rows',()=>{
+ const e=env(),c=open(e,'y2020q9');click(c,'open');click(c,'apply');assert.match(c.textContent,/王宁/);assert.doesNotMatch(c.querySelector('tbody').textContent,/周林/);click(c,'open');change(e,c,'threshold',95);click(c,'cancel');assert.match(c.querySelector('tbody').textContent,/王宁/);click(c,'clear');assert.match(c.querySelector('tbody').textContent,/周林/);e.dom.window.close();
+});
+test('removing a pivot filter restores unfiltered total; two row fields create subtotals',()=>{
+ const e=env(),c=open(e,'y2024q67');for(const [f,z] of [['产品','row'],['销量','value'],['分部','filter']]){click(c,'pick',f);click(c,'place',z);}change(e,c,'filter','一部');click(c,'remove','filter:分部');assert.match(c.querySelector('.lab-pivot-layout').textContent,/50/);click(c,'pick','分部');click(c,'place','row');assert.match(c.querySelector('.lab-pivot-layout').textContent,/产品1 小计/);assert.match(c.querySelector('.lab-pivot-layout').textContent,/95/);e.dom.window.close();
+});
+test('CSV text versus general changes precision and preserves a quoted comma',()=>{
+ const e=env(),c=open(e,'y2021q47');click(c,'start');click(c,'next');click(c,'next');change(e,c,'textColumns','false');click(c,'finish');assert.match(c.textContent,/王,宁/);assert.doesNotMatch(c.querySelector('table').textContent,/001234567890123456/);assert.match(c.querySelector('table').textContent,/1234567890123450/);assert.deepEqual(Array.from(e.w.NOTE_LABS.parseCSV('a,"b,c"\n1,"two""quotes"'),r=>Array.from(r)),[['a','b,c'],['1','two"quotes']]);e.dom.window.close();
+});
+test('drawing a text box requires tool selection; real pointer drag creates editable content',()=>{
+ const e=env(5),c=open(e,'y2021q10');click(c,'tool');const canvas=c.querySelector('[data-lab-drag="box"]');canvas.getBoundingClientRect=()=>({left:0,top:0,width:400,height:300});for(const [type,x,y] of [['pointerdown',20,30],['pointermove',250,180],['pointerup',250,180]])canvas.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y}));assert.ok(c.querySelector('.lab-drawn-box'));change(e,c,'text','独立文本框');assert.equal(c.querySelector('textarea').value,'独立文本框');e.dom.window.close();
+});
+test('Goal Seek candidate can be cancelled; equal zero-profit target is already satisfied',()=>{
+ const e=env(),c=open(e,'y2021q58');click(c,'open');click(c,'solve');assert.equal(c.querySelector('[data-field="quantity"]').value,'5000');click(c,'discard');assert.equal(c.querySelector('[data-field="quantity"]').value,'1000');change(e,c,'price',100);click(c,'open');change(e,c,'target',0);click(c,'solve');assert.match(c.querySelector('.lab-output').textContent,/已等于目标/);e.dom.window.close();
+});
+test('month fill uses MONTH and relative references, not a fixed answer',()=>{
+ const e=env(),c=open(e,'y2025q50');click(c,'fill');assert.match(c.querySelector('[data-fill-index="1"]').textContent,/6月/);assert.match(c.querySelector('[data-fill-index="2"]').textContent,/MONTH\(B5\)/);change(e,c,'date1','2025-02-20');assert.match(c.querySelector('[data-fill-index="1"]').textContent,/2月/);e.dom.window.close();
+});
+test('conditional averages ignore text until source conversion; VALUE leaves source intact',()=>{
+ const e=env(),c=open(e,'y2026q49');assert.match(c.querySelector('.lab-office output').textContent,/结果：25/);change(e,c,'method','value');click(c,'convert');assert.match(c.querySelector('.lab-office output').textContent,/结果：25/);assert.match(c.querySelector('table').textContent,/文本/);change(e,c,'method','error');click(c,'convert');assert.match(c.querySelector('.lab-office output').textContent,/结果：21.5/);e.dom.window.close();
+});
+test('SUMIF formula escapes literal wildcard input and recalculates edited amounts',()=>{
+ const e=env(),c=open(e,'y2026q50');assert.match(c.textContent,/350/);change(e,c,'value0',100);assert.match(c.textContent,/330/);change(e,c,'keyword','?');assert.match(c.querySelector('code').textContent,/\*~\?\*/);assert.match(c.querySelector('output').textContent,/0/);e.dom.window.close();
+});
+test('Chinese-number spacing and Chinese-Latin spacing are independent',()=>{
+ const e=env(3),c=open(e,'y2026q47');click(c,'open');change(e,c,'pn',false);click(c,'apply');assert.match(c.querySelector('output').textContent,/中文与数字：关；中文与西文：开/);e.dom.window.close();
+});
+test('title slide footer is suppressed without renumbering subsequent slides',()=>{
+ const e=env(5),c=open(e,'y2024q65');click(c,'open');change(e,c,'number',true);change(e,c,'hideTitle',true);click(c,'apply');assert.equal(c.querySelector('.lab-slide-footer'),null);click(c,'next');assert.equal(c.querySelector('.lab-slide-footer span:last-child').textContent,'2');e.dom.window.close();
+});
+test('Ctrl adds discontinuous columns and combination chart has a separate success-rate axis',()=>{
+ const e=env(),c=open(e,'y2026q52');click(c,'ab');c.querySelector('[data-lab-act="d"]').dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,ctrlKey:true}));click(c,'insert');click(c,'combo');change(e,c,'secondary',true);click(c,'apply');assert.match(c.querySelector('svg').textContent,/成功率%/);assert.ok(c.querySelector('svg polyline'));e.dom.window.close();
+});
+test('custom show removal is a draft; cancelling retains saved list and all source slides',()=>{
+ const e=env(5),c=open(e,'y2026q55');click(c,'open');click(c,'edit');click(c,'select','1');click(c,'remove');click(c,'cancel');assert.match(c.querySelector('.lab-dialog').textContent,/数据/);click(c,'edit');click(c,'remove');click(c,'save');assert.equal(c.querySelectorAll('.lab-deck aside button').length,3);e.dom.window.close();
+});
+test('sections follow selected slide and black screen hides ink without deleting it',()=>{
+ const e=env(5),c=open(e,'y2025q10');click(c,'page','2');click(c,'rename');assert.equal(c.querySelector('[data-field="name"]').value,'第二部分');click(c,'cancel');const r=e.w.NOTE_LABS.registry.y2025q10,s={...structuredClone(r.initial),show:true,strokes:[{page:0,color:'#f00',points:[[0,0],[10,10]]}]};assert.match(r.render(s),/<polyline/);r.action(s,'black');assert.doesNotMatch(r.render(s),/<polyline/);r.action(s,'black');assert.match(r.render(s),/<polyline/);e.dom.window.close();
+});
+test('task manager ends a process without changing host name; Apply survives Cancel',()=>{
+ const e=env(2),c=open(e,'y2026q34');click(c,'end','记事本');assert.doesNotMatch(c.querySelector('tbody').textContent,/记事本/);assert.match(c.querySelector('.lab-browser>header').textContent,/学习电脑/);const f=open(e,'y2025q32');change(e,f,'draft',true);click(f,'apply');change(e,f,'draft',false);click(f,'cancel');assert.doesNotMatch(f.querySelector('.lab-browser-page').textContent,/\.txt/);click(f,'open');assert.equal(f.querySelector('[data-field="draft"]').checked,true);e.dom.window.close();
+});
+test('GCD handles immediate divisibility and clears results after invalid input',()=>{
+ const e=env(11),c=open(e,'y2026q6');change(e,c,'a','12');change(e,c,'b','6');click(c,'start');click(c,'step');assert.match(c.querySelector('output').textContent,/最大公约数：6/);change(e,c,'a','0');click(c,'start');assert.match(c.querySelector('output').textContent,/不能输入0/);assert.doesNotMatch(c.querySelector('output').textContent,/最大公约数/);e.dom.window.close();
 });

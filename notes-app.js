@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 28;
+  const version = 29;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -879,7 +879,7 @@
     });
   }
 
-  function initialiseSpecialScene(card, id) { if (id === 'y2020q56') updateMid(card); if (id === 'y2026q42') updatePseudo(card); window.NOTE_LABS?.mount(card); }
+  function initialiseSpecialScene(card, id) { if(card.querySelector('[data-lab]')){window.NOTE_LABS?.mount(card);return;} if (id === 'y2020q56') updateMid(card); if (id === 'y2026q42') updatePseudo(card); window.NOTE_LABS?.mount(card); }
   function updateCjk(card) {
     const compact = !$$('[data-cjk-toggle],[data-num-toggle]',card).some(x=>x.checked);
     card.classList.toggle('cjk-compact',compact); $('[data-line-count]',card).textContent=compact?'2':'3';
@@ -910,8 +910,8 @@
   const openDrawer = () => { $('#drawer').hidden=false; $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
   const closeDrawer = () => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').hidden=true; $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); document.body.style.overflow = ''; $('#open-drawer').focus(); };
   $('#open-drawer').addEventListener('click', openDrawer); $('#close-drawer').addEventListener('click', closeDrawer); $('#scrim').addEventListener('click', closeDrawer);
-  $('#drawer').addEventListener('click', event => { if (event.target.closest('a')) closeDrawer(); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); if (event.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) { event.preventDefault(); $('#search-input').focus(); } });
+  $('#drawer').addEventListener('click', event => { const link=event.target.closest('a'); if(link){closeDrawer(); revealNote(link.hash);} });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); if (event.key === '/' && !event.isComposing && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest('input,textarea,select,[contenteditable]') && !$('#drawer').classList.contains('open')) { event.preventDefault(); $('#search-input').focus(); } });
   $('#drawer').addEventListener('keydown',event=>{
     if(event.key!=='Tab')return;
     const items=$$('button,a', $('#drawer'));const first=items[0],last=items.at(-1);
@@ -924,6 +924,14 @@
     $$('.section-block').forEach(section => section.classList.toggle('hidden', !$$('.note-item:not(.hidden)', section).length)); $('#result-count').textContent = `${shown}条笔记`;
   };
   $('#search-input').addEventListener('input', applySearch);
+  function revealNote(hash){
+    let id;try{id=decodeURIComponent(hash.slice(1));}catch{return;}
+    const target=document.getElementById(id);if(!target)return;
+    if(target.closest('.hidden')||target.classList.contains('hidden')){$('#search-input').value='';applySearch();}
+    target.scrollIntoView({block:'start'});
+  }
+  addEventListener('hashchange',()=>revealNote(location.hash));
+  if(location.hash)revealNote(location.hash);
   const updateProgress = () => { const root = document.documentElement; const max = root.scrollHeight - innerHeight; $('#progress-bar').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; };
   addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
 })();

@@ -136,6 +136,14 @@
       target.points = [...new Set([...target.points, ...source.points])];
     } else combined.push(prepare(2022,source));
   }
+  for (const source of (window.NOTES2021?.notes || [])) {
+    if (source.target) {
+      const target = combined.find(note => note.id === source.target);
+      if (!target) throw new Error(`Missing 2021 merge target: ${source.target}`);
+      target.sources.push({year:2021,q:source.q,type:source.type,page:source.page});
+      target.points = [...new Set([...target.points, ...source.points])];
+    } else combined.push(prepare(2021,source));
+  }
   const notes = combined.sort((a, b) =>
     a.chapter - b.chapter ||
     (sectionOrder.get(`${a.chapter}-${a.section}`) ?? 99) - (sectionOrder.get(`${b.chapter}-${b.section}`) ?? 99) ||
@@ -158,5 +166,5 @@
   };
   notes.forEach(note => { if (conclusions[note.id]) note.conclusion = conclusions[note.id]; });
 
-  window.NOTES = {chapters, notes, sourceCount:all.length + window.NOTES2022.notes.length, years:[2020, 2022, 2023, 2024, 2025, 2026]};
+  window.NOTES = {chapters, notes, sourceCount:all.length + window.NOTES2022.notes.length + (window.NOTES2021?.notes.length || 0), years:[2020, 2021, 2022, 2023, 2024, 2025, 2026]};
 })();

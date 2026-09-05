@@ -70,7 +70,7 @@
     (s,a,v)=>{if(a==='launch'&&s.processes.length<6)s.processes.push(s.pid++);if(a==='end')s.processes=s.processes.filter(p=>p!==Number(v));});
 
   register(['y2022q54'],'把邀请语变成弧形艺术字','修改文字、弯曲程度和填充，查看路径上的实时文字。',{text:'诚挚邀请，敬候光临！',curve:40,color:'#b95729'},s=>
-    office('Word','绘图工具 · 格式',select('color','文字填充',s.color,[['#b95729','赭橙'],['#2563a0','蓝色'],['#21443d','墨绿']])+field('curve','转换：弧度',s.curve,'range','min="0" max="80"'),paper(`<svg class="lab-art" viewBox="0 0 400 150" role="img" aria-label="弧形艺术字预览"><defs><path id="${s.uid}-arc" d="M20 100 Q200 ${100-s.curve*2} 380 100"/></defs><text fill="${s.color}" font-size="24"><textPath href="#${s.uid}-arc" startOffset="50%" text-anchor="middle">${esc(s.text)}</textPath></text></svg>`))+`<div class="lab-controls">${field('text','艺术字内容',s.text)}</div>${coach('弧度控件是学习调节器；Word实际从“文字效果→转换”选择路径样式。')}`,()=>{},(s,k,v)=>{s[k]=k==='curve'?number(v,0,80):v;});
+    office('Word','绘图工具 · 格式',select('color','文字填充',s.color,[['#b95729','赭橙'],['#2563a0','蓝色'],['#21443d','墨绿']]),paper(`<svg class="lab-art" viewBox="0 0 400 150" role="img" aria-label="弧形艺术字预览"><defs><path id="${s.uid}-arc" d="M20 100 Q200 ${100-s.curve*2} 380 100"/></defs><text fill="${s.color}" font-size="24"><textPath href="#${s.uid}-arc" startOffset="50%" text-anchor="middle">${esc(s.text)}</textPath></text></svg>`))+`<div class="lab-controls">${field('text','艺术字内容',s.text)}${field('curve','学习调节器：路径弧度',s.curve,'range','min="0" max="80"')}</div>${coach('弧度控件是学习调节器；Word实际从“文字效果→转换”选择路径样式。')}`,()=>{},(s,k,v)=>{s[k]=k==='curve'?number(v,0,80):v;});
 
   register(['y2022q55'],'插入脚注，看引用标记与说明对应','选择正文位置插入脚注，删引用标记后观察自动重编号。',{active:0,refs:[]},s=>
     office('Word','引用',btn('插入脚注','insert'),paper([0,1,2].map(n=>`<p>${btn(['数字化将信息编码。','压缩可减少数据量。','传输需要考虑时序。'][n],'select',n,`class="lab-text-select ${s.active===n?'lab-selected':''}"`)}${s.refs.includes(n)?`<sup>${btn(String(s.refs.indexOf(n)+1),'remove',n,'aria-label="删除此脚注引用标记"')}</sup>`:''}</p>`).join('')+`<div class="lab-footnotes">${s.refs.map((n,i)=>`<p>${i+1}　${['信息表示为离散的编码数据。','无损可精确恢复，有损不保证。','实时媒体需要控制时延与抖动。'][n]}</p>`).join('')||'页底说明区'}</div>`))+coach('先点一句正文确定插入位置。点上标删除对应引用标记，其余编号会重新排列。'),
@@ -94,7 +94,7 @@
 
   register(['y2022q66'],'为什么第4行看不见','分别制造行高过小、隐藏与筛选，再用对应命令恢复。',{cause:'short',fixed:false},s=>
     `<div class="lab-controls">${select('cause','模拟原因',s.cause,[['short','行高过小'],['hidden','行被隐藏'],['filter','筛选排除']])}</div>`+office('Excel','开始 / 数据',btn('自动调整行高','autofit')+btn('取消隐藏行','unhide')+btn('清除筛选','clear'),`<div class="lab-rows">${[3,4,5,6].map(n=>`<div ${n===4&&!s.fixed?(s.cause==='short'?'style="height:5px;overflow:hidden"':'hidden'):''}><b>${n}</b><span>产品${n-2}</span><span>${n*120}</span></div>`).join('')}</div>`)+output(s.fixed?'第4行已恢复。':`第4行因${{short:'行高过小',hidden:'隐藏',filter:'筛选'}[s.cause]}不可见。${s.message||''}`),
-    (s,a)=>{s.fixed=a==={short:'autofit',hidden:'unhide',filter:'clear'}[s.cause];s.message=s.fixed?'':'所选命令不解决当前原因。';},(s,k,v)=>{s[k]=v;s.fixed=false;s.message='';});
+    (s,a)=>{if(a==={short:'autofit',hidden:'unhide',filter:'clear'}[s.cause])s.fixed=true;s.message=s.fixed?'':'所选命令不解决当前原因。';},(s,k,v)=>{s[k]=v;s.fixed=false;s.message='';});
 
   register(['y2022q69'],'源表改了，Word会不会跟着变','切换链接与嵌入，修改Excel源值后刷新Word中的数据。',{source:898,word:898,mode:'link',path:true},s=>
     `<div class="lab-linked-apps">${office('Excel','数据','<span>销售汇总.xlsx</span>',field('source','产品1 · 总销量',s.source,'number','min="0" max="99999"'))}${office('Word','开始',btn('更新链接','refresh'),paper(`<h4>年度销售报告</h4>${table(['产品','销量'],[['产品1',s.word]])}<small>${s.mode==='link'?'链接对象':'嵌入副本'}</small>`))}</div><div class="lab-controls">${select('mode','粘贴方式',s.mode,[['link','粘贴链接'],['embed','嵌入副本']])}${btn(s.path?'模拟源文件移走':'恢复源文件','path')}</div>${output(!s.path&&s.mode==='link'?'源路径失效，无法取得新数据。':s.mode==='embed'?'这是独立副本；修改源表不会同步。':'链接已建立。修改源值后点“更新链接”；真实Word也可能提示允许更新。')}`,
@@ -136,9 +136,20 @@
     const index=name=>fields.indexOf(name);
     const rnames=s.zones.row.length?[...new Set(rows.map(r=>s.zones.row.map(n=>r[index(n)]).join(' / ')))]:['总计'];
     const cnames=s.zones.column.length?[...new Set(rows.map(r=>s.zones.column.map(n=>r[index(n)]).join(' / ')))]:['总计'];
-    const result=s.zones.value.length?table(['行标签',...cnames],rnames.map(rn=>[esc(rn),...cnames.map(cn=>{const set=rows.filter(r=>(!s.zones.row.length||s.zones.row.map(n=>r[index(n)]).join(' / ')===rn)&&(!s.zones.column.length||s.zones.column.map(n=>r[index(n)]).join(' / ')===cn));return set.length?(s.aggregate==='count'?set.length:money(set.reduce((sum,r)=>sum+r[3],0)/(s.aggregate==='average'?set.length:1))):'—';})])):'<p class="lab-empty">报表还没有值字段。将“销量”放入值区域。</p>';
+    const aggregate=set=>!set.length?'—':s.aggregate==='count'?set.length:money(set.reduce((sum,r)=>sum+Number(r[3]),0)/(s.aggregate==='average'?set.length:1));
+    const columnsFor=set=>cnames.map(cn=>aggregate(set.filter(r=>!s.zones.column.length||s.zones.column.map(n=>r[index(n)]).join(' / ')===cn)));
+    const resultRows=[];
+    if(s.zones.row.length>1){
+      const outer=s.zones.row[0];for(const name of [...new Set(rows.map(r=>r[index(outer)]))]){
+        const group=rows.filter(r=>r[index(outer)]===name);resultRows.push([`<b>${esc(String(name))} 小计</b>`,...columnsFor(group)]);
+        for(const rn of rnames.filter(rn=>group.some(r=>s.zones.row.map(n=>r[index(n)]).join(' / ')===rn))){const subset=group.filter(r=>s.zones.row.map(n=>r[index(n)]).join(' / ')===rn);resultRows.push([`<span style="padding-left:1.5em">${esc(rn.split(' / ').slice(1).join(' / '))}</span>`,...columnsFor(subset)]);}
+      }
+      resultRows.push(['<b>总计</b>',...columnsFor(rows)]);
+    }else for(const rn of rnames)resultRows.push([esc(rn),...columnsFor(rows.filter(r=>!s.zones.row.length||s.zones.row.map(n=>r[index(n)]).join(' / ')===rn))]);
+    const result=s.zones.value.length?table(['行标签',...cnames],resultRows):'<p class="lab-empty">将数值字段放入值区域，建立汇总报表。</p>';
+
     return `<div class="lab-controls">${select('scenario','源数据场景',s.scenario,[['sales','产品销量（2022考法）'],['grades','班级成绩（日期分组）']])}</div>`+office('Excel','数据透视表分析',select('aggregate','值汇总方式',s.aggregate,[['sum','求和'],['average','平均值'],['count','计数']])+(grades?btn(s.monthly?'取消日期组合':'日期 → 按年、月组合','group'):''),`<div class="lab-pivot-layout"><div>${s.zones.filter.includes(fields[1])?select('filter',fields[1]+'筛选',s.filter,[['全部','全部'],...([...new Set(data.map(r=>r[1]))].map(v=>[v,v]))]):''}${result}</div><aside class="lab-fields"><b>数据透视表字段</b><div class="lab-field-bank">${fields.map(f=>`<button data-lab-drag="field" data-key="${f}" data-lab-act="pick" data-value="${f}" aria-pressed="${s.picked===f}">${f} <span>⠿</span></button>`).join('')}</div><div class="lab-drop-zones">${zones.map(([k,v])=>`<section data-lab-drop="${k}"><b>${v}</b>${s.zones[k].map(f=>btn(`${f} ×`,'remove',k+':'+f)).join('')||'<small>拖到这里</small>'}</section>`).join('')}</div></aside></div>`)+`<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>选择字段后，指定区域；也可拖动上方字段。</p>${zones.map(([k,v])=>btn(`放入${v}`,'place',k)).join('')}${table(fields,data)}</details>${output(s.message)}`;
-  },(s,a,v)=>{if(a==='pick')s.picked=v;if(a==='remove'){const [z,f]=v.split(':');s.zones[z]=s.zones[z].filter(x=>x!==f);}if(a==='place')placeField(s,s.picked,v);if(a==='group'){s.monthly=!s.monthly;s.message=s.monthly?'日期按年、月合并；不同年份的3月不会混在一起。':'恢复逐日显示。';}},(s,k,v)=>{s[k]=v;if(k==='scenario'){s.zones={row:[],column:[],value:[],filter:[]};s.filter='全部';s.picked=v==='grades'?'姓名':'产品';s.message='已更换源数据，请重新放置字段。';}});
+  },(s,a,v)=>{if(a==='pick')s.picked=v;if(a==='remove'){const [z,f]=v.split(':');s.zones[z]=s.zones[z].filter(x=>x!==f);if(z==='filter')s.filter='全部';}if(a==='place')placeField(s,s.picked,v);if(a==='group'){s.monthly=!s.monthly;s.message=s.monthly?'日期按年、月合并；不同年份的3月不会混在一起。':'恢复逐日显示。';}},(s,k,v)=>{s[k]=v;if(k==='scenario'){s.zones={row:[],column:[],value:[],filter:[]};s.filter='全部';s.picked=v==='grades'?'姓名':'产品';s.message='已更换源数据，请重新放置字段。';}});
   function placeField(s,field,zone){
     const metric=s.scenario==='grades'?'成绩':'销量',filter=s.scenario==='grades'?'班级':'分部';
     if(zone==='value'&&field!==metric){s.message=`本任务把${metric}放入值区域；文本字段用于分类或筛选。`;return;}
@@ -164,8 +175,8 @@
   },()=>{},(s,k,v)=>{if(k.startsWith('salary'))s.values[Number(k.slice(6))]=number(v,0,1000000);else s[k]=k==='threshold'?number(v,0,1000000):v;});
 
   register(['y2023q56'],'修改文稿，再接受或拒绝修订','编辑文字产生修订；接受和拒绝真正改变最终文稿。',{tracking:false,old:'可能产生改善',draft:'可能产生改善',decided:false},s=>
-    office('Word','审阅',btn(s.tracking?'修订：开':'修订：关','track')+btn('接受修订','accept')+btn('拒绝修订','reject'),paper(`<h4>研究结果</h4><p>该方法${s.tracking&&s.draft!==s.old?`<del>${esc(s.old)}</del><ins>${esc(s.draft)}</ins>`:esc(s.draft)}。</p>`))+`<div class="lab-keyboard">${field('draft','模拟键盘输入：替换选中的短语',s.draft)}</div>${output(s.tracking?'修订已开启，旧文字显示删除线，新文字带下划线。':'未开启修订；编辑直接改变当前文稿。')}`,
-    (s,a)=>{if(a==='track'){s.tracking=!s.tracking;s.old=s.draft;}if(a==='accept'){s.old=s.draft;s.decided=true;}if(a==='reject'){s.draft=s.old;s.decided=true;}},(s,k,v)=>{s.draft=v;if(!s.tracking)s.old=v;});
+    office('Word','审阅',btn(s.tracking?'修订：开':'修订：关','track')+btn('接受修订','accept')+btn('拒绝修订','reject'),paper(`<h4>研究结果</h4><p>该方法${s.pending&&s.draft!==s.old?`<del>${esc(s.old)}</del><ins>${esc(s.draft)}</ins>`:esc(s.draft)}。</p>`))+`<div class="lab-keyboard">${field('draft','模拟键盘输入：替换选中的短语',s.draft)}</div>${output(s.tracking?'修订已开启，旧文字显示删除线，新文字带下划线。':s.pending?'修订已关闭，已有修订仍待接受或拒绝。':'未开启修订；编辑直接改变当前文稿。')}`,
+    (s,a)=>{if(a==='track')s.tracking=!s.tracking;if(a==='accept'){s.old=s.draft;s.pending=false;}if(a==='reject'&&s.pending){s.draft=s.old;s.pending=false;}},(s,k,v)=>{if(s.tracking&&v!==s.draft)s.pending=true;s.draft=v;if(!s.tracking&&!s.pending)s.old=v;});
 
   register(['y2023q19'],'放大同一颗星：路径与像素','调节缩放，比较矢量路径重新绘制与位图像素格显现。',{zoom:1},s=>
     `<div class="lab-controls">${field('zoom','放大倍数',s.zoom,'range','min="1" max="4" step="0.25"')}</div><div class="lab-image-compare"><section><b>矢量路径</b><div><svg viewBox="0 0 100 100" role="img" aria-label="矢量星形"><path transform="translate(50 50) scale(${s.zoom}) translate(-50 -50)" d="M50 12 60 38 88 40 66 58 74 86 50 70 26 86 34 58 12 40 40 38Z" fill="#427b68"/></svg></div></section><section><b>低分辨率位图示意</b><div><svg viewBox="0 0 100 100" shape-rendering="crispEdges" role="img" aria-label="放大后像素格显现"><g transform="translate(50 50) scale(${s.zoom}) translate(-50 -50)">${['000010000','000111000','111111111','011111110','001111100','001111100','011000110','010000010','000000000'].flatMap((r,y)=>[...r].map((v,x)=>v==='1'?`<rect x="${5+x*10}" y="${5+y*10}" width="10" height="10" fill="#427b68"/>`:'')).join('')}</g></svg></div></section></div>${output(`${s.zoom}倍；这里只模拟低分辨率位图，实际像素数越高，在相同放大下块感越不明显。`)}`,()=>{},(s,k,v)=>{s.zoom=Number(v);});
@@ -184,7 +195,7 @@
 
   register(['y2023q17'],'同一个IP，掩码变了，网络边界也会变','对比传统C类默认/24与现代CIDR的实际前缀长度。',{ip:'192.168.10.42',prefix:24},s=>{
     const parts=s.ip.split('.'),valid=parts.length===4&&parts.every(x=>/^\d{1,3}$/.test(x)&&Number(x)<=255);const ip=parts.reduce((a,b)=>(a*256+Number(b))>>>0,0),mask=(0xffffffff<<(32-s.prefix))>>>0;const dotted=n=>[24,16,8,0].map(b=>(n>>>b)&255).join('.');
-    return `<div class="lab-controls">${field('ip','IPv4地址',s.ip)}${select('prefix','实际前缀长度',s.prefix,[[16,'/16'],[24,'/24'],[26,'/26']])}</div>${valid?`<div class="lab-registers"><b>掩码 ${dotted(mask)}</b><b>网络地址 ${dotted(ip&mask)}</b></div><div class="lab-ip-bits">${[...parts.map(x=>Number(x).toString(2).padStart(8,'0')).join('')].map((b,i)=>`<span class="${i<s.prefix?'network':'host'}">${b}</span>`).join('')}</div>${output(`前${s.prefix}位是网络前缀，后${32-s.prefix}位是主机部分。首字节192属于历史C类范围，但实际划分必须看掩码。`)}`:output('请输入4组0—255的十进制数。')}`;
+    return `<div class="lab-controls">${field('ip','IPv4地址',s.ip)}${select('prefix','实际前缀长度',s.prefix,[[16,'/16'],[24,'/24'],[26,'/26']])}</div>${valid?`<div class="lab-registers"><b>掩码 ${dotted(mask)}</b><b>网络地址 ${dotted(ip&mask)}</b></div><div class="lab-ip-bits">${[...parts.map(x=>Number(x).toString(2).padStart(8,'0')).join('')].map((b,i)=>`<span class="${i<s.prefix?'network':'host'}">${b}</span>`).join('')}</div>${output(`前${s.prefix}位是网络前缀，后${32-s.prefix}位是主机部分。首字节${parts[0]}${Number(parts[0])<128?'位于历史A类范围（0、127另有用途）':Number(parts[0])<192?'位于历史B类范围':Number(parts[0])<224?'位于历史C类范围':Number(parts[0])<240?'位于D类组播范围':'位于保留范围'}，但实际划分必须看掩码。`)}`:output('请输入4组0—255的十进制数。')}`;
   },()=>{},(s,k,v)=>{s[k]=k==='prefix'?Number(v):v;});
 
   register(['y2023q47'],'地址缩写以后，128位有没有变短','在完整写法、双冒号缩写和字节表示之间切换。',{view:'full'},s=>{
@@ -213,6 +224,10 @@
     card.querySelectorAll('[data-lab]').forEach(root=>{
       if(states.has(root))return;
       states.set(root,fresh(root.dataset.lab));render(root);
+      const model=registry[root.dataset.lab];
+      if(model.tick){const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);return;}if(model.tick(states.get(root))&&!pointerTarget)render(root);},200);}
+      root.addEventListener('dblclick',e=>{if(e.target.closest('.lab-page-header')&&root.dataset.lab==='y2020q41'){states.get(root).editing=true;render(root);}});
+      root.addEventListener('keydown',e=>{const s=states.get(root);if(root.dataset.lab==='y2025q10'&&s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;render(root);}});
       let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
       const act=(a,v)=>{
         const model=registry[root.dataset.lab],s=states.get(root);
@@ -223,26 +238,31 @@
         });
         model.action(s,a,v);render(root);
       };
-      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;if(!b||b.disabled){if(dirty){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
-      root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"]')){e.preventDefault();act('menu');}});
+      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
+      root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"],[data-lab-drag="file"]')){e.preventDefault();act('menu');}});
       // Capture typing immediately; do not depend on blur/change before a toolbar click.
       root.addEventListener('input',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;});
       root.addEventListener('change',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;if(pointerTarget&&pointerTarget!==x){dirty=true;return;}render(root);});
       root.addEventListener('keydown',e=>{
-        const h=e.target.closest('[data-lab-drag="ruler"]');if(!h||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const s=states.get(root),k=h.dataset.key,delta=e.key==='ArrowRight'?2:-2;if(k==='both'){const change=number(s.rest+delta,0,55)-s.rest;s.rest+=change;s.first=number(s.first+change,0,60);}else s[k]=number(s[k]+delta,0,60);render(root);root.querySelector(`[data-key="${k}"]`)?.focus();
+        const h=e.target.closest('[data-lab-drag="ruler"]');if(!h||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const s=states.get(root),k=h.dataset.key,delta=e.key==='ArrowRight'?2:-2;if(k==='both'){const change=number(delta,-Math.min(s.rest,s.first),Math.min(60,s.right-8)-Math.max(s.rest,s.first));s.rest+=change;s.first+=change;}else s[k]=number(s[k]+delta,k==='right'?Math.max(s.first,s.rest)+8:0,k==='right'?100:Math.min(60,s.right-8));render(root);root.querySelector(`[data-key="${k}"]`)?.focus();
       });
       root.addEventListener('pointerdown',e=>{
         pointerTarget=e.target.closest('button,input,select,textarea');
-        const el=e.target.closest('[data-lab-drag]');if(!el||e.button!==0)return;
-        const s=states.get(root);gesture={el,kind:el.dataset.labDrag,x:e.clientX,y:e.clientY,moved:false,key:el.dataset.key,first:s.first,rest:s.rest};
+        const el=e.target.closest('[data-lab-drag]');if(!el||![0,2].includes(e.button))return;if(e.target.closest('input,textarea,select')&&el!==e.target)return;
+        const s=states.get(root);gesture={el,kind:el.dataset.labDrag,x:e.clientX,y:e.clientY,moved:false,key:el.dataset.key,first:s.first,rest:s.rest,button:e.button,startValue:s[el.dataset.key]};
         el.setPointerCapture(e.pointerId);
-        if(gesture.kind==='hold')gesture.timer=setTimeout(()=>{suppressUntil=Date.now()+500;gesture=null;act('menu');},600);
+        if(gesture.kind==='hold'||gesture.kind==='file')gesture.timer=setTimeout(()=>{suppressUntil=Date.now()+500;gesture=null;act('menu');},600);
+        if(gesture.kind==='box'||gesture.kind==='ink')gesture.rect=el.getBoundingClientRect();
         if(gesture.kind==='ruler')gesture.rect=root.querySelector('[data-ruler]').getBoundingClientRect();
       });
       root.addEventListener('pointermove',e=>{
         if(!gesture)return;const g=gesture;const moved=Math.hypot(e.clientX-g.x,e.clientY-g.y)>7;if(moved){g.moved=true;clearTimeout(g.timer);}
         if(!g.moved)return;e.preventDefault();
-        if(g.kind==='ruler'){const delta=(e.clientX-g.x)/g.rect.width*100;const value=number((g.key==='first'?g.first:g.rest)+delta,0,60);g.el.style.left=value+'%';g.value=value;}
+        g.dx=e.clientX-g.x;g.dy=e.clientY-g.y;
+        if(g.kind==='box'){const r=g.rect;const x=number((g.x-r.left)/r.width*100,0,100),y=number((g.y-r.top)/r.height*100,0,100),x2=number((e.clientX-r.left)/r.width*100,0,100),y2=number((e.clientY-r.top)/r.height*100,0,100);g.box={x:Math.min(x,x2),y:Math.min(y,y2),w:Math.abs(x2-x),h:Math.abs(y2-y)};let preview=root.querySelector('.lab-box-preview');if(!preview){preview=document.createElement('div');preview.className='lab-box-preview';g.el.append(preview);}Object.assign(preview.style,{left:g.box.x+'%',top:g.box.y+'%',width:g.box.w+'%',height:g.box.h+'%'});}
+        if(g.kind==='file')g.el.style.transform=`translate(${g.dx}px,${g.dy}px)`;
+        if(g.kind==='ink'){const r=g.rect;g.points??=[[(g.x-r.left)/r.width*100,(g.y-r.top)/r.height*100]];g.points.push([number((e.clientX-r.left)/r.width*100,0,100),number((e.clientY-r.top)/r.height*100,0,100)]);const state=states.get(root);if(state.show&&state.pen&&!state.black){let line=g.el.querySelector('[data-live-ink]');if(!line){line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('data-live-ink','');line.setAttribute('fill','none');line.setAttribute('stroke',state.color);line.setAttribute('stroke-width','.7');g.el.querySelector('svg').append(line);}line.setAttribute('points',g.points.map(p=>p.join(',')).join(' '));}}
+        if(g.kind==='ruler'){const delta=(e.clientX-g.x)/g.rect.width*100;const value=number((g.key==='both'?g.rest:g.startValue)+delta,g.key==='right'?Math.max(g.first,g.rest)+8:0,g.key==='right'?100:Math.min(60,states.get(root).right-8));g.el.style.left=value+'%';g.value=value;}
         if(g.kind==='field'){g.el.style.transform=`translate(${e.clientX-g.x}px,${e.clientY-g.y}px)`;g.el.classList.add('lab-dragging');root.querySelectorAll('[data-lab-drop]').forEach(z=>{const r=z.getBoundingClientRect();z.classList.toggle('lab-drop-hover',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);});}
         if(g.kind==='range')root.querySelectorAll('[data-row]').forEach(x=>{const r=x.getBoundingClientRect();if(e.clientY>=r.top&&e.clientY<=r.bottom){g.end=Number(x.dataset.row);const a=Number(g.el.dataset.row);root.querySelectorAll('[data-row]').forEach(y=>y.classList.toggle('lab-selected',Number(y.dataset.row)>=Math.min(a,g.end)&&Number(y.dataset.row)<=Math.max(a,g.end)));}});
         if(g.kind==='fill')root.querySelectorAll('[data-fill-index]').forEach(x=>{const r=x.getBoundingClientRect();if(e.clientY>=r.top&&e.clientY<=r.bottom){g.end=Number(x.dataset.fillIndex);x.classList.add('lab-selected');}});
@@ -250,14 +270,15 @@
       const finish=(e,cancel=false)=>{
         if(!gesture)return;const g=gesture;clearTimeout(g.timer);gesture=null;if(!g.moved)return;suppressUntil=Date.now()+400;const s=states.get(root);
         if(!cancel){
-          if(g.kind==='ruler'&&g.value!==undefined){if(g.key==='both'){const d=g.value-s.rest;s.rest=g.value;s.first=number(s.first+d,0,60);}else s[g.key]=g.value;}
+          if(g.kind==='ruler'&&g.value!==undefined){if(g.key==='both'){const d=number(g.value-s.rest,-Math.min(s.rest,s.first),Math.min(60,s.right-8)-Math.max(s.rest,s.first));s.rest+=d;s.first+=d;}else s[g.key]=g.value;}
           if(g.kind==='field'){const zone=[...root.querySelectorAll('[data-lab-drop]')].find(z=>{const r=z.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;});if(zone)placeField(s,g.key,zone.dataset.labDrop);else s.message='没有落入区域，字段保持原位置。';}
           if(g.kind==='range'&&g.end!==undefined){s.start=Number(g.el.dataset.row);s.end=g.end;}
           if(g.kind==='fill'&&g.end!==undefined)s.filled=g.end;
+          registry[root.dataset.lab].gesture?.(s,{...g,endX:e.clientX,endY:e.clientY},root);
         }render(root);
       };
       root.addEventListener('pointerup',e=>finish(e));root.addEventListener('pointercancel',e=>finish(e,true));
     });
   }
-  window.NOTE_LABS={mount,registry,radixConvert,daysBetween,placeField};
+  window.NOTE_LABS={mount,registry,register,radixConvert,daysBetween,placeField,ui:{btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}};
 })();
