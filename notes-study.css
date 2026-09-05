@@ -11,7 +11,7 @@ body:is([data-chapter="3"],[data-chapter="4"]) {
 .chapter-kicker { font-size:13px; }
 .chapter-summary { margin-top:8px; font-size:16px; }
 .chapter-meta { margin-top:10px; padding-top:0; border:0; font-size:13px; }
-.chapter-tools { border-radius:12px; margin-bottom:18px; }
+.chapter-tools { top:auto; border-radius:12px; margin-bottom:18px; }
 .search input { font-size:16px; min-height:42px; }
 .section-block { border:0; border-radius:14px; overflow:clip; margin-bottom:20px; }
 .section-head { padding:19px 26px; background:linear-gradient(100deg,#f2e8f8,#fff3f7); }
@@ -59,6 +59,8 @@ body:is([data-chapter="3"],[data-chapter="4"]) {
 .note-lab .lab-coach p { font-size:14px; color:#685d74; }
 .note-lab .lab-dialog { max-width:100%; }
 .note-lab :is(input,select,textarea) { font-size:16px; }
+.note-lab label:has(> input:is([type="checkbox"],[type="radio"])) { display:flex; align-items:flex-start; gap:8px; }
+.note-lab label > input:is([type="checkbox"],[type="radio"]) { flex:none; width:18px; min-height:18px; margin:2px 0 0; accent-color:#77519b; }
 .note-lab .lab-table-scroll { max-width:100%; overscroll-behavior-inline:contain; scrollbar-width:thin; }
 .note-list a { font-size:15px; padding:10px 7px; }
 .drawer-head small { font-size:13px; }

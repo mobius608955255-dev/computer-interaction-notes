@@ -397,7 +397,17 @@ header.pageNumber=pageNumber;
     }
     if(a==='preview'&&!s.pane){s.preview=!s.preview;s.page=0;}
     if(a==='previous')s.page=Math.max(0,s.page-1);if(a==='next')s.page=Math.min(printLayout(s.applied).pages.length-1,s.page+1);if(a==='zoom')s.zoom=!s.zoom;
+    if(['apply','cancel','preview','previous','next','zoom'].includes(a)&&!s.pane)s.revealResult=true;
   },(s,k,v)=>{s.draft[k]=v;});
+  window.NOTE_LABS.registry.y2023q10.afterRender=(s,root)=>{
+    if(!s.revealResult)return;
+    s.revealResult=false;
+    const target=root.querySelector(s.preview?'.lab-print-scroll':'.lab-office');
+    if(!target)return;
+    if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+    target.focus({preventScroll:true});
+    target.scrollIntoView?.({block:'nearest',inline:'nearest'});
+  };
 })();
 
 window.NOTE_LABS.registry.y2024q8.keydown=(s,e)=>{if(s.scenario==='formula'&&e.key==='F9'){e.preventDefault();window.NOTE_LABS.registry.y2024q8.action(s,'formulaUpdate');return true;}};
