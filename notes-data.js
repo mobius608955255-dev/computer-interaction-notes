@@ -151,6 +151,12 @@
     y2025q1:'字长、主频、核心与指令速度是不同性能指标'
   };
   notes.forEach(note => { if (headings[note.id]) note.title = headings[note.id]; });
+  const conclusions = {
+    y2020q14:'联系基数由业务规则决定：从两端分别判断一个实例最多可对应几个实例，再区分一对一、一对多与多对多。',
+    y2020q52:'条件格式根据规则动态改变外观：绝对阈值用“小于”等规则，相对比较可用“高于平均值”；数值改变后重新判断。',
+    y2020q10:'普通视图编辑幻灯片，浏览视图管理整套页面，备注页视图排版说明，阅读视图侧重播放；当前视图决定可操作的对象。'
+  };
+  notes.forEach(note => { if (conclusions[note.id]) note.conclusion = conclusions[note.id]; });
 
   window.NOTES = {chapters, notes, sourceCount:all.length + window.NOTES2022.notes.length, years:[2020, 2022, 2023, 2024, 2025, 2026]};
 })();

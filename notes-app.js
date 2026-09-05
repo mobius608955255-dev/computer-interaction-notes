@@ -7,7 +7,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 25;
+  const version = 26;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -22,7 +22,7 @@
       </div>
     </header>
     <div class="progress" aria-hidden="true"><i id="progress-bar"></i></div>
-    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="本章知识点目录" aria-hidden="true" inert>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="本章知识点目录" aria-hidden="true" inert hidden>
       <div class="drawer-head"><div><small id="drawer-chapter"></small><strong>本章目录</strong></div><button id="close-drawer" type="button" aria-label="关闭目录">×</button></div>
       <ol class="note-list" id="note-list"></ol>
     </aside>
@@ -907,8 +907,8 @@
     $('[data-relation-result]',card).innerHTML=`<b>结果关系</b>${results[index]}`;
   }
 
-  const openDrawer = () => { $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
-  const closeDrawer = () => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); document.body.style.overflow = ''; $('#open-drawer').focus(); };
+  const openDrawer = () => { $('#drawer').hidden=false; $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
+  const closeDrawer = () => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').hidden=true; $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); document.body.style.overflow = ''; $('#open-drawer').focus(); };
   $('#open-drawer').addEventListener('click', openDrawer); $('#close-drawer').addEventListener('click', closeDrawer); $('#scrim').addEventListener('click', closeDrawer);
   $('#drawer').addEventListener('click', event => { if (event.target.closest('a')) closeDrawer(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); if (event.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) { event.preventDefault(); $('#search-input').focus(); } });

@@ -12,7 +12,7 @@
   const table = (head,rows) => `<div class="lab-table-scroll" tabindex="0" aria-label="数据表，可横向滚动"><table><thead><tr>${head.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   const coach = text => `<div class="lab-coach"><b>操作提示</b><p>${text}</p></div>`;
   const output = text => `<output class="lab-output" aria-live="polite">${text}</output>`;
-  const office = (app,tab,commands,body) => `<div class="lab-office lab-${app.toLowerCase()}"><header>${app} 2016 · 局部操作仿真</header><nav aria-label="功能区位置">文件　开始　插入　<span>${tab}</span></nav><div class="lab-ribbon">${commands}</div><div class="lab-workspace">${body}</div><footer>演示文档 · 操作仅影响本卡片</footer></div>`;
+  const office = (app,tab,commands,body) => `<div class="lab-office lab-${app.toLowerCase()}"><header>${app} 2016 · 局部操作仿真</header><nav aria-label="功能区位置">${[...new Set(['文件','开始','插入',tab])].map(t=>t===tab?`<span>${t}</span>`:t).join('　')}</nav><div class="lab-ribbon">${commands}</div><div class="lab-workspace">${body}</div><footer>演示文档 · 操作仅影响本卡片</footer></div>`;
   const dialog = (title,body,commands) => `<section class="lab-dialog" role="group" aria-label="${title}"><header>${title}</header><div>${body}</div><footer>${commands}</footer></section>`;
   const paper = body => `<div class="lab-paper">${body}</div>`;
   const register = (ids,title,task,initial,render,action,change) => {
@@ -79,8 +79,8 @@
   const salaryRows=[10000,9500,3500,12000];
   const salarySheet=(s,mode)=>table(['行','姓名',mode==='comments'?'证件编号（示意）':'基本工资'],s.values.map((v,i)=>[i+3,['王宁','李明','赵敏','周林'][i],`<button data-lab-drag="range" data-row="${i}" data-lab-act="cell" data-value="${i}" class="lab-cell ${i>=Math.min(s.start,s.end)&&i<=Math.max(s.start,s.end)?'lab-selected':''}">${mode==='comments'?['ID-001','ID-002','ID-003','ID-004'][i]:money(v)}${s.comments?.[i]?'<i class="lab-comment-corner"></i>':''}</button>`]));
   register(['y2022q58'],'复制倍率，框选工资，再选择性粘贴','从第一格拖到最后一格选择区域；倍率和粘贴运算都会影响真实结果。',{values:salaryRows,start:-1,end:-1,multiplier:1.15,copied:null,paste:false,operation:'multiply',message:'先复制倍率单元格。'},s=>
-    office('Excel','开始',btn('复制倍率单元格','copy')+btn('选择性粘贴…','paste'),`${field('multiplier','M1 倍率',s.multiplier,'number','step="0.01"')}${salarySheet(s)}${s.paste?dialog('选择性粘贴',select('operation','运算',s.operation,[['multiply','乘'],['add','加'],['none','无（普通覆盖）']])+`<p>已复制：${s.copied??'空'}；目标：${s.start<0?'未选中':`J${Math.min(s.start,s.end)+3}:J${Math.max(s.start,s.end)+3}`}</p>`,btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('键盘辅助：选择 J3:J6','all')}</div>${output(s.message)}`,
-    (s,a,v)=>{if(a==='copy'){s.copied=s.multiplier;s.message=`已复制 ${s.copied}，现在选中目标工资。`;}if(a==='cell')s.start=s.end=Number(v);if(a==='all'){s.start=0;s.end=3;}if(a==='paste')s.paste=true;if(a==='cancel')s.paste=false;if(a==='apply'){if(s.copied===null||s.start<0){s.message='需要先复制倍率并选择目标区域。';return;}s.values=s.values.map((x,i)=>i>=Math.min(s.start,s.end)&&i<=Math.max(s.start,s.end)?Math.round((s.operation==='multiply'?x*s.copied:s.operation==='add'?x+s.copied:s.copied)*100)/100:x);s.paste=false;s.message='所选单元格的数值已改变；未选中的单元格保持原值。';}},(s,k,v)=>{s[k]=k==='multiplier'?number(v,0,100):v;});
+    office('Excel','开始',btn('复制','copy')+btn('选择性粘贴…','paste'),`${field('multiplier','M1 倍率（初始选中）',s.multiplier,'number','step="0.01"')}${salarySheet(s)}${s.paste?dialog('选择性粘贴',select('operation','运算',s.operation,[['multiply','乘'],['add','加'],['none','无（普通覆盖）']])+`<p>已复制：${s.copied??'空'}；目标：${s.start<0?'未选中':`J${Math.min(s.start,s.end)+3}:J${Math.max(s.start,s.end)+3}`}</p>`,btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('键盘辅助：选择 J3:J6','all')}</div>${output(s.message)}`,
+    (s,a,v)=>{if(a==='copy'){s.copied=s.start<0?s.multiplier:s.values[s.start];s.message=`已复制 ${s.copied}，现在选中目标工资。`;}if(a==='cell')s.start=s.end=Number(v);if(a==='all'){s.start=0;s.end=3;}if(a==='paste')s.paste=true;if(a==='cancel')s.paste=false;if(a==='apply'){if(s.copied===null||s.start<0){s.message='需要先复制倍率并选择目标区域。';return;}s.values=s.values.map((x,i)=>i>=Math.min(s.start,s.end)&&i<=Math.max(s.start,s.end)?Math.round((s.operation==='multiply'?x*s.copied:s.operation==='add'?x+s.copied:s.copied)*100)/100:x);s.paste=false;s.message='所选单元格的数值已改变；未选中的单元格保持原值。';}},(s,k,v)=>{s[k]=k==='multiplier'?number(v,0,100):v;if(k==='multiplier')s.start=s.end=-1;});
 
   const daysBetween=(a,b)=>Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000);
   register(['y2022q59'],'工龄究竟是取整，还是只改显示','改变日期，看INT、ROUND和显示格式得出的区别。',{start:'2020-09-01',end:'2022-05-07'},s=>{
@@ -204,20 +204,25 @@
     return `<div class="lab-controls">${select('mode','业务规则',s.mode,[['one-one','每人一个证号，每证号对应一人'],['one-many','一班多名学生，每生属于一班'],['many-many','多家出版社向多家书店供书']])}</div><svg class="lab-cardinality" viewBox="0 0 500 280" role="img" aria-label="实体联系图">${pairs[s.mode].map(([a,b])=>`<line x1="150" y1="${70+a*140}" x2="350" y2="${35+b*70}" stroke="#6d9981" stroke-width="2"/>`).join('')}${[0,1].map(i=>`<rect x="10" y="${45+i*140}" width="140" height="50" rx="8" fill="#e1eee0"/><text x="80" y="${76+i*140}" text-anchor="middle">${labels[0]} ${i+1}</text>`).join('')}${Array.from({length:s.mode==='one-one'?2:4},(_,i)=>`<rect x="350" y="${10+i*70}" width="140" height="50" rx="8" fill="#e9e8d7"/><text x="420" y="${41+i*70}" text-anchor="middle">${labels[1]} ${i+1}</text>`).join('')}</svg>${output({'one-one':'两边每个实例都只对应一个，属于一对一。','one-many':'班级能连多个学生，但每个学生只连一个班级，属于一对多。','many-many':'任一方向都可能对应多个实例，属于多对多。'}[s.mode])}`;
   },(s,a,v)=>{s.mode=v;});
 
+  register(['y2024q57'],'在Excel中直接用通配符清理部门名称','编辑查找内容与替换文字，观察所选列实际被替换的结果。',{values:['销售部-01','财务部-02','综合部-03'],find:'-*',replacement:'',pane:false,message:'仅处理部门列，订单编号不会改动。'},s=>
+    office('Excel','开始',btn('查找和选择 → 替换','open'),`${table(['订单编号','部门'],s.values.map((v,i)=>['DD-00'+(i+1),esc(v)]))}${s.pane?dialog('查找和替换',field('find','查找内容',s.find)+field('replacement','替换为',s.replacement),btn('全部替换','replace')+btn('关闭','close')):''}`)+output(s.message)+coach('Excel直接识别*、?、~，这里没有“使用通配符”复选框。试试把-*改为-0?，或用~*查找真正的星号。'),
+    (s,a)=>{if(a==='open')s.pane=true;if(a==='close')s.pane=false;if(a==='replace'){if(!s.find){s.message='本卡片请提供非空查找表达式。';return;}let pattern='';for(let i=0;i<s.find.length;i++){const ch=s.find[i];if(ch==='~'&&i+1<s.find.length)pattern+=s.find[++i].replace(/[.*+?^${}()|[\]\\]/g,'\\$&');else pattern+=ch==='*'?'.*':ch==='?'?'.':ch.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}const rx=new RegExp(pattern,'g');let count=0;s.values=s.values.map(v=>v.replace(rx,match=>{if(!match)return match;count++;return s.replacement;}));s.message=`已替换${count}处；订单编号列保持不变。`;}});
+
   function render(root){const s=states.get(root);root.innerHTML=registry[root.dataset.lab].render(s);}
   function mount(card){
     card.querySelectorAll('[data-lab]').forEach(root=>{
       if(states.has(root))return;
       states.set(root,fresh(root.dataset.lab));render(root);
-      let suppressUntil=0, gesture=null;
+      let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
       const act=(a,v)=>{registry[root.dataset.lab].action(states.get(root),a,v);render(root);};
-      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');if(!b||b.disabled)return;e.stopPropagation();if(Date.now()<suppressUntil)return;act(b.dataset.labAct,b.dataset.value);});
+      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;if(!b||b.disabled){if(dirty){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
       root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"]')){e.preventDefault();act('menu');}});
-      root.addEventListener('change',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;render(root);});
+      root.addEventListener('change',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;if(pointerTarget&&pointerTarget!==x){dirty=true;return;}render(root);});
       root.addEventListener('keydown',e=>{
         const h=e.target.closest('[data-lab-drag="ruler"]');if(!h||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const s=states.get(root),k=h.dataset.key,delta=e.key==='ArrowRight'?2:-2;if(k==='both'){const change=number(s.rest+delta,0,55)-s.rest;s.rest+=change;s.first=number(s.first+change,0,60);}else s[k]=number(s[k]+delta,0,60);render(root);root.querySelector(`[data-key="${k}"]`)?.focus();
       });
       root.addEventListener('pointerdown',e=>{
+        pointerTarget=e.target.closest('button,input,select,textarea');
         const el=e.target.closest('[data-lab-drag]');if(!el||e.button!==0)return;
         const s=states.get(root);gesture={el,kind:el.dataset.labDrag,x:e.clientX,y:e.clientY,moved:false,key:el.dataset.key,first:s.first,rest:s.rest};
         el.setPointerCapture(e.pointerId);
