@@ -118,6 +118,8 @@ body[data-chapter] {
 .simulation-mount :is(.metric-dial,.sharpen-controls button,.firewall-actions button,.access-objects button) { min-width:0; overflow-wrap:anywhere; }
 .simulation-mount .web-ide { grid-template-columns:145px minmax(0,1fr); }
 .simulation-mount .web-ide pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+.simulation-mount .packet-track { grid-template-columns:minmax(0,1fr); }
+.simulation-mount :is(.packet-pipe,.network-readout) { min-width:0; }
 @media(max-width:700px) {
   .simulation-mount .io-station { grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:auto; }
   .simulation-mount .io-device { grid-column:auto; grid-row:auto; grid-template-columns:24px minmax(0,1fr) 18px; gap:4px; min-width:0; padding:10px 7px; }
@@ -140,6 +142,9 @@ body[data-chapter] {
   .simulation-mount .sharpen-controls i { margin:0; }
   .simulation-mount .frequency-bars { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
   .simulation-mount .firewall-actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .simulation-mount .firewall-console { grid-template-columns:minmax(0,1fr) 60px; }
+  .simulation-mount .rule-table { grid-column:1/-1; min-width:0; }
+  .simulation-mount :is(.rule-table header,.rule) { grid-template-columns:50px minmax(0,1fr) 45px; }
   .simulation-mount .access-window { grid-template-columns:minmax(0,1fr); }
   .simulation-mount .access-nav { display:flex; flex-wrap:wrap; gap:10px; }
   .simulation-mount .access-window main { min-width:0; padding:12px; }
