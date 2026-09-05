@@ -1,0 +1,106 @@
+/* Reading and teaching chrome for the refined Word and Excel chapters.
+   The simulated application's own colour and controls remain inside its window. */
+body:is([data-chapter="3"],[data-chapter="4"]) {
+  --page:#f8f5fa; --line:#e5deeb; --line-strong:#d6c9e0;
+  --ink:#30283c; --muted:#685e76; --faint:#746b80;
+  --accent:#77519b; --accent-soft:#f4edf9; --reading:760px;
+  background:var(--page);
+}
+.chapter-intro { margin-top:16px; padding:24px 28px; border:0; background:transparent; }
+.chapter-intro h1 { font:700 clamp(28px,5vw,38px)/1.4 system-ui,"Microsoft YaHei",sans-serif; letter-spacing:0; }
+.chapter-kicker { font-size:13px; }
+.chapter-summary { margin-top:8px; font-size:16px; }
+.chapter-meta { margin-top:10px; padding-top:0; border:0; font-size:13px; }
+.chapter-tools { border-radius:12px; margin-bottom:18px; }
+.search input { font-size:16px; min-height:42px; }
+.section-block { border:0; border-radius:14px; overflow:clip; margin-bottom:20px; }
+.section-head { padding:19px 26px; background:linear-gradient(100deg,#f2e8f8,#fff3f7); }
+.section-head h2 { font:700 23px/1.5 system-ui,"Microsoft YaHei",sans-serif; }
+.section-head p { font-size:13px; }
+.note-item { padding:28px 26px 32px; }
+.note-item h3 { font:700 22px/1.55 system-ui,"Microsoft YaHei",sans-serif; }
+.conclusion { margin-top:12px; padding:0; border:0; background:transparent; font-size:16px; line-height:1.85; color:var(--ink); }
+.conclusion b { font-weight:650; }
+.points { margin-top:15px; gap:10px; font-size:16px; line-height:1.85; }
+.boundary { margin-top:18px; padding:10px 12px; border-left:3px solid #bb709a; background:#fcf0f6; color:#6b3e59; font-size:15px; line-height:1.8; }
+.boundary b { color:#88496c; }
+.note-provenance { margin:10px 0 14px; font-size:13px; }
+.note-provenance summary { min-height:32px; }
+.note-provenance a { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+.note-comparison { margin:20px 0; max-width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; overscroll-behavior-inline:contain; }
+.note-comparison table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:15px; line-height:1.75; }
+.note-comparison caption { text-align:left; padding:11px 12px; font-size:14px; font-weight:650; color:var(--accent); }
+.note-comparison :is(th,td) { padding:10px 12px; text-align:left; vertical-align:top; overflow-wrap:anywhere; border-bottom:1px solid var(--line); }
+.note-comparison thead { background:#f6f0fa; }
+.note-comparison tbody th { font-weight:600; color:#644879; }
+.note-comparison tbody tr:last-child>* { border-bottom:0; }
+.note-comparison table:has(th:nth-child(4)) { min-width:420px; }
+.note-comparison table:has(th:nth-child(4)) th:first-child { width:22%; }
+.reality-demo { margin-top:14px; border:1px solid #d9c9e6; border-radius:11px; box-shadow:none; background:#fff; --sim:#77519b; --sim-rgb:119,81,155; }
+.simulation-toggle { grid-template-columns:minmax(0,1fr) auto; gap:12px; padding:14px 15px; background:#f7f0fb; }
+.simulation-toggle:hover { background:#f0e5f7; }
+.simulation-heading { gap:4px; }
+.simulation-heading small { font-size:12px; font-weight:600; letter-spacing:0; color:#77558c; }
+.simulation-heading b { font:650 17px/1.6 system-ui,"Microsoft YaHei",sans-serif; white-space:normal; overflow:visible; }
+.simulation-open b { background:transparent; color:#77519b; width:24px; }
+.simulation-open i { display:none; }
+.simulation-brief { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; padding:12px 15px; border:0; background:white; }
+.simulation-brief p { flex:1 1 220px; font-size:14px; line-height:1.7; color:#665b72; }
+.simulation-brief [data-sim-reset] { flex:none; min-height:40px; padding:7px 11px; font-size:14px; border:1px solid #ddcce5; border-radius:7px; background:#fff; color:#77519b; cursor:pointer; }
+.simulation-mount { padding:0 12px 14px; min-height:0; overflow:visible; }
+.note-lab { padding:0; border:0; border-radius:0; background:transparent; color:#302e37; --lab-green:#77519b; --lab-line:#ddd7e3; }
+.note-lab .lab-office { border-color:#c9c8d1; border-radius:6px; }
+.note-lab .lab-office>footer { display:none; }
+.lab-workspace { padding:14px; background:#f1f1f5; }
+.note-lab .lab-controls { margin:12px 0; }
+.note-lab .lab-output { border-left-color:#ad79b9; background:#f7f0fa; color:#584765; font-size:15px; }
+.note-lab .lab-coach { display:block; padding-top:10px; }
+.note-lab .lab-coach b { display:none; }
+.note-lab .lab-coach p { font-size:14px; color:#685d74; }
+.note-lab .lab-dialog { max-width:100%; }
+.note-lab :is(input,select,textarea) { font-size:16px; }
+.note-lab .lab-table-scroll { max-width:100%; overscroll-behavior-inline:contain; scrollbar-width:thin; }
+.note-list a { font-size:15px; padding:10px 7px; }
+.drawer-head small { font-size:13px; }
+.header-actions button,.chapter-select-wrap { min-height:42px; font-size:14px; }
+.brand-mark { font-size:12px; }
+@media(max-width:700px) {
+  .site-header { gap:8px; padding-inline:9px; }
+  .header-actions { flex:1; }
+  .chapter-select-wrap select { width:min(47vw,205px); font-size:13px; }
+  body>main { width:calc(100% - 16px); }
+  .chapter-intro { padding:16px 10px; margin-top:8px; }
+  .chapter-summary { font-size:16px; }
+  .chapter-tools { margin:0 0 14px; }
+  .section-block { border-radius:10px; }
+  .section-head { padding:16px 14px; }
+  .section-head h2 { font-size:21px; }
+  .note-item { padding:22px 14px 26px; }
+  .note-item h3 { font-size:21px; }
+  .points { padding-left:20px; font-size:16px; }
+  .reality-demo { margin-inline:-5px; }
+  .simulation-toggle { padding:12px; }
+  .simulation-brief { padding:10px 11px; }
+  .simulation-mount { padding:0 7px 10px; }
+  .lab-workspace { padding:9px; }
+  .note-lab .lab-paper { padding:22px 15px; }
+  .note-comparison :is(th,td) { padding:9px 8px; }
+}
+@media print {
+  .reality-demo { display:none; }
+  .note-comparison { overflow:visible; }
+  .section-block { break-inside:auto; }
+}
+
+/* Scoped additions for the three suggested navigation models. */
+.note-lab .lab-freeze-scroll{overflow:auto;max-width:100%;height:340px;border:1px solid #c5b5d0;background:#fff;overscroll-behavior:contain;touch-action:pan-x pan-y;position:relative}
+.note-lab .lab-freeze-grid{table-layout:fixed;border-collapse:separate;border-spacing:0;width:696px;min-width:696px;margin:0}
+.note-lab .lab-freeze-grid th,.note-lab .lab-freeze-grid td{box-sizing:border-box;border:0;border-right:1px solid #ded4e6;border-bottom:1px solid #ded4e6;padding:0;overflow:hidden;white-space:nowrap}
+.note-lab .lab-freeze-grid thead th{position:sticky;top:0;height:32px;line-height:32px;z-index:5;background:#eae1f1;text-align:center;font-size:14px}
+.note-lab .lab-freeze-grid tbody th{position:sticky;height:38px;line-height:38px;z-index:4;background:#f0eaf5;text-align:center;font-size:14px}
+.note-lab .lab-freeze-grid td{height:38px;background:#fff}
+.note-lab .lab-freeze-grid td>button{display:block;box-sizing:border-box;min-height:38px;height:38px;width:100%;border:0;border-radius:0;background:transparent;color:#342d3f;padding:4px 8px;text-align:left;white-space:nowrap;font-size:14px;line-height:28px}
+.note-lab .lab-freeze-grid td>button[aria-pressed="true"]{outline:2px solid #9253a0;outline-offset:-2px;background:#f6e7f4}
+.note-lab .lab-print-scroll{padding:12px;max-width:100%;overflow:auto;background:#e9e2ee;border:1px solid #c8bbd3;overscroll-behavior:contain}
+.note-lab .lab-print-page{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;filter:drop-shadow(0 2px 3px #b4a4bf)}
+.note-lab .lab-print-page.zoomed{width:640px;min-width:640px;max-width:none;margin:0}

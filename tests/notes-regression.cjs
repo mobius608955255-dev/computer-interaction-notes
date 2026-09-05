@@ -10,6 +10,7 @@ function env(chapter=4){
   const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
   for(const f of files)w.eval(fs.readFileSync(path.join(root,f),'utf8'));
+  if([3,4].includes(chapter))for(const f of ['notes-study.js','note-labs-study.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   w.eval(fs.readFileSync(path.join(root,'notes-app.js'),'utf8'));
   return {dom,w,d:w.document};
 }
@@ -155,4 +156,94 @@ test('task manager ends a process without changing host name; Apply survives Can
 });
 test('GCD handles immediate divisibility and clears results after invalid input',()=>{
  const e=env(11),c=open(e,'y2026q6');change(e,c,'a','12');change(e,c,'b','6');click(c,'start');click(c,'step');assert.match(c.querySelector('output').textContent,/最大公约数：6/);change(e,c,'a','0');click(c,'start');assert.match(c.querySelector('output').textContent,/不能输入0/);assert.doesNotMatch(c.querySelector('output').textContent,/最大公约数/);e.dom.window.close();
+});
+test('Word formatting properties accumulate and zoom preserves document format',()=>{
+ const e=env(3),c=open(e,'merged-7');change(e,c,'size','22');change(e,c,'underline','double');change(e,c,'alignment','center');change(e,c,'zoom','150');assert.equal(c.querySelector('[data-field="size"]').value,'22');assert.equal(c.querySelector('[data-field="underline"]').value,'double');assert.match(c.querySelector('.lab-paper p').getAttribute('style'),/center/);e.dom.window.close();
+});
+test('Word table position and cell alignment are independent; cancel keeps table position',()=>{
+ const e=env(3),c=open(e,'y2020q63');click(c,'properties');change(e,c,'draftAlign','center');click(c,'apply');click(c,'cellMiddle');click(c,'properties');change(e,c,'draftAlign','right');click(c,'cancel');assert.match(c.querySelector('output').textContent,/整表：居中/);assert.match(c.querySelector('.lab-paper td').style.cssText,/vertical-align: middle/);e.dom.window.close();
+});
+test('Word section numbering continues until explicitly restarted and Cancel discards format',()=>{
+ const e=env(3),c=open(e,'y2020q41');change(e,c,'scenario','numbers');click(c,'num_page','2');click(c,'num_break');click(c,'num_edit');click(c,'num_insert');assert.equal(c.querySelector('.lab-page-footer').textContent,'3');click(c,'num_link');assert.equal(c.querySelector('.lab-page-footer').textContent,'3');click(c,'num_format');change(e,c,'numDraftMode','restart');change(e,c,'numDraftStart','1');click(c,'num_cancel');assert.equal(c.querySelector('.lab-page-footer').textContent,'3');click(c,'num_format');change(e,c,'numDraftMode','restart');click(c,'num_apply');assert.equal(c.querySelector('.lab-page-footer').textContent,'1');click(c,'num_page','4');assert.equal(c.querySelector('.lab-page-footer').textContent,'2');e.dom.window.close();
+});
+test('Word table formula is a cached field and actual F9 updates its selected result',()=>{
+ const e=env(3),c=open(e,'y2024q8');change(e,c,'scenario','formula');click(c,'formulaOpen');click(c,'formulaApply');assert.match(c.querySelector('[data-lab-act="fieldSelect"]').textContent,/175/);change(e,c,'score0','90');assert.match(c.querySelector('[data-lab-act="fieldSelect"]').textContent,/175/);click(c,'fieldSelect');c.querySelector('[data-lab-act="fieldSelect"]').dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'F9',bubbles:true,cancelable:true}));assert.match(c.querySelector('[data-lab-act="fieldSelect"]').textContent,/185/);e.dom.window.close();
+});
+test('TOC page-only update keeps old title while full update reads current heading',()=>{
+ const e=env(3),c=open(e,'merged-5');change(e,c,'tab','home');click(c,'style');change(e,c,'tab','references');click(c,'tocInsert');change(e,c,'title','计算机基础');click(c,'cover');click(c,'tocOpen');change(e,c,'tocMode','pages');click(c,'tocApply');assert.match(c.querySelector('.lab-auto-toc').textContent,/第一章 信息技术/);assert.match(c.querySelector('.lab-auto-toc').textContent,/2/);click(c,'tocOpen');change(e,c,'tocMode','all');click(c,'tocApply');assert.match(c.querySelector('.lab-auto-toc').textContent,/计算机基础/);e.dom.window.close();
+});
+test('Workbook copy creates independent data; moving removes source; new workbook is available',()=>{
+ const e=env(),c=open(e,'y2023q11');click(c,'file');click(c,'fileOpen');click(c,'book','0');click(c,'open');assert.equal(c.querySelector('[data-field="copy"]').checked,false);change(e,c,'copy',true);click(c,'apply');change(e,c,'score0','99');click(c,'book','0');assert.equal(c.querySelector('[data-field="score0"]').value,'86');click(c,'open');change(e,c,'target','new');click(c,'apply');assert.match(c.textContent,/工作簿/);click(c,'book','0');assert.doesNotMatch(c.querySelector('.lab-tabs').textContent,/总表/);e.dom.window.close();
+});
+test('Freeze panes depends on actual selected cell and can be removed',()=>{
+ const e=env(),c=open(e,'y2024q58');click(c,'cell','3:3');click(c,'menu');click(c,'freeze');assert.match(c.querySelector('output').textContent,/前2行和前2列/);assert.match(c.querySelector('tbody td').style.cssText,/position: sticky/);click(c,'menu');click(c,'unfreeze');assert.doesNotMatch(c.querySelector('tbody td').style.cssText,/position: sticky/);e.dom.window.close();
+});
+test('Print settings are a draft; orientation and fit produce different page layouts',()=>{
+ const e=env(),c=open(e,'y2023q10');click(c,'preview');assert.match(c.textContent,/第 1 \/ 2 页/);click(c,'open');click(c,'tab','page');change(e,c,'orientation','landscape');click(c,'cancel');assert.match(c.textContent,/A4 纵向/);click(c,'open');click(c,'tab','page');change(e,c,'orientation','landscape');click(c,'apply');assert.match(c.textContent,/第 1 \/ 1 页/);e.dom.window.close();
+});
+test('External link loss retains the last calculated value until source becomes available',()=>{
+ const e=env(),c=open(e,'y2021q9');change(e,c,'external','320');click(c,'path');change(e,c,'external','999');assert.match(c.querySelector('table').textContent,/320/);assert.doesNotMatch(c.querySelector('table').textContent,/999/);click(c,'path');assert.match(c.querySelector('table').textContent,/999/);e.dom.window.close();
+});
+test('Validation error disables background editing; Retry enables it without accepting',()=>{
+ const e=env(),c=open(e,'y2021q25');click(c,'open');click(c,'apply');change(e,c,'draft','未知');click(c,'commit');assert.equal(c.querySelector('[data-field="draft"]').disabled,true);assert.equal(c.querySelector('[data-lab-act="commit"]').disabled,true);click(c,'retry');assert.equal(c.querySelector('[data-field="draft"]').disabled,false);assert.match(c.querySelector('table').textContent,/男/);e.dom.window.close();
+});
+test('Reference copying supports base-26 columns and rejects fractional displacement',()=>{
+ const e=env(),c=open(e,'merged-10');change(e,c,'style','relative');change(e,c,'dx','25');assert.match(c.querySelector('.lab-office table').textContent,/=AA3/);change(e,c,'dy','1.5');assert.match(c.querySelector('.lab-office table').textContent,/请输入整数/);change(e,c,'dy','-3');assert.match(c.querySelector('.lab-office table').textContent,/#REF!/);e.dom.window.close();
+});
+test('Clear filter retains arrows; turning filter off removes them and restores rows',()=>{
+ const e=env(),c=open(e,'y2026q51');change(e,c,'mode','auto');click(c,'auto');click(c,'clear');assert.match(c.querySelector('thead').textContent,/性别 ▾/);click(c,'auto');click(c,'toggleAuto');assert.doesNotMatch(c.querySelector('thead').textContent,/▾/);assert.match(c.querySelector('tbody').textContent,/周林/);e.dom.window.close();
+});
+test('CSV reimport cancel restores previously imported rows and options',()=>{
+ const e=env(),c=open(e,'y2021q47');click(c,'start');click(c,'next');click(c,'next');click(c,'finish');const previous=c.querySelector('table').textContent;click(c,'start');click(c,'next');change(e,c,'delimiter','tab');click(c,'cancel');assert.equal(c.querySelector('table').textContent,previous);e.dom.window.close();
+});
+test('Combination chart cancel preserves applied axis configuration',()=>{
+ const e=env(),c=open(e,'y2026q52');click(c,'ab');c.querySelector('[data-lab-act="d"]').dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,ctrlKey:true}));click(c,'insert');click(c,'combo');change(e,c,'secondary',true);click(c,'apply');click(c,'combo');change(e,c,'secondary',false);click(c,'cancel');assert.match(c.querySelector('svg').textContent,/成功率%/);e.dom.window.close();
+});
+test('Word and Excel show 18 comparison tables, external reset controls, and keep keyboard focus',()=>{
+ let count=0;for(const ch of [3,4]){const e=env(ch);count+=e.d.querySelectorAll('.note-comparison').length;assert.equal(e.d.querySelectorAll('.simulation-footer').length,0);const c=open(e,ch===3?'merged-7':'merged-10');assert.equal(c.querySelector('[data-sim-reset]').closest('.lab-office'),null);const control=c.querySelector('[data-field]');control.focus();control.dispatchEvent(new e.w.Event('change',{bubbles:true}));assert.equal(e.d.activeElement.dataset.field,control.dataset.field);e.dom.window.close();}assert.equal(count,18);
+});
+test('Trend forecast preserves slope and places its endpoint on the same month scale',()=>{
+ const e=env(),c=open(e,'y2024q68');click(c,'open');change(e,c,'draft','1');click(c,'apply');let line=c.querySelector('[data-trend-line]');assert.equal(line.getAttribute('x2'),'280');const firstY=line.getAttribute('y2');click(c,'open');change(e,c,'draft','3');click(c,'cancel');assert.equal(c.querySelector('[data-trend-line]').getAttribute('y2'),firstY);click(c,'open');change(e,c,'draft','3');click(c,'apply');line=c.querySelector('[data-trend-line]');assert.equal(line.getAttribute('x2'),'360');assert.ok(Number(line.getAttribute('y2'))<Number(firstY));e.dom.window.close();
+});
+test('Table header choice preserves old titles as data and Enter expands actual rows',()=>{
+ const e=env(),c=open(e,'y2024q59');click(c,'open');change(e,c,'draftHeader',false);click(c,'apply');assert.match(c.querySelector('.lab-office tbody').textContent,/列1 ▾列2姓名成绩/);change(e,c,'newa','陈晨');change(e,c,'newb','88');c.querySelector('[data-field="newb"]').dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));assert.match(c.querySelector('output').textContent,/A1:B5/);click(c,'convert');click(c,'convertApply');assert.match(c.querySelector('.lab-office tbody').textContent,/陈晨88/);assert.doesNotMatch(c.querySelector('.lab-office tbody').textContent,/▾/);e.dom.window.close();
+});
+test('Blank replacement distinguishes zero-length cells from one space and supports undo',()=>{
+ const e=env(),c=open(e,'y2023q60');click(c,'all');click(c,'open');click(c,'apply');assert.match(c.querySelector('output').textContent,/2 处/);assert.equal(c.querySelector('[data-row="2"]').textContent,' ');click(c,'cancel');assert.match(c.querySelector('[data-row="1"]').textContent,/缺考/);click(c,'undo');assert.doesNotMatch(c.querySelector('[data-row="1"]').textContent,/缺考/);e.dom.window.close();
+});
+test('Word page start rejects decimals and text-to-table preserves leading empty fields',()=>{
+ const e=env(3),c=open(e,'y2020q41');change(e,c,'scenario','numbers');click(c,'num_edit');click(c,'num_format');change(e,c,'numDraftStart','1.5');click(c,'num_apply');assert.ok(c.querySelector('.lab-dialog'));assert.match(c.querySelector('output').textContent,/整数/);const t=open(e,'y2024q8');change(e,t,'scenario','convert');change(e,t,'raw','\t成绩\n王宁\t80');click(t,'convertOpen');click(t,'convertApply');assert.equal(t.querySelector('.lab-paper table th').textContent,'');e.dom.window.close();
+});
+test('MID and RIGHT calculate editable source and reject illegal numeric arguments',()=>{
+ const e=env(),c=open(e,'y2020q56');change(e,c,'start','0');assert.equal(c.querySelector('[data-extract-result]').textContent,'#VALUE!');change(e,c,'fn','RIGHT');change(e,c,'count','3');change(e,c,'text','SD002');assert.equal(c.querySelector('[data-extract-result]').textContent,'002');change(e,c,'count','-1');assert.equal(c.querySelector('[data-extract-result]').textContent,'#VALUE!');e.dom.window.close();
+});
+test('Column boundary drag reveals unchanged date and cancelled drag retains committed width',()=>{
+ const e=env(),c=open(e,'y2020q7');assert.match(c.querySelector('[data-hash-date]').textContent,/#/);const p=(el,type,x)=>el.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:100}));let h=c.querySelector('[data-lab-drag="column"]');p(h,'pointerdown',100);p(h,'pointermove',220);p(h,'pointerup',220);assert.equal(c.querySelector('[data-hash-date]').textContent,'2026/9/5 14:30');assert.equal(c.querySelector('[data-width-readout]').textContent,'250 px');h=c.querySelector('[data-lab-drag="column"]');p(h,'pointerdown',220);p(h,'pointermove',150);p(h,'pointercancel',150);assert.equal(c.querySelector('[data-width-readout]').textContent,'250 px');e.dom.window.close();
+});
+test('Text fill ends at pointer row and serial values preserve leading zeroes',()=>{
+ const e=env(),c=open(e,'y2020q48');const h=c.querySelector('[data-lab-drag="fill"]');c.querySelectorAll('[data-fill-index]').forEach((el,i)=>el.getBoundingClientRect=()=>({left:100,right:200,top:100+i*40,bottom:140+i*40}));for(const [type,y] of [['pointerdown',130],['pointermove',210],['pointerup',210]])h.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:180,clientY:y}));change(e,c,'mode','series');assert.match(c.querySelector('[data-fill-index="2"]').textContent,/002024000003/);assert.doesNotMatch(c.querySelector('[data-fill-index="3"]').textContent,/002024/);e.dom.window.close();
+});
+test('Clear formats preserves value while deleting a B cell shifts only column B',()=>{
+ const e=env(),c=open(e,'y2024q10');click(c,'menu');click(c,'clear','formats');assert.match(c.querySelector('output').textContent,/底层值 0.128；常规格式/);click(c,'undo');click(c,'deleteDialog');click(c,'cancel');assert.match(c.querySelector('output').textContent,/0.128/);click(c,'deleteDialog');click(c,'delete');assert.match(c.querySelector('output').textContent,/底层值 0.25/);assert.equal(c.querySelector('.lab-office tbody tr td:nth-child(2)').textContent,'甲');e.dom.window.close();
+});
+test('Consolidation aligns out-of-order labels and cancel preserves applied result',()=>{
+ const e=env(),c=open(e,'y2023q57');click(c,'open');for(const i of [0,1,2]){change(e,c,'reference',String(i));click(c,'add-reference');}click(c,'apply');assert.match(c.querySelector('.lab-office tbody').textContent,/王宁867992/);const before=c.querySelector('.lab-office tbody').textContent;click(c,'open');click(c,'remove-reference');click(c,'cancel');assert.equal(c.querySelector('.lab-office tbody').textContent,before);change(e,c,'preset','left');click(c,'open');assert.match(c.querySelector('.lab-dialog').textContent,/A\$2:\$B\$4/);click(c,'apply');assert.match(c.querySelector('.lab-office tbody').textContent,/王宁257/);e.dom.window.close();
+});
+test('Across-center retains selectable B1 while merge changes actual cell structure',()=>{
+ const e=env(),c=open(e,'y2020q47');click(c,'range');click(c,'format');change(e,c,'draft','across');click(c,'apply');click(c,'cell','1');assert.equal(c.querySelector('[aria-label="名称框"]').value,'B1');assert.equal(c.querySelector('[aria-label="编辑栏"]').value,'');click(c,'range');click(c,'merge');assert.ok(c.querySelector('td[colspan="4"]'));assert.equal(c.querySelector('[data-lab-act="cell"][data-value="1"]'),null);e.dom.window.close();
+});
+test('Word shortcut controls move and extend actual editable textarea selection',()=>{
+ const e=env(3),c=open(e,'y2024q7');let editor=c.querySelector('[data-selection-editor]');const total=editor.value.length;editor.setSelectionRange(4,4);editor.dispatchEvent(new e.w.Event('select'));click(c,'key','ctrlShiftEnd');editor=c.querySelector('[data-selection-editor]');assert.equal(editor.selectionStart,4);assert.equal(editor.selectionEnd,total);click(c,'key','ctrlHome');editor=c.querySelector('[data-selection-editor]');assert.equal(editor.selectionEnd,0);editor.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'End',ctrlKey:true,bubbles:true,cancelable:true}));assert.equal(c.querySelector('[data-selection-editor]').selectionStart,total);e.dom.window.close();
+});
+test('Caption references keep identity across inserted figures and explicit field updates',()=>{
+ const e=env(3),c=open(e,'merged-6');click(c,'captionOpen');click(c,'captionApply');click(c,'referenceOpen');click(c,'referenceApply');assert.equal(c.querySelector('[data-lab-act="field"][data-value="reference"]').textContent,'图 2');click(c,'prepend');assert.equal(c.querySelector('[data-lab-act="field"][data-value="reference"]').textContent,'图 2');click(c,'updateAll');assert.equal(c.querySelector('[data-lab-act="field"][data-value="reference"]').textContent,'图 3');for(let i=0;i<3;i++)click(c,'deleteFirst');click(c,'updateAll');assert.match(c.querySelector('[data-lab-act="field"][data-value="reference"]').textContent,/未找到引用源/);e.dom.window.close();
+});
+test('Footnote click selects a reference; only Delete removes it and renumbers',()=>{
+ const e=env(3),c=open(e,'y2022q55');click(c,'insert');click(c,'select','1');click(c,'insert');click(c,'selectRef','0');assert.equal(c.querySelectorAll('sup').length,2);click(c,'deleteRef');assert.equal(c.querySelectorAll('sup').length,1);assert.equal(c.querySelector('sup').textContent,'1');e.dom.window.close();
+});
+test('Section breaks isolate middle-page orientation; setup cancellation retains applied direction',()=>{
+ const e=env(3),c=open(e,'y2020q61');click(c,'breakMenu');click(c,'nextPage');change(e,c,'point','end');click(c,'breakMenu');click(c,'nextPage');click(c,'view','1');click(c,'directionMenu');click(c,'direction','landscape');assert.equal(c.querySelector('[data-layout-page]').dataset.direction,'landscape');click(c,'view','0');assert.equal(c.querySelector('[data-layout-page]').dataset.direction,'portrait');click(c,'view','2');assert.equal(c.querySelector('[data-layout-page]').dataset.direction,'portrait');click(c,'setup');change(e,c,'draftDirection','landscape');click(c,'cancel');assert.equal(c.querySelector('[data-layout-page]').dataset.direction,'portrait');e.dom.window.close();
+});
+test('Layer selection is unrestricted; one step and bring-to-front change different orders',()=>{
+ const e=env(3),c=open(e,'y2025q56');click(c,'pane');c.querySelector('[data-layer-row="right"]').click();click(c,'layer','forward');assert.match(c.querySelector('output').textContent,/从底向上第2层/);click(c,'frontMenu');click(c,'layer','front');assert.match(c.querySelector('output').textContent,/从底向上第3层/);click(c,'undo');assert.match(c.querySelector('output').textContent,/从底向上第2层/);e.dom.window.close();
 });

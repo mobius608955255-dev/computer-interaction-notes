@@ -4,10 +4,11 @@
   const data = window.NOTES;
   const simulation = window.NOTE_SIMULATIONS;
   const chapterNumber = Number(document.body.dataset.chapter);
+  const refined = chapterNumber === 3 || chapterNumber === 4;
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 31;
+  const version = 32;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -66,14 +67,20 @@
     const sources = note.sources.map(source => `<span>${source.year} · 第${source.q}题</span>`).join('');
     const references = (window.NOTE_REFERENCES?.[note.id] || []).map(([title,url])=>`<p><a href="${url}" target="_blank" rel="noreferrer">${title} ↗</a></p>`).join('');
     return `<article class="note-item" id="${note.id}">
-      <div class="note-topic">${note.topic}</div>
+      ${refined ? '' : `<div class="note-topic">${note.topic}</div>`}
       <h3>${note.title}</h3>
       <p class="conclusion"><b>核心结论：</b>${note.conclusion}</p>
       <ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>
+      ${note.comparison ? renderComparison(note.comparison) : ''}
       <p class="boundary"><b>易错边界：</b>${note.boundary}</p>
       <details class="note-provenance"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
       ${renderSimulation(note)}
     </article>`;
+  }
+
+  function renderComparison(comparison) {
+    const escape = simulation.escapeHTML;
+    return `<div class="note-comparison" role="region" aria-label="${escape(comparison.caption || '知识点对照')}" tabindex="0"><table>${comparison.caption ? `<caption>${escape(comparison.caption)}</caption>` : ''}<thead><tr>${comparison.headers.map(h=>`<th scope="col">${escape(h)}</th>`).join('')}</tr></thead><tbody>${comparison.rows.map(row=>`<tr>${row.map((cell,i)=>i===0?`<th scope="row">${escape(cell)}</th>`:`<td>${escape(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   }
 
   function renderSimulation(note) {
@@ -85,14 +92,14 @@
     const operation = types.some(type => /操作|分析|综合/.test(type));
     return `<section class="reality-demo chapter-sim-${note.chapter} ${operation ? 'is-operation' : 'is-concept'}" data-sim-id="${note.id}" data-state="-1" data-progress="0" data-tone="">
       <button class="simulation-toggle" type="button" aria-expanded="false" aria-controls="${bodyId}">
-        <span class="simulation-icon" aria-hidden="true"><i></i><b>${String(note.chapter).padStart(2,'0')}</b></span>
+        ${refined ? '' : `<span class="simulation-icon" aria-hidden="true"><i></i><b>${String(note.chapter).padStart(2,'0')}</b></span>`}
         <span class="simulation-heading"><small>${operation ? '拟真操作演示' : '拟真概念演示'} · ${appNames[note.chapter]}</small><b>${simulation.escapeHTML(demo.title)}</b></span>
         <span class="simulation-open"><i>打开</i><b>›</b></span>
       </button>
       <div class="simulation-body" id="${bodyId}" hidden>
-        <header class="simulation-brief"><span>动手理解</span><p>${simulation.escapeHTML(demo.task)}</p></header>
+        <header class="simulation-brief">${refined ? '' : '<span>动手理解</span>'}<p>${simulation.escapeHTML(demo.task)}</p>${refined ? '<button type="button" data-sim-reset>重置演示</button>' : ''}</header>
         <div class="simulation-mount" data-sim-mount></div>
-        <footer class="simulation-footer"><span>直接操作画面；不计分</span><button type="button" data-sim-reset>↻ 恢复初始状态</button></footer>
+        ${refined ? '' : '<footer class="simulation-footer"><span>直接操作画面；不计分</span><button type="button" data-sim-reset>↻ 恢复初始状态</button></footer>'}
       </div>
     </section>`;
   }
