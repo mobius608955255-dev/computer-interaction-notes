@@ -1,6 +1,6 @@
 /* Reading and teaching chrome for the refined Word and Excel chapters.
    The simulated application's own colour and controls remain inside its window. */
-body:is([data-chapter="3"],[data-chapter="4"]) {
+body[data-chapter] {
   --page:#f8f5fa; --line:#e5deeb; --line-strong:#d6c9e0;
   --ink:#30283c; --muted:#685e76; --faint:#746b80;
   --accent:#77519b; --accent-soft:#f4edf9; --reading:760px;
@@ -22,6 +22,9 @@ body:is([data-chapter="3"],[data-chapter="4"]) {
 .conclusion { margin-top:12px; padding:0; border:0; background:transparent; font-size:16px; line-height:1.85; color:var(--ink); }
 .conclusion b { font-weight:650; }
 .points { margin-top:15px; gap:10px; font-size:16px; line-height:1.85; }
+.note-point-group { margin-top:22px; }
+.note-point-group h4 { margin:0; color:#745181; font:650 17px/1.6 system-ui,sans-serif; }
+.note-point-group .points { margin-top:10px; }
 .boundary { margin-top:18px; padding:10px 12px; border-left:3px solid #bb709a; background:#fcf0f6; color:#6b3e59; font-size:15px; line-height:1.8; }
 .boundary b { color:#88496c; }
 .note-provenance { margin:10px 0 14px; font-size:13px; }

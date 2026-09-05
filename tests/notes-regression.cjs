@@ -11,6 +11,7 @@ function env(chapter=4){
   const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
   for(const f of files)w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   if([3,4].includes(chapter))for(const f of ['notes-study.js','note-labs-study.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
+  if([1,2,5].includes(chapter))for(const f of ['notes-core.js',chapter===5?'note-labs-presentation.js':'note-labs-core.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   w.eval(fs.readFileSync(path.join(root,'notes-app.js'),'utf8'));
   return {dom,w,d:w.document};
 }
@@ -140,13 +141,13 @@ test('Chinese-number spacing and Chinese-Latin spacing are independent',()=>{
  const e=env(3),c=open(e,'y2026q47');click(c,'open');change(e,c,'pn',false);click(c,'apply');assert.match(c.querySelector('output').textContent,/中文与数字：关；中文与西文：开/);e.dom.window.close();
 });
 test('title slide footer is suppressed without renumbering subsequent slides',()=>{
- const e=env(5),c=open(e,'y2024q65');click(c,'open');change(e,c,'number',true);change(e,c,'hideTitle',true);click(c,'apply');assert.equal(c.querySelector('.lab-slide-footer'),null);click(c,'next');assert.equal(c.querySelector('.lab-slide-footer span:last-child').textContent,'2');e.dom.window.close();
+ const e=env(5),c=open(e,'y2024q65');click(c,'open');change(e,c,'number',true);change(e,c,'hideTitle',true);click(c,'all');assert.equal(c.querySelector('[data-slide-number]').textContent,'1');click(c,'page','1');assert.equal(c.querySelector('[data-slide-number]'),null);click(c,'page','2');assert.equal(c.querySelector('[data-slide-number]').textContent,'3');e.dom.window.close();
 });
 test('Ctrl adds discontinuous columns and combination chart has a separate success-rate axis',()=>{
  const e=env(),c=open(e,'y2026q52');click(c,'ab');c.querySelector('[data-lab-act="d"]').dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,ctrlKey:true}));click(c,'insert');click(c,'combo');change(e,c,'secondary',true);click(c,'apply');assert.match(c.querySelector('svg').textContent,/成功率%/);assert.ok(c.querySelector('svg polyline'));e.dom.window.close();
 });
 test('custom show removal is a draft; cancelling retains saved list and all source slides',()=>{
- const e=env(5),c=open(e,'y2026q55');click(c,'open');click(c,'edit');click(c,'select','1');click(c,'remove');click(c,'cancel');assert.match(c.querySelector('.lab-dialog').textContent,/数据/);click(c,'edit');click(c,'remove');click(c,'save');assert.equal(c.querySelectorAll('.lab-deck aside button').length,3);e.dom.window.close();
+ const e=env(5),c=open(e,'y2026q55');click(c,'open');click(c,'edit');click(c,'select','1');click(c,'remove');click(c,'cancel');assert.match(c.querySelector('.lab-dialog').textContent,/数据/);click(c,'edit');click(c,'remove');click(c,'save');assert.equal(c.querySelectorAll('.core-thumbnails button').length,3);e.dom.window.close();
 });
 test('sections follow selected slide and black screen hides ink without deleting it',()=>{
  const e=env(5),c=open(e,'y2025q10');click(c,'page','2');click(c,'rename');assert.equal(c.querySelector('[data-field="name"]').value,'第二部分');click(c,'cancel');const r=e.w.NOTE_LABS.registry.y2025q10,s={...structuredClone(r.initial),show:true,strokes:[{page:0,color:'#f00',points:[[0,0],[10,10]]}]};assert.match(r.render(s),/<polyline/);r.action(s,'black');assert.doesNotMatch(r.render(s),/<polyline/);r.action(s,'black');assert.match(r.render(s),/<polyline/);e.dom.window.close();
@@ -246,4 +247,54 @@ test('Section breaks isolate middle-page orientation; setup cancellation retains
 });
 test('Layer selection is unrestricted; one step and bring-to-front change different orders',()=>{
  const e=env(3),c=open(e,'y2025q56');click(c,'pane');c.querySelector('[data-layer-row="right"]').click();click(c,'layer','forward');assert.match(c.querySelector('output').textContent,/从底向上第2层/);click(c,'frontMenu');click(c,'layer','front');assert.match(c.querySelector('output').textContent,/从底向上第3层/);click(c,'undo');assert.match(c.querySelector('output').textContent,/从底向上第2层/);e.dom.window.close();
+});
+test('RAM loses unsaved edits while the saved SSD file survives a power cycle',()=>{
+ const e=env(1),c=open(e,'y2026q3');change(e,c,'ram','已保存版本');click(c,'save');change(e,c,'ram','未保存的修改');click(c,'power');assert.equal(c.querySelector('textarea'),null);assert.equal(c.querySelector('[data-saved-file]').textContent,'已保存版本');click(c,'power');assert.equal(c.querySelector('textarea').value,'');click(c,'load');assert.equal(c.querySelector('textarea').value,'已保存版本');e.dom.window.close();
+});
+test('Capacity and bit models calculate independently and reject overflow-sized inputs',()=>{
+ const e=env(1),m=e.w.NOTE_LABS.registry['merged-3'],s=structuredClone(m.initial);m.action(s,'bit','0');assert.match(m.render(s),/193/);s.mode='size';s.unit='MiB';assert.match(m.render(s),/1,048,576/);s.unit='MB';assert.match(m.render(s),/1,000,000/);s.amount='1e308';assert.doesNotMatch(m.render(s),/∞|Infinity/);s.mode='image';s.width='1024';s.height='768';s.depth='24';assert.match(m.render(s),/2,359,296/);e.dom.window.close();
+});
+test('CPU advances PC on fetch and stores the sum only at STORE',()=>{
+ const e=env(1),m=e.w.NOTE_LABS.registry['merged-1'],s=structuredClone(m.initial);s.left='5';s.right='8';m.action(s,'step');assert.equal(s.pc,1);assert.equal(s.ir,'LOAD 10');for(let i=0;i<5;i++)m.action(s,'step');assert.equal(s.acc,13);assert.equal(s.result,0);for(let i=0;i<6;i++)m.action(s,'step');assert.equal(s.result,13);assert.equal(s.halted,true);m.action(s,'restart');s.left='1e308';m.action(s,'step');assert.equal(s.phase,0);e.dom.window.close();
+});
+test('File drag uses destination volume and actual pointerup modifier keys',()=>{
+ const e=env(2),c=open(e,'y2020q24');
+ const drag=(mods={})=>{const f=c.querySelector('[data-lab-drag="file"]');c.querySelector('[data-file-target]').getBoundingClientRect=()=>({left:150,right:290,top:80,bottom:240});for(const [type,x,y] of [['pointerdown',20,50],['pointermove',200,140],['pointerup',200,140]])f.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y,...mods}));};
+ change(e,c,'drive','D');drag();assert.ok(c.querySelector('[data-lab-drag="file"]'));assert.equal(c.querySelectorAll('[data-file-result]').length,1);change(e,c,'drive','C');drag({ctrlKey:true});assert.ok(c.querySelector('[data-lab-drag="file"]'));change(e,c,'drive','D');drag({shiftKey:true});assert.equal(c.querySelector('[data-lab-drag="file"]'),null);e.dom.window.close();
+});
+test('Duplicate file copy reports a conflict rather than claiming another copy',()=>{
+ const e=env(2),m=e.w.NOTE_LABS.registry.y2020q24,s=structuredClone(m.initial);s.drive='D';m.action(s,'drop');m.action(s,'drop');assert.equal(s.target.length,1);assert.match(s.message,/已存在/);assert.equal(s.source,true);e.dom.window.close();
+});
+test('Recycle Bin restores original files and Delete in the bin requests permanent removal',()=>{
+ const e=env(2),c=open(e,'y2020q3');click(c,'select','2');click(c,'delete');click(c,'tab','bin');assert.match(c.querySelector('table').textContent,/复习提纲/);click(c,'restore');click(c,'tab','folder');click(c,'select','2');click(c,'delete');click(c,'tab','bin');c.querySelector('.note-lab').dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Delete',bubbles:true,cancelable:true}));assert.ok(c.querySelector('.lab-dialog'));click(c,'confirm');assert.equal(c.querySelectorAll('[data-lab-act="select"]').length,0);e.dom.window.close();
+});
+test('Clipboard permits repeated text pastes but completes a file cut only on successful paste',()=>{
+ const e=env(2),m=e.w.NOTE_LABS.registry.y2025q33,s=structuredClone(m.initial);s.sourceText='复习';m.action(s,'cut');assert.equal(s.sourceText,'');m.action(s,'paste');m.action(s,'sleep');m.action(s,'sleep');m.action(s,'paste');assert.equal(s.targetText,'复习复习');s.mode='file';m.action(s,'cut');assert.equal(s.sourceFile,true);assert.equal(s.cut,true);m.action(s,'paste');assert.equal(s.sourceFile,false);assert.equal(s.targetFile,true);assert.equal(s.buffer,null);e.dom.window.close();
+});
+test('A topmost inactive window does not take keyboard focus from the active text field',()=>{
+ const e=env(2),c=open(e,'y2020q2');click(c,'activate','A');const a=c.querySelector('[data-field="textA"]');assert.equal(e.d.activeElement,a);assert.equal(c.querySelector('[data-window="B"]').style.zIndex,'3');assert.equal(c.querySelector('[data-window="A"]').style.zIndex,'2');change(e,c,'textA','只改A');assert.equal(c.querySelector('[data-field="textB"]').value,'B中的笔记');e.dom.window.close();
+});
+test('PowerPoint deletion follows the selected page or object; hidden slides are skipped in playback',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry.y2020q12,s=structuredClone(m.initial);m.action(s,'page','4');m.action(s,'delete');assert.deepEqual(Array.from(s.slides,x=>x.id),[1,2,3]);m.action(s,'undo');m.action(s,'object');m.action(s,'delete');assert.equal(s.slides.length,4);assert.equal(s.slides[3].object,false);m.action(s,'page','1');m.action(s,'hide');m.action(s,'show');assert.equal(s.playing,2);m.action(s,'next');assert.equal(s.playing,3);e.dom.window.close();
+});
+test('Master and layout text changes propagate only to their own descendants',()=>{
+ const e=env(5),c=open(e,'y2020q11');click(c,'view');change(e,c,'masterText','母版甲');assert.equal([...c.querySelectorAll('.core-master-logo')].filter(el=>el.textContent==='母版甲').length,3);click(c,'node','A/content');change(e,c,'masterText','内容版式文字');assert.equal([...c.querySelectorAll('.core-layout-text')].filter(el=>el.textContent==='内容版式文字').length,2);change(e,c,'hide',true);assert.equal(c.querySelectorAll('.core-local-text').length,5);assert.equal([...c.querySelectorAll('.core-master-logo')].filter(el=>el.textContent==='母版甲').length,2);e.dom.window.close();
+});
+test('Theme application supports discontinuous selection and keeps unselected pages unchanged',()=>{
+ const e=env(5),c=open(e,'y2020q53');c.querySelector('[data-lab-act="page"][data-value="4"]').dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,ctrlKey:true}));click(c,'menu');click(c,'selectedTheme');const rows=[...c.querySelectorAll('.note-lab tbody tr')].map(tr=>tr.textContent);assert.match(rows[0],/紫藤/);assert.match(rows[3],/紫藤/);assert.match(rows[1],/樱粉/);assert.match(rows[2],/樱粉/);e.dom.window.close();
+});
+test('Footer dialog disables external layout changes and cancellation leaves applied fields untouched',()=>{
+ const e=env(5),c=open(e,'y2024q65');click(c,'open');assert.equal(c.querySelector('[data-field="layout"]').matches(':disabled'),true);change(e,c,'number',true);click(c,'cancel');assert.equal(c.querySelector('[data-slide-number]'),null);e.dom.window.close();
+});
+test('Custom show reordered references determine playback without reordering source slides',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry.y2026q55,s=structuredClone(m.initial);m.action(s,'edit');m.action(s,'select','2');m.action(s,'up');m.action(s,'save');assert.deepEqual(Array.from(s.saved),[0,2,1]);m.action(s,'show');m.action(s,'next');assert.equal(s.saved[s.playing],2);m.action(s,'next');assert.equal(s.saved[s.playing],1);m.action(s,'next');assert.equal(s.show,false);assert.match(m.render(s),/源文稿|源幻灯片/);e.dom.window.close();
+});
+test('Rehearsal pauses, preserves unvisited saved times and cannot double-advance a boundary click',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry.y2023q13,s=structuredClone(m.initial);let now=0;e.w.Date.now=()=>now;s.saved=[10,20,30];m.action(s,'start');now=1000;m.action(s,'pause');now=6000;m.tick(s);assert.equal(s.elapsed,1);m.action(s,'finish');m.action(s,'save');assert.deepEqual(Array.from(s.saved),[1,20,30]);s.saved=[1,1,1];m.action(s,'play');now=7100;m.action(s,'next');assert.equal(s.page,1);e.dom.window.close();
+});
+test('Transitions use the entering slide settings; animation timing controls completion and automatic advance',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry['merged-11'],s=structuredClone(m.initial);let now=0;e.w.Date.now=()=>now;s.settings[0].effect='none';m.action(s,'start');assert.equal(s.phase,'slide');assert.match(m.render(s),/opacity:1/);m.action(s,'screen');assert.equal(s.current,1);assert.equal(s.phase,'transition');now=600;m.tick(s);assert.equal(s.phase,'slide');m.action(s,'screen');s.settings[1].auto=true;s.settings[1].after=.5;now=2600;m.tick(s);assert.equal(s.current,1);now=3600;m.tick(s);assert.equal(s.current,2);e.dom.window.close();
+});
+test('Playback keyboard handling preserves native buttons and grouped notes retain all source points',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry['merged-11'],s=structuredClone(m.initial);s.show=true;let prevented=false;const button=e.d.createElement('button');assert.equal(m.keydown(s,{key:'Enter',target:button,preventDefault:()=>prevented=true}),undefined);assert.equal(prevented,false);for(const id of ['merged-11','y2020q11']){const n=e.w.NOTES.notes.find(x=>x.id===id);assert.deepEqual(Array.from(n.pointGroups.flatMap(g=>g.indices)).sort((a,b)=>a-b),Array.from({length:n.points.length},(_,i)=>i));assert.equal(e.d.querySelectorAll('#'+id+' .note-point-group li').length,n.points.length);}e.dom.window.close();
 });

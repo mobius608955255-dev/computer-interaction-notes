@@ -233,7 +233,7 @@
       states.set(root,fresh(root.dataset.lab));render(root);
       const model=registry[root.dataset.lab];
       root.addEventListener('focusin',e=>{const field=e.target.closest('[data-field]');if(field)model.focus?.(states.get(root),field.dataset.field);});
-      if(model.tick){const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);return;}if(model.tick(states.get(root))&&!pointerTarget)render(root);},200);}
+      if(model.tick){const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);return;}if(model.tick(states.get(root))&&!pointerTarget&&!root.closest('[hidden]'))render(root);},model.tickInterval||200);}
       root.addEventListener('dblclick',e=>{if(e.target.closest('.lab-page-header')&&root.dataset.lab==='y2020q41'){states.get(root).editing=true;render(root);}});
       root.addEventListener('keydown',e=>{const s=states.get(root);if(root.dataset.lab==='y2025q10'&&s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;render(root);}});
       let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
@@ -284,7 +284,7 @@
           if(g.kind==='field'){const zone=[...root.querySelectorAll('[data-lab-drop]')].find(z=>{const r=z.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;});if(zone)placeField(s,g.key,zone.dataset.labDrop);else s.message='没有落入区域，字段保持原位置。';}
           if(g.kind==='range'&&g.end!==undefined){s.start=Number(g.el.dataset.row);s.end=g.end;}
           if(g.kind==='fill'&&g.end!==undefined)s.filled=g.end;
-          registry[root.dataset.lab].gesture?.(s,{...g,endX:e.clientX,endY:e.clientY},root);
+          registry[root.dataset.lab].gesture?.(s,{...g,endX:e.clientX,endY:e.clientY,ctrlKey:e.ctrlKey,shiftKey:e.shiftKey,altKey:e.altKey},root);
         }render(root);
       };
       root.addEventListener('pointerup',e=>finish(e));root.addEventListener('pointercancel',e=>finish(e,true));

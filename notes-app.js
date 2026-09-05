@@ -4,11 +4,11 @@
   const data = window.NOTES;
   const simulation = window.NOTE_SIMULATIONS;
   const chapterNumber = Number(document.body.dataset.chapter);
-  const refined = chapterNumber === 3 || chapterNumber === 4;
+  const refined = true;
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 33;
+  const version = 34;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -70,7 +70,7 @@
       ${refined ? '' : `<div class="note-topic">${note.topic}</div>`}
       <h3>${note.title}</h3>
       <p class="conclusion"><b>核心结论：</b>${note.conclusion}</p>
-      <ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>
+      ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>`<li>${note.points[i]}</li>`).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>`}
       ${note.comparison ? renderComparison(note.comparison) : ''}
       <p class="boundary"><b>易错边界：</b>${note.boundary}</p>
       <details class="note-provenance"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
