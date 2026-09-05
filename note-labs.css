@@ -4,6 +4,7 @@
 .note-provenance summary{cursor:pointer;width:fit-content;padding:5px 0}
 .note-provenance .note-source{margin:8px 0}
 .note-provenance p{margin:6px 0}
+.reality-demo :is(button,input,select,textarea){scroll-margin-block:90px 24px}
 .note-item .points{line-height:1.9}
 .v25-stage-shell>[data-v25-stage]:not([hidden]){display:block}
 .v25-stage-shell>[data-v25-stage][hidden]{display:none!important}

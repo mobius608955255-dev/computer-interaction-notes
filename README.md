@@ -21,7 +21,7 @@
 - 以教材11章为唯一主目录，章节页可从页首直接切换
 - 窄栏连续阅读、本章搜索、章节切换、本章目录、折叠来源与按需加载演示
 
-线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=26)
+线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=27)
 
 ## 2022补充与回归
 
