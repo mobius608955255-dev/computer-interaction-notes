@@ -21,7 +21,7 @@
 - 以教材11章为唯一主目录，章节页可从页首直接切换
 - 窄栏连续阅读、本章搜索、章节切换、本章目录、折叠来源与按需加载演示
 
-线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=34)
+线上版本：[打开计算机系统笔记](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=35)
 
 ## 2022补充与回归
 
@@ -58,3 +58,7 @@
 - `notes-core.js`：标准概念与官方参考；`note-labs-core.js`、`note-labs-presentation.js`：14个独立操作模型。
 - 全站统一窄栏阅读与卡片控制区，保留各软件局部窗口的外观。
 - 83项回归检查通过。逐条范围与仿真边界见 `CORE-REFINEMENT.md`。
+
+### v35 窄屏补修
+
+全站220张卡片逐章检查，修复9类旧演示控件裁切；三个精修章节同时通过760px布局检查。详见 CORE-REFINEMENT.md。

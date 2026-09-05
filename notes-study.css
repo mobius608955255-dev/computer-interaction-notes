@@ -109,3 +109,42 @@ body[data-chapter] {
 .note-lab .lab-print-scroll{padding:12px;max-width:100%;overflow:auto;background:#e9e2ee;border:1px solid #c8bbd3;overscroll-behavior:contain}
 .note-lab .lab-print-page{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;filter:drop-shadow(0 2px 3px #b4a4bf)}
 .note-lab .lab-print-page.zoomed{width:640px;min-width:640px;max-width:none;margin:0}
+
+/* Older chapter scenes must size themselves to the card, not to the viewport. */
+.simulation-mount :is(.design-card,.design-complete,.v24-bubble) { width:100%; max-width:100%; min-width:0; }
+.simulation-mount .v25-design-stages { grid-template-columns:minmax(0,520px); padding:14px; }
+.simulation-mount .v24-bubble-stages { grid-template-columns:minmax(0,720px); }
+.simulation-mount :is(.network-sliders,.sharpen-controls,.firewall-actions,.access-objects,.live-preview,.web-ide main) { min-width:0; }
+.simulation-mount :is(.metric-dial,.sharpen-controls button,.firewall-actions button,.access-objects button) { min-width:0; overflow-wrap:anywhere; }
+.simulation-mount .web-ide { grid-template-columns:145px minmax(0,1fr); }
+.simulation-mount .web-ide pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:700px) {
+  .simulation-mount .io-station { grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:auto; }
+  .simulation-mount .io-device { grid-column:auto; grid-row:auto; grid-template-columns:24px minmax(0,1fr) 18px; gap:4px; min-width:0; padding:10px 7px; }
+  .simulation-mount .io-device b { font-size:14px!important; overflow-wrap:anywhere; }
+  .simulation-mount .computer-core { grid-column:1/-1; grid-row:auto; justify-self:center; }
+  .simulation-mount .io-legend { position:static; grid-column:1/-1; flex-wrap:wrap; font-size:12px; }
+  .simulation-mount .network-sliders { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .simulation-mount .metric-dial small { font-size:12px; white-space:normal; text-align:center; }
+  .simulation-mount .web-ide { grid-template-columns:minmax(0,1fr); }
+  .simulation-mount .file-tree { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .simulation-mount .file-tree>b { grid-column:1/-1; }
+  .simulation-mount .live-preview p { white-space:normal; overflow-wrap:anywhere; }
+  .simulation-mount .color-workbench { grid-template-columns:minmax(0,1fr); gap:16px; }
+  .simulation-mount .color-mode-switch { grid-template-columns:minmax(0,1fr); }
+  .simulation-mount .color-output { width:100%; max-width:100%; }
+  .simulation-mount .v24-sharpen-lab { grid-template-columns:minmax(0,1fr); padding:14px; }
+  .simulation-mount .sharpen-image { display:block; min-width:0; padding:12px; }
+  .simulation-mount .scan-anatomy { width:100%; max-width:245px; margin-inline:auto; }
+  .simulation-mount .sharpen-controls button { display:grid; grid-template-columns:46px minmax(0,1fr); align-items:center; gap:9px; padding:12px; }
+  .simulation-mount .sharpen-controls i { margin:0; }
+  .simulation-mount .frequency-bars { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .simulation-mount .firewall-actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .simulation-mount .access-window { grid-template-columns:minmax(0,1fr); }
+  .simulation-mount .access-nav { display:flex; flex-wrap:wrap; gap:10px; }
+  .simulation-mount .access-window main { min-width:0; padding:12px; }
+  .simulation-mount .access-objects { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .simulation-mount .v25-design-stages { display:block; padding:14px; }
+  .simulation-mount :is(.design-card,.design-complete) { padding:18px; }
+  .simulation-mount .bubble-array { flex-wrap:wrap; }
+}
