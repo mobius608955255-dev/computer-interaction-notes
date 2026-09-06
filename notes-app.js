@@ -8,7 +8,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 42;
+  const version = data.version;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -115,6 +115,7 @@
     if (toggle) {
       const body = $('.simulation-body', card);
       const opening = body.hidden;
+      if (!opening) window.NOTE_LABS?.cancel(card);
       body.hidden = !opening;
       toggle.setAttribute('aria-expanded', String(opening));
       $('.simulation-open i', toggle).textContent = opening ? '收起' : '打开';
@@ -636,6 +637,7 @@
   }
 
   function resetSimulation(card, id, demo) {
+    window.NOTE_LABS?.unmount(card);
     card.dataset.state = '-1'; card.dataset.progress = '0'; card.dataset.tone = ''; delete card.dataset.dragMode; card.classList.remove('simulation-complete','cjk-compact','query-ran','series-filled','fill-previewing');
     $('[data-sim-mount]', card).innerHTML = simulation.scenes[id](demo);
     initialiseSpecialScene(card, id);

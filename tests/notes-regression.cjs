@@ -5,15 +5,13 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {JSDOM}=require('jsdom');
 const root=path.resolve(__dirname,'..');
-const files=[2020,2021,2022,2023,2024,2025,2026].map(y=>`notes-${y}-data.js`).concat(['notes-data.js','demos-data.js','simulations.js','notes-choices.js','note-labs.js','note-labs-2021.js','note-labs-audit.js','notes-standard.js']);
+const scriptsFor=chapter=>[...fs.readFileSync(path.join(root,`chapter${chapter}.html`),'utf8').matchAll(/<script src="\.\/([^"?]+)/g)].map(m=>m[1]);
+const allNotes=()=>Array.from({length:11},(_,i)=>JSON.parse(fs.readFileSync(path.join(root,`content/chapter${i+1}.json`),'utf8'))).flat();
+const releaseVersion=JSON.parse(fs.readFileSync(path.join(root,'site.config.json'),'utf8')).version;
 function env(chapter=4){
   const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;Object.defineProperty(w.crypto,'subtle',{value:require('node:crypto').webcrypto.subtle});w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
-  for(const f of files)w.eval(fs.readFileSync(path.join(root,f),'utf8'));
-  if([3,4].includes(chapter))for(const f of ['notes-study.js','note-labs-study.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
-  if([1,2,5].includes(chapter))for(const f of ['notes-core.js',chapter===5?'note-labs-presentation.js':'note-labs-core.js'])w.eval(fs.readFileSync(path.join(root,f),'utf8'));
-  if(chapter>=6){w.eval(fs.readFileSync(path.join(root,'notes-extended.js'),'utf8'));const m={6:'network',7:'media',8:'security',10:'data',11:'data'}[chapter];if(m)w.eval(fs.readFileSync(path.join(root,'note-labs-'+m+'.js'),'utf8'));}
-  w.eval(fs.readFileSync(path.join(root,'notes-app.js'),'utf8'));
+  for(const f of scriptsFor(chapter))w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   return {dom,w,d:w.document};
 }
 function open(e,id){const c=e.d.getElementById(id);assert.ok(c,`note ${id}`);c.querySelector('.simulation-toggle').click();return c;}
@@ -21,6 +19,10 @@ function click(c,action,value){const s=`[data-lab-act="${action}"]${value!==unde
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
 function choice(c,name,value){const source=c.querySelector(`select[data-field="${name}"]`);assert.ok(source?.hidden,'native popup is removed');const i=[...source.options].findIndex(o=>o.value===value);return source.closest('.notes-picker').querySelector(`[data-choice-index="${i}"]`);}
 function tap(e,button){button.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));button.focus();button.dispatchEvent(new e.w.MouseEvent('pointerup',{bubbles:true,button:0}));button.click();}
+function pointer(e,el,type,{id=1,x=20,y=20,primary=true,pointerType='touch',...rest}={}){
+ const event=new e.w.MouseEvent(type,{bubbles:true,cancelable:true,button:0,clientX:x,clientY:y,...rest});
+ Object.defineProperties(event,{pointerId:{value:id},pointerType:{value:pointerType},isPrimary:{value:primary}});el.dispatchEvent(event);
+}
 test('touch choices commit once while modifier keys toggle independently',()=>{
  const e=env(2),c=open(e,'y2020q24');let calls=0;const model=e.w.NOTE_LABS.registry.y2020q24,original=model.change;model.change=(...args)=>{calls++;return original(...args);};
  const key=k=>c.querySelector(`[data-lab-act="modifier"][data-value="${k}"]`);
@@ -61,16 +63,17 @@ test('legacy option updates, disabled groups, and list-box exceptions are preser
 test('chapter selection has complete names and an accessible local menu',()=>{
  const e=env(2),source=e.d.querySelector('#chapter-select'),box=source.closest('.notes-picker');assert.ok(source.hidden);assert.equal(box.querySelectorAll('.choice-option').length,11);assert.match(box.querySelector('.choice-current').textContent,/第2章/);box.querySelector('.choice-trigger').click();assert.equal(box.querySelector('.choice-options').hidden,false);e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key:'Escape'}));assert.equal(e.d.activeElement,box.querySelector('.choice-trigger'));e.dom.window.close();
 });
-test('460 unique sources; all seven years mapped; all 220 notes have simulations',()=>{
-  const e=env();const notes=e.w.NOTES.notes;assert.equal(notes.length,220);assert.equal(e.w.NOTES.sourceCount,460);
+test('460 unique sources; all seven years mapped; canonical notes have valid sections',()=>{
+  const e=env();const notes=allNotes();assert.equal(notes.length,220);assert.equal(e.w.NOTES.sourceCount,460);
   const keys=notes.flatMap(n=>n.sources.map(s=>`${s.year}-${s.q}`));assert.equal(new Set(keys).size,460);
   assert.deepEqual(Array.from(notes.flatMap(n=>n.sources).filter(s=>s.year===2022).map(s=>s.q).sort((a,b)=>a-b)),Array.from({length:75},(_,i)=>i+1));
-  for(const n of notes){assert.ok(e.w.NOTE_SIMULATIONS.demos[n.id],n.id);assert.equal(typeof e.w.NOTE_SIMULATIONS.scenes[n.id],'function');assert.ok(e.w.NOTES.chapters[n.chapter-1].sections.some(s=>s.id===n.section),n.id);}
+  for(const n of notes)assert.ok(e.w.NOTES.chapters[n.chapter-1].sections.some(s=>s.id===n.section),n.id);
   e.dom.window.close();
 });
 test('all chapters mount, open, reset and collapse every card without exceptions',()=>{
   for(let chapter=1;chapter<=11;chapter++){
     const e=env(chapter),errors=[];e.w.addEventListener('error',x=>errors.push(x.error?.stack||x.message));
+    assert.deepEqual(JSON.parse(JSON.stringify(e.w.NOTES.notes)),allNotes().filter(n=>n.chapter===chapter),'generated content matches canonical chapter');
     assert.equal(e.d.querySelector('#chapter-select').options.length,11);
     assert.equal(e.d.querySelectorAll('[data-sim-mount]>*').length,0,'scenes are lazy mounted');
     for(const b of e.d.querySelectorAll('.simulation-toggle')){b.click();assert.equal(b.getAttribute('aria-expanded'),'true');const c=b.closest('[data-sim-id]');assert.ok(c.querySelector('[data-sim-mount]').children.length);c.querySelector('[data-sim-reset]').click();b.click();assert.equal(b.getAttribute('aria-expanded'),'false');}
@@ -119,12 +122,24 @@ test('sum loop is computed, not hardcoded; radix and date math handle boundaries
   const e=env(11),c=open(e,'y2022q43');change(e,c,'n',5);click(c,'run');assert.match(c.querySelector('.lab-output').textContent,/S=15/);
   assert.equal(e.w.NOTE_LABS.radixConvert('100010.01').hex,'22.4');assert.equal(e.w.NOTE_LABS.radixConvert('11.11').hex,'3.C');assert.equal(e.w.NOTE_LABS.radixConvert('102'),null);assert.equal(e.w.NOTE_LABS.daysBetween('2020-01-01','2021-01-01'),366);e.dom.window.close();
 });
-test('all new labs render on every exposed action and valid field change',()=>{
-  const e=env();for(const [id,r] of Object.entries(e.w.NOTE_LABS.registry)){
-    const s={...structuredClone(r.initial),uid:'audit'};const html=r.render(s);assert.ok(html.length>100,id);
-    const d=new JSDOM(html).window.document;
-    for(const el of d.querySelectorAll('[data-lab-act]')){const x={...structuredClone(r.initial),uid:'audit'};r.action(x,el.dataset.labAct,el.dataset.value);assert.ok(r.render(x).length>100,`${id}/${el.dataset.labAct}`);}
-  }e.dom.window.close();
+test('final labs in every chapter render after each initially exposed action',async()=>{
+  const seen=new Set();
+  for(let chapter=1;chapter<=11;chapter++){
+    const e=env(chapter);
+    for(const note of e.w.NOTES.notes){
+      if(e.w.NOTE_SIMULATIONS.demos[note.id].kind!=='lab')continue;
+      const card=open(e,note.id),id=card.querySelector('[data-lab]').dataset.lab;
+      if(seen.has(id))continue;seen.add(id);
+      const r=e.w.NOTE_LABS.registry[id],s={...structuredClone(r.initial),uid:'audit'},html=r.render(s);
+      assert.ok(html.length>100,id);const isolated=new JSDOM(html);
+      for(const el of isolated.window.document.querySelectorAll('[data-lab-act]')){
+        if(el.disabled)continue;
+        const x={...structuredClone(r.initial),uid:'audit'};await r.action(x,el.dataset.labAct,el.dataset.value);assert.ok(r.render(x).length>100,`${id}/${el.dataset.labAct}`);
+      }
+      isolated.window.close();
+    }
+    e.dom.window.close();
+  }
 });
 test('long press opens menu; tap and cancelled hold do not',async()=>{
   const e=env(2),c=open(e,'y2022q75');let folder=c.querySelector('[data-lab-drag="hold"]');
@@ -145,9 +160,9 @@ test('Excel wildcard replacement works without an invented option',()=>{
 test('input state is current even before blur/change fires',()=>{
   const e=env(),c=open(e,'y2022q58'),input=c.querySelector('[data-field="multiplier"]');input.value='1.2';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'copy');assert.match(c.querySelector('.lab-output').textContent,/已复制 1.2/);e.dom.window.close();
 });
-test('each year is continuous and every HTML chapter loads the complete scripts',()=>{
- const e=env();for(const [year,count] of [[2020,65],[2021,60],[2022,75],[2023,70],[2024,70],[2025,60],[2026,60]])assert.deepEqual(Array.from(e.w.NOTES.notes.flatMap(n=>n.sources).filter(s=>s.year===year).map(s=>s.q).sort((a,b)=>a-b)),Array.from({length:count},(_,i)=>i+1));
- for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');for(const script of files)assert.ok(html.includes(script),`${ch}: ${script}`);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}e.dom.window.close();
+test('each year is continuous and generated HTML assets exist',()=>{
+ const notes=allNotes();for(const [year,count] of [[2020,65],[2021,60],[2022,75],[2023,70],[2024,70],[2025,60],[2026,60]])assert.deepEqual(notes.flatMap(n=>n.sources).filter(s=>s.year===year).map(s=>s.q).sort((a,b)=>a-b),Array.from({length:count},(_,i)=>i+1));
+ for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');assert.equal(scriptsFor(ch).filter(f=>f.startsWith('generated/')).length,1);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}
 });
 test('directory navigation reveals a search-hidden note; shortcuts respect editable context',()=>{
  const e=env(3),search=e.d.querySelector('#search-input');search.value='不存在的搜索';search.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#open-drawer').click();e.d.querySelector('#drawer a[href="#y2026q47"]').click();assert.equal(e.d.querySelector('#y2026q47').classList.contains('hidden'),false);assert.equal(search.value,'');
@@ -214,7 +229,7 @@ test('Word table formula is a cached field and actual F9 updates its selected re
  const e=env(3),c=open(e,'y2024q8');change(e,c,'scenario','formula');click(c,'formulaOpen');click(c,'formulaApply');assert.match(c.querySelector('[data-lab-act="fieldSelect"]').textContent,/175/);change(e,c,'score0','90');assert.match(c.querySelector('[data-lab-act="fieldSelect"]').textContent,/175/);click(c,'fieldSelect');c.querySelector('[data-lab-act="fieldSelect"]').dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'F9',bubbles:true,cancelable:true}));assert.match(c.querySelector('[data-lab-act="fieldSelect"]').textContent,/185/);e.dom.window.close();
 });
 test('TOC page-only update keeps old title while full update reads current heading',()=>{
- const e=env(3),c=open(e,'merged-5');change(e,c,'tab','home');click(c,'style');change(e,c,'tab','references');click(c,'tocInsert');change(e,c,'title','计算机基础');click(c,'cover');click(c,'tocOpen');change(e,c,'tocMode','pages');click(c,'tocApply');assert.match(c.querySelector('.lab-auto-toc').textContent,/第一章 信息技术/);assert.match(c.querySelector('.lab-auto-toc').textContent,/2/);click(c,'tocOpen');change(e,c,'tocMode','all');click(c,'tocApply');assert.match(c.querySelector('.lab-auto-toc').textContent,/计算机基础/);e.dom.window.close();
+ const e=env(3),c=open(e,'merged-5');change(e,c,'tab','home');click(c,'style');change(e,c,'tab','references');click(c,'tocInsert');change(e,c,'title','计算机基础');click(c,'cover');change(e,c,'tab','references');click(c,'tocOpen');change(e,c,'tocMode','pages');click(c,'tocApply');assert.match(c.querySelector('.lab-auto-toc').textContent,/第一章 信息技术/);assert.match(c.querySelector('.lab-auto-toc').textContent,/2/);click(c,'tocOpen');change(e,c,'tocMode','all');click(c,'tocApply');assert.match(c.querySelector('.lab-auto-toc').textContent,/计算机基础/);e.dom.window.close();
 });
 test('Workbook copy creates independent data; moving removes source; new workbook is available',()=>{
  const e=env(),c=open(e,'y2023q11');click(c,'file');click(c,'fileOpen');click(c,'book','0');click(c,'open');assert.equal(c.querySelector('[data-field="copy"]').checked,false);change(e,c,'copy',true);click(c,'apply');change(e,c,'score0','99');click(c,'book','0');assert.equal(c.querySelector('[data-field="score0"]').value,'86');click(c,'open');change(e,c,'target','new');click(c,'apply');assert.match(c.textContent,/工作簿/);click(c,'book','0');assert.doesNotMatch(c.querySelector('.lab-tabs').textContent,/总表/);e.dom.window.close();
@@ -420,4 +435,118 @@ test('directory isolates background and transfers focus to the selected hidden n
  assert.equal(e.d.querySelector('#main-content').inert,true);assert.equal(e.d.querySelector('.site-header').inert,true);
  e.d.querySelector('#drawer a[href="#y2026q47"]').click();assert.equal(e.w.location.hash,'#y2026q47');assert.equal(e.d.activeElement.id,'y2026q47');assert.equal(e.d.querySelector('#main-content').inert,false);assert.equal(e.d.querySelector('#search-empty').hidden,true);
  e.d.querySelector('#open-drawer').click();e.d.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(e.d.activeElement.id,'open-drawer');assert.equal(e.d.querySelector('.site-header').inert,false);e.dom.window.close();
+});
+
+test('foreign pointers cannot replace or finish the active file drag',()=>{
+ const e=env(2),c=open(e,'y2020q24'),file=c.querySelector('.lab-file'),lab=c.querySelector('[data-lab]');
+ c.querySelector('[data-file-target]').getBoundingClientRect=()=>({left:150,right:290,top:80,bottom:240});
+ pointer(e,file,'pointerdown',{x:20,y:50});pointer(e,file,'pointermove',{x:200,y:140});
+ pointer(e,file,'pointerdown',{id:2,primary:false,x:200,y:140});pointer(e,lab,'pointerup',{id:2,primary:false,x:200,y:140});
+ assert.ok(c.querySelector('.lab-file'));assert.equal(c.querySelectorAll('[data-file-result]').length,0);
+ pointer(e,file,'pointerup',{x:200,y:140});assert.equal(c.querySelector('.lab-file'),null);assert.equal(c.querySelectorAll('[data-file-result]').length,1);e.dom.window.close();
+});
+test('lost capture cancels a file drag without committing its preview',()=>{
+ const e=env(2),c=open(e,'y2020q24'),file=c.querySelector('.lab-file');
+ c.querySelector('[data-file-target]').getBoundingClientRect=()=>({left:150,right:290,top:80,bottom:240});
+ pointer(e,file,'pointerdown');pointer(e,file,'pointermove',{x:200,y:140});pointer(e,file,'lostpointercapture',{x:200,y:140});
+ assert.ok(c.querySelector('.lab-file'));assert.equal(c.querySelector('.lab-file').style.transform,'');assert.equal(c.querySelectorAll('[data-file-result]').length,0);e.dom.window.close();
+});
+test('reset and collapse cancel a pending long-press action',async()=>{
+ const e=env(2),c=open(e,'y2020q24'),model=e.w.NOTE_LABS.registry.y2020q24,original=model.action;let menus=0;
+ model.action=(...args)=>{if(args[1]==='menu')menus++;return original(...args);};
+ pointer(e,c.querySelector('.lab-file'),'pointerdown');c.querySelector('[data-sim-reset]').click();
+ await new Promise(resolve=>setTimeout(resolve,650));assert.equal(menus,0);
+ pointer(e,c.querySelector('.lab-file'),'pointerdown');c.querySelector('.simulation-toggle').click();
+ await new Promise(resolve=>setTimeout(resolve,650));assert.equal(menus,0);e.dom.window.close();
+});
+test('typing, copying and pasting preserve literal entities and markup',()=>{
+ const e=env(2),c=open(e,'y2025q33'),raw='AT&amp;T &lt;标题&gt; <b>原样</b>',source=c.querySelector('[data-field="sourceText"]');
+ source.value=raw;source.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'copy');
+ assert.equal(c.querySelector('[data-field="sourceText"]').value,raw);assert.equal(c.querySelector('[data-clipboard]').textContent,'文本：'+raw);
+ click(c,'paste');click(c,'paste');assert.equal(c.querySelector('[data-field="targetText"]').value,raw+raw);e.dom.window.close();
+});
+test('generated entrypoints keep the release version, required styles and source data',()=>{
+ for(let ch=1;ch<=11;ch++){
+  const e=env(ch),html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');
+  assert.equal(e.w.NOTES.version,releaseVersion);
+  if(ch>=6)assert.match(html,/notes-extended\.css/);
+  for(const link of e.d.querySelectorAll('a[href*=".html?v="]'))assert.ok(link.href.includes('?v='+releaseVersion),link.href);
+  assert.equal(new Set(scriptsFor(ch)).size,scriptsFor(ch).length);
+  assert.equal(e.w.NOTES.notes.every(n=>n.chapter===ch),true);e.dom.window.close();
+ }
+});
+test('quantity discount changes at 20 and keeps absolute lookup behavior',()=>{
+ const e=env(4),c=open(e,'y2020q57');change(e,c,'task','discount');click(c,'fill');
+ const value=i=>c.querySelector(`[data-fill-index="${i}"]`).textContent;
+ assert.match(value(0),/1,628/);change(e,c,'quantity0',20);assert.match(value(0),/1,546.6/);change(e,c,'quantity0',21);assert.match(value(0),/1,546.6/);
+ change(e,c,'locked','false');assert.match(value(2),/#N\/A/);e.dom.window.close();
+});
+test('cross-sheet conditional formatting follows identifiers through reordering and missing keys',()=>{
+ const e=env(4),c=open(e,'y2025q52');const highlighted=()=>[...c.querySelectorAll('.lab-row-emphasis')].map(el=>el.closest('tr').querySelector('[data-field^="id"]').value);
+ assert.deepEqual(highlighted(),['A01']);click(c,'reorder');assert.deepEqual(highlighted(),['A01']);change(e,c,'id1','A01');change(e,c,'value1',100);assert.deepEqual(highlighted(),['A01','A01']);
+ change(e,c,'id0','missing');assert.match(c.textContent,/#N\/A/);assert.deepEqual(highlighted(),['A01']);e.dom.window.close();
+});
+test('duplicate text identifiers highlight every occurrence and retain leading zeroes',()=>{
+ const e=env(4),c=open(e,'y2020q52');change(e,c,'rule','duplicate');assert.equal(c.querySelectorAll('.lab-highlight').length,2);
+ change(e,c,'id2','A03');assert.equal(c.querySelectorAll('.lab-highlight').length,0);change(e,c,'id0','000000000000000018');change(e,c,'id1','000000000000000018');assert.equal(c.querySelectorAll('.lab-highlight').length,2);assert.equal(c.querySelector('[data-field="id0"]').value,'000000000000000018');e.dom.window.close();
+});
+test('numeric formatting is distinct from arithmetic conversion and whitespace remains text',()=>{
+ const e=env(4),c=open(e,'y2026q49');change(e,c,'method','format');click(c,'convert');assert.match(c.querySelector('.lab-office output').textContent,/结果：25/);
+ change(e,c,'method','multiply');click(c,'convert');assert.match(c.querySelector('.lab-office output').textContent,/结果：21.5/);
+ change(e,c,'method','format');click(c,'convert');assert.doesNotMatch(c.textContent,/原存储类型仍是文本/);
+ change(e,c,'amount0','   ');change(e,c,'method','value');click(c,'convert');assert.match(c.querySelector('tbody tr').textContent,/文本/);assert.match(c.querySelector('tbody tr').textContent,/#VALUE!/);e.dom.window.close();
+});
+test('Word fullwidth conversion and character colors remain independent of paragraph alignment',()=>{
+ const e=env(3),c=open(e,'merged-7');change(e,c,'color','#c03535');change(e,c,'highlight','#fff29a');click(c,'width','half');assert.match(c.querySelector('.lab-paper').textContent,/2026/);
+ click(c,'select','1');change(e,c,'alignment','distribute');assert.match(c.querySelectorAll('.lab-paper p')[1].style.cssText,/text-align-last: justify/);
+ change(e,c,'alignment','justify');assert.equal(c.querySelectorAll('.lab-paper p')[1].style.textAlignLast,'auto');
+ click(c,'select','0');assert.equal(c.querySelector('[data-field="color"]').value,'#c03535');assert.equal(c.querySelector('[data-field="highlight"]').value,'#fff29a');e.dom.window.close();
+});
+test('outline moves each same-level title with its body and updates TOC by stable identity',()=>{
+ const e=env(3),c=open(e,'merged-5');change(e,c,'tab','home');click(c,'style');click(c,'select','1');click(c,'style');change(e,c,'tab','references');click(c,'tocInsert');change(e,c,'tab','view');click(c,'view','outline');click(c,'move','up');
+ const body=c.querySelector('.lab-workspace').textContent;assert.ok(body.lastIndexOf('操作系统管理硬件和软件资源。')<body.lastIndexOf('数据是信息的符号化表示。'));
+ change(e,c,'tab','references');click(c,'tocOpen');change(e,c,'tocMode','pages');click(c,'tocApply');assert.equal(c.querySelector('.lab-auto-toc p b').textContent,'2');e.dom.window.close();
+});
+test('image dimensions use height 8.5 by width 6 and cropping preserves the target ratio',()=>{
+ const e=env(3),c=open(e,'merged-9');change(e,c,'height',6);assert.ok(Math.abs(Number(c.querySelector('[data-field="width"]').value)-6*6/8.5)<1e-8);
+ change(e,c,'width',5);assert.ok(Math.abs(Number(c.querySelector('[data-field="height"]').value)-5*8.5/6)<1e-8);
+ change(e,c,'mode','crop');assert.equal(c.querySelector('svg').getAttribute('viewBox'),'0 65 600 720');assert.equal(c.querySelector('[data-field="height"]').value,'6');e.dom.window.close();
+});
+test('equation structures survive save, delete and reinsert; header border commits or cancels',()=>{
+ const e=env(3),c=open(e,'y2023q7');click(c,'insert');change(e,c,'numerator','x+2');assert.match(c.querySelector('mfrac').textContent,/x\+2/);click(c,'save');click(c,'delete');assert.equal(c.querySelector('math'),null);click(c,'restore');assert.match(c.querySelector('math').textContent,/x\+2/);
+ const h=open(e,'y2024q54');click(h,'edit');click(h,'menu');change(e,h,'width',3);change(e,h,'color','#c03535');click(h,'apply');assert.match(h.querySelector('.lab-page-header').style.borderBottom,/3pt/);click(h,'menu');change(e,h,'width',.5);click(h,'close');assert.match(h.querySelector('.lab-page-header').style.borderBottom,/3pt/);e.dom.window.close();
+});
+test('chart category and series animation groups reveal different sets of bars',()=>{
+ const e=env(5),c=open(e,'merged-12');const visible=()=>c.querySelectorAll('g[opacity="1"]').length;
+ click(c,'start');assert.equal(visible(),4);click(c,'next');assert.equal(visible(),8);change(e,c,'mode','series');click(c,'start');assert.equal(visible(),3);click(c,'next');assert.equal(visible(),6);e.dom.window.close();
+});
+test('background edits, apply-all and reset affect their intended pages',()=>{
+ const e=env(5),c=open(e,'y2020q54');change(e,c,'source','stationery');change(e,c,'transparency',38);change(e,c,'x',12);assert.equal(c.querySelector('[data-background-layer]').style.opacity,'0.62');click(c,'all');click(c,'page','1');assert.equal(c.querySelector('[data-field="x"]').value,'12');click(c,'reset');assert.equal(c.querySelector('[data-field="source"]').value,'none');click(c,'page','0');assert.equal(c.querySelector('[data-field="source"]').value,'stationery');e.dom.window.close();
+});
+test('section selection is separate from collapse and applies transitions to the selected scope',()=>{
+ const e=env(5),c=open(e,'y2025q10');click(c,'section','0');assert.ok(c.querySelector('[data-lab-act="page"][data-value="1"]'));change(e,c,'tab','transition');change(e,c,'transition','fade');assert.match(c.querySelector('[data-lab-act="page"][data-value="1"]').textContent,/淡化/);assert.match(c.querySelector('[data-lab-act="page"][data-value="2"]').textContent,/无/);
+ click(c,'collapseSection','0');assert.equal(c.querySelector('[data-lab-act="page"][data-value="1"]'),null);click(c,'transitionAll');assert.match(c.querySelector('[data-lab-act="page"][data-value="2"]').textContent,/淡化/);e.dom.window.close();
+});
+test('animation reorder preserves object durations and mouseover obeys action settings',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry['merged-11'],s=structuredClone(m.initial);s.firstDuration=2;s.secondDuration=1;m.action(s,'animUp');assert.deepEqual(Array.from(s.order),['shape','title']);assert.equal(s.firstDuration,2);
+ s.show=true;s.current=1;s.phase='slide';s.phaseStart=e.w.Date.now();s.actionTrigger='hover';s.actionTarget=0;
+ m.action(s,'jump');assert.equal(s.current,1);m.action(s,'hoverJump');assert.equal(s.current,0);e.dom.window.close();
+});
+test('multiple pivot values remain side by side and recompute with a class filter',()=>{
+ const e=env(4),c=open(e,'y2024q67');change(e,c,'scenario','grades');for(const field of ['成绩','数学','外语','总分']){click(c,'pick',field);click(c,'place','value');}
+ assert.equal(c.querySelectorAll('[data-lab-drop="value"] button').length,4);assert.match(c.querySelector('.lab-pivot-layout').textContent,/337/);click(c,'pick','班级');click(c,'place','filter');change(e,c,'filter','一班');assert.match(c.querySelector('.lab-pivot-layout').textContent,/261/);change(e,c,'filterLabel','班级选择');assert.match(c.querySelector('[data-field="filter"]').closest('label').textContent,/班级选择/);e.dom.window.close();
+});
+test('salary pie excludes detail rows and detects an included grand total',()=>{
+ const e=env(4),c=open(e,'y2020q58');change(e,c,'scenario','wages');click(c,'wageSort');click(c,'wageOpen');click(c,'wageApply');click(c,'wageLevel','2');click(c,'wageSelect','summary');click(c,'wageChart');assert.match(c.querySelector('figcaption').textContent,/6,000/);assert.doesNotMatch(c.querySelector('figcaption').textContent,/总计/);
+ click(c,'wageSelect','whole');click(c,'wageChart');assert.match(c.querySelector('figcaption').textContent,/总计/);assert.match(c.querySelector('.lab-output').textContent,/不符合/);e.dom.window.close();
+});
+test('Boolean parentheses and ordered proximity change the retrieved records',()=>{
+ const e=env(6),c=open(e,'y2026q28');change(e,c,'mode','boolean');assert.equal(c.querySelectorAll('[data-lab] tbody tr')[0].lastElementChild.textContent,'✓ 检出');change(e,c,'expression','parentheses');assert.equal(c.querySelectorAll('[data-lab] tbody tr')[0].lastElementChild.textContent,'未检出');change(e,c,'mode','near');assert.equal(c.querySelectorAll('[data-lab] tbody tr')[1].lastElementChild.textContent,'✓ 匹配');change(e,c,'ordered','true');assert.equal(c.querySelectorAll('[data-lab] tbody tr')[1].lastElementChild.textContent,'不匹配');e.dom.window.close();
+});
+
+test('collapsing a drag preview restores committed column width on reopening',()=>{
+ const e=env(4),c=open(e,'y2020q7'),handle=c.querySelector('[data-lab-drag="column"]');
+ pointer(e,handle,'pointerdown',{x:100,y:100});pointer(e,handle,'pointermove',{x:220,y:100});
+ c.querySelector('.simulation-toggle').click();c.querySelector('.simulation-toggle').click();
+ assert.equal(c.querySelector('[data-width-readout]').textContent,'130 px');e.dom.window.close();
 });

@@ -140,7 +140,9 @@
 
   const timingDefaults={effect:'fade',duration:0.6,click:true,auto:false,after:2};
   function startSlide(s,id,now){s.current=id;s.phase=s.settings[id].effect==='none'?'slide':'transition';s.phaseStart=now;s.clock=0;s.animStart=null;s.show=true;s.message='进入第'+(id+1)+'页，使用目标页的切换设置。';}
-  function animEnd(s){return Math.max(s.firstDuration,(s.secondStart==='with'?0:s.firstDuration)+s.delay+s.secondDuration);}
+  const animName=id=>id==='title'?'标题':'图形';
+  const animDuration=(s,id)=>id==='title'?s.firstDuration:s.secondDuration;
+  function animEnd(s){const first=animDuration(s,s.order[0]),second=animDuration(s,s.order[1]);return Math.max(first,(s.secondStart==='with'?0:first)+s.delay+second);}
   function timelineUpdate(s,now){
     if(!s.show)return false;
     s.clock=Math.max(0,(now-s.phaseStart)/1000);
@@ -152,37 +154,82 @@
     return true;
   }
   register(['merged-11'],'真正计时：过渡、对象动画、换片各管一段','选择页面设置进入过渡，再改变第2页两对象的先后关系；放映会按实际时间推进。',{
-    editPage:1,settings:[clone(timingDefaults),clone(timingDefaults),clone(timingDefaults)],firstDuration:1,secondStart:'after',secondDuration:1,delay:0.5,show:false,current:0,phase:'slide',phaseStart:0,clock:0,animStart:null,message:'第2页的标题等待单击；图形可与标题同时或在标题之后开始。'
+    order:['title','shape'],selectedAnim:'shape',actionTrigger:'click',actionTarget:2,editPage:1,settings:[clone(timingDefaults),clone(timingDefaults),clone(timingDefaults)],firstDuration:1,secondStart:'after',secondDuration:1,delay:0.5,show:false,current:0,phase:'slide',phaseStart:0,clock:0,animStart:null,message:'第2页的标题等待单击；图形可与标题同时或在标题之后开始。'
   },s=>{
     const setting=s.settings[s.editPage],page=s.show?s.current:s.editPage;
     let first=1,second=1,transition=1,status='编辑状态';
-    if(s.show){transition=s.phase==='transition'?Math.min(1,s.clock/Math.max(.01,s.settings[page].duration)):1;if(s.phase==='transition'){first=second=page===1?0:1;status='整页切换中';}else if(page===1){const elapsed=s.animStart===null?-1:s.clock-s.animStart,secondAt=(s.secondStart==='with'?0:s.firstDuration)+s.delay;first=Math.max(0,Math.min(1,elapsed/s.firstDuration));second=Math.max(0,Math.min(1,(elapsed-secondAt)/s.secondDuration));status=s.animStart===null?'等待单击，启动标题动画':elapsed<animEnd(s)?'对象动画进行中':s.settings[page].auto?'动画结束，等待自动换片':'动画结束，等待换页';}else status=s.settings[page].auto?'等待自动换片':'等待单击换页';}
+    if(s.show){transition=s.phase==='transition'?Math.min(1,s.clock/Math.max(.01,s.settings[page].duration)):1;if(s.phase==='transition'){first=second=page===1?0:1;status='整页切换中';}else if(page===1){const elapsed=s.animStart===null?-1:s.clock-s.animStart,firstLength=animDuration(s,s.order[0]),secondLength=animDuration(s,s.order[1]),secondAt=(s.secondStart==='with'?0:firstLength)+s.delay;first=Math.max(0,Math.min(1,elapsed/firstLength));second=Math.max(0,Math.min(1,(elapsed-secondAt)/secondLength));status=s.animStart===null?'等待单击，启动'+animName(s.order[0])+'动画':elapsed<animEnd(s)?'对象动画进行中':s.settings[page].auto?'动画结束，等待自动换片':'动画结束，等待换页';}else status=s.settings[page].auto?'等待自动换片':'等待单击换页';}
     const style=s.show&&s.settings[page].effect==='push'?`transform:translateX(${(1-transition)*100}%);`:s.show?`opacity:${transition};`:'';
-    const stage=`<div class="core-stage-window"><div class="core-slide core-timed-slide" ${s.show?'data-lab-act="screen" role="button" tabindex="0" aria-label="单击放映画面"':''} style="${style}"><h4 style="opacity:${first}">${showTitles[page]}</h4>${page===1?`<div class="core-animation-object" style="opacity:${second};transform:translateX(${(1-second)*65}px)">数据图形</div><p>标题淡入；图形飞入</p>`:`<p>${page===0?'单击进入第2页，观察它自己的进入切换。':'已到总结页，动作按钮真正改变了当前页面。'}</p>`}${s.show&&page===1?btn('转到总结','jump'):''}</div></div>`;
+    const stage=`<div class="core-stage-window"><div class="core-slide core-timed-slide" ${s.show?'data-lab-act="screen" role="button" tabindex="0" aria-label="单击放映画面"':''} style="${style}"><h4 style="opacity:${page!==1||s.order[0]==='title'?first:second}">${showTitles[page]}</h4>${page===1?`<div class="core-animation-object" style="opacity:${s.order[0]==='shape'?first:second};transform:translateX(${(1-(s.order[0]==='shape'?first:second))*65}px)">数据图形</div><p>标题淡入；图形飞入</p>`:`<p>${page===0?'单击进入第2页，观察它自己的进入切换。':'已到总结页，动作按钮真正改变了当前页面。'}</p>`}${s.show&&page===1?btn('转到'+showTitles[s.actionTarget],'jump'):''}</div></div>`;
     return (s.show?'':controls(select('editPage','设置哪一页',s.editPage,showTitles.map((x,i)=>[i,`第${i+1}页 ${x}`]))))+
       office('PowerPoint',s.show?'幻灯片放映':'切换',s.show?'':select('effect','进入切换',setting.effect,[['none','无'],['fade','淡化'],['push','推进']])+field('duration','持续时间（秒）',setting.duration,'number','min="0.2" max="5" step="0.2"')+check('click','单击鼠标时换片',setting.click)+check('auto','设置自动换片时间',setting.auto)+field('after','动画结束后换片等待（秒）',setting.after,'number','min="0" max="10" step="0.5"'),stage)+
-      (s.show?controls(btn('单击放映画面','screen')+btn('结束放映','stop')):controls(field('firstDuration','第2页标题动画时长（秒）',s.firstDuration,'number','min="0.2" max="5" step="0.2"')+select('secondStart','第2页图形开始方式',s.secondStart,[['with','与上一动画同时'],['after','上一动画之后']])+field('delay','图形延迟（秒）',s.delay,'number','min="0" max="5" step="0.5"')+field('secondDuration','图形动画时长（秒）',s.secondDuration,'number','min="0.2" max="5" step="0.2"')+btn('从头放映本例','start')))+
-      (s.show?`<p class="core-clock">第${page+1}页 · ${s.clock.toFixed(1)}秒 · ${status}</p>`:table(['第2页动画','开始条件','持续时间'],[['标题','单击时',s.firstDuration+'秒'],['图形',s.secondStart==='with'?'同一单击启动组 + 延迟'+s.delay+'秒':'标题完成 + 延迟'+s.delay+'秒',s.secondDuration+'秒']]))+
-      output(s.message)+coach('上方“持续时间”控制进入所选页的过渡；自动换片时间从本页动画完成后计算。两对象时序控件是卡片外的学习编辑器。放映画面中的“转到总结”模拟单击动作，直接跳转到第3页。');
-  },(s,a)=>{
+      (s.show?controls(btn('单击放映画面','screen')+(s.actionTrigger==='hover'&&s.current===1?btn('触屏辅助：模拟悬停动作','hoverJump'):'')+btn('结束放映','stop')):controls(field('firstDuration','第2页标题动画时长（秒）',s.firstDuration,'number','min="0.2" max="5" step="0.2"')+select('secondStart','第2个动画（'+animName(s.order[1])+'）开始方式',s.secondStart,[['with','与上一动画同时'],['after','上一动画之后']])+field('delay','第2个动画延迟（秒）',s.delay,'number','min="0" max="5" step="0.5"')+field('secondDuration','图形动画时长（秒）',s.secondDuration,'number','min="0.2" max="5" step="0.2"')+select('actionTrigger','动作设置：触发方式',s.actionTrigger,[['click','单击鼠标'],['hover','鼠标移过']])+select('actionTarget','超链接到幻灯片',s.actionTarget,[[0,'第1页'],[2,'第3页']])+btn('从头放映本例','start')))+
+      (s.show?`<p class="core-clock">第${page+1}页 · ${s.clock.toFixed(1)}秒 · ${status}</p>`:table(['动画窗格：选择对象','开始条件','持续时间'],s.order.map((id,i)=>[btn((i+1)+'. '+animName(id),'animSelect',id,`aria-pressed="${s.selectedAnim===id}"`),i===0?'单击时':s.secondStart==='with'?'与上一动画同时 + 延迟'+s.delay+'秒':'上一动画之后 + 延迟'+s.delay+'秒',animDuration(s,id)+'秒']))+controls(btn('向前移动','animUp','',s.order[0]===s.selectedAnim?'disabled':'')+btn('向后移动','animDown','',s.order[1]===s.selectedAnim?'disabled':'')))+
+      output(s.message)+coach('上方“持续时间”控制进入所选页的过渡；自动换片时间从本页动画完成后计算。两对象时序控件是卡片外的学习编辑器。动画窗格的移动命令改变对象先后，保留各自时长。动作设置可以选择单击或鼠标移过；触屏辅助可模拟悬停。');
+  },(s,a,v)=>{
+    if(a==='animSelect')s.selectedAnim=v;
+    if(a==='animUp'||a==='animDown'){const from=s.order.indexOf(s.selectedAnim),to=from+(a==='animUp'?-1:1);if(to>=0&&to<s.order.length){[s.order[from],s.order[to]]=[s.order[to],s.order[from]];s.message=animName(s.order[0])+'先开始，'+animName(s.order[1])+'按设定关系开始。';}}
     const now=Date.now(),before=s.current,wasShowing=s.show;timelineUpdate(s,now);
     if(a==='screen'&&wasShowing&&(s.current!==before||!s.show))return;
     if(a==='start')startSlide(s,0,now);
     if(a==='stop'){s.show=false;s.message='结束放映，页面设置仍保留。';}
-    if(a==='jump'&&s.show)startSlide(s,2,now);
+    if(s.show&&s.current===1&&(a==='jump'&&s.actionTrigger==='click'||a==='hoverJump'&&s.actionTrigger==='hover'))startSlide(s,s.actionTarget,now);
     if(a==='screen'&&s.show&&s.phase==='slide'){
-      if(s.current===1&&s.animStart===null){s.animStart=s.clock;s.message='单击启动标题动画；图形按设定的同时或之后关系运行。';}
+      if(s.current===1&&s.animStart===null){s.animStart=s.clock;s.message='单击启动'+animName(s.order[0])+'动画；'+animName(s.order[1])+'按设定的同时或之后关系运行。';}
       else if(s.current===1&&s.clock-s.animStart<animEnd(s)){s.message='本例请观察当前动画完成；学习模型不模拟单击快进动画。';}
       else if(s.settings[s.current].click){if(s.current<2)startSlide(s,s.current+1,now);else{s.show=false;s.message='放映结束。';}}
       else s.message='该页关闭了单击换片；若自动换片也关闭，可结束放映后调整设置。';
     }
   },(s,k,v)=>{
-    if(k==='editPage'){s.editPage=Number(v);return;}
+    if(k==='editPage'||k==='actionTarget'){s[k]=Number(v);return;}
     const numeric={duration:[.2,5],after:[0,10],firstDuration:[.2,5],secondDuration:[.2,5],delay:[0,5]};
     if(numeric[k]){const [min,max]=numeric[k];v=Math.max(min,Math.min(max,Number(v)||min));}
     if(['effect','duration','click','auto','after'].includes(k))s.settings[s.editPage][k]=v;else s[k]=v;
   });
+  registry['merged-11'].hover=(s,e)=>{const target=e.target.closest('[data-lab-act="jump"]');if(!target||target.contains(e.relatedTarget)||e.pointerType==='touch'||s.actionTrigger!=='hover'||!s.show||s.current!==1)return false;registry['merged-11'].action(s,'hoverJump');return true;};
   registry['merged-11'].tick=s=>timelineUpdate(s,Date.now());
   registry['merged-11'].tickInterval=50;
   registry['merged-11'].keydown=(s,e)=>{if(s.show&&(e.key==='Escape'||!e.target.closest('button,input,textarea,select'))&&[' ','ArrowRight','Enter','Escape'].includes(e.key)){e.preventDefault();registry['merged-11'].action(s,e.key==='Escape'?'stop':'screen');return true;}};
+})();
+
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,field,select,office,output,number,table}=ui;
+  const defaults={source:'none',transparency:0,x:0,y:0};
+  const background=s=>{
+    const pattern=s.source==='stationery'?'repeating-linear-gradient(0deg,#fdf6e5 0px,#fdf6e5 22px,#b3c6d7 23px,#fdf6e5 24px)':s.source==='picture'?'repeating-linear-gradient(45deg,#91b3a0 0px,#91b3a0 30px,#d8e6d9 30px,#d8e6d9 60px)':'none';
+    return `background-image:${pattern};background-position:${s.x}px ${s.y}px;opacity:${1-s.transparency/100}`;
+  };
+  register(['y2020q54'],'调整背景，再检查当前页和全部页面','选择图片或信纸纹理，调整透明度与平铺偏移；全部应用和重置会改变不同范围。',{
+    page:0,slides:[structuredClone(defaults),structuredClone(defaults),structuredClone(defaults)]
+  },s=>{
+    const current=s.slides[s.page];
+    return office('PowerPoint','设计 · 设置背景格式',select('source','图片或纹理填充',current.source,[['none','无填充'],['picture','示例图片：几何纹样'],['stationery','内置纹理：信纸']])+field('transparency','透明度（%）',current.transparency,'range','min="0" max="100"')+field('x','平铺水平偏移（示意像素）',current.x,'number','min="-100" max="100"')+field('y','平铺垂直偏移（示意像素）',current.y,'number','min="-100" max="100"')+btn('全部应用','all')+btn('重置背景','reset'),
+      `<div class="lab-deck"><aside>${s.slides.map((item,i)=>btn(`第${i+1}页 · ${{none:'无填充',picture:'图片',stationery:'信纸'}[item.source]}`,'page',i,`aria-pressed="${s.page===i}"`)).join('')}</aside><div class="lab-slide" style="position:relative;isolation:isolate"><div data-background-layer style="position:absolute;inset:0;z-index:-1;${background(current)}"></div><h3>第${s.page+1}页 · 学习计划</h3><p>文字和图形位于背景之上。</p></div></div>`)+
+      output(`当前页透明度 ${current.transparency}%；偏移 ${current.x} / ${current.y}。调整直接作用于当前页；“全部应用”复制到另外两页，“重置背景”只恢复当前页的默认背景。此例默认背景为无填充。`);
+  },(s,a,v)=>{
+    if(a==='page')s.page=Number(v);
+    if(a==='all')s.slides=s.slides.map(()=>structuredClone(s.slides[s.page]));
+    if(a==='reset')s.slides[s.page]=structuredClone(defaults);
+  },(s,k,v)=>{s.slides[s.page][k]=k==='source'?v:number(v,k==='transparency'?0:-100,100);});
+
+  const subjects=['数学','英语','计算机'];
+  const classes=['一班','二班','三班','四班'];
+  const scores=[[80,75,90],[72,85,78],[90,80,88],[82,92,84]];
+  const colors=['#527eaa','#bc7750','#558777','#9b6694'];
+  register(['merged-12'],'按类别和按系列，出现的是哪一组柱','同一张3门课×4个班的图，切换分组方式并逐组播放。',{
+    mode:'category',playing:false,step:0
+  },s=>{
+    const groups=s.mode==='category'?subjects:classes;
+    const bars=subjects.flatMap((subject,ci)=>classes.map((name,si)=>{
+      const visible=!s.playing||(s.mode==='category'?ci:si)<=s.step;
+      const x=45+ci*145+si*27, height=scores[si][ci]*1.8;
+      return `<g data-category="${ci}" data-series="${si}" opacity="${visible?1:.1}"><rect x="${x}" y="${210-height}" width="23" height="${height}" fill="${colors[si]}"/><text x="${x+11}" y="${201-height}" text-anchor="middle" font-size="10">${scores[si][ci]}</text></g>`;
+    })).join('');
+    return office('PowerPoint','动画 · 效果选项',select('mode','图表分组',s.mode,[['category','按类别'],['series','按系列']])+btn(s.playing?'重新播放':'预览动画','start')+btn('下一组','next','',!s.playing||s.step>=groups.length-1?'disabled':''),
+      `<svg class="lab-data-chart" viewBox="0 0 500 260" role="img" aria-label="三门课程、四个班级的簇状柱形图">${bars}${subjects.map((name,i)=>`<text x="${97+i*145}" y="240" text-anchor="middle">${name}</text>`).join('')}</svg><p>${classes.map((name,i)=>`<span style="color:${colors[i]}">■ ${name}</span>`).join('　')}</p>`)+
+      table(['播放方式','一次出现的对象'],[['按类别','一门课程下，4个班的柱一起出现'],['按系列','同一个班在3门课程下的柱一起出现']])+
+      output(s.playing?`第${s.step+1}/${groups.length}组：${groups[s.step]}。${s.mode==='category'?'本组出现4根柱，分别代表4个班。':'本组出现3根柱，分别属于3门课程。'}`:'横轴是课程类别，图例是班级系列。预览中的淡柱表示尚未出现的位置，背景和坐标轴保留。');
+  },(s,a)=>{if(a==='start'){s.playing=true;s.step=0;}if(a==='next'&&s.playing)s.step=Math.min(s.mode==='category'?2:3,s.step+1);},(s,k,v)=>{s.mode=v;s.playing=false;s.step=0;});
 })();

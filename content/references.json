@@ -1,0 +1,870 @@
+{
+  "merged-3": [
+    [
+      "NIST：二进制前缀",
+      "https://physics.nist.gov/cuu/Units/binary.html"
+    ],
+    [
+      "Microsoft：像素格式与位深",
+      "https://learn.microsoft.com/en-us/windows/win32/wic/-wic-codec-native-pixel-formats"
+    ],
+    [
+      "Microsoft：位图文件头",
+      "https://learn.microsoft.com/en-us/windows/win32/gdi/bitmap-header-types"
+    ]
+  ],
+  "y2025q2": [
+    [
+      "RFC 20：ASCII原始码表",
+      "https://www.rfc-editor.org/rfc/rfc20.html"
+    ],
+    [
+      "IBM：EUC-CN编码说明",
+      "https://www.ibm.com/docs/en/aix/7.2.0?topic=sets-euccn"
+    ],
+    [
+      "Unicode：编码形式FAQ",
+      "https://unicode.org/faq/utf_bom.html"
+    ],
+    [
+      "Unicode：技术介绍",
+      "https://www.unicode.org/standard/principles.html"
+    ]
+  ],
+  "y2026q41": [
+    [
+      "UCR：进制转换课程",
+      "https://www.cs.ucr.edu/~ehwang/courses/cs120a/00winter/binary.pdf"
+    ],
+    [
+      "Cornell：小数乘2转换",
+      "https://www.cs.cornell.edu/courses/cs3410/2025sp/assignments/minifloat/instructions.html"
+    ],
+    [
+      "CMU：二进制小数课程",
+      "https://www.cs.cmu.edu/afs/cs/academic/class/15213-s12/www/lectures/04-float-4up.pdf"
+    ]
+  ],
+  "merged-1": [
+    [
+      "Cornell：基本计算机系统",
+      "https://www.cs.cornell.edu/courses/cs316/2007fa/Lectures/Lec7_memoryProc_web.pdf"
+    ],
+    [
+      "IBM：CPU组成",
+      "https://www.ibm.com/think/topics/central-processing-unit"
+    ],
+    [
+      "Intel：RAM工作方式",
+      "https://www.intel.com/content/www/us/en/tech-tips-and-tricks/computer-ram.html"
+    ]
+  ],
+  "y2024q41": [
+    [
+      "RISC-V：官方基础指令集",
+      "https://docs.riscv.org/reference/isa/v20260120/unpriv/rv32.html"
+    ],
+    [
+      "Cornell：机器指令及执行课程",
+      "https://www.cs.cornell.edu/courses/cs3410/2016fa/slides/05-cpu-bw.pdf"
+    ]
+  ],
+  "y2026q3": [
+    [
+      "Cornell：存储器与处理器",
+      "https://www.cs.cornell.edu/courses/cs316/2007fa/Lectures/Lec7_memoryProc_web.pdf"
+    ],
+    [
+      "Micron：Flash存储技术说明",
+      "https://www.micron.com/about/blog/memory/nand/flash-forward-celebrating-40-years-of-memory-innovation"
+    ],
+    [
+      "ST：EEPROM应用说明",
+      "https://www.st.com/resource/en/application_note/an2540-eeprom-emulation-in-str91xfxx-devices-stmicroelectronics.pdf"
+    ]
+  ],
+  "y2022q4": [
+    [
+      "New Mexico Tech：总线与内存课程",
+      "https://www.ee.nmt.edu/~erives/308_13/Lecture25_S13.pdf"
+    ],
+    [
+      "USC：字节寻址与数据总线课程",
+      "https://ee.usc.edu/~redekopp/ee457/slides/EE457Unit7b_Interleaving_Notes.pdf"
+    ]
+  ],
+  "y2025q1": [
+    [
+      "Intel：时钟频率说明",
+      "https://www.intel.com/content/www/us/en/gaming/resources/cpu-clock-speed.html"
+    ],
+    [
+      "Cornell：机器结构课程",
+      "https://www.cs.cornell.edu/courses/cs3410/2016fa/slides/05-cpu-bw.pdf"
+    ]
+  ],
+  "y2020q2": [
+    [
+      "Microsoft：Window Features",
+      "https://learn.microsoft.com/en-us/windows/win32/winmsg/window-features"
+    ],
+    [
+      "Microsoft：Keyboard Input Overview",
+      "https://learn.microsoft.com/en-us/windows/win32/inputdev/about-keyboard-input"
+    ]
+  ],
+  "y2020q3": [
+    [
+      "Microsoft：Free up drive space in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/free-up-drive-space-in-windows"
+    ],
+    [
+      "Microsoft：Windows File Recovery",
+      "https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-file-recovery"
+    ],
+    [
+      "Microsoft：Restore deleted files or folders in OneDrive（含Windows回收站还原）",
+      "https://support.microsoft.com/en-us/onedrive/restore-deleted-files-or-folders-in-onedrive"
+    ],
+    [
+      "Microsoft：Delete a file",
+      "https://support.microsoft.com/en-us/office/collab-files/delete-a-file"
+    ]
+  ],
+  "y2020q24": [
+    [
+      "Microsoft：Windows 键盘快捷方式",
+      "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
+    ],
+    [
+      "Microsoft：Shell Clipboard Formats",
+      "https://learn.microsoft.com/en-us/windows/win32/shell/clipboard"
+    ],
+    [
+      "Microsoft：IDropTarget::DragOver",
+      "https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover"
+    ],
+    [
+      "Microsoft：Handling Shell Data Transfer Scenarios",
+      "https://learn.microsoft.com/en-us/windows/win32/shell/datascenarios"
+    ],
+    [
+      "Microsoft：DeleteFile",
+      "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile"
+    ]
+  ],
+  "merged-4": [
+    [
+      "Microsoft：Naming Files, Paths, and Namespaces",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file"
+    ],
+    [
+      "Microsoft：Common file name extensions in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/common-file-name-extensions-in-windows"
+    ],
+    [
+      "Microsoft：File Attribute Constants",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants"
+    ],
+    [
+      "Microsoft：DeleteFile",
+      "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile"
+    ]
+  ],
+  "y2026q35": [
+    [
+      "Microsoft：File Explorer in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/fileexplorer/file-explorer-in-windows"
+    ]
+  ],
+  "y2025q33": [
+    [
+      "Microsoft：Using the clipboard",
+      "https://support.microsoft.com/en-us/windows/apps/using-the-clipboard"
+    ],
+    [
+      "Microsoft：Handling Shell Data Transfer Scenarios",
+      "https://learn.microsoft.com/en-us/windows/win32/shell/datascenarios"
+    ],
+    [
+      "Microsoft：Shell Clipboard Formats",
+      "https://learn.microsoft.com/en-us/windows/win32/shell/clipboard"
+    ]
+  ],
+  "merged-5": [
+    [
+      "use the navigation pane in word",
+      "https://support.microsoft.com/en-us/word/use-the-navigation-pane-in-word"
+    ],
+    [
+      "format or customize a table of contents in word",
+      "https://support.microsoft.com/en-us/word/format-or-customize-a-table-of-contents-in-word"
+    ]
+  ],
+  "y2023q55": [
+    [
+      "check spelling and grammar in office",
+      "https://support.microsoft.com/en-us/office/check-spelling-and-grammar-in-office"
+    ]
+  ],
+  "y2025q48": [
+    [
+      "find and replace text in word",
+      "https://support.microsoft.com/en-us/word/training/find-and-replace-text-in-word"
+    ],
+    [
+      "find and replace text within an email message or item",
+      "https://support.microsoft.com/en-us/outlook/find-and-replace-text-within-an-email-message-or-item"
+    ]
+  ],
+  "y2020q41": [
+    [
+      "link to previous",
+      "https://support.microsoft.com/en-us/word/link-to-previous"
+    ],
+    [
+      "customize page numbers and their formats in different word document sections",
+      "https://support.microsoft.com/en-us/word/customize-page-numbers-and-their-formats-in-different-word-document-sections"
+    ]
+  ],
+  "y2020q43": [
+    [
+      "adjust indents and spacing in word",
+      "https://support.microsoft.com/en-us/word/adjust-indents-and-spacing-in-word"
+    ],
+    [
+      "indent the first line of a paragraph",
+      "https://support.microsoft.com/en-us/word/training/indent-the-first-line-of-a-paragraph"
+    ]
+  ],
+  "y2020q44": [
+    [
+      "use section breaks to change the layout or formatting in one section of your word document",
+      "https://support.microsoft.com/en-us/word/use-section-breaks-to-change-the-layout-or-formatting-in-one-section-of-your-word-document"
+    ]
+  ],
+  "y2020q61": [
+    [
+      "change page orientation to landscape or portrait",
+      "https://support.microsoft.com/en-us/word/training/change-page-orientation-to-landscape-or-portrait"
+    ],
+    [
+      "use section breaks to change the layout or formatting in one section of your word document",
+      "https://support.microsoft.com/en-us/word/use-section-breaks-to-change-the-layout-or-formatting-in-one-section-of-your-word-document"
+    ]
+  ],
+  "y2021q56": [
+    [
+      "save a word document as a template",
+      "https://support.microsoft.com/en-us/word/save-a-word-document-as-a-template"
+    ],
+    [
+      "file formats for saving documents",
+      "https://support.microsoft.com/en-us/word/file-formats-for-saving-documents"
+    ]
+  ],
+  "y2022q24": [
+    [
+      "using the ruler in word",
+      "https://support.microsoft.com/en-us/word/using-the-ruler-in-word"
+    ]
+  ],
+  "y2023q52": [
+    [
+      "add a heading in a word document",
+      "https://support.microsoft.com/en-us/word/add-a-heading-in-a-word-document"
+    ]
+  ],
+  "y2020q62": [
+    [
+      "repeat table header on subsequent pages",
+      "https://support.microsoft.com/en-us/word/repeat-table-header-on-subsequent-pages"
+    ]
+  ],
+  "y2020q63": [
+    [
+      "set or change table properties",
+      "https://support.microsoft.com/en-us/office/security-privacy/set-or-change-table-properties"
+    ],
+    [
+      "align text left or right center text or justify text on a page",
+      "https://support.microsoft.com/en-us/word/align-text-left-or-right-center-text-or-justify-text-on-a-page"
+    ]
+  ],
+  "y2022q69": [
+    [
+      "linked objects and embedded objects",
+      "https://support.microsoft.com/en-us/word/linked-objects-and-embedded-objects"
+    ],
+    [
+      "copy from excel to another office program",
+      "https://support.microsoft.com/en-us/word/copy-from-excel-to-another-office-program"
+    ]
+  ],
+  "y2024q8": [
+    [
+      "use a formula in a word table",
+      "https://support.microsoft.com/en-us/word/use-a-formula-in-a-word-table"
+    ]
+  ],
+  "y2025q47": [
+    [
+      "wrap text around a picture in word",
+      "https://support.microsoft.com/en-us/word/training/wrap-text-around-a-picture-in-word"
+    ],
+    [
+      "wrap text and move pictures in word",
+      "https://support.microsoft.com/en-us/word/wrap-text-and-move-pictures-in-word"
+    ]
+  ],
+  "y2026q36": [
+    [
+      "group shapes pictures or other objects in word",
+      "https://support.microsoft.com/en-us/word/group-shapes-pictures-or-other-objects-in-word"
+    ],
+    [
+      "move wordart a text box or shape in word",
+      "https://support.microsoft.com/en-us/word/move-wordart-a-text-box-or-shape-in-word"
+    ]
+  ],
+  "y2022q71": [
+    [
+      "Microsoft：保护部分文档并设置编辑例外",
+      "https://support.microsoft.com/en-us/word/allow-changes-to-parts-of-a-protected-word-document"
+    ]
+  ],
+  "y2023q56": [
+    [
+      "track changes in word",
+      "https://support.microsoft.com/en-us/word/training/track-changes-in-word"
+    ]
+  ],
+  "y2025q36": [
+    [
+      "Microsoft：邮件合并规则",
+      "https://support.microsoft.com/en-us/word/set-the-rules-for-a-mail-merge"
+    ]
+  ],
+  "y2020q48": [
+    [
+      "Fill series",
+      "https://support.microsoft.com/en-us/excel/enter-a-series-of-numbers-dates-or-other-items"
+    ]
+  ],
+  "y2022q58": [
+    [
+      "Microsoft：选择性粘贴的运算选项",
+      "https://support.microsoft.com/en-us/excel/paste-options"
+    ]
+  ],
+  "y2023q11": [
+    [
+      "Move or copy worksheets",
+      "https://support.microsoft.com/en-us/excel/get-started/move-or-copy-worksheets-or-worksheet-data"
+    ]
+  ],
+  "y2023q60": [
+    [
+      "Find and replace",
+      "https://support.microsoft.com/en-us/excel/get-started/find-or-replace-text-and-numbers-on-a-worksheet"
+    ],
+    [
+      "Go To Special",
+      "https://support.microsoft.com/en-us/excel/find-and-select-cells-that-meet-specific-conditions-in-excel"
+    ]
+  ],
+  "y2024q57": [
+    [
+      "Find and replace",
+      "https://support.microsoft.com/en-us/excel/get-started/find-or-replace-text-and-numbers-on-a-worksheet"
+    ]
+  ],
+  "merged-10": [
+    [
+      "Relative absolute mixed references",
+      "https://support.microsoft.com/zh-cn/Excel/switch-between-relative-absolute-and-mixed-references"
+    ],
+    [
+      "RANK.EQ function",
+      "https://support.microsoft.com/en-us/excel/functions/rank-eq-function"
+    ]
+  ],
+  "y2020q56": [
+    [
+      "MID function",
+      "https://support.microsoft.com/en-us/excel/functions/mid-function"
+    ]
+  ],
+  "y2020q57": [
+    [
+      "Microsoft：VLOOKUP参数与精确匹配",
+      "https://support.microsoft.com/en-us/excel/functions/vlookup-function"
+    ]
+  ],
+  "y2021q49": [
+    [
+      "Convert numbers stored as text",
+      "https://support.microsoft.com/en-us/excel/convert-numbers-stored-as-text-to-numbers-in-excel"
+    ]
+  ],
+  "y2021q51": [
+    [
+      "AVERAGEIF function",
+      "https://support.microsoft.com/en-us/excel/functions/averageif-function"
+    ]
+  ],
+  "y2026q50": [
+    [
+      "SUMIF function",
+      "https://support.microsoft.com/en-us/excel/functions/sumif-function"
+    ]
+  ],
+  "y2026q49": [
+    [
+      "AVERAGEIF function",
+      "https://support.microsoft.com/en-us/excel/functions/averageif-function"
+    ],
+    [
+      "SUM function",
+      "https://support.microsoft.com/en-us/excel/functions/sum-function"
+    ],
+    [
+      "Convert numbers stored as text",
+      "https://support.microsoft.com/en-us/excel/convert-numbers-stored-as-text-to-numbers-in-excel"
+    ]
+  ],
+  "y2020q47": [
+    [
+      "Merge and unmerge",
+      "https://support.microsoft.com/en-us/excel/get-started/merge-and-unmerge-cells-in-excel"
+    ]
+  ],
+  "y2020q52": [
+    [
+      "Conditional formatting",
+      "https://support.microsoft.com/en-us/excel/use-conditional-formatting-to-highlight-information-in-excel"
+    ]
+  ],
+  "y2022q61": [
+    [
+      "Microsoft：选择性粘贴的内容类型",
+      "https://support.microsoft.com/en-us/excel/paste-options"
+    ]
+  ],
+  "y2025q52": [
+    [
+      "Conditional formatting",
+      "https://support.microsoft.com/en-us/excel/use-conditional-formatting-to-highlight-information-in-excel"
+    ]
+  ],
+  "y2020q9": [
+    [
+      "Advanced filter",
+      "https://support.microsoft.com/en-us/excel/filter-by-using-advanced-criteria"
+    ]
+  ],
+  "y2020q58": [
+    [
+      "SUBTOTAL",
+      "https://support.microsoft.com/en-us/excel/functions/subtotal-function"
+    ],
+    [
+      "Insert subtotals",
+      "https://support.microsoft.com/en-us/excel/insert-subtotals-in-a-list-of-data-in-a-worksheet"
+    ]
+  ],
+  "y2021q58": [
+    [
+      "Goal Seek",
+      "https://support.microsoft.com/en-us/excel/use-goal-seek-to-find-the-result-you-want-by-adjusting-an-input-value"
+    ]
+  ],
+  "y2023q57": [
+    [
+      "Consolidate data",
+      "https://support.microsoft.com/en-us/excel/consolidate-data-in-multiple-worksheets"
+    ]
+  ],
+  "y2024q67": [
+    [
+      "PivotTable grouping",
+      "https://support.microsoft.com/en-us/excel/get-started/group-or-ungroup-data-in-a-pivottable"
+    ],
+    [
+      "Create PivotTable",
+      "https://support.microsoft.com/en-us/excel/get-started/create-a-pivottable-to-analyze-worksheet-data"
+    ]
+  ],
+  "y2026q51": [
+    [
+      "SUM function",
+      "https://support.microsoft.com/en-us/excel/functions/sum-function"
+    ],
+    [
+      "Advanced filter",
+      "https://support.microsoft.com/en-us/excel/filter-by-using-advanced-criteria"
+    ],
+    [
+      "SUBTOTAL",
+      "https://support.microsoft.com/en-us/excel/functions/subtotal-function"
+    ]
+  ],
+  "y2025q51": [
+    [
+      "Add chart data series",
+      "https://support.microsoft.com/en-us/office/add-a-data-series-to-your-chart"
+    ]
+  ],
+  "y2020q10": [
+    [
+      "Microsoft：备注页的编辑范围",
+      "https://support.microsoft.com/en-us/powerpoint/create-and-print-notes-pages"
+    ]
+  ],
+  "y2020q12": [
+    [
+      "Microsoft：隐藏或显示幻灯片",
+      "https://support.microsoft.com/en-us/powerpoint/hide-or-show-a-slide"
+    ],
+    [
+      "Microsoft：演示文稿放映快捷键",
+      "https://support.microsoft.com/en-us/accessibility/powerpoint/use-keyboard-shortcuts-to-deliver-powerpoint-presentations"
+    ]
+  ],
+  "y2020q11": [
+    [
+      "Microsoft：什么是幻灯片母版",
+      "https://support.microsoft.com/en-us/powerpoint/training/what-is-a-slide-master-in-powerpoint"
+    ],
+    [
+      "Microsoft：在一个演示文稿中使用多个母版",
+      "https://support.microsoft.com/en-us/powerpoint/use-multiple-slide-masters-in-one-presentation"
+    ],
+    [
+      "Microsoft：添加、编辑或移除版式占位符",
+      "https://support.microsoft.com/en-us/powerpoint/add-edit-or-remove-a-placeholder-on-a-slide-layout"
+    ]
+  ],
+  "y2020q53": [
+    [
+      "Microsoft：移除或更改当前主题",
+      "https://support.microsoft.com/en-us/powerpoint/remove-or-change-the-current-theme"
+    ],
+    [
+      "Microsoft：在一个演示文稿中使用多个主题",
+      "https://support.microsoft.com/en-us/powerpoint/use-multiple-themes-in-one-presentation"
+    ],
+    [
+      "Microsoft：应用幻灯片版式与重设",
+      "https://support.microsoft.com/en-us/powerpoint/training/apply-a-slide-layout"
+    ]
+  ],
+  "y2020q54": [
+    [
+      "Microsoft：更改幻灯片背景",
+      "https://support.microsoft.com/en-us/powerpoint/change-the-background-of-slides"
+    ],
+    [
+      "Microsoft：为幻灯片添加背景图片",
+      "https://support.microsoft.com/en-us/powerpoint/training/add-a-background-picture-to-your-slides"
+    ]
+  ],
+  "merged-11": [
+    [
+      "Microsoft：添加、更改或移除幻灯片切换",
+      "https://support.microsoft.com/en-us/powerpoint/training/add-change-or-remove-transitions-between-slides"
+    ],
+    [
+      "Microsoft：设置切换的计时和速度",
+      "https://support.microsoft.com/en-us/powerpoint/set-the-timing-and-speed-of-a-transition"
+    ],
+    [
+      "Microsoft：设置动画效果的开始时间和速度",
+      "https://support.microsoft.com/en-us/powerpoint/set-the-start-time-and-speed-of-an-animation-effect"
+    ],
+    [
+      "Microsoft：为一个对象应用多个动画效果",
+      "https://support.microsoft.com/en-us/powerpoint/apply-multiple-animation-effects-to-one-object"
+    ],
+    [
+      "Microsoft：自定义放映中的动作、超链接与放映后返回",
+      "https://support.microsoft.com/en-us/powerpoint/create-and-present-a-custom-show"
+    ]
+  ],
+  "y2023q13": [
+    [
+      "Microsoft：排练和记录演示文稿计时",
+      "https://support.microsoft.com/en-us/powerpoint/training/rehearse-and-time-the-delivery-of-a-presentation"
+    ],
+    [
+      "Microsoft：录制旁白和幻灯片计时",
+      "https://support.microsoft.com/en-us/powerpoint/training/record-a-slide-show-with-narration-and-slide-timings"
+    ]
+  ],
+  "y2024q65": [
+    [
+      "Microsoft：插入或更改幻灯片编号、日期及页脚",
+      "https://support.microsoft.com/en-us/powerpoint/insert-or-change-the-slide-numbers-date-or-footer-for-on-screen-slides-in-powerpoint"
+    ],
+    [
+      "Microsoft：占位符与页脚启用要求",
+      "https://support.microsoft.com/en-us/powerpoint/add-edit-or-remove-a-placeholder-on-a-slide-layout"
+    ]
+  ],
+  "y2026q55": [
+    [
+      "Microsoft：创建和演示自定义放映",
+      "https://support.microsoft.com/en-us/powerpoint/create-and-present-a-custom-show"
+    ]
+  ],
+  "y2020q26": [
+    [
+      "IETF RFC 7928：端到端时延、有效速率和文件完成时间",
+      "https://www.rfc-editor.org/rfc/rfc7928.html"
+    ],
+    [
+      "IETF RFC 5325：发送时延与传播时延",
+      "https://www.rfc-editor.org/rfc/rfc5325.html"
+    ]
+  ],
+  "merged-13": [
+    [
+      "IETF RFC 1122：Internet协议体系分层",
+      "https://www.rfc-editor.org/rfc/rfc1122.html"
+    ],
+    [
+      "ITU-T X.200：OSI基本参考模型",
+      "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-X.200-199407-I%21%21PDF-E&lang=e&type=items"
+    ]
+  ],
+  "y2023q17": [
+    [
+      "IETF RFC 4632：CIDR前缀、历史编址与地址块",
+      "https://www.rfc-editor.org/rfc/rfc4632.html"
+    ],
+    [
+      "IETF RFC 950：Internet子网与地址掩码",
+      "https://www.rfc-editor.org/rfc/rfc950.html"
+    ],
+    [
+      "IETF RFC 3021：/31点对点链路例外",
+      "https://www.rfc-editor.org/rfc/rfc3021.html"
+    ]
+  ],
+  "y2023q47": [
+    [
+      "IETF RFC 4291：IPv6地址长度与合法文本形式",
+      "https://www.rfc-editor.org/rfc/rfc4291.html"
+    ],
+    [
+      "IETF RFC 5952：IPv6规范文本表示",
+      "https://www.rfc-editor.org/rfc/rfc5952.html"
+    ]
+  ],
+  "y2026q14": [
+    [
+      "MDN：URL的组成、路径、查询与片段",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL"
+    ],
+    [
+      "MDN：URL构造函数与基准地址解析",
+      "https://developer.mozilla.org/en-US/docs/Web/API/URL/URL"
+    ]
+  ],
+  "y2026q28": [
+    [
+      "NIST TREC：查全率与查准率定义",
+      "https://trec.nist.gov/pubs/trec14/appendices/CE.MEASURES05.pdf"
+    ],
+    [
+      "PubMed官方帮助：布尔运算、括号和检索字段",
+      "https://pubmed.ncbi.nlm.nih.gov/help/"
+    ],
+    [
+      "Web of Science：布尔算符优先级",
+      "https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Order-of-precedence-for-Boolean-operators?language=en_US"
+    ],
+    [
+      "Microsoft：NEAR有序与无序参数示例",
+      "https://learn.microsoft.com/en-us/sql/t-sql/queries/contains-transact-sql"
+    ]
+  ],
+  "merged-14": [
+    [
+      "W3C PNG 第三版：无损、源图像与参考图像、动画",
+      "https://www.w3.org/TR/png-3/"
+    ],
+    [
+      "MDN：图像格式比较",
+      "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types"
+    ],
+    [
+      "MDN：数字音频概念",
+      "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Audio_concepts"
+    ],
+    [
+      "MIDI Association：MIDI 概览",
+      "https://midi.org/about-midi-part-1overview"
+    ]
+  ],
+  "y2020q27": [
+    [
+      "W3C PNG 第三版：样值、像素、位深与颜色类型",
+      "https://www.w3.org/TR/png-3/"
+    ],
+    [
+      "MDN：图像文件类型与格式指南",
+      "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types"
+    ]
+  ],
+  "y2023q18": [
+    [
+      "IETF RFC 3551 §4.5.11：RTP 的 L16 未压缩音频",
+      "https://www.rfc-editor.org/rfc/rfc3551.html#section-4.5.11"
+    ],
+    [
+      "MDN：媒体缓冲、跳转与时间范围",
+      "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Audio_and_video_delivery/buffering_seeking_time_ranges"
+    ]
+  ],
+  "y2024q32": [
+    [
+      "MDN：数字音频概念",
+      "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Audio_concepts"
+    ],
+    [
+      "MIDI Association：MIDI 概览",
+      "https://midi.org/about-midi-part-1overview"
+    ],
+    [
+      "MIDI Association：MIDI 1.0 消息摘要",
+      "https://midi.org/summary-of-midi-1-0-messages"
+    ]
+  ],
+  "merged-15": [
+    [
+      "NIST FIPS 186-5：Digital Signature Standard",
+      "https://csrc.nist.gov/pubs/fips/186-5/final"
+    ],
+    [
+      "NIST：Public Key Certificate 术语",
+      "https://csrc.nist.gov/glossary/term/public_key_certificate"
+    ],
+    [
+      "MDN：SubtleCrypto.sign",
+      "https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign"
+    ],
+    [
+      "MDN：SubtleCrypto.encrypt",
+      "https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt"
+    ],
+    [
+      "MDN：SubtleCrypto.digest",
+      "https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest"
+    ],
+    [
+      "Microsoft：公钥与私钥",
+      "https://learn.microsoft.com/en-us/windows/win32/seccrypto/public-private-key-pairs"
+    ]
+  ],
+  "merged-16": [
+    [
+      "NIST SP 800-41 Rev.1：防火墙与策略指南",
+      "https://csrc.nist.gov/pubs/sp/800/41/r1/final"
+    ],
+    [
+      "NIST SP 800-41 Rev.1 正文：规则、状态检查与默认拒绝",
+      "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf"
+    ]
+  ],
+  "y2026q39": [
+    [
+      "NIST：私有云定义",
+      "https://csrc.nist.gov/glossary/term/private_cloud"
+    ]
+  ],
+  "merged-20": [
+    [
+      "Emory大学：选择、投影、笛卡尔积与连接",
+      "https://www.cs.emory.edu/~cheung/Courses/554/Syllabus/1-intro/intro4.html"
+    ],
+    [
+      "PostgreSQL：连接条件、USING与自然连接",
+      "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+    ],
+    [
+      "PostgreSQL：并、交、差及相容性",
+      "https://www.postgresql.org/docs/current/queries-union.html"
+    ]
+  ],
+  "merged-21": [
+    [
+      "SQLite：SELECT的DISTINCT、WHERE与ORDER BY语义",
+      "https://www.sqlite.org/lang_select.html"
+    ],
+    [
+      "PostgreSQL：比较运算与NULL判断",
+      "https://www.postgresql.org/docs/current/functions-comparison.html"
+    ]
+  ],
+  "y2023q14": [
+    [
+      "Emory大学：关系及超码、候选码、主码",
+      "https://www.cs.emory.edu/~cheung/Courses/554/Syllabus/1-intro/relation.html"
+    ],
+    [
+      "PostgreSQL：主键、唯一与外键约束",
+      "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    ]
+  ],
+  "y2024q36": [
+    [
+      "PostgreSQL：DELETE",
+      "https://www.postgresql.org/docs/current/sql-delete.html"
+    ],
+    [
+      "PostgreSQL：UPDATE",
+      "https://www.postgresql.org/docs/current/sql-update.html"
+    ],
+    [
+      "PostgreSQL：DROP TABLE",
+      "https://www.postgresql.org/docs/current/sql-droptable.html"
+    ],
+    [
+      "PostgreSQL：ALTER TABLE及新增字段默认值",
+      "https://www.postgresql.org/docs/current/ddl-alter.html"
+    ],
+    [
+      "PostgreSQL：TRUNCATE的事务与约束行为",
+      "https://www.postgresql.org/docs/current/sql-truncate.html"
+    ]
+  ],
+  "y2021q33": [
+    [
+      "Rice大学OpenStax：while循环",
+      "https://openstax.org/books/introduction-python-programming/pages/5-1-while-loop"
+    ],
+    [
+      "Butte College教材：do-while循环",
+      "https://eng.libretexts.org/Courses/Butte_College/Intro_to_Programming_with_Programming_Fundamentals_and_Python_for_Everyone/27:_Additional_Fundamentals_of_Programming/27.06:_Loops/27.6.01:_Do_While_Loop"
+    ]
+  ],
+  "y2024q69": [
+    [
+      "NIST：冒泡排序",
+      "https://xlinux.nist.gov/dads/HTML/bubblesort.html"
+    ]
+  ],
+  "y2020q20": [
+    [
+      "著作权法第二十四条：使用限制",
+      "https://www.ncac.gov.cn/xxfb/flfg/flfg_532/202103/t20210309_50530.html"
+    ]
+  ],
+  "y2026q18": [
+    [
+      "北斗系统官方介绍",
+      "https://www.beidou.gov.cn/xt/"
+    ]
+  ]
+}

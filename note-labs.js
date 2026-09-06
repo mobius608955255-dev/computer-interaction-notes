@@ -1,32 +1,8 @@
-/* Independent, stateful demonstrations. No worksheet actions are learning controls. */
+/* Shared subject models. Interaction lifecycle lives in note-labs-runtime.js. */
 (() => {
   'use strict';
-  const sim = window.NOTE_SIMULATIONS;
-  const esc = sim.escapeHTML;
-  const registry = {};
-  const states = new WeakMap();
-  let serial = 0;
-  const btn = (text,act,value='',extra='') => `<button type="button" data-lab-act="${act}" data-value="${esc(String(value))}" ${extra}>${text}</button>`;
-  const field = (name,label,value,type='text',extra='') => `<label>${label}<input data-field="${name}" type="${type}" value="${esc(String(value))}" ${extra}></label>`;
-  const select = (name,label,value,options,extra='') => `<label>${label}<select data-field="${name}" ${extra}>${options.map(o=>`<option value="${esc(String(o[0]))}" ${String(o[0])===String(value)?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
-  const table = (head,rows) => `<div class="lab-table-scroll" tabindex="0" aria-label="数据表，可横向滚动"><table><thead><tr>${head.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  const coach = text => `<div class="lab-coach"><b>操作提示</b><p>${text}</p></div>`;
-  const output = text => `<output class="lab-output" aria-live="polite">${text}</output>`;
-  const office = (app,tab,commands,body) => `<div class="lab-office lab-${app.toLowerCase()}"><header>${app} 2016 · 局部操作仿真</header><nav aria-label="功能区位置">${[...new Set(['文件','开始','插入',tab])].map(t=>t===tab?`<span>${t}</span>`:t).join('　')}</nav><div class="lab-ribbon">${commands}</div><div class="lab-workspace">${body}</div><footer>演示文档 · 操作仅影响本卡片</footer></div>`;
-  const dialog = (title,body,commands) => `<section class="lab-dialog" role="group" aria-label="${title}"><header>${title}</header><div>${body}</div><footer>${commands}</footer></section>`;
-  const paper = body => `<div class="lab-paper">${body}</div>`;
-  const register = (ids,title,task,initial,render,action,change) => {
-    const key = ids[0];
-    registry[key] = {initial,render,action,change};
-    for (const id of ids) {
-      sim.demos[id] = {kind:'lab',title,task,initial:'直接操作画面。'};
-      sim.scenes[id] = () => `<div class="note-lab" data-lab="${key}"></div>`;
-    }
-  };
-  const fresh = key => ({...structuredClone(registry[key].initial),uid:`lab-${++serial}`});
-  const number = (v,min,max) => Math.max(min,Math.min(max,Number(v)||0));
-  const money = n => Number(n).toLocaleString('zh-CN',{maximumFractionDigits:2});
-
+  const {register,registry,ui}=window.NOTE_LABS;
+  const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
   register(['y2022q4'],'沿三条总线完成一次取数','分别发出地址、读信号与返回数据，观察方向和用途。', {signal:'address'}, s => {
     const signals={address:['地址总线','CPU → 内存','地址 0x0020'],control:['控制信号','CPU → 内存','READ：读'],data:['数据总线','内存 → CPU','内容 42'],interrupt:['控制信号','设备 → CPU','IRQ：中断请求']};
     const x=signals[s.signal];
@@ -45,10 +21,6 @@
   register(['y2022q16'],'编辑HTML，看标签页与正文各自改变','修改title与h1，切换两个标签页验证它们的位置。',{title:'计算机笔记',heading:'第一章 信息技术',tab:0},s=>
     `<div class="lab-code-editor">${field('title','<code>&lt;title&gt;</code>',s.title)}${field('heading','<code>&lt;h1&gt;</code>',s.heading)}</div><div class="lab-browser"><div class="lab-tabs">${btn(esc(s.title),'tab',0,`aria-pressed="${s.tab===0}"`)}${btn('参考资料','tab',1,`aria-pressed="${s.tab===1}"`)}</div><div class="lab-address">https://notes.example/${s.tab?'reference':'chapter1'}</div><div class="lab-browser-page"><h2>${s.tab?'资料索引':esc(s.heading)}</h2><p>${s.tab?'这是真正独立的一页内容。':'title不会作为正文自动显示；h1是这段内容的标题。'}</p></div></div>`,(s,a,v)=>{s.tab=Number(v);});
 
-  register(['y2022q24'],'抓住标尺三角，观察段落的第一行与其余行','拖动上三角、下三角和方块；也可聚焦标记后使用方向键。',{first:12,rest:0,right:100},s=>{
-    const handle=(name,label,pos,shape)=>`<button class="lab-ruler-handle ${shape}" data-lab-drag="ruler" data-key="${name}" style="left:${pos}%" role="slider" aria-label="${label}" aria-valuemin="0" aria-valuemax="60" aria-valuenow="${pos}">${shape==='square'?'■':'▼'}</button>`;
-    return office('Word','视图','<span>☑ 标尺</span>',`<div class="lab-ruler" data-ruler>${Array.from({length:11},(_,i)=>`<span>${i}</span>`).join('')}${handle('first','首行缩进',s.first,'upper')}${handle('rest','悬挂缩进',s.rest,'lower')}${handle('both','整段左缩进',s.rest,'square')}</div>${paper(`<p class="lab-indent" style="margin-left:${s.rest}%;text-indent:${(s.first-s.rest)/(100-s.rest)*100}%">真正理解缩进，要看第一行与其余行的位置。上方三角控制第一行；下方三角控制后续行。拖动方块会把它们一同移动，首行与其余行的相对距离保持不变。</p>`)}`)+output(`首行位置 ${s.first.toFixed(0)}；其余行位置 ${s.rest.toFixed(0)}。标尺以相对刻度示意，不是厘米。`);
-  },()=>{});
 
   register(['y2022q33'],'用缓存换计算：区间求和工作台','改变数据规模和查询次数，对照重复扫描与前缀和。',{n:100,q:10},s=>
     `<div class="lab-controls">${field('n','数据项数 n',s.n,'range','min="10" max="1000" step="10"')}${field('q','查询次数 q',s.q,'range','min="1" max="100"')}</div><div class="lab-complexity">${[['逐次扫描',s.n*s.q,1],['先建前缀和',s.n+s.q,s.n+1]].map(([name,time,space])=>`<section><h4>${name}</h4><div class="lab-bar"><i style="width:${Math.max(2,time/(s.n*s.q)*100)}%"></i></div><p>示意运算量 ${money(time)}</p><p>额外存储单元 ${money(space)}</p></section>`).join('')}</div>${output(`n=${s.n}，q=${s.q}。采用全长查询估算：扫描约nq次，前缀和约n+q次；两种方法都能得到相同和。`)}`,()=>{},(s,k,v)=>{s[k]=number(v,1,1000);});
@@ -129,50 +101,96 @@
   },()=>{});
 
   const pivotData=[['产品1','一部','1月',12],['产品1','二部','1月',20],['产品1','一部','2月',8],['产品2','一部','1月',15],['产品2','二部','2月',30],['产品1','二部','2月',10]];
-  const gradeData=[['王宁','一班','2023/03/01',82],['李明','二班','2023/03/05',76],['赵敏','一班','2024/03/02',91],['王宁','一班','2023/03/12',88]];
-  register(['y2024q67'],'真正拖动字段，建立交叉汇总报表','把字段拖到行、列、值、筛选器，报表按放置位置重新汇总。',{zones:{row:[],column:[],value:[],filter:[]},scenario:'sales',monthly:false,filter:'全部',aggregate:'sum',picked:'产品',message:'将“产品”拖到行，“月份”拖到列，“销量”拖到值。'},s=>{
-    const grades=s.scenario==='grades';const fields=grades?['姓名','班级','日期','成绩']:['产品','分部','月份','销量'];const zones=[['row','行'],['column','列'],['value','值'],['filter','筛选器']];
-    const data=grades?gradeData:pivotData;const rows=data.filter(r=>s.filter==='全部'||r[1]===s.filter).map(r=>r.map((v,i)=>grades&&s.monthly&&i===2?v.slice(0,7):v));
-    const index=name=>fields.indexOf(name);
-    const rnames=s.zones.row.length?[...new Set(rows.map(r=>s.zones.row.map(n=>r[index(n)]).join(' / ')))]:['总计'];
-    const cnames=s.zones.column.length?[...new Set(rows.map(r=>s.zones.column.map(n=>r[index(n)]).join(' / ')))]:['总计'];
-    const aggregate=set=>!set.length?'—':s.aggregate==='count'?set.length:money(set.reduce((sum,r)=>sum+Number(r[3]),0)/(s.aggregate==='average'?set.length:1));
-    const columnsFor=set=>cnames.map(cn=>aggregate(set.filter(r=>!s.zones.column.length||s.zones.column.map(n=>r[index(n)]).join(' / ')===cn)));
+  const gradeData=[['王宁','一班','2023/03/01',82,78,90],['李明','二班','2023/03/05',76,80,88],['赵敏','一班','2024/03/02',91,86,89],['王宁','一班','2023/03/12',88,81,92]].map(r=>[...r,r[3]+r[4]+r[5]]);
+  const pivotFields=s=>s.scenario==='grades'?['姓名','班级','日期','成绩','数学','外语','总分']:['产品','分部','月份','销量'];
+  const pivotLabel=name=>name==='成绩'?'成绩（计算机）':name;
+  register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列决定分组；多个成绩字段可并排留在值区域，结果从原始记录计算。',{
+    zones:{row:[],column:[],value:[],filter:[]},scenario:'sales',monthly:false,filter:'全部',filterLabel:'',aggregate:'sum',picked:'产品',message:'将产品拖到行，月份拖到列，销量拖到值。'
+  },s=>{
+    const grades=s.scenario==='grades',fields=pivotFields(s),data=grades?gradeData:pivotData;
+    const zones=[['row','行'],['column','列'],['value','值'],['filter','筛选器']];
+    const rows=data.filter(r=>s.filter==='全部'||r[1]===s.filter).map(r=>r.map((v,i)=>grades&&s.monthly&&i===2?v.slice(0,7):v));
+    const index=name=>fields.indexOf(name),groupKey=(r,zone)=>s.zones[zone].map(name=>r[index(name)]).join(' / ');
+    const rnames=s.zones.row.length?[...new Set(rows.map(r=>groupKey(r,'row')))]:['总计'];
+    const cnames=s.zones.column.length?[...new Set(rows.map(r=>groupKey(r,'column')))]:['总计'];
+    const valueColumns=cnames.flatMap(name=>s.zones.value.map(metric=>({name,metric})));
+    const aggregate=(set,metric)=>!set.length?'—':s.aggregate==='count'?set.length:money(set.reduce((sum,r)=>sum+Number(r[index(metric)]),0)/(s.aggregate==='average'?set.length:1));
+    const columnsFor=set=>valueColumns.map(({name,metric})=>aggregate(set.filter(r=>!s.zones.column.length||groupKey(r,'column')===name),metric));
     const resultRows=[];
     if(s.zones.row.length>1){
-      const outer=s.zones.row[0];for(const name of [...new Set(rows.map(r=>r[index(outer)]))]){
-        const group=rows.filter(r=>r[index(outer)]===name);resultRows.push([`<b>${esc(String(name))} 小计</b>`,...columnsFor(group)]);
-        for(const rn of rnames.filter(rn=>group.some(r=>s.zones.row.map(n=>r[index(n)]).join(' / ')===rn))){const subset=group.filter(r=>s.zones.row.map(n=>r[index(n)]).join(' / ')===rn);resultRows.push([`<span style="padding-left:1.5em">${esc(rn.split(' / ').slice(1).join(' / '))}</span>`,...columnsFor(subset)]);}
+      const outer=s.zones.row[0];
+      for(const name of [...new Set(rows.map(r=>r[index(outer)]))]){
+        const group=rows.filter(r=>r[index(outer)]===name);resultRows.push([`<b>${esc(name)} 小计</b>`,...columnsFor(group)]);
+        for(const rn of rnames.filter(rn=>group.some(r=>groupKey(r,'row')===rn)))resultRows.push([`<span style="padding-left:1.5em">${esc(rn.split(' / ').slice(1).join(' / '))}</span>`,...columnsFor(group.filter(r=>groupKey(r,'row')===rn))]);
       }
       resultRows.push(['<b>总计</b>',...columnsFor(rows)]);
-    }else for(const rn of rnames)resultRows.push([esc(rn),...columnsFor(rows.filter(r=>!s.zones.row.length||s.zones.row.map(n=>r[index(n)]).join(' / ')===rn))]);
-    const result=s.zones.value.length?table(['行标签',...cnames],resultRows):'<p class="lab-empty">将数值字段放入值区域，建立汇总报表。</p>';
-
-    return `<div class="lab-controls">${select('scenario','源数据场景',s.scenario,[['sales','产品销量（2022考法）'],['grades','班级成绩（日期分组）']])}</div>`+office('Excel','数据透视表分析',select('aggregate','值汇总方式',s.aggregate,[['sum','求和'],['average','平均值'],['count','计数']])+(grades?btn(s.monthly?'取消日期组合':'日期 → 按年、月组合','group'):''),`<div class="lab-pivot-layout"><div>${s.zones.filter.includes(fields[1])?select('filter',fields[1]+'筛选',s.filter,[['全部','全部'],...([...new Set(data.map(r=>r[1]))].map(v=>[v,v]))]):''}${result}</div><aside class="lab-fields"><b>数据透视表字段</b><div class="lab-field-bank">${fields.map(f=>`<button data-lab-drag="field" data-key="${f}" data-lab-act="pick" data-value="${f}" aria-pressed="${s.picked===f}">${f} <span>⠿</span></button>`).join('')}</div><div class="lab-drop-zones">${zones.map(([k,v])=>`<section data-lab-drop="${k}"><b>${v}</b>${s.zones[k].map(f=>btn(`${f} ×`,'remove',k+':'+f)).join('')||'<small>拖到这里</small>'}</section>`).join('')}</div></aside></div>`)+`<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>选择字段后，指定区域；也可拖动上方字段。</p>${zones.map(([k,v])=>btn(`放入${v}`,'place',k)).join('')}${table(fields,data)}</details>${output(s.message)}`;
-  },(s,a,v)=>{if(a==='pick')s.picked=v;if(a==='remove'){const [z,f]=v.split(':');s.zones[z]=s.zones[z].filter(x=>x!==f);if(z==='filter')s.filter='全部';}if(a==='place')placeField(s,s.picked,v);if(a==='group'){s.monthly=!s.monthly;s.message=s.monthly?'日期按年、月合并；不同年份的3月不会混在一起。':'恢复逐日显示。';}},(s,k,v)=>{s[k]=v;if(k==='scenario'){s.zones={row:[],column:[],value:[],filter:[]};s.filter='全部';s.picked=v==='grades'?'姓名':'产品';s.message='已更换源数据，请重新放置字段。';}});
+    }else for(const rn of rnames)resultRows.push([esc(rn),...columnsFor(rows.filter(r=>!s.zones.row.length||groupKey(r,'row')===rn))]);
+    const result=s.zones.value.length?table(['行标签',...valueColumns.map(({name,metric})=>esc(name)+(s.zones.value.length>1?' · '+pivotLabel(metric):''))],resultRows):'<p class="lab-empty">把数值字段放入值区域。</p>';
+    const filter=s.zones.filter.includes(fields[1])?select('filter',esc(s.filterLabel||fields[1]+'筛选'),s.filter,[['全部','全部'],...[...new Set(data.map(r=>r[1]))].map(v=>[v,v])])+field('filterLabel','筛选字段显示名称',s.filterLabel||fields[1]+'筛选'):'';
+    return `<div class="lab-controls">${select('scenario','源数据场景',s.scenario,[['sales','产品销量'],['grades','班级成绩：多个值字段']])}</div>`+
+      office('Excel','数据透视表分析',select('aggregate','值汇总方式',s.aggregate,[['sum','求和'],['average','平均值'],['count','计数']])+(grades?btn(s.monthly?'取消日期组合':'日期 → 按年、月组合','group'):''),
+        `<div class="lab-pivot-layout"><div>${filter}${result}</div><aside class="lab-fields"><b>数据透视表字段</b><div class="lab-field-bank">${fields.map(f=>`<button data-lab-drag="field" data-key="${f}" data-lab-act="pick" data-value="${f}" aria-pressed="${s.picked===f}">${pivotLabel(f)} <span>⠿</span></button>`).join('')}</div><div class="lab-drop-zones">${zones.map(([key,label])=>`<section data-lab-drop="${key}"><b>${label}</b>${s.zones[key].map(f=>btn(`${pivotLabel(f)} ×`,'remove',key+':'+f)).join('')||'<small>拖到这里</small>'}</section>`).join('')}</div></aside></div>`)+
+      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个数值字段可并排汇总；本例统一切换汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),data)}</details>`+output(s.message);
+  },(s,a,v)=>{
+    if(a==='pick')s.picked=v;
+    if(a==='remove'){const [zone,f]=v.split(':');s.zones[zone]=s.zones[zone].filter(x=>x!==f);if(zone==='filter')s.filter='全部';}
+    if(a==='place')placeField(s,s.picked,v);
+    if(a==='group'){s.monthly=!s.monthly;s.message=s.monthly?'日期按年、月合并；不同年份的3月保持分开。':'恢复逐日显示。';}
+  },(s,k,v)=>{
+    s[k]=v;
+    if(k==='scenario'){s.zones={row:[],column:[],value:[],filter:[]};s.filter='全部';s.filterLabel='';s.monthly=false;s.picked=v==='grades'?'姓名':'产品';s.message='已更换源数据，请重新放置字段。';}
+  });
   function placeField(s,field,zone){
-    const metric=s.scenario==='grades'?'成绩':'销量',filter=s.scenario==='grades'?'班级':'分部';
-    if(zone==='value'&&field!==metric){s.message=`本任务把${metric}放入值区域；文本字段用于分类或筛选。`;return;}
+    const fields=pivotFields(s),metrics=fields.slice(3),filter=fields[1];
+    if(!fields.includes(field)||!Object.hasOwn(s.zones,zone))return;
+    if(zone==='value'&&!metrics.includes(field)){s.message='值区域需要数值字段；文字字段用于分类或筛选。';return;}
     for(const key of Object.keys(s.zones))s.zones[key]=s.zones[key].filter(f=>f!==field);
     s.zones[zone].push(field);if(!s.zones.filter.includes(filter))s.filter='全部';
-    s.message=`${field}已放入${{row:'行',column:'列',value:'值',filter:'筛选器'}[zone]}区域，报表已按当前配置重算。`;
+    s.message=`${pivotLabel(field)}已放入${{row:'行',column:'列',value:'值',filter:'筛选器'}[zone]}区域，报表已重新计算。`;
   }
 
   const products=[['产品1','BKC-001',2322],['产品2','BKC-002',1628],['产品3','BKC-003',3120],['产品4','BKC-004',670]];
-  register(['y2020q57'],'精确查价，再拖动填充柄','先确认公式参数，再从第一格填充柄拖到末行；查找区未锁定时观察漂移。',{locked:true,exact:true,col:3,filled:0,selected:0},s=>{
-    const names=['产品2','产品4','产品1','产品3'];const formula=i=>`=VLOOKUP(D${i+3},产品信息!${s.locked?'$A$2:$C$5':`A${i+2}:C${i+5}`},${s.col},${s.exact?'FALSE':'TRUE'})`;
-    return office('Excel','公式',`<code class="lab-formula">${formula(s.selected)}</code>`,table(['行','D 产品名称','G 查找结果'],names.map((name,i)=>{const pool=s.locked?products:products.slice(i);const row=s.exact?pool.find(r=>r[0]===name):pool.filter(r=>r[0]<=name).at(-1);return[i+3,name,`<div class="lab-lookup-cell" data-fill-index="${i}">${i<=s.filled?(row?row[s.col-1]:'#N/A'):'—'}${i===0?'<button data-lab-drag="fill" class="lab-fill-handle" aria-label="向下拖动填充柄"></button>':''}</div>`];})))+`<div class="lab-controls">${select('locked','查找区域',s.locked?'true':'false',[['true','绝对引用（固定）'],['false','相对引用（漂移）']])}${select('exact','匹配方式',s.exact?'true':'false',[['true','FALSE 精确匹配'],['false','TRUE 近似匹配']])}${select('col','返回第几列',s.col,[[1,'1 产品名'],[2,'2 编号'],[3,'3 单价']])}${btn('键盘辅助：向下填充','fill')}</div><details class="lab-assist"><summary>产品信息源表</summary>${table(['A 产品名','B 编号','C 单价'],products)}</details>${output(!s.exact?'本例首列已升序排列，TRUE取不大于查找值的最大项。相对区域漂移后，缺失的精确产品可能被另一产品替代；按产品查价应使用FALSE。':s.filled?'已填充，公式的行号会逐行变化。产品查价应使用FALSE。':'第一行已有公式。抓住右下角小方块向下拖动。')}`;
-  },(s,a)=>{if(a==='fill')s.filled=3;},(s,k,v)=>{s[k]=k==='col'?Number(v):v==='true';});
+  register(['y2020q57'],'精确查价，再比较数量折扣','拖动填充柄；切换数量折扣，观察19件与20件的不同结果。',{
+    locked:true,exact:true,col:3,filled:0,selected:0,task:'lookup',quantities:[19,20,21,20]
+  },s=>{
+    const names=['产品2','产品4','产品1','产品3'];
+    const formula=i=>`${s.task==='discount'?`=IF(F${i+3}>=20,0.95,1)*`:'='}VLOOKUP(D${i+3},产品信息!${s.locked?'$A$2:$C$5':`A${i+2}:C${i+5}`},${s.col},${s.exact?'FALSE':'TRUE'})`;
+    const rows=names.map((name,i)=>{
+      const pool=s.locked?products:products.slice(i);
+      const row=s.exact?pool.find(r=>r[0]===name):pool.filter(r=>r[0]<=name).at(-1);
+      const result=!row?'#N/A':s.task==='discount'?money(row[2]*(s.quantities[i]>=20?.95:1)):row[s.col-1];
+      return [i+3,name,...(s.task==='discount'?[field('quantity'+i,'第'+(i+3)+'行数量',s.quantities[i],'number','min="1" step="1"'),s.quantities[i]>=20?'0.95':'1']:[]),`<div class="lab-lookup-cell" data-fill-index="${i}">${i<=s.filled?esc(result):'—'}${i===0?'<button data-lab-drag="fill" class="lab-fill-handle" aria-label="向下拖动填充柄"></button>':''}</div>`];
+    });
+    return `<div class="lab-controls">${select('task','任务',s.task,[['lookup','查找单价'],['discount','数量达到20件享95折']])}</div>`+
+      office('Excel','公式',`<code class="lab-formula">${esc(formula(s.selected))}</code>`,table(['行','D 产品名称',...(s.task==='discount'?['F 数量','IF折扣系数']:[]),'G '+(s.task==='discount'?'折后单价':'查找结果')],rows))+
+      `<div class="lab-controls">${select('locked','查找区域',String(s.locked),[['true','绝对引用（固定）'],['false','相对引用（漂移）']])}${select('exact','匹配方式',String(s.exact),[['true','FALSE 精确匹配'],['false','TRUE 近似匹配']])}${s.task==='lookup'?select('col','返回第几列',s.col,[[1,'1 产品名'],[2,'2 编号'],[3,'3 单价']]):''}${btn('键盘辅助：向下填充','fill')}</div>`+
+      `<details class="lab-assist"><summary>产品信息源表</summary>${table(['A 产品名','B 编号','C 单价'],products)}</details>`+
+      output(s.task==='discount'?'IF先判断数量是否≥20，再把查回的单价乘折扣系数。本列是折后单价；销售额还要再乘数量。':!s.exact?'本例首列已升序排列。TRUE近似匹配可能用另一产品替代；按产品查价应使用FALSE。':'填充时查找值的行号逐行变化，源区域应固定；找不到返回#N/A。');
+  },(s,a)=>{if(a==='fill')s.filled=3;},(s,k,v)=>{
+    if(k.startsWith('quantity'))s.quantities[Number(k.slice(8))]=Math.round(number(v,1,10000));
+    else if(k==='task'){s.task=v;if(v==='discount')s.col=3;}
+    else s[k]=k==='col'?Number(v):v==='true';
+  });
 
   register(['y2025q36'],'为不同收件人生成不同称谓','连接Excel名单，插入姓名域，再设置IF规则并切换预览记录。',{connected:false,name:false,rule:false,preview:false,record:0,pane:false,ifValue:'女',then:'女士',otherwise:'先生'},s=>{
     const people=[['王宁','女'],['李明','男'],['赵敏','女']];const person=people[s.record];const salutation=s.preview&&s.rule?(person[1]===s.ifValue?s.then:s.otherwise):s.rule?'«IF 称谓»':'';
     return office('Word','邮件',btn('选择收件人','connect')+btn('插入合并域：姓名','name','',s.connected?'':'disabled')+btn('规则 → 如果…那么…否则','rule','',s.connected?'':'disabled')+btn('预览结果','preview','',s.connected?'':'disabled'),`${s.pane?dialog('插入Word域：IF',`<p>域名：性别　比较：等于</p>${select('ifValue','比较值',s.ifValue,[['女','女'],['男','男']])}${field('then','则插入此文字',s.then)}${field('otherwise','否则插入此文字',s.otherwise)}`,btn('确定','apply')):''}${paper(`<h4>邀请函</h4><p>尊敬的${s.name?(s.preview?person[0]:'«姓名»'):'＿＿'}${esc(salutation)}：</p><p>诚邀您参加计算机基础教学交流。</p>`)}${s.preview?`<div class="lab-record-nav">${btn('上一条','previous')}<b>记录 ${s.record+1}/3</b>${btn('下一条','next')}</div>`:''}`)+output(s.connected?'已连接专家名单.xlsx。字段取自当前记录，条件规则只改变输出文字。':'先选择收件人，加载Excel名单。')+`<details class="lab-assist"><summary>收件人名单</summary>${table(['姓名','性别'],people)}</details>`;
   },(s,a)=>{if(a==='connect')s.connected=true;if(a==='name'&&s.connected)s.name=true;if(a==='rule'&&s.connected)s.pane=true;if(a==='apply'){s.rule=true;s.pane=false;}if(a==='preview'&&s.connected)s.preview=!s.preview;if(a==='next')s.record=Math.min(2,s.record+1);if(a==='previous')s.record=Math.max(0,s.record-1);});
 
-  register(['y2020q52'],'条件格式会随着数据重新判断','设置低于阈值或高于平均值，再改数据，看高亮自动变化。',{values:salaryRows,rule:'average',threshold:9000},s=>{
-    const nums=s.values.filter(v=>v!==''&&Number.isFinite(Number(v))).map(Number),avg=nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:NaN;
-    return office('Excel','开始 · 条件格式',select('rule','规则',s.rule,[['average','高于平均值'],['below','小于…']])+(s.rule==='below'?field('threshold','阈值',s.threshold,'number'):''),table(['姓名','工资'],s.values.map((v,i)=>[['王宁','李明','赵敏','周林'][i],`<label class="${(s.rule==='average'?v!==''&&v>avg:Number(v)<s.threshold)?'lab-highlight':''}"><span class="sr-only">${['王宁','李明','赵敏','周林'][i]}工资</span><input type="number" data-field="salary${i}" value="${v}"></label>`])))+output(`当前平均值 ${Number.isFinite(avg)?money(avg):'无数值'}（空白不参与平均）；${s.rule==='average'?'仅严格高于平均值的项':'低于'+s.threshold+'的项'}着色。改变数据后重新计算。`);
-  },()=>{},(s,k,v)=>{if(k.startsWith('salary'))s.values[Number(k.slice(6))]=v===''?'':number(v,0,1000000);else s[k]=k==='threshold'?number(v,0,1000000):v;});
+  register(['y2020q52'],'改数据，观察条件格式重新判断','比较数值规则与重复编号；修改一个编号后，两处高亮会一起变化。',{
+    values:salaryRows,ids:['A01','A02','A01','A04'],rule:'average',threshold:9000
+  },s=>{
+    const nums=s.values.filter(v=>v!==''&&Number.isFinite(Number(v))).map(Number);
+    const avg=nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:NaN;
+    const duplicate=s.rule==='duplicate';
+    const rows=s.values.map((v,i)=>{
+      const value=duplicate?s.ids[i]:v;
+      const hit=duplicate?value!==''&&s.ids.filter(x=>x.toLocaleLowerCase()===value.toLocaleLowerCase()).length>1:v!==''&&(s.rule==='average'?v>avg:Number(v)<s.threshold);
+      return [['王宁','李明','赵敏','周林'][i],`<div class="${hit?'lab-highlight':''}">${field((duplicate?'id':'salary')+i,duplicate?'编号':'工资',value,duplicate?'text':'number')}</div>`];
+    });
+    return office('Excel','开始 · 条件格式',select('rule','规则',s.rule,[['average','高于平均值'],['below','小于…'],['duplicate','重复值：编号']])+(s.rule==='below'?field('threshold','阈值',s.threshold,'number'):''),table(['姓名',duplicate?'编号':'工资'],rows))+
+      output(duplicate?'重复编号的每一次出现都着色，原始记录不删除；空白不参与本例判重。':`当前平均值 ${Number.isFinite(avg)?money(avg):'无数值'}（空白不参与平均）。改变数据后重新判断。`);
+  },()=>{},(s,k,v)=>{if(k.startsWith('salary'))s.values[Number(k.slice(6))]=v===''?'':number(v,0,1000000);else if(k.startsWith('id'))s.ids[Number(k.slice(2))]=v;else s[k]=k==='threshold'?number(v,0,1000000):v;});
 
   register(['y2023q56'],'修改文稿，再接受或拒绝修订','编辑文字产生修订；接受和拒绝真正改变最终文稿。',{tracking:false,old:'可能产生改善',draft:'可能产生改善',decided:false},s=>
     office('Word','审阅',btn(s.tracking?'修订：开':'修订：关','track')+btn('接受修订','accept')+btn('拒绝修订','reject'),paper(`<h4>研究结果</h4><p>该方法${s.pending&&s.draft!==s.old?`<del>${esc(s.old)}</del><ins>${esc(s.draft)}</ins>`:esc(s.draft)}。</p>`))+`<div class="lab-keyboard">${field('draft','模拟键盘输入：替换选中的短语',s.draft)}</div>${output(s.tracking?'修订已开启，旧文字显示删除线，新文字带下划线。':s.pending?'修订已关闭，已有修订仍待接受或拒绝。':'未开启修订；编辑直接改变当前文稿。')}`,
@@ -198,14 +216,6 @@
     return `<div class="lab-controls">${field('ip','IPv4地址',s.ip)}${select('prefix','实际前缀长度',s.prefix,[[16,'/16'],[24,'/24'],[26,'/26']])}</div>${valid?`<div class="lab-registers"><b>掩码 ${dotted(mask)}</b><b>网络地址 ${dotted(ip&mask)}</b></div><div class="lab-ip-bits">${[...parts.map(x=>Number(x).toString(2).padStart(8,'0')).join('')].map((b,i)=>`<span class="${i<s.prefix?'network':'host'}">${b}</span>`).join('')}</div>${output(`前${s.prefix}位是网络前缀，后${32-s.prefix}位是主机部分。首字节${parts[0]}${Number(parts[0])<128?'位于历史A类范围（0、127另有用途）':Number(parts[0])<192?'位于历史B类范围':Number(parts[0])<224?'位于历史C类范围':Number(parts[0])<240?'位于D类组播范围':'位于保留范围'}，但实际划分必须看掩码。`)}`:output('请输入4组0—255的十进制数。')}`;
   },()=>{},(s,k,v)=>{s[k]=k==='prefix'?Number(v):v;});
 
-  register(['y2023q47'],'地址缩写以后，128位有没有变短','在完整写法、双冒号缩写和字节表示之间切换。',{view:'full'},s=>{
-    const groups=['2001','0db8','0000','0000','0000','8a2e','0370','7334'];return `<div class="lab-controls">${btn('完整8组','view','full')}${btn('双冒号缩写','view','short')}${btn('拆成16字节','view','bytes')}</div><div class="lab-ipv6">${s.view==='short'?'<code>2001:db8::8a2e:370:7334</code><p>::在这里代替连续的3组0000</p>':(s.view==='bytes'?groups.flatMap(v=>[v.slice(0,2),v.slice(2)]):groups).map(v=>`<span><b>${v}</b><small>${s.view==='bytes'?'8':'16'} bit</small></span>`).join('')}</div>${output('三种表示都对应同一个128位地址，即16字节。缩写改变显示长度，不改变地址的位数。')}`;
-  },(s,a,v)=>{s.view=v;});
-
-  register(['y2023q35'],'跨页音频、循环播放与播完返回开头','播放媒体并切换幻灯片，观察音频和视频各自的状态。',{cross:true,loop:false,rewind:false,page:1,playing:false,time:0},s=>
-    office('PowerPoint','音频工具 · 播放',select('cross','跨幻灯片播放',String(s.cross),[['true','启用'],['false','关闭']])+select('loop','循环播放直到停止',String(s.loop),[['false','关闭'],['true','启用']])+select('rewind','播完返回开头',String(s.rewind),[['false','关闭'],['true','启用']]),`<div class="lab-slide"><h3>${['媒体介绍','结果分析','讨论总结'][s.page-1]}</h3>${s.page===1?`<div class="lab-video-frame">视频 ${s.playing?'▶ 播放中':'Ⅱ 停止'}</div>`:'<p>这是另一张幻灯片，上一页的视频对象不再显示。</p>'}<p>♫ 音频 ${s.playing?'播放中':'已停止'} · ${s.time}/20 秒</p><progress value="${s.time}" max="20"></progress></div>`)+`<div class="lab-controls">${btn('开始播放','play')}${btn('推进5秒（学习控制）','tick')}${btn('下一页','next')}${btn('返回第1页','first')}</div>${output(s.page>1?(s.cross?'音频允许跨页继续；视频留在原页。':'未启用跨页，换页后音频停止。'):'循环会重播；播完返回开头只复位，不等于自动重播。')}`,
-    (s,a)=>{if(a==='play'){s.playing=true;if(s.time===20)s.time=0;}if(a==='tick'&&s.playing){s.time+=5;if(s.time>=20){if(s.loop)s.time=0;else{s.playing=false;s.time=s.rewind?0:20;}}}if(a==='next'){s.page=s.page%3+1;if(!s.cross)s.playing=false;}if(a==='first')s.page=1;},(s,k,v)=>{s[k]=v==='true';});
-
   register(['y2023q52'],'修改一次样式，三个标题同步更新','在修改样式窗口设置段前间距，确定后全部同级标题继承。',{before:0,pending:20,pane:false,menu:false},s=>
     office('Word','开始 · 样式',btn('标题 1 ▾','menu')+(s.menu?btn('修改…','modify'):''),`${s.pane?dialog('修改样式：标题1 → 格式 → 段落',field('pending','段前（磅）',s.pending,'number','min="0" max="48"')+'<p>设置作用于所有使用标题1的段落。</p>',btn('确定','apply')+btn('取消','cancel')):''}${paper([1,2,3].map(n=>`<h4 style="margin-top:${s.before}pt">第${n}章　学习主题</h4><p>正文格式不随标题样式改变。</p>`).join(''))}`)+output(`当前标题1段前 ${s.before} 磅；三个实例保持同步。`),
     (s,a)=>{if(a==='menu')s.menu=!s.menu;if(a==='modify'){s.pane=true;s.menu=false;s.pending=s.before;}if(a==='apply'){s.before=number(s.pending,0,48);s.pane=false;}if(a==='cancel')s.pane=false;},(s,k,v)=>{s.pending=number(v,0,48);});
@@ -219,87 +229,6 @@
     office('Excel','开始',btn('查找和选择 → 替换','open'),`${table(['订单编号','部门'],s.values.map((v,i)=>['DD-00'+(i+1),esc(v)]))}${s.pane?dialog('查找和替换',field('find','查找内容',s.find)+field('replacement','替换为',s.replacement),btn('全部替换','replace')+btn('关闭','close')):''}`)+output(s.message)+coach('Excel直接识别*、?、~，这里没有“使用通配符”复选框。试试把-*改为-0?，或用~*查找真正的星号。'),
     (s,a)=>{if(a==='open')s.pane=true;if(a==='close')s.pane=false;if(a==='replace'){if(!s.find){s.message='本卡片请提供非空查找表达式。';return;}let pattern='';for(let i=0;i<s.find.length;i++){const ch=s.find[i];if(ch==='~'&&i+1<s.find.length)pattern+=s.find[++i].replace(/[.*+?^${}()|[\]\\]/g,'\\$&');else pattern+=ch==='*'?'.*':ch==='?'?'.':ch.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}const rx=new RegExp(pattern,'g');let count=0;s.values=s.values.map(v=>v.replace(rx,match=>{if(!match)return match;count++;return s.replacement;}));s.message=`已替换${count}处；订单编号列保持不变。`;}});
 
-  function render(root){
-    const focused=root.contains(document.activeElement)?document.activeElement:null;
-    const choiceSource=focused?.closest('.notes-picker')?.querySelector('select');
-    const descriptor=choiceSource?.dataset.field?['field',choiceSource.dataset.field]:focused?.dataset.field?['field',focused.dataset.field]:focused?.dataset.labAct?['labAct',focused.dataset.labAct,focused.dataset.value]:null;
-    const selection=focused&&['text','search'].includes(focused.type)||focused?.tagName==='TEXTAREA'?[focused.selectionStart,focused.selectionEnd]:null;
-    const s=states.get(root);root.innerHTML=registry[root.dataset.lab].render(s);
-    window.NOTE_CHOICES?.enhance(root);
-    if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){if(target.tagName==='SELECT'&&window.NOTE_CHOICES)window.NOTE_CHOICES.focus(target);else target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
-    registry[root.dataset.lab].afterRender?.(s,root);
-  }
-  function mount(card){
-    card.querySelectorAll('[data-lab]').forEach(root=>{
-      if(states.has(root))return;
-      states.set(root,fresh(root.dataset.lab));render(root);
-      const model=registry[root.dataset.lab];
-      root.addEventListener('focusin',e=>{const field=e.target.closest('[data-field]')||e.target.closest('.notes-picker')?.querySelector('[data-field]');if(field)model.focus?.(states.get(root),field.dataset.field);});
-      if(model.tick){const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);return;}if(model.tick(states.get(root))&&!pointerTarget&&!root.closest('[hidden]')&&!root.querySelector('.notes-picker.is-open'))render(root);},model.tickInterval||200);}
-      root.addEventListener('dblclick',e=>{if(e.target.closest('.lab-page-header')&&root.dataset.lab==='y2020q41'){states.get(root).editing=true;render(root);}});
-      root.addEventListener('keydown',e=>{const s=states.get(root);if(root.dataset.lab==='y2025q10'&&s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;render(root);}});
-      let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
-      const act=(a,v)=>{
-        const model=registry[root.dataset.lab],s=states.get(root);
-        root.querySelectorAll('input[data-field],textarea[data-field]').forEach(x=>{
-          const value=x.type==='checkbox'?x.checked:x.value,initial=x.type==='checkbox'?x.defaultChecked:x.defaultValue;
-          if(value===initial)return;
-          if(model.change)model.change(s,x.dataset.field,value);else s[x.dataset.field]=value;
-        });
-        const pending=model.action(s,a,v);render(root);
-        if(pending&&typeof pending.then==='function')pending.then(()=>{
-          if(root.isConnected&&states.get(root)===s)render(root);
-        }).catch(()=>{
-          s.busy=false;s.message='本次操作未完成，请重试。';
-          if(root.isConnected&&states.get(root)===s)render(root);
-        });
-      };
-      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty&&!root.querySelector('.notes-picker.is-open')){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
-      root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"],[data-lab-drag="file"]')){e.preventDefault();act('menu');}});
-      // Capture typing immediately; do not depend on blur/change before a toolbar click.
-      root.addEventListener('input',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;});
-      root.addEventListener('change',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;if(pointerTarget&&pointerTarget!==x){dirty=true;return;}render(root);});
-      root.addEventListener('keydown',e=>{
-        if(model.keydown?.(states.get(root),e,root)){render(root);return;}
-        const h=e.target.closest('[data-lab-drag="ruler"]');if(!h||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const s=states.get(root),k=h.dataset.key,delta=e.key==='ArrowRight'?2:-2;if(k==='both'){const change=number(delta,-Math.min(s.rest,s.first),Math.min(60,s.right-8)-Math.max(s.rest,s.first));s.rest+=change;s.first+=change;}else s[k]=number(s[k]+delta,k==='right'?Math.max(s.first,s.rest)+8:0,k==='right'?100:Math.min(60,s.right-8));render(root);root.querySelector(`[data-key="${k}"]`)?.focus();
-      });
-      root.addEventListener('pointerdown',e=>{
-        pointerTarget=e.target.closest('button,input,select,textarea');
-        if(e.target.closest('.notes-picker'))return;
-        // A fresh press on another command is intentional, not the drag's ghost click.
-        if(pointerTarget?.dataset.labAct&&!pointerTarget.dataset.labDrag)suppressUntil=0;
-        const el=e.target.closest('[data-lab-drag]');if(!el||![0,2].includes(e.button))return;if(e.target.closest('input,textarea,select')&&el!==e.target)return;
-        const s=states.get(root);gesture={el,kind:el.dataset.labDrag,x:e.clientX,y:e.clientY,moved:false,key:el.dataset.key,first:s.first,rest:s.rest,button:e.button,startValue:s[el.dataset.key]};
-        el.setPointerCapture(e.pointerId);
-        if(gesture.kind==='hold'||gesture.kind==='file')gesture.timer=setTimeout(()=>{suppressUntil=Date.now()+500;gesture=null;act('menu');},600);
-        if(gesture.kind==='box'||gesture.kind==='ink')gesture.rect=el.getBoundingClientRect();
-        if(gesture.kind==='ruler')gesture.rect=root.querySelector('[data-ruler]').getBoundingClientRect();
-      });
-      root.addEventListener('pointermove',e=>{
-        if(!gesture)return;const g=gesture;const moved=Math.hypot(e.clientX-g.x,e.clientY-g.y)>7;if(moved){g.moved=true;clearTimeout(g.timer);}
-        if(!g.moved)return;e.preventDefault();
-        g.dx=e.clientX-g.x;g.dy=e.clientY-g.y;
-        model.preview?.(states.get(root),g,root,e);
-        if(g.kind==='box'){const r=g.rect;const x=number((g.x-r.left)/r.width*100,0,100),y=number((g.y-r.top)/r.height*100,0,100),x2=number((e.clientX-r.left)/r.width*100,0,100),y2=number((e.clientY-r.top)/r.height*100,0,100);g.box={x:Math.min(x,x2),y:Math.min(y,y2),w:Math.abs(x2-x),h:Math.abs(y2-y)};let preview=root.querySelector('.lab-box-preview');if(!preview){preview=document.createElement('div');preview.className='lab-box-preview';g.el.append(preview);}Object.assign(preview.style,{left:g.box.x+'%',top:g.box.y+'%',width:g.box.w+'%',height:g.box.h+'%'});}
-        if(g.kind==='file'||g.kind==='object')g.el.style.transform=`translate(${g.dx}px,${g.dy}px)`;
-        if(g.kind==='ink'){const r=g.rect;g.points??=[[(g.x-r.left)/r.width*100,(g.y-r.top)/r.height*100]];g.points.push([number((e.clientX-r.left)/r.width*100,0,100),number((e.clientY-r.top)/r.height*100,0,100)]);const state=states.get(root);if(state.show&&state.pen&&!state.black){let line=g.el.querySelector('[data-live-ink]');if(!line){line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('data-live-ink','');line.setAttribute('fill','none');line.setAttribute('stroke',state.color);line.setAttribute('stroke-width','.7');g.el.querySelector('svg').append(line);}line.setAttribute('points',g.points.map(p=>p.join(',')).join(' '));}}
-        if(g.kind==='ruler'){const delta=(e.clientX-g.x)/g.rect.width*100;const value=number((g.key==='both'?g.rest:g.startValue)+delta,g.key==='right'?Math.max(g.first,g.rest)+8:0,g.key==='right'?100:Math.min(60,states.get(root).right-8));g.el.style.left=value+'%';g.value=value;}
-        if(g.kind==='field'){g.el.style.transform=`translate(${e.clientX-g.x}px,${e.clientY-g.y}px)`;g.el.classList.add('lab-dragging');root.querySelectorAll('[data-lab-drop]').forEach(z=>{const r=z.getBoundingClientRect();z.classList.toggle('lab-drop-hover',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);});}
-        if(g.kind==='range')root.querySelectorAll('[data-row]').forEach(x=>{const r=x.getBoundingClientRect();if(e.clientY>=r.top&&e.clientY<=r.bottom){g.end=Number(x.dataset.row);const a=Number(g.el.dataset.row);root.querySelectorAll('[data-row]').forEach(y=>y.classList.toggle('lab-selected',Number(y.dataset.row)>=Math.min(a,g.end)&&Number(y.dataset.row)<=Math.max(a,g.end)));}});
-        if(g.kind==='fill')root.querySelectorAll('[data-fill-index]').forEach(x=>{const r=x.getBoundingClientRect();if(e.clientY>=r.top&&e.clientY<=r.bottom){g.end=Number(x.dataset.fillIndex);x.classList.add('lab-selected');}});
-      });
-      const finish=(e,cancel=false)=>{
-        if(!gesture)return;const g=gesture;clearTimeout(g.timer);gesture=null;pointerTarget=null;if(!g.moved)return;suppressUntil=Date.now()+400;const s=states.get(root);
-        if(!cancel){
-          if(g.kind==='ruler'&&g.value!==undefined){if(g.key==='both'){const d=number(g.value-s.rest,-Math.min(s.rest,s.first),Math.min(60,s.right-8)-Math.max(s.rest,s.first));s.rest+=d;s.first+=d;}else s[g.key]=g.value;}
-          if(g.kind==='field'){const zone=[...root.querySelectorAll('[data-lab-drop]')].find(z=>{const r=z.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;});if(zone)placeField(s,g.key,zone.dataset.labDrop);else s.message='没有落入区域，字段保持原位置。';}
-          if(g.kind==='range'&&g.end!==undefined){s.start=Number(g.el.dataset.row);s.end=g.end;}
-          if(g.kind==='fill'&&g.end!==undefined)s.filled=g.end;
-          registry[root.dataset.lab].gesture?.(s,{...g,endX:e.clientX,endY:e.clientY,ctrlKey:e.ctrlKey,shiftKey:e.shiftKey,altKey:e.altKey},root);
-        }render(root);
-      };
-      root.addEventListener('pointerup',e=>finish(e));root.addEventListener('pointercancel',e=>finish(e,true));
-    });
-  }
-  window.NOTE_LABS={mount,registry,register,radixConvert,daysBetween,placeField,ui:{btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}};
+  registry.y2024q67.dropField=placeField;
+  Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,placeField});
 })();

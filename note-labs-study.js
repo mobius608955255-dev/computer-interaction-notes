@@ -72,14 +72,6 @@ registry.y2026q36.gesture=(s,g,root)=>{
 const {register,registry,ui}=window.NOTE_LABS;
 const {btn,field,select,office,paper,dialog,output,esc,number}=ui;
 const controls=s=>`<div class="lab-controls">${s}</div>`;
-const chapters=[['第一章 信息技术','数据是信息的符号化表示。'],['第二章 操作系统','操作系统管理硬件和软件资源。']];
-register(['merged-5'],'切换同一文档的视图，再让导航识别标题','点击文档标题后应用标题1，导航按真实结构生成；手工放大不产生标题层级。',{view:'print',tab:'view',nav:true,styled:[false,false],selected:0,collapsed:[],message:'两个标题只有大号粗体外观，导航暂时没有标题。'},s=>{
- const navigation=s.nav?`<aside style="padding:12px;background:#f5edf7"><b>导航 · 标题</b>${s.styled.some(Boolean)?chapters.map((p,i)=>s.styled[i]?btn(p[0],'select',i):'').join(''):'<p>此文档不包含标题。</p>'}</aside>`:'';
- let doc='';
- if(s.view==='outline')doc=`<div style="padding:16px;background:#fff">${chapters.map((p,i)=>`<div>${s.styled[i]?btn((s.collapsed.includes(i)?'＋':'−')+' '+p[0],'collapse',i):`<p>${p[0]}（正文级别）</p>`}${s.collapsed.includes(i)?'':`<p style="padding-left:24px">${p[1]}</p>`}</div>`).join('')}</div>`;
- else doc=chapters.map((p,i)=>s.view==='read'?`<section style="padding:18px;background:#fff"><h3>${p[0]}</h3><p>${p[1]}</p></section>`:paper(`<header style="font-size:12px">计算机学习文档</header>${btn(p[0],'select',i,`class="lab-heading-pick ${s.selected===i?'lab-selected':''}" style="font-size:20px;font-weight:700;display:block;width:100%;text-align:left"`)}<p>${p[1]}</p><footer>第 ${i+1} 页</footer>`)).join('');
- return controls(select('tab','功能区位置',s.tab,[['view','视图'],['home','开始']]))+office('Word',s.tab==='view'?'视图':'开始',s.tab==='view'?btn('打印布局','view','print')+btn('大纲','view','outline')+btn('阅读模式','view','read')+btn(s.nav?'隐藏导航窗格':'导航窗格','nav'):btn('标题 1','style')+btn('正文','plain'),`${navigation}<div>${doc}</div>`)+output(s.message||`当前${{print:'打印布局',outline:'大纲',read:'阅读模式'}[s.view]}；文档文字不变。`);
-},(s,a,v)=>{if(a==='view'){s.view=v;s.message=`已切到${{print:'打印布局：显示分页及页眉页脚',outline:'大纲：按标题结构折叠正文',read:'阅读模式：集中显示供阅读的内容'}[v]}。`;}if(a==='nav')s.nav=!s.nav;if(a==='select'){s.selected=Number(v);s.message='当前选中：'+chapters[s.selected][0]+'。';}if(a==='style'){s.styled[s.selected]=true;s.message='所选段落应用标题1，导航新增对应标题。';}if(a==='plain'){s.styled[s.selected]=false;s.message='所选段落改回正文级别，导航移除对应标题。';}if(a==='collapse'){const i=Number(v);s.collapsed=s.collapsed.includes(i)?s.collapsed.filter(x=>x!==i):[...s.collapsed,i];}});
 
 const listTexts=['信息技术基础','计算机发展','计算机系统'];
 function listNumbers(levels){let one=0,two=0;return levels.map(level=>level===1?(two=0,String(++one)):`${Math.max(1,one)}.${++two}`);}
@@ -89,10 +81,10 @@ register(['merged-8'],'改变列表级别，观察编号与文本起点分别变
 },(s,a,v)=>{const i=s.selected;if(a==='select')s.selected=Number(v);if(a==='demote'&&i>0&&s.levels[i]===1){s.levels[i]=2;s.positions[i]=2;s.textPositions[i]=4;s.message='当前项降为第2级，编号重新计算。';}if(a==='promote'&&s.levels[i]===2){s.levels[i]=1;s.positions[i]=0;s.textPositions[i]=2;s.message='当前项升为第1级，后续编号重新计算。';}if(a==='open'){s.pane=true;s.draftNumber=s.positions[i];s.draftText=s.textPositions[i];}if(a==='cancel')s.pane=false;if(a==='apply'){s.positions[i]=number(s.draftNumber,0,6);s.textPositions[i]=number(s.draftText,s.positions[i]+1,10);s.pane=false;s.message='只改变编号与文字的位置，列表级别保持不变。';}});
 
 register(['y2025q47'],'让文字真正围绕图片重排','同一张透明圆形图，用四周型和紧密型比较包围矩形与轮廓边界。',{wrap:'inline',selected:false,menu:false,message:'嵌入型图片作为行内对象参加排版。'},s=>{
- const image=`<button data-lab-act="select" class="lab-wrap-object" style="width:112px;height:112px;padding:0;border:${s.selected?'2px solid #905b9b':'0'};border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6cadf 0%,#cfb7e9 65%,#9876b7 100%);${s.wrap==='inline'?'display:inline-block;vertical-align:baseline;':`float:left;margin:0 14px 12px 0;${s.wrap==='tight'?'shape-outside:circle(50%);':''}`}" aria-label="选择圆形图片">学习图</button>`;
+ const image=`<button data-lab-act="select" class="lab-wrap-object" style="width:112px;height:112px;padding:0;border:${s.selected?'2px solid #905b9b':'0'};border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6cadf 0%,#cfb7e9 65%,#9876b7 100%);${s.wrap==='topbottom'?'display:block;float:none;margin:14px 0;':s.wrap==='inline'?'display:inline-block;vertical-align:baseline;':`float:left;margin:0 14px 12px 0;${s.wrap==='tight'?'shape-outside:circle(50%);':''}`}" aria-label="选择圆形图片">学习图</button>`;
  const text='图片和文字共同构成文档内容。嵌入型把图片作为一枚大字符；四周型按图片外接矩形留出区域；紧密型允许文字贴近透明图片的可见轮廓。改变环绕方式会重新计算文字行的位置，文字本身保持不变。这里使用圆形图片，便于观察矩形边界与曲线边界的区别。';
- return office('Word',s.selected?'图片工具 · 格式':'开始',btn('环绕文字 ▾','menu','',s.selected?'':'disabled'),`${s.menu?dialog('环绕文字',btn('嵌入型','wrap','inline')+btn('四周型','wrap','square')+btn('紧密型','wrap','tight'),btn('关闭','close')):''}${paper(`<div style="display:flow-root;font-size:16px;line-height:1.85"><p style="margin:0">${image}${text}</p></div>`)}`)+output(s.message);
-},(s,a,v)=>{if(a==='select')s.selected=true;if(a==='menu'&&s.selected)s.menu=true;if(a==='close')s.menu=false;if(a==='wrap'){s.wrap=v;s.menu=false;s.message={inline:'图片已回到文字行内。',square:'文字绕开图片的外接矩形，四角仍留白。',tight:'文字按圆形轮廓重排，可进入外接矩形四角的空白。'}[v];}});
+ return office('Word',s.selected?'图片工具 · 格式':'开始',btn('环绕文字 ▾','menu','',s.selected?'':'disabled'),`${s.menu?dialog('环绕文字',btn('嵌入型','wrap','inline')+btn('四周型','wrap','square')+btn('紧密型','wrap','tight')+btn('上下型','wrap','topbottom'),btn('关闭','close')):''}${paper(`<div style="display:flow-root;font-size:16px;line-height:1.85"><p style="margin:0">${s.wrap==='topbottom'?text.slice(0,27)+image+text.slice(27):image+text}</p></div>`)}`)+output(s.message);
+},(s,a,v)=>{if(a==='select')s.selected=true;if(a==='menu'&&s.selected)s.menu=true;if(a==='close')s.menu=false;if(a==='wrap'){s.wrap=v;s.menu=false;s.message={topbottom:'文字只排在图片上方和下方，图片左右不排文字。',inline:'图片已回到文字行内。',square:'文字绕开图片的外接矩形，四角仍留白。',tight:'文字按圆形轮廓重排，可进入外接矩形四角的空白。'}[v];}});
 
 register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表格','点击表格移动控点选择整表；点击单元格只把插入位置放在该格。',{values:[['姓名','日期'],['王宁','9月4日'],['李悦','9月5日']],selection:'all',cell:[1,0],removed:false,message:'初始已选中整表，包括标题行。'},s=>
  office('Word','表格工具 · 布局',btn('删除 → 删除表格','remove','',s.removed?'disabled':''),paper(s.removed?'<p>表格结构已删除；后续正文回流到这里。</p>':`${btn('✥','all','',`aria-label="选择整张表格"`)}<table style="width:100%;border-collapse:collapse">${s.values.map((r,i)=>`<tr>${r.map((v,j)=>`<${i===0?'th':'td'} style="border:1px solid #9778a1;padding:9px;background:${s.selection==='all'||s.cell[0]===i&&s.cell[1]===j?'#f4e6f3':'#fff'}">${btn(esc(v)||'　','cell',i+','+j,`style="border:0;background:transparent;min-width:30px;min-height:34px"`)}</${i===0?'th':'td'}>`).join('')}</tr>`).join('')}</table>`))+controls(btn('模拟键盘：Delete','delete','',s.removed?'disabled':'')+btn('模拟键盘：Backspace','backspace','',s.removed?'disabled':''))+output(s.message),
@@ -125,11 +117,45 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
       if(a==='undo'&&s.before){s.rows=clone(s.before);s.before=null;s.message='已恢复删除前的所有记录。';}
     },(s,k,v)=>{if(k.startsWith('key'))s.draft[Number(k.slice(3))]=v;});
 
+  // Separate exam scenario; the existing multi-course subtotal model stays intact.
+  const wageDefaults={rows:[['讲师',5000],['教授',9000],['讲师',7000],['教授',11000]],sorted:false,applied:false,level:3,pane:false,selection:'none',chart:false,aggregate:'average',draftAggregate:'average',message:'先按职称排序，再汇总基本工资。'};
+  const wageAggregate=(rows,method)=>method==='count'?rows.length:rows.reduce((sum,r)=>sum+r[1],0)/(method==='average'?rows.length:1);
+  const wageSummary=s=>[...new Set(s.rows.map(r=>r[0]))].sort().map(title=>[title,wageAggregate(s.rows.filter(r=>r[0]===title),s.aggregate)]);
+  function renderWages(s){
+    const rows=s.sorted?[...s.rows].sort((a,b)=>a[0].localeCompare(b[0])):s.rows;
+    const summary=wageSummary(s),total=['总计',wageAggregate(s.rows,s.aggregate)];
+    const shown=!s.applied?rows:s.level===1?[total]:s.level===2?[...summary,...[total]]:[...summary.flatMap(group=>[...rows.filter(r=>r[0]===group[0]),[group[0]+' 小计',group[1]]]),total];
+    const chartRows=s.selection==='whole'?[...summary,total]:summary;
+    const sum=chartRows.reduce((n,r)=>n+r[1],0),colors=['#9278a7','#729b83','#d5a163'];let angle=0;
+    const slices=chartRows.map((r,i)=>{const start=angle;angle+=sum?r[1]/sum*360:0;return `${colors[i]} ${start}deg ${angle}deg`;});
+    return office('Excel','数据',btn('按职称排序','wageSort','',s.applied?'disabled':'')+btn('分类汇总…','wageOpen'),
+      (s.pane?dialog('分类汇总','<p>分类字段：职称；汇总项：基本工资</p>'+select('draftAggregate','汇总方式',s.draftAggregate,[['average','平均值'],['sum','求和'],['count','计数']]),btn('确定','wageApply')+btn('取消','wageCancel')+btn('全部删除汇总','wageRemove','',s.applied?'':'disabled')):'')+
+      (s.applied?controls([1,2,3].map(n=>btn(String(n),'wageLevel',n,`aria-label="工资大纲层级${n}"`)).join('')):'')+table(['职称','基本工资'+(s.applied?' · '+{average:'平均值',sum:'求和',count:'计数'}[s.aggregate]:'')],shown.map(r=>[r[0],money(r[1])])))+
+      controls(btn('仅选职称与平均工资（不含总计）','wageSelect','summary')+btn('选择整张汇总表（含总计）','wageSelect','whole')+btn('插入饼图','wageChart'))+
+      (s.chart?`<figure><div role="img" aria-label="所选汇总数值占比" style="width:180px;height:180px;border-radius:50%;background:${sum?'conic-gradient('+slices.join(',')+')':'#ddd'}"></div><figcaption>${chartRows.map((r,i)=>`<span style="color:${colors[i]}">${r[0]} ${money(r[1])}（${sum?(r[1]/sum*100).toFixed(1):'0'}%）</span>`).join('　')}</figcaption></figure>`:'')+
+      output(s.message)+coach('此题按要求用各职称平均工资作一组饼图，扇区并不代表各职称工资总额。明细与总计不应混入类别。');
+  }
+  function actWages(s,a,v){
+    if(a==='wageSort'&&!s.applied){s.sorted=true;s.message='同职称已排在一起。';}
+    if(a==='wageOpen'){s.pane=true;s.draftAggregate=s.aggregate;}
+    if(a==='wageCancel')s.pane=false;
+    if(a==='wageApply'){if(!s.sorted){s.message='本题先按职称排序，再进行分类汇总。';return;}s.aggregate=s.draftAggregate;s.applied=true;s.level=3;s.pane=false;s.chart=false;s.message='已按职称汇总；点大纲层级2隐藏明细。';}
+    if(a==='wageRemove'){s.applied=false;s.pane=false;s.chart=false;}
+    if(a==='wageLevel'){s.level=Number(v);s.chart=false;}
+    if(a==='wageSelect'){s.selection=v;s.chart=false;s.message=v==='summary'?'已选职称和汇总数值两列，排除总计。':'当前选区含总计；插入图表可观察多出的总计扇区。';}
+    if(a==='wageChart'){
+      if(!s.applied||s.level!==2||s.selection==='none'){s.message='先完成分类汇总，折叠到层级2，再选择图表数据。';return;}
+      s.chart=true;s.message=s.aggregate!=='average'?'当前汇总方式不是原题要求的平均值。':s.selection==='whole'?'总计混入后多出一个扇区，不符合只比较各职称平均工资的要求。':'图表只有各职称平均工资；未包括明细与总计。';
+    }
+  }
+
   const grades=[['一班',80,70,90],['二班',90,60,80],['一班',100,90,70],['二班',70,80,90]];
   const defaults={aggregate:'average',math:true,english:true,computer:true};
   register(['y2020q58'],'相邻记录分组，再汇总三门课','先看未排序的小计，再移除汇总并按班级排序，对照分组结果。',{
-    sorted:false,pane:false,applied:null,draft:defaults,level:3,message:'先排序可使同班记录连续。也可以直接汇总，观察相邻分组产生的多个同名小计。'
+    scenario:'grades',wage:wageDefaults,sorted:false,pane:false,applied:null,draft:defaults,level:3,message:'先排序可使同班记录连续。也可以直接汇总，观察相邻分组产生的多个同名小计。'
   },s=>{
+    const scenario=controls(select('scenario','真题场景',s.scenario,[['grades','班级多科成绩汇总'],['wages','职称平均工资与饼图']]));
+    if(s.scenario==='wages')return scenario+renderWages(s.wage);
     const source=s.sorted?[...grades].sort((a,b)=>a[0].localeCompare(b[0])):grades;
     let display=source;
     if(s.applied){
@@ -138,10 +164,11 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
       display=groups.flatMap(rows=>[...(s.level===3?rows:[]),...(s.level>=2?[[rows[0][0]+' 小计',...agg(rows)]]:[])]);
       display.push(['总计',...agg(source)]);
     }
-    return office('Excel','数据',btn('按班级排序','sort','',s.applied?'disabled':'')+btn('分类汇总…','open'),
+    return scenario+office('Excel','数据',btn('按班级排序','sort','',s.applied?'disabled':'')+btn('分类汇总…','open'),
       (s.pane?dialog('分类汇总','<p>分类字段：班级</p>'+select('aggregate','汇总方式',s.draft.aggregate,[['average','平均值'],['sum','求和'],['count','计数']])+['math','english','computer'].map((k,i)=>`<label><input type="checkbox" data-field="${k}" ${s.draft[k]?'checked':''}>${['数学','英语','计算机'][i]}</label>`).join(''),btn('确定','apply')+btn('取消','cancel')+btn('全部删除汇总','remove','',s.applied?'':'disabled')):'')+
       (s.applied?controls([1,2,3].map(n=>btn(String(n),'level',n,`aria-label="大纲层级${n}"`)).join('')):'')+table(['班级','数学','英语','计算机'],display))+output(s.message);
   },(s,a,v)=>{
+    if(s.scenario==='wages'){actWages(s.wage,a,v);return;}
     if(a==='sort'&&!s.applied){s.sorted=true;s.message='同班记录已连续排列，可以重新建立分类汇总。';}
     if(a==='open'){s.draft=clone(s.applied||defaults);s.pane=true;}
     if(a==='cancel')s.pane=false;
@@ -152,27 +179,28 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
     }
     if(a==='remove'){s.applied=null;s.pane=false;s.message='已移除小计与大纲，原始数据完整保留。';}
     if(a==='level')s.level=Number(v);
-  },(s,k,v)=>{s.draft[k]=v;});
+  },(s,k,v)=>{if(k==='scenario')s.scenario=v;else if(s.scenario==='wages')s.wage[k]=v;else s.draft[k]=v;});
 
   register(['y2026q49'],'区分文本、空白和0，再看实际平均值','转换所选源单元格，或在E列写VALUE公式；三种数据不会按同一种方式统计。',{
-    mode:'average',team:'示例一组',rows:[['示例一组','18',true],['示例二组','14',false],['示例一组','25',false],['示例一组','15',true],['示例二组','11',false]],selected:0,method:'error',valueRows:[],message:'选一行再转换。清空单元格代表空白，输入0代表数值零。'
+    mode:'average',team:'示例一组',rows:[['示例一组','18',true],['示例二组','14',false],['示例一组','25',false],['示例一组','15',true],['示例二组','11',false]],selected:0,method:'error',valueRows:[],formats:{},message:'选一行再转换。清空单元格代表空白，输入0代表数值零。'
   },s=>{
     const eligible=s.rows.filter(r=>!r[2]&&r[1].trim()!==''&&Number.isFinite(Number(r[1]))),matched=eligible.filter(r=>r[0]===s.team);
     const result=s.mode==='sum'?eligible.reduce((sum,r)=>sum+Number(r[1]),0):matched.length?matched.reduce((sum,r)=>sum+Number(r[1]),0)/matched.length:'#DIV/0!';
-    const valueResult=r=>r[1].trim()===''?'0':Number.isFinite(Number(r[1]))?money(Number(r[1])):'#VALUE!';
-    return controls(select('mode','计算任务',s.mode,[['average','按团队求平均'],['sum','求销售额总和']])+select('team','H5 条件',s.team,[['示例一组','示例一组'],['示例二组','示例二组'],['不存在的组','不存在的组']])+select('method','处理方式',s.method,[['error','单元格错误提示'],['columns','数据→分列'],['value','另列VALUE公式']]))+
-      office('Excel',s.method==='columns'?'数据':'公式',s.method==='columns'?btn('分列 → 常规 → 完成','convert'):s.method==='value'?btn('在所选行E列输入VALUE公式','convert'):'',
-        table(['行','C 团队','D 销售额','类型','E VALUE公式结果'],s.rows.map((r,i)=>[btn(String(i+3),'select',i,`aria-pressed="${s.selected===i}"`),esc(r[0]),field('amount'+i,'第'+(i+3)+'行金额',r[1]),r[1]===''?'空白':r[2]?'文本':'数值',s.valueRows.includes(i)?`${valueResult(r)}<small>=VALUE(D${i+3})</small>`:'—']))+
+    const valueResult=r=>r[1]===''?'0':r[1].trim()!==''&&Number.isFinite(Number(r[1]))?money(Number(r[1])):'#VALUE!';
+    return controls(select('mode','计算任务',s.mode,[['average','按团队求平均'],['sum','求销售额总和']])+select('team','H5 条件',s.team,[['示例一组','示例一组'],['示例二组','示例二组'],['不存在的组','不存在的组']])+select('method','处理方式',s.method,[['error','单元格错误提示'],['columns','数据→分列'],['value','另列VALUE公式'],['format','只改为数值格式'],['multiply','选择性粘贴：乘1']]))+
+      office('Excel',s.method==='columns'?'数据':'公式',s.method==='columns'?btn('分列 → 常规 → 完成','convert'):s.method==='value'?btn('在所选行E列输入VALUE公式','convert'):s.method==='format'?btn('数字格式 → 数值','convert'):s.method==='multiply'?btn('复制数值1 → 选择性粘贴 → 乘','convert'):'',
+        table(['行','C 团队','D 销售额','类型','E VALUE公式结果'],s.rows.map((r,i)=>[btn(String(i+3),'select',i,`aria-pressed="${s.selected===i}"`),esc(r[0]),field('amount'+i,'第'+(i+3)+'行金额',r[1]),(r[1]===''?'空白':r[2]?'文本':'数值')+(s.formats[i]?'（显示格式：数值）':''),s.valueRows.includes(i)?`${valueResult(r)}<small>=VALUE(D${i+3})</small>`:'—']))+
         (s.method==='error'?btn('⚠ 所选单元格 → 转换为数字','convert'):'')+`<code>${s.mode==='sum'?'=SUM(D3:D7)':'=AVERAGEIF(C3:C7,H5,D3:D7)'}</code>`+output(`结果：${typeof result==='number'?money(result):result}。空白与文本不进入平均分母；数值0会进入。`))+output(s.message);
   },(s,a,v)=>{
     if(a==='select')s.selected=Number(v);
     if(a==='convert'){
       const row=s.rows[s.selected];
+      if(s.method==='format'){s.formats[s.selected]='数值';s.message='已设置数值显示格式；存储类型保持不变，原求和和平均值不变。';return;}
       if(s.method==='value'){if(!s.valueRows.includes(s.selected))s.valueRows.push(s.selected);s.message='E列保存VALUE公式，源D列不变；改动D列后E列跟着重算，D列原平均值仍按源数据类型计算。';return;}
       if(row[1].trim()===''||!Number.isFinite(Number(row[1]))){s.message='当前单元格为空白或不是可转换的数字文本；未改动源值。';return;}
       row[1]=String(Number(row[1]));row[2]=false;s.message='D列所选源格已成为数值，求和与平均值重新计算。';
     }
-  },(s,k,v)=>{if(k.startsWith('amount')){const row=s.rows[Number(k.slice(6))];row[1]=v;if(!row[2]&&v.trim()!==''&&!Number.isFinite(Number(v)))row[2]=true;}else s[k]=v;});
+  },(s,k,v)=>{if(k.startsWith('amount')){const row=s.rows[Number(k.slice(6))];row[1]=v;if(v!==''&&(v.trim()===''||!Number.isFinite(Number(v))))row[2]=true;}else s[k]=v;});
 })();
 
 /* Read-only review suggestion: load after proposed-word-models.js. */
@@ -208,31 +236,32 @@ old.action=(s,a,v)=>{
 };
 old.change=(s,k,v)=>{if(k==='scenario'){s.scenario=v;s.extraMessage='';}else if(k.startsWith('score')){s.formulaValues[Number(k.slice(5))]=v;s.fieldSelected=false;s.extraMessage='成绩已修改。旧公式结果暂时保留；选中公式域再按F9更新。';}else if(k==='raw'){s.raw=v;s.converted=null;}else if(original.change)original.change(s,k,v);else s[k]=v;};
 
-register(['merged-5'],'标题结构决定导航与目录，视图决定如何查看','切换五种视图；应用标题样式后插入自动目录，再比较更新页码和更新整个目录。',{view:'print',tab:'view',nav:true,headings:[{title:'第一章 信息技术',body:'数据是信息的符号化表示。',styled:false},{title:'第二章 操作系统',body:'操作系统管理硬件和软件资源。',styled:false}],selected:0,collapsed:[],cover:false,toc:null,tocPane:false,tocMode:'all',message:'标题只有大号粗体外观。先选标题，再在开始中应用标题1。'},s=>{
+register(['merged-5'],'标题结构决定导航与目录，视图决定如何查看','切换五种视图；应用标题样式后插入自动目录，再比较更新页码和更新整个目录。',{view:'print',tab:'view',nav:true,headings:[{id:0,level:1,title:'第一章 信息技术',body:'数据是信息的符号化表示。',styled:false},{id:1,level:1,title:'第二章 操作系统',body:'操作系统管理硬件和软件资源。',styled:false}],selected:0,collapsed:[],cover:false,toc:null,tocPane:false,tocMode:'all',message:'标题只有大号粗体外观。先选标题，再在开始中应用标题1。'},s=>{
  const h=s.headings,viewNames={print:'打印布局',outline:'大纲',read:'阅读模式',draft:'草稿',web:'Web版式'};
  const navigation=s.nav?`<aside style="padding:12px;background:#f5edf7"><b>导航 · 标题</b>${h.some(x=>x.styled)?h.map((p,i)=>p.styled?btn(esc(p.title),'select',i):'').join(''):'<p>此文档不包含标题。</p>'}</aside>`:'';
  const toc=s.toc?`<section class="lab-auto-toc" style="padding:16px;background:#fff"><h4>目录</h4>${s.toc.length?s.toc.map(e=>`<p style="display:flex;justify-content:space-between;gap:12px"><span>${esc(e.title)}</span><b>${e.page}</b></p>`).join(''):'<p>未找到目录项。为正文标题应用标题样式后，更新整个目录。</p>'}</section>`:'';
  const title=(p,i)=>btn(esc(p.title),'select',i,`class="${s.selected===i?'lab-selected':''}" style="font-weight:700;font-size:20px;text-align:left;border:0;background:transparent"`);
  let doc='';
- if(s.view==='outline')doc=`<div style="padding:16px;background:#fff">${h.map((p,i)=>`<div>${p.styled?btn((s.collapsed.includes(i)?'＋ ':'− ')+esc(p.title),'collapse',i):`<p>${esc(p.title)}（正文级别）</p>`}${s.collapsed.includes(i)?'':`<p style="padding-left:24px">${esc(p.body)}</p>`}</div>`).join('')}</div>`;
+ if(s.view==='outline')doc=`<div style="padding:16px;background:#fff">${h.map((p,i)=>`<div>${title(p,i)}${p.styled?btn(s.collapsed.includes(p.id)?'展开正文':'折叠正文','collapse',i):'（正文级别）'}<small> ${p.styled?'标题'+p.level:'正文'}</small>${s.collapsed.includes(p.id)?'':`<p style="padding-left:24px">${esc(p.body)}</p>`}</div>`).join('')}</div>`;
  else if(s.view==='read')doc=h.map(p=>`<section style="padding:18px;background:#fff"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p></section>`).join('');
  else if(s.view==='draft'||s.view==='web')doc=`<div style="padding:${s.view==='web'?'10px':'20px'};background:#fff">${h.map((p,i)=>`${title(p,i)}<p>${esc(p.body)}</p>`).join(s.view==='draft'?'<hr style="border:0;border-top:1px dotted #aaa">':'')}</div>`;
  else doc=(s.cover?paper('<h3>封面</h3><p>计算机学习文档</p>'):'')+h.map((p,i)=>paper(`<header style="font-size:12px">计算机学习文档</header>${title(p,i)}<p>${esc(p.body)}</p><footer>第 ${i+1+(s.cover?1:0)} 页</footer>`)).join('');
  const commands=s.tab==='view'?Object.entries(viewNames).map(([key,name])=>btn(name,'view',key)).join('')+btn(s.nav?'隐藏导航窗格':'导航窗格','nav'):s.tab==='home'?btn('标题 1','style')+btn('正文','plain'):btn('目录 → 自动目录1','tocInsert')+btn('更新目录…','tocOpen','',s.toc?'':'disabled');
- return controls(select('tab','功能区位置',s.tab,[['view','视图'],['home','开始'],['references','引用']]))+office('Word',{view:'视图',home:'开始',references:'引用'}[s.tab],commands,`${navigation}${s.tocPane?dialog('更新目录',select('tocMode','更新方式',s.tocMode,[['pages','只更新页码'],['all','更新整个目录']]),btn('确定','tocApply')+btn('取消','tocCancel')):''}${toc}${doc}`)+controls(field('title','学习编辑器：修改所选标题',h[s.selected].title)+btn(s.cover?'移除前置封面':'在文档前增加一页封面','cover'))+output(s.message);
+ return controls(select('tab','功能区位置',s.tab,[['view','视图'],['home','开始'],['references','引用']]))+office('Word',{view:'视图',home:'开始',references:'引用'}[s.tab],commands,`${navigation}${s.tocPane?dialog('更新目录',select('tocMode','更新方式',s.tocMode,[['pages','只更新页码'],['all','更新整个目录']]),btn('确定','tocApply')+btn('取消','tocCancel')):''}${toc}${doc}`)+(s.view==='outline'?controls(btn('上移标题及正文','move','up',s.selected===0?'disabled':'')+btn('下移标题及正文','move','down',s.selected===h.length-1?'disabled':'')):'')+controls(field('title','学习编辑器：修改所选标题',h[s.selected].title)+btn(s.cover?'移除前置封面':'在文档前增加一页封面','cover'))+output(s.message);
 },(s,a,v)=>{
  if(a==='view'){s.view=v;s.message={print:'显示打印分页与页眉页脚。',outline:'按标题结构显示层级；展开/折叠不删除正文。',read:'简化界面，集中阅读文档。',draft:'草稿简化页面装饰，侧重连续文字编辑。',web:'Web版式适应显示区宽度，不以打印纸张分页。'}[v];}
  if(a==='nav')s.nav=!s.nav;
  if(a==='select'){s.selected=Number(v);s.message='当前所选标题：'+s.headings[s.selected].title+'。';}
- if(a==='style'){s.headings[s.selected].styled=true;s.message='所选段落应用标题1，导航立即识别。已有目录需要更新。';}
+ if(a==='style'){s.headings[s.selected].styled=true;s.headings[s.selected].level=1;s.message='所选段落应用标题1，导航立即识别。已有目录需要更新。';}
  if(a==='plain'){s.headings[s.selected].styled=false;s.message='所选段落改为正文级别；已有目录需要更新整个目录。';}
- if(a==='collapse'){const i=Number(v);s.collapsed=s.collapsed.includes(i)?s.collapsed.filter(x=>x!==i):[...s.collapsed,i];}
+ if(a==='move'){const to=s.selected+(v==='up'?-1:1);if(to>=0&&to<s.headings.length){const block=s.headings.splice(s.selected,1)[0];s.headings.splice(to,0,block);s.selected=to;s.message='标题和所属正文一起移动；内容不删除，目录需更新。';}}
+ if(a==='collapse'){const i=s.headings[Number(v)].id;s.collapsed=s.collapsed.includes(i)?s.collapsed.filter(x=>x!==i):[...s.collapsed,i];}
  if(a==='cover'){s.cover=!s.cover;s.message='前置页面数变化，标题页码已改变，旧目录保持原结果，需更新。';}
- const entries=()=>s.headings.flatMap((h,i)=>h.styled?[{id:i,title:h.title,page:i+1+(s.cover?1:0)}]:[]);
+ const entries=()=>s.headings.flatMap((h,i)=>h.styled?[{id:h.id,title:h.title,page:i+1+(s.cover?1:0)}]:[]);
  if(a==='tocInsert'){s.toc=entries();s.message='在预留目录位置插入自动目录，条目来自标题结构。此局部模型把目录区单独显示，不计入示例正文页码。';}
  if(a==='tocOpen')s.tocPane=true;
  if(a==='tocCancel')s.tocPane=false;
- if(a==='tocApply'){s.toc=s.tocMode==='all'?entries():s.toc.map(e=>({...e,page:e.id+1+(s.cover?1:0)}));s.tocPane=false;s.message=s.tocMode==='all'?'目录标题、条目与页码一起更新。':'仅页码更新；标题文字和已有条目保持原样。';}
+ if(a==='tocApply'){s.toc=s.tocMode==='all'?entries():s.toc.map(e=>({...e,page:s.headings.findIndex(h=>h.id===e.id)+1+(s.cover?1:0)}));s.tocPane=false;s.message=s.tocMode==='all'?'目录标题、条目与页码一起更新。':'仅页码更新；标题文字和已有条目保持原样。';}
 },(s,k,v)=>{if(k==='title'){s.headings[s.selected].title=v;s.message='标题已修改；导航读取新标题，已有目录保留上次生成结果。';}else s[k]=v;});
 })();
 
@@ -243,10 +272,21 @@ const {btn,field,select,office,paper,dialog,output,esc,number}=ui;
 const controls=s=>`<div class="lab-controls">${s}</div>`;
 const alignName={left:'左对齐',center:'居中',right:'右对齐'};
 
-register(['merged-7'],'字号、下划线、对齐与显示比例分别保存','选中标题或正文后设置格式，再放大屏幕观察；放大不会修改文档字号。',{selected:0,size:[16,12],underline:['none','none'],align:['left','left'],zoom:100,message:'初始选中标题；字号、下划线与段落对齐是独立设置。'},s=>
- office('Word','开始',select('size','字号（磅）',s.size[s.selected],[[12,'12'],[16,'16'],[18,'18'],[22,'22']])+select('underline','下划线',s.underline[s.selected],[['none','无'],['single','单下划线'],['double','双下划线']])+select('alignment','段落对齐',s.align[s.selected],[['left','左对齐'],['center','居中'],['right','右对齐']]),`<div class="lab-format-viewport" style="overflow:auto;max-height:460px;width:100%"><div style="zoom:${s.zoom/100}">${paper(['计算机技能竞赛通知','为提高同学们的计算机应用能力，现组织技能竞赛。欢迎各班同学参加。'].map((t,i)=>`<p style="text-align:${s.align[i]};margin-block:18px">${btn(esc(t),'select',i,`class="${s.selected===i?'lab-selected':''}" style="display:inline;white-space:normal;font-size:${s.size[i]}pt;text-decoration-line:${s.underline[i]==='none'?'none':'underline'};text-decoration-style:${s.underline[i]==='double'?'double':'solid'};line-height:1.9;border:0;background:${s.selected===i?'#f6e7f2':'transparent'};padding:0;text-align:inherit"`)}</p>`).join(''))}</div></div>`)+controls(select('zoom','显示比例（对应Word状态栏缩放）',s.zoom,[[100,'100%'],[125,'125%'],[150,'150%']]))+output(`${s.message} 当前${s.selected===0?'标题':'正文'}：${s.size[s.selected]}磅，${{none:'无下划线',single:'单下划线',double:'双下划线'}[s.underline[s.selected]]}，${alignName[s.align[s.selected]]}；屏幕显示${s.zoom}%。`),
- (s,a,v)=>{if(a==='select'){s.selected=Number(v);s.message='已选择'+(s.selected===0?'标题':'正文')+'文字及其所在段落。';}},
- (s,k,v)=>{if(k==='size'){s.size[s.selected]=Number(v);s.message='只修改所选文字的字号，原下划线与对齐保持。';}if(k==='underline'){s.underline[s.selected]=v;s.message='只修改所选文字的下划线，原字号与对齐保持。';}if(k==='alignment'){s.align[s.selected]=v;s.message='只修改所在段落的对齐，字符格式保持。';}if(k==='zoom'){s.zoom=Number(v);s.message='只改变屏幕放大比例；保存和打印仍使用原字号与排版。';}});
+register(['merged-7'],'分别改变字符格式、段落对齐与显示比例','同一段文字比较全半角、字体色与突出显示；观察两端对齐和分散对齐的末行。',{
+ selected:0,size:[16,12],underline:['none','none'],align:['left','left'],colors:['#262331','#262331'],highlight:['transparent','transparent'],texts:['２０２６年计算机技能竞赛通知','为提高同学们的计算机应用能力，现组织技能竞赛。请各班于９月２０日前报名，练习Word和Excel的基本操作。欢迎参加。'],zoom:100,message:'字号与颜色属于字符格式；对齐属于段落格式，缩放只改变屏幕显示。'
+},s=>{
+ const index=s.selected,alignOptions=[['left','左对齐'],['center','居中'],['right','右对齐'],['justify','两端对齐'],['distribute','分散对齐']];
+ const paragraphs=s.texts.map((text,i)=>`<p style="text-align:${s.align[i]==='distribute'?'justify':s.align[i]};text-align-last:${s.align[i]==='distribute'?'justify':'auto'};margin-block:18px">${btn(esc(text),'select',i,`class="${index===i?'lab-selected':''}" style="display:block;width:100%;white-space:normal;font-size:${s.size[i]}pt;color:${s.colors[i]};text-decoration-line:${s.underline[i]==='none'?'none':'underline'};text-decoration-style:${s.underline[i]==='double'?'double':'solid'};line-height:1.9;border:0;outline:${index===i?'1px dashed #9875a0':'none'};background:transparent;padding:0;text-align:inherit;text-align-last:inherit"`).replace(esc(text),`<span style="background-color:${s.highlight[i]}">${esc(text)}</span>`)}</p>`).join('');
+ return office('Word','开始',select('size','字号（磅）',s.size[index],[[12,'12'],[16,'16'],[18,'18'],[22,'22']])+select('underline','下划线',s.underline[index],[['none','无'],['single','单下划线'],['double','双下划线']])+select('alignment','段落对齐',s.align[index],alignOptions)+select('color','字体颜色',s.colors[index],[['#262331','黑色'],['#c03535','红色'],['#2563a0','蓝色']])+select('highlight','文本突出显示',s.highlight[index],[['transparent','无颜色'],['#fff29a','黄色'],['#bde9c7','绿色']])+btn('全角 → 半角','width','half')+btn('半角 → 全角','width','full'),`<div class="lab-format-viewport" style="overflow:auto;max-height:460px;width:100%"><div style="zoom:${s.zoom/100}">${paper(paragraphs)}</div></div>`)+controls(select('zoom','显示比例（对应Word状态栏缩放）',s.zoom,[[100,'100%'],[125,'125%'],[150,'150%']]))+output(`${s.message} 当前${index===0?'标题':'正文'}：${s.size[index]}磅，${alignOptions.find(x=>x[0]===s.align[index])[1]}；屏幕显示${s.zoom}%。`);
+},(s,a,v)=>{
+ if(a==='select'){s.selected=Number(v);s.message='已选择'+(s.selected===0?'标题':'正文')+'；另一段的格式保持。';}
+ if(a==='width'){s.texts[s.selected]=s.texts[s.selected].replace(v==='half'?/[\uff01-\uff5e\u3000]/g:/[!-~ ]/g,c=>c==='　'?' ':c===' '?'　':String.fromCharCode(c.charCodeAt(0)+(v==='half'?-0xfee0:0xfee0)));s.message='转换全半角只影响相应字符，不把汉字改成半个汉字，也不修改字号。';}
+},(s,k,v)=>{
+ const fields={size:'size',underline:'underline',alignment:'align',color:'colors',highlight:'highlight'};
+ if(fields[k])s[fields[k]][s.selected]=k==='size'?Number(v):v;
+ if(k==='zoom'){s.zoom=Number(v);s.message='只改变屏幕比例；保存和打印仍使用原字号与排版。';}
+ else s.message=k==='alignment'?'两端对齐通常不拉伸末行；分散对齐也把末行分散到左右边界。':'只修改所选格式；切换到另一段后，可检查原段的颜色和突出显示仍保留。';
+});
 
 register(['y2020q63'],'先移动整张表，再调整格内文字','表格属性决定整表在页面的位置；单元格对齐只决定文字在格内的位置。',{tableAlign:'left',cellH:'left',cellV:'top',pane:false,draftAlign:'left',message:'本例预先选中整张表，各单元格的内容对齐统一设置。'},s=>
  office('Word','表格工具 · 布局',btn('属性…','properties','',s.pane?'disabled':'')+btn('单元格：水平居中','cellCenter','',s.pane?'disabled':'')+btn('单元格：水平垂直居中','cellMiddle','',s.pane?'disabled':'')+btn('单元格：左上对齐','cellReset','',s.pane?'disabled':''),`${s.pane?dialog('表格属性 · 表格',select('draftAlign','对齐方式',s.draftAlign,[['left','左对齐'],['center','居中'],['right','右对齐']]),btn('确定','apply')+btn('取消','cancel')):''}${paper(`<div style="position:relative;width:100%;min-height:235px"><div aria-hidden="true" style="position:absolute;inset:0 50% 0 auto;border-left:1px dashed #dfcbe0"></div><table style="position:relative;border-collapse:collapse;width:72%;margin-left:${s.tableAlign==='left'?'0':'auto'};margin-right:${s.tableAlign==='right'?'0':'auto'}">${[['姓名','成绩'],['王宁','92']].map(r=>`<tr>${r.map(v=>`<td style="height:82px;padding:8px;border:1px solid #977aa1;text-align:${s.cellH};vertical-align:${s.cellV}">${v}</td>`).join('')}</tr>`).join('')}</table></div>`)}`)+output(`${s.message} 整表：${alignName[s.tableAlign]}；格内文字：${s.cellH==='center'?'水平居中':'靠左'}、${s.cellV==='middle'?'垂直居中':'靠上'}。`),
@@ -997,4 +1037,24 @@ window.NOTE_LABS.registry.y2024q8.keydown=(s,e)=>{if(s.scenario==='formula'&&e.k
     s.selected=g.key;s.message='已按实际松手位置调整选择窗格顺序，文档中的遮挡关系同步改变。';
   };
   registry.y2025q56.keydown=(s,e)=>{if(e.altKey&&e.key==='F10'){e.preventDefault();s.pane=!s.pane;return true;}return false;};
+})();
+
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {field,select,office,paper,output,number,table}=ui;
+  register(['merged-9'],'把高、宽和纵横比对应起来','原图高8.5 cm、宽6 cm；比较锁定比例、强制高宽与先裁剪三种结果。',{
+    mode:'lock',width:6,height:8.5
+  },s=>{
+    const ratio=s.mode==='crop'?5/6:6/8.5;
+    return office('Word','图片工具 · 格式',select('mode','尺寸方案',s.mode,[['lock','锁定原图纵横比'],['stretch','取消锁定，分别设置'],['crop','先裁剪为宽5∶高6']])+field('height','高度（cm）',s.height,'number','min="0.5" max="20" step="0.01"')+field('width','宽度（cm）',s.width,'number','min="0.5" max="20" step="0.01"'),paper(
+      `<figure class="lab-image-size" style="margin:0;max-width:100%"><svg viewBox="${s.mode==='crop'?'0 65 600 720':'0 0 600 850'}" preserveAspectRatio="none" role="img" aria-label="尺寸预览：圆形被拉长表示失真" style="display:block;width:${s.width*25}px;height:${s.height*25}px;max-width:none;background:#e8e1f2"><rect x="0" y="0" width="600" height="850" fill="#e7f0ec"/><path d="M0 750 L190 400 L340 580 L470 300 L600 680 V850 H0" fill="#80a691"/><circle cx="230" cy="230" r="105" fill="#edc76a"/><rect x="8" y="8" width="584" height="834" fill="none" stroke="#927ca6" stroke-width="16"/></svg><figcaption>高 ${s.height.toFixed(2)} cm × 宽 ${s.width.toFixed(2)} cm</figcaption></figure>`))+
+      table(['操作','联动结果'],[['锁定原比例，高改为6 cm','宽 = 6 × 6 ÷ 8.5 ≈ 4.24 cm'],['锁定原比例，宽改为5 cm','高 = 8.5 × 5 ÷ 6 ≈ 7.08 cm'],['目标高6 cm、宽5 cm','原比例不匹配；强制尺寸会变形，裁剪会舍弃部分画面']])+
+      output(s.mode==='crop'?'已裁去原图上、下各一部分，再按5∶6缩放；圆形保持圆形，可见内容减少。':Math.abs(s.width/s.height-ratio)>.001?'当前宽高比与原图不同，圆形已被拉伸。':'宽高按原图比例联动，圆形保持圆形。');
+  },()=>{},(s,k,v)=>{
+    if(k==='mode'){s.mode=v;if(v==='crop'){s.width=5;s.height=6;}else if(v==='lock'){s.width=6;s.height=8.5;}else{s.width=5;s.height=6;}return;}
+    const ratio=s.mode==='crop'?5/6:6/8.5;
+    s[k]=s.mode==='stretch'?number(v,.5,20):number(v,k==='height'?.5/ratio:.5,k==='width'?20*ratio:20);
+    if(s.mode!=='stretch'){if(k==='width')s.height=s.width/ratio;else s.width=s.height*ratio;}
+  });
 })();
