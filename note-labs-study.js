@@ -99,23 +99,41 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
   const controls=body=>`<div class="lab-controls">${body}</div>`;
   const clone=value=>structuredClone(value);
 
-  register(['y2020q49'],'按选定列组合判重，保留每组第一条','勾选学号或多列组合，再确认哪些整行会被移除。',{
+  const uniqueRows=(rows,indexes)=>{const seen=new Set();return rows.filter(row=>{const key=JSON.stringify(indexes.map(i=>row[i]));if(seen.has(key))return false;seen.add(key);return true;});};
+  const uniqueSource=[['一班'],['二班'],['一班'],['三班'],['二班']];
+  register(['y2020q49'],'先确定判重范围，再比较筛选与删除','删除会改动原记录；高级筛选可保留源数据，显示或复制唯一列表。',{
     rows:[['20260018','王宁','13000000001'],['20260018','王宁','13000000002'],['20260019','李悦','13000000003']],
-    selected:false,pane:false,keys:[true,false,false],draft:[true,false,false],before:null,message:'先点一个数据单元格，确定要处理的数据区域。'
-  },s=>office('Excel','数据',btn('删除重复项','open'),table(['学号','姓名','虚构示例号码'],s.rows.map(r=>r.map((v,i)=>i===0?btn(esc(v),'select','',`class="${s.selected?'lab-selected':''}"`):esc(v))))+
+    scenario:'delete',unique:{pane:false,destination:'inplace',only:true,filtered:false,copy:null,message:'示例列表A1:A6包含“班级”标题及5条记录。'},selected:false,pane:false,keys:[true,false,false],draft:[true,false,false],before:null,message:'先点一个数据单元格，确定要处理的数据区域。'
+  },s=>{
+    const mode=controls(select('scenario','真题任务',s.scenario,[['delete','按指定列删除重复项'],['unique','高级筛选不重复记录']]));
+    if(s.scenario==='unique'){
+      const u=s.unique;
+      return mode+office('Excel','数据',btn('高级…','uniqueOpen')+btn('清除','uniqueClear'),
+        (u.pane?dialog('高级筛选', '<p>列表区域：$A$1:$A$6（含“班级”标题）</p>'+select('destination','方式',u.destination,[['inplace','在原有区域显示'],['copy','复制到其他位置']])+`<label><input type="checkbox" data-field="only" ${u.only?'checked':''}>选择不重复的记录</label>`,btn('确定','uniqueApply')+btn('取消','uniqueCancel')):'')+
+        table(['班级'],u.filtered?uniqueRows(uniqueSource,[0]):uniqueSource)+(u.copy?'<h4>复制出的唯一列表</h4>'+table(['班级'],u.copy):''))+output(u.message)+coach('本例只选择班级一列，因此按班级判重；选择多列时按完整列组合判断。清除筛选恢复隐藏行，已复制的列表仍保留。');
+    }
+    return mode+office('Excel','数据',btn('删除重复项','open'),table(['学号','姓名','虚构示例号码'],s.rows.map(r=>r.map((v,i)=>i===0?btn(esc(v),'select','',`class="${s.selected?'lab-selected':''}"`):esc(v))))+
     (s.pane?dialog('删除重复项','<p>根据勾选列的组合判断重复；删除时移除整行，保留首次出现的记录。</p>'+['学号','姓名','电话'].map((name,i)=>`<label><input type="checkbox" data-field="key${i}" ${s.draft[i]?'checked':''}>${name}</label>`).join(''),btn('确定','apply')+btn('取消','cancel')):''))+
-    controls(btn('撤销本次删除','undo','',s.before?'':'disabled'))+output(s.message)+coach('两条同学号记录的电话不同：只按学号会判重；同时按学号和电话，两条都保留。'),
+    controls(btn('撤销本次删除','undo','',s.before?'':'disabled'))+output(s.message)+coach('两条同学号记录的电话不同：只按学号会判重；同时按学号和电话，两条都保留。');},
     (s,a)=>{
+      if(s.scenario==='unique'){
+        const u=s.unique;
+        if(a==='uniqueOpen')u.pane=true;
+        if(a==='uniqueCancel')u.pane=false;
+        if(a==='uniqueClear'){u.filtered=false;u.message='原区域5条记录全部恢复，源数据从未删除；已复制的列表保持不变。';}
+        if(a==='uniqueApply'){const rows=u.only?uniqueRows(uniqueSource,[0]):uniqueSource;if(u.destination==='copy')u.copy=clone(rows);else u.filtered=u.only;u.pane=false;u.message=`${u.destination==='copy'?'已复制到旁表':'原区域显示'}${rows.length}条记录；源数据仍有5条。`;}
+        return;
+      }
       if(a==='select'){s.selected=true;s.message='已识别连续区域 A1:C'+(s.rows.length+1)+'，包括三列完整记录。';}
       if(a==='open'){if(!s.selected){s.message='先选中数据区域中的单元格。';return;}s.draft=[...s.keys];s.pane=true;}
       if(a==='cancel')s.pane=false;
       if(a==='apply'){
         const indexes=s.draft.flatMap((v,i)=>v?[i]:[]);if(!indexes.length){s.message='至少选择一列作为判重依据。';return;}
-        const seen=new Set(),before=clone(s.rows);s.rows=s.rows.filter(row=>{const key=JSON.stringify(indexes.map(i=>row[i]));if(seen.has(key))return false;seen.add(key);return true;});
+        const before=clone(s.rows);s.rows=uniqueRows(s.rows,indexes);
         s.before=before;s.keys=[...s.draft];s.pane=false;s.message=`移除 ${before.length-s.rows.length} 条重复记录，保留 ${s.rows.length} 条。判重列：${indexes.map(i=>['学号','姓名','电话'][i]).join('＋')}。`;
       }
       if(a==='undo'&&s.before){s.rows=clone(s.before);s.before=null;s.message='已恢复删除前的所有记录。';}
-    },(s,k,v)=>{if(k.startsWith('key'))s.draft[Number(k.slice(3))]=v;});
+    },(s,k,v)=>{if(k==='scenario')s.scenario=v;else if(s.scenario==='unique')s.unique[k]=v;else if(k.startsWith('key'))s.draft[Number(k.slice(3))]=v;});
 
   // Separate exam scenario; the existing multi-course subtotal model stays intact.
   const wageDefaults={rows:[['讲师',5000],['教授',9000],['讲师',7000],['教授',11000]],sorted:false,applied:false,level:3,pane:false,selection:'none',chart:false,aggregate:'average',draftAggregate:'average',message:'先按职称排序，再汇总基本工资。'};
@@ -150,7 +168,7 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
   }
 
   const grades=[['一班',80,70,90],['二班',90,60,80],['一班',100,90,70],['二班',70,80,90]];
-  const defaults={aggregate:'average',math:true,english:true,computer:true};
+  const defaults={aggregate:'average',class:false,math:true,english:true,computer:true};
   register(['y2020q58'],'相邻记录分组，再汇总三门课','先看未排序的小计，再移除汇总并按班级排序，对照分组结果。',{
     scenario:'grades',wage:wageDefaults,sorted:false,pane:false,applied:null,draft:defaults,level:3,message:'先排序可使同班记录连续。也可以直接汇总，观察相邻分组产生的多个同名小计。'
   },s=>{
@@ -161,11 +179,12 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
     if(s.applied){
       const groups=[];for(const row of source){if(!groups.length||groups.at(-1)[0][0]!==row[0])groups.push([]);groups.at(-1).push(row);}
       const agg=rows=>[1,2,3].map((col,i)=>!s.applied[['math','english','computer'][i]]?'':s.applied.aggregate==='count'?rows.length:money(rows.reduce((sum,r)=>sum+r[col],0)/(s.applied.aggregate==='average'?rows.length:1)));
-      display=groups.flatMap(rows=>[...(s.level===3?rows:[]),...(s.level>=2?[[rows[0][0]+' 小计',...agg(rows)]]:[])]);
-      display.push(['总计',...agg(source)]);
+      const label=(text,rows)=>text+(s.applied.class?` · 班级计数 ${rows.filter(r=>r[0]!=='').length}`:'');
+      display=groups.flatMap(rows=>[...(s.level===3?rows:[]),...(s.level>=2?[[label(rows[0][0]+' 小计',rows),...agg(rows)]]:[])]);
+      display.push([label('总计',source),...agg(source)]);
     }
     return scenario+office('Excel','数据',btn('按班级排序','sort','',s.applied?'disabled':'')+btn('分类汇总…','open'),
-      (s.pane?dialog('分类汇总','<p>分类字段：班级</p>'+select('aggregate','汇总方式',s.draft.aggregate,[['average','平均值'],['sum','求和'],['count','计数']])+['math','english','computer'].map((k,i)=>`<label><input type="checkbox" data-field="${k}" ${s.draft[k]?'checked':''}>${['数学','英语','计算机'][i]}</label>`).join(''),btn('确定','apply')+btn('取消','cancel')+btn('全部删除汇总','remove','',s.applied?'':'disabled')):'')+
+      (s.pane?dialog('分类汇总','<p>分类字段：班级</p>'+select('aggregate','汇总方式',s.draft.aggregate,[['average','平均值'],['sum','求和'],['count','计数']])+['class','math','english','computer'].map((k,i)=>`<label><input type="checkbox" data-field="${k}" ${s.draft[k]?'checked':''} ${k==='class'&&s.draft.aggregate!=='count'?'disabled':''}>${['班级（非空文本计数）','数学','英语','计算机'][i]}</label>`).join(''),btn('确定','apply')+btn('取消','cancel')+btn('全部删除汇总','remove','',s.applied?'':'disabled')):'')+
       (s.applied?controls([1,2,3].map(n=>btn(String(n),'level',n,`aria-label="大纲层级${n}"`)).join('')):'')+table(['班级','数学','英语','计算机'],display))+output(s.message);
   },(s,a,v)=>{
     if(s.scenario==='wages'){actWages(s.wage,a,v);return;}
@@ -173,13 +192,13 @@ register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表�
     if(a==='open'){s.draft=clone(s.applied||defaults);s.pane=true;}
     if(a==='cancel')s.pane=false;
     if(a==='apply'){
-      if(!['math','english','computer'].some(k=>s.draft[k])){s.message='至少选择一个汇总列。';return;}
+      if(!['class','math','english','computer'].some(k=>s.draft[k])){s.message='至少选择一个汇总列。';return;}
       s.applied=clone(s.draft);s.pane=false;s.level=3;
       s.message=s.sorted?'每班一个小计；层级1显示总计，2显示小计，3显示明细。总平均由全部原始记录计算。':'未排序时按相邻记录分组，出现多个同名小计。可在分类汇总中全部删除汇总，排序后重做。';
     }
     if(a==='remove'){s.applied=null;s.pane=false;s.message='已移除小计与大纲，原始数据完整保留。';}
     if(a==='level')s.level=Number(v);
-  },(s,k,v)=>{if(k==='scenario')s.scenario=v;else if(s.scenario==='wages')s.wage[k]=v;else s.draft[k]=v;});
+  },(s,k,v)=>{if(k==='scenario')s.scenario=v;else if(s.scenario==='wages')s.wage[k]=v;else{s.draft[k]=v;if(k==='aggregate'&&v!=='count')s.draft.class=false;}});
 
   register(['y2026q49'],'区分文本、空白和0，再看实际平均值','转换所选源单元格，或在E列写VALUE公式；三种数据不会按同一种方式统计。',{
     mode:'average',team:'示例一组',rows:[['示例一组','18',true],['示例二组','14',false],['示例一组','25',false],['示例一组','15',true],['示例二组','11',false]],selected:0,method:'error',valueRows:[],formats:{},message:'选一行再转换。清空单元格代表空白，输入0代表数值零。'
@@ -241,15 +260,16 @@ register(['merged-5'],'标题结构决定导航与目录，视图决定如何查
  const navigation=s.nav?`<aside style="padding:12px;background:#f5edf7"><b>导航 · 标题</b>${h.some(x=>x.styled)?h.map((p,i)=>p.styled?btn(esc(p.title),'select',i):'').join(''):'<p>此文档不包含标题。</p>'}</aside>`:'';
  const toc=s.toc?`<section class="lab-auto-toc" style="padding:16px;background:#fff"><h4>目录</h4>${s.toc.length?s.toc.map(e=>`<p style="display:flex;justify-content:space-between;gap:12px"><span>${esc(e.title)}</span><b>${e.page}</b></p>`).join(''):'<p>未找到目录项。为正文标题应用标题样式后，更新整个目录。</p>'}</section>`:'';
  const title=(p,i)=>btn(esc(p.title),'select',i,`class="${s.selected===i?'lab-selected':''}" style="font-weight:700;font-size:20px;text-align:left;border:0;background:transparent"`);
+ const illustration='<figure data-document-image style="margin:12px 0;padding:12px;background:#e8f1ec"><svg role="img" aria-label="文档中的计算机示意图" viewBox="0 0 240 100" style="width:100%;max-height:110px"><rect x="60" y="10" width="120" height="65" rx="5" fill="#589879"/><path d="M120 75V90M90 92H150" stroke="#3d6552" stroke-width="6"/></svg><figcaption>文档中的图片</figcaption></figure>';
  let doc='';
  if(s.view==='outline')doc=`<div style="padding:16px;background:#fff">${h.map((p,i)=>`<div>${title(p,i)}${p.styled?btn(s.collapsed.includes(p.id)?'展开正文':'折叠正文','collapse',i):'（正文级别）'}<small> ${p.styled?'标题'+p.level:'正文'}</small>${s.collapsed.includes(p.id)?'':`<p style="padding-left:24px">${esc(p.body)}</p>`}</div>`).join('')}</div>`;
- else if(s.view==='read')doc=h.map(p=>`<section style="padding:18px;background:#fff"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p></section>`).join('');
- else if(s.view==='draft'||s.view==='web')doc=`<div style="padding:${s.view==='web'?'10px':'20px'};background:#fff">${h.map((p,i)=>`${title(p,i)}<p>${esc(p.body)}</p>`).join(s.view==='draft'?'<hr style="border:0;border-top:1px dotted #aaa">':'')}</div>`;
- else doc=(s.cover?paper('<h3>封面</h3><p>计算机学习文档</p>'):'')+h.map((p,i)=>paper(`<header style="font-size:12px">计算机学习文档</header>${title(p,i)}<p>${esc(p.body)}</p><footer>第 ${i+1+(s.cover?1:0)} 页</footer>`)).join('');
+ else if(s.view==='read')doc=h.map(p=>`<section style="padding:18px;background:#fff"><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p>${illustration}</section>`).join('');
+ else if(s.view==='draft'||s.view==='web')doc=`<div style="padding:${s.view==='web'?'10px':'20px'};background:#fff">${h.map((p,i)=>`${title(p,i)}<p>${esc(p.body)}</p>${s.view==='web'?illustration:''}`).join(s.view==='draft'?'<hr style="border:0;border-top:1px dotted #aaa">':'')}</div>`;
+ else doc=(s.cover?paper('<h3>封面</h3><p>计算机学习文档</p>'):'')+h.map((p,i)=>paper(`<header style="font-size:12px">计算机学习文档</header>${title(p,i)}<p>${esc(p.body)}</p>${illustration}<footer>第 ${i+1+(s.cover?1:0)} 页</footer>`)).join('');
  const commands=s.tab==='view'?Object.entries(viewNames).map(([key,name])=>btn(name,'view',key)).join('')+btn(s.nav?'隐藏导航窗格':'导航窗格','nav'):s.tab==='home'?btn('标题 1','style')+btn('正文','plain'):btn('目录 → 自动目录1','tocInsert')+btn('更新目录…','tocOpen','',s.toc?'':'disabled');
- return controls(select('tab','功能区位置',s.tab,[['view','视图'],['home','开始'],['references','引用']]))+office('Word',{view:'视图',home:'开始',references:'引用'}[s.tab],commands,`${navigation}${s.tocPane?dialog('更新目录',select('tocMode','更新方式',s.tocMode,[['pages','只更新页码'],['all','更新整个目录']]),btn('确定','tocApply')+btn('取消','tocCancel')):''}${toc}${doc}`)+(s.view==='outline'?controls(btn('上移标题及正文','move','up',s.selected===0?'disabled':'')+btn('下移标题及正文','move','down',s.selected===h.length-1?'disabled':'')):'')+controls(field('title','学习编辑器：修改所选标题',h[s.selected].title)+btn(s.cover?'移除前置封面':'在文档前增加一页封面','cover'))+output(s.message);
+ return controls(select('tab','功能区位置',s.tab,[['view','视图'],['home','开始'],['references','引用']]))+office('Word',{view:'视图',home:'开始',references:'引用'}[s.tab],commands,`${navigation}${s.tocPane?dialog('更新目录',select('tocMode','更新方式',s.tocMode,[['pages','只更新页码'],['all','更新整个目录']]),btn('确定','tocApply')+btn('取消','tocCancel')):''}${toc}${doc}`)+(s.view==='outline'?controls(btn('上移标题及正文','move','up',s.selected===0?'disabled':'')+btn('下移标题及正文','move','down',s.selected===h.length-1?'disabled':'')):'')+controls(field('title','学习编辑器：修改所选标题',h[s.selected].title,'text',s.view==='read'?'disabled':'')+btn(s.cover?'移除前置封面':'在文档前增加一页封面','cover'))+output(s.message);
 },(s,a,v)=>{
- if(a==='view'){s.view=v;s.message={print:'显示打印分页与页眉页脚。',outline:'按标题结构显示层级；展开/折叠不删除正文。',read:'简化界面，集中阅读文档。',draft:'草稿简化页面装饰，侧重连续文字编辑。',web:'Web版式适应显示区宽度，不以打印纸张分页。'}[v];}
+ if(a==='view'){s.view=v;s.message={print:'显示打印分页与页眉页脚。',outline:'按标题结构显示层级；展开/折叠不删除正文。',read:'简化界面，集中阅读文档。',draft:'草稿不显示图片、页眉页脚，侧重连续文字编辑；切回打印布局可恢复查看。',web:'Web版式仍可编辑并显示图片，适应显示区宽度，不以打印纸张分页。'}[v];}
  if(a==='nav')s.nav=!s.nav;
  if(a==='select'){s.selected=Number(v);s.message='当前所选标题：'+s.headings[s.selected].title+'。';}
  if(a==='style'){s.headings[s.selected].styled=true;s.headings[s.selected].level=1;s.message='所选段落应用标题1，导航立即识别。已有目录需要更新。';}

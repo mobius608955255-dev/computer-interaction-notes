@@ -550,3 +550,58 @@ test('collapsing a drag preview restores committed column width on reopening',()
  c.querySelector('.simulation-toggle').click();c.querySelector('.simulation-toggle').click();
  assert.equal(c.querySelector('[data-width-readout]').textContent,'130 px');e.dom.window.close();
 });
+
+test('editing a horizontally scrolled table keeps its position and focused input',()=>{
+ const e=env(4),c=open(e,'y2020q57');change(e,c,'task','discount');const scroller=c.querySelector('.lab-table-scroll');scroller.scrollLeft=115;
+ const input=c.querySelector('[data-field="quantity0"]');input.focus();change(e,c,'quantity0',20);
+ assert.equal(c.querySelector('.lab-table-scroll').scrollLeft,115);assert.equal(e.d.activeElement.dataset.field,'quantity0');assert.equal(e.d.activeElement.value,'20');e.dom.window.close();
+});
+test('a transfer completed during a plain button press paints after an outside release or cancel',async()=>{
+ for(const type of ['pointerup','pointercancel']){
+  const e=env(6),timers=[];let now=10000;e.w.Date.now=()=>now;e.w.setInterval=fn=>{timers.push(fn);return 1;};e.w.clearInterval=()=>{};
+  const c=open(e,'y2020q26');click(c,'start');now+=500;timers.forEach(fn=>fn());const before=c.querySelector('.lab-output').textContent;
+  pointer(e,c.querySelector('[data-lab-act="reset"]'),'pointerdown',{id:37});now+=5000;timers.forEach(fn=>fn());assert.equal(c.querySelector('.lab-output').textContent,before,'no redraw removes the pressed button');
+  pointer(e,e.d.body,type,{id:37});await new Promise(r=>setTimeout(r,10));assert.match(c.querySelector('.lab-output').textContent,/文件已到达/);assert.equal(c.querySelector('[data-lab-act="start"]').disabled,false);e.dom.window.close();
+ }
+});
+test('idle drawing surfaces allow ordinary scrolling; only active tools claim a gesture',()=>{
+ const e=env(5),box=open(e,'y2021q10'),ink=open(e,'y2025q10');
+ for(const [c,selector] of [[box,'.lab-draw-slide'],[ink,'.lab-ink-slide']]){
+  const canvas=c.querySelector(selector);let captured=false;canvas.setPointerCapture=()=>{captured=true;};pointer(e,canvas,'pointerdown');const event=new e.w.MouseEvent('pointermove',{bubbles:true,cancelable:true,clientY:150});Object.defineProperty(event,'pointerId',{value:1});canvas.dispatchEvent(event);pointer(e,canvas,'pointerup');assert.equal(captured,false);assert.equal(event.defaultPrevented,false);
+ }
+ click(box,'tool');assert.ok(box.querySelector('[data-lab-drag="box"]'));click(box,'tool');assert.equal(box.querySelector('[data-lab-drag="box"]'),null);
+ click(ink,'show');assert.equal(ink.querySelector('[data-lab-drag="ink"]'),null);click(ink,'pen');assert.ok(ink.querySelector('[data-lab-drag="ink"]'));click(ink,'black');assert.equal(ink.querySelector('[data-lab-drag="ink"]'),null);e.dom.window.close();
+});
+test('unique filtering preserves all source records and its copied list survives clearing',()=>{
+ const e=env(4),c=open(e,'y2020q49');change(e,c,'scenario','unique');const rows=()=>c.querySelectorAll('table')[0].querySelectorAll('tbody tr').length;
+ assert.equal(rows(),5);click(c,'uniqueOpen');click(c,'uniqueApply');assert.equal(rows(),3);click(c,'uniqueClear');assert.equal(rows(),5);
+ click(c,'uniqueOpen');change(e,c,'destination','copy');click(c,'uniqueApply');assert.equal(rows(),5);assert.equal(c.querySelectorAll('table')[1].querySelectorAll('tbody tr').length,3);click(c,'uniqueClear');assert.equal(c.querySelectorAll('table').length,2);
+ change(e,c,'scenario','delete');click(c,'select');click(c,'open');click(c,'apply');assert.equal(rows(),2);click(c,'undo');assert.equal(rows(),3);e.dom.window.close();
+});
+test('scholarship eligibility intersects the copied top-quarter set with all five thresholds',()=>{
+ const e=env(4),c=open(e,'y2020q9');change(e,c,'scenario','scholarship');const tables=()=>[...c.querySelectorAll('table')].map(t=>[...t.querySelectorAll('tbody tr')].map(r=>r.textContent));
+ assert.equal(tables()[0].length,8);click(c,'rankOpen');click(c,'rankCancel');assert.equal(tables()[0].length,8);click(c,'rankOpen');click(c,'rankApply');assert.equal(tables()[0].length,2);
+ click(c,'rankCopy');click(c,'subjectsOpen');click(c,'subjectsApply');assert.equal(tables()[1].length,1);assert.match(tables()[1][0],/王宁/);assert.doesNotMatch(tables()[1][0],/李明|赵敏/);
+ click(c,'rankClear');assert.equal(tables()[0].length,8);assert.equal(tables()[1].length,1);click(c,'subjectsClear');assert.equal(tables()[1].length,2);e.dom.window.close();
+});
+test('class-text subtotals count records rather than distinct class names',()=>{
+ const e=env(4),c=open(e,'y2020q58');click(c,'sort');click(c,'open');change(e,c,'aggregate','count');change(e,c,'class',true);for(const key of ['math','english','computer'])change(e,c,key,false);click(c,'apply');click(c,'level','2');
+ const text=c.querySelector('table').textContent;assert.match(text,/一班 小计 · 班级计数 2/);assert.match(text,/二班 小计 · 班级计数 2/);assert.match(text,/总计 · 班级计数 4/);e.dom.window.close();
+});
+test('chart title, axis titles and legend position are separate visible elements',()=>{
+ const e=env(4),c=open(e,'y2026q52');click(c,'ab');change(e,c,'ctrl',true);click(c,'d');click(c,'insert');click(c,'elements');change(e,c,'title','航天发射统计');change(e,c,'axes',true);change(e,c,'legend','right');
+ assert.equal(c.querySelector('[data-chart-title]').textContent,'航天发射统计');assert.equal(c.querySelector('[data-axis-title="horizontal"]').textContent,'年份');assert.equal(c.querySelector('[data-axis-title="vertical"]').textContent,'发射次数');assert.ok(c.querySelector('[data-chart-legend="right"] .study-chart-legend'));
+ change(e,c,'showTitle',false);assert.equal(c.querySelector('[data-chart-title]'),null);assert.equal(c.querySelectorAll('[data-axis-title]').length,2);e.dom.window.close();
+});
+test('text autofit menu keeps shape growth in the shape-format entry',()=>{
+ const e=env(5),c=open(e,'y2026q54');click(c,'menu');assert.equal(c.querySelector('[aria-label="占位符自动调整选项"] [data-lab-act="shape"]'),null);click(c,'shrink');assert.equal(c.querySelector('.lab-placeholder').style.fontSize,'16px');assert.equal(c.querySelector('.lab-placeholder.grow'),null);
+ click(c,'format');click(c,'shape');assert.equal(c.querySelector('.lab-placeholder').style.fontSize,'24px');assert.ok(c.querySelector('.lab-placeholder.grow'));e.dom.window.close();
+});
+test('draft hides document images; Web layout restores them and remains editable',()=>{
+ const e=env(3),c=open(e,'merged-5');assert.equal(c.querySelectorAll('[data-document-image]').length,2);click(c,'view','draft');assert.equal(c.querySelectorAll('[data-document-image]').length,0);click(c,'view','web');assert.equal(c.querySelectorAll('[data-document-image]').length,2);change(e,c,'title','网页中编辑');assert.match(c.querySelector('.lab-workspace').textContent,/网页中编辑/);click(c,'view','print');assert.match(c.querySelector('.lab-workspace').textContent,/网页中编辑/);e.dom.window.close();
+});
+test('colloquial aliases retrieve the intended concept without reading mutable learner input',()=>{
+ for(const [chapter,query,id] of [[3,'目录不显示标题','merged-5'],[4,'去重','y2020q49'],[5,'文字放不下','y2026q54']]){
+  const e=env(chapter),input=e.d.querySelector('#search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.equal(e.d.getElementById(id).classList.contains('hidden'),false);e.dom.window.close();
+ }
+});

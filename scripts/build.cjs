@@ -1,6 +1,7 @@
 /* Canonical content -> static assets. No dependencies, network, or runtime patches. */
 const fs = require('node:fs');
 const path = require('node:path');
+const {createHash} = require('node:crypto');
 const root = path.resolve(__dirname, '..');
 const read = name => JSON.parse(fs.readFileSync(path.join(root, name), 'utf8'));
 const {version, years} = read('site.config.json');
@@ -14,14 +15,16 @@ if (new Set(notes.map(n => n.id)).size !== notes.length) throw Error('Duplicate 
 if (new Set(sources).size !== sources.length) throw Error('Duplicate exam source');
 for (const n of notes) {
   if (!chapters[n.chapter - 1]?.sections.some(s => s.id === n.section)) throw Error(`Invalid section: ${n.id}`);
+  if (n.searchAliases && (!Array.isArray(n.searchAliases) || n.searchAliases.some(alias=>typeof alias!=='string'||!alias.trim()))) throw Error(`Invalid search aliases: ${n.id}`);
 }
 const generated = path.join(root, 'generated');
 fs.mkdirSync(generated, {recursive: true});
 const write = (name, content) => fs.writeFileSync(path.join(root, name), content);
 const js = value => JSON.stringify(value).replace(/</g, '\\u003c');
+const fingerprint = name => createHash('sha256').update(fs.readFileSync(path.join(root,name))).digest('hex').slice(0,12);
 const asset = (name, css = false) => css
-  ? `  <link rel="stylesheet" href="./${name}?v=${version}">`
-  : `  <script src="./${name}?v=${version}"></script>`;
+  ? `  <link rel="stylesheet" href="./${name}?v=${version}&h=${fingerprint(name)}">`
+  : `  <script src="./${name}?v=${version}&h=${fingerprint(name)}"></script>`;
 const modules = {1:'core',2:'core',3:'study',4:'study',5:'presentation',6:'network',7:'media',8:'security',10:'data',11:'data'};
 for (const [i, group] of groups.entries()) {
   const chapter = chapters[i];
@@ -33,5 +36,5 @@ for (const [i, group] of groups.entries()) {
   write(`chapter${chapter.number}.html`, fs.readFileSync(path.join(root,'templates/chapter.html'),'utf8').replace(/{{(\w+)}}/g, (_,key)=>replacements[key]));
 }
 write('generated/catalogue.js', `// Generated; edit content/*.json.\nwindow.NOTE_CATALOGUE=${js({sourceCount:sources.length,noteCount:notes.length,chapters:chapters.map((c,i)=>({...c,noteCount:groups[i].length,sourceCount:groups[i].reduce((sum,n)=>sum+n.sources.length,0)}))})};\n`);
-write('index.html', fs.readFileSync(path.join(root,'templates/index.html'),'utf8').replaceAll('{{version}}',String(version)));
+write('index.html', fs.readFileSync(path.join(root,'templates/index.html'),'utf8').replaceAll('{{version}}',String(version)).replace(/((?:src|href)="\.\/([^"?]+\.(?:js|css))\?v=\d+)/g,(_,attribute,name)=>`${attribute}&h=${fingerprint(name)}`));
 console.log(`Built v${version}: ${notes.length} notes, ${sources.length} sources, ${chapters.length} chapters.`);

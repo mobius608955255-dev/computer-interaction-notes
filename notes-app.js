@@ -932,10 +932,11 @@
   });
   const normalizeSearch = text => text.normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
   // Index the notes once. Learner input and changing demonstration output must not change matches.
+  const aliasesById=new Map(notes.map(note=>[note.id,(note.searchAliases||[]).join(' ')]));
   const searchIndex = $$('.note-item').map(item=>{
     const copy=item.cloneNode(true);copy.querySelectorAll('.reality-demo').forEach(el=>el.remove());
     const demo=simulation.demos[item.id];
-    return {item,text:normalizeSearch(copy.textContent+' '+(demo?.title||'')+' '+(demo?.task||''))};
+    return {item,text:normalizeSearch(copy.textContent+' '+(demo?.title||'')+' '+(demo?.task||'')+' '+(aliasesById.get(item.id)||''))};
   });
   const applySearch = () => {
     const query = normalizeSearch($('#search-input').value), terms=query?query.split(' '):[]; let shown = 0;

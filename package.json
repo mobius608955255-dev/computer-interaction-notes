@@ -2,11 +2,17 @@
   "name": "computer-interaction-notes",
   "version": "1.0.0",
   "private": true,
-  "engines": {"node": ">=24"},
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
+    "dev": "vite",
     "build": "node scripts/build.cjs",
     "test": "node --test tests/notes-regression.cjs",
     "check": "node scripts/build.cjs && node --test tests/notes-regression.cjs"
   },
-  "devDependencies": {"jsdom": "30.0.1"}
+  "devDependencies": {
+    "jsdom": "30.0.1",
+    "vite": "^8.2.2"
+  }
 }

@@ -170,7 +170,7 @@
     },
     "y2020q60": function (demo) {
       const commands = `<div class="table-tools">${step(demo,2,'边框 ▼','ribbon-command')}${step(demo,3,'所有框线','ribbon-command all-borders')}</div>`;
-      return office('Word','成绩表.docx','设计',commands,`<div class="word-page table-border-page"><button type="button" data-sim-step="0" class="table-select-handle" aria-label="选中整张表">✥</button><table data-border-table><thead><tr><th>姓名</th><th>计算机</th><th>高数</th></tr></thead><tbody><tr><td>王宁</td><td>92</td><td>88</td></tr><tr><td>李悦</td><td>86</td><td>94</td></tr></tbody></table></div>`,'',1)+feedback('选中整表后才会出现真正的表格工具“设计”选项卡，再从边框菜单应用“所有框线”。');
+      return office('Word','成绩表.docx','设计',commands,`<div class="word-page table-border-page"><button type="button" data-sim-step="0" class="table-select-handle" aria-label="选中整张表">✥</button><table data-border-table><thead><tr><th>姓名</th><th>计算机</th><th>高数</th></tr></thead><tbody><tr><td>王宁</td><td>92</td><td>88</td></tr><tr><td>李悦</td><td>86</td><td>94</td></tr></tbody></table></div>`,'',1)+feedback('光标位于表格内即可显示表格工具。本例先选中整表，再从设计选项卡的边框菜单应用“所有框线”，使命令作用于整表。');
     },
     "y2020q62": function (demo) {
       const commands = `<div class="table-tools">${step(demo,2,'重复标题行','ribbon-command repeat-header')}</div>`;

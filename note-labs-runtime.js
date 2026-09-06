@@ -34,6 +34,11 @@
   const money = n => Number(n).toLocaleString('zh-CN',{maximumFractionDigits:2});
 
   function render(root){
+    // Keep local scroll positions through a same-layout redraw, including textareas.
+    const scrolls=[...root.querySelectorAll('*')].filter(el=>el.scrollLeft||el.scrollTop).map(el=>{
+      const path=[];for(let node=el;node!==root;node=node.parentElement)path.unshift([...node.parentElement.children].indexOf(node));
+      return {path,tag:el.tagName,classes:el.getAttribute('class'),field:el.dataset.field,left:el.scrollLeft,top:el.scrollTop};
+    });
     const focused=root.contains(document.activeElement)?document.activeElement:null;
     const choiceSource=focused?.closest('.notes-picker')?.querySelector('select');
     const descriptor=choiceSource?.dataset.field?['field',choiceSource.dataset.field]:focused?.dataset.field?['field',focused.dataset.field]:focused?.dataset.labAct?['labAct',focused.dataset.labAct,focused.dataset.value]:null;
@@ -42,15 +47,16 @@
     window.NOTE_CHOICES?.enhance(root);
     if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){if(target.tagName==='SELECT'&&window.NOTE_CHOICES)window.NOTE_CHOICES.focus(target);else target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
     registry[root.dataset.lab].afterRender?.(s,root);
+    for(const saved of scrolls){const el=saved.path.reduce((node,i)=>node?.children[i],root);if(el&&el.tagName===saved.tag&&el.getAttribute('class')===saved.classes&&el.dataset.field===saved.field){el.scrollLeft=saved.left;el.scrollTop=saved.top;}}
   }
   function mount(card){
     card.querySelectorAll('[data-lab]').forEach(root=>{
       if(states.has(root))return;
       const controller=new AbortController();
       const listen=(event,handler)=>root.addEventListener(event,handler,{signal:controller.signal});
-      let timer=null;
+      let timer=null,paintTimer=null;
       const cancelGesture=()=>{
-        const g=gesture;gesture=null;pointerTarget=null;dirty=false;
+        const g=gesture;gesture=null;pointerTarget=null;pressedId=null;dirty=false;
         if(!g)return;
         clearTimeout(g.timer);
         if(g.el.hasPointerCapture?.(g.pointerId))g.el.releasePointerCapture(g.pointerId);
@@ -58,15 +64,16 @@
         root.querySelectorAll('.lab-box-preview,[data-live-ink]').forEach(el=>el.remove());
         root.querySelectorAll('.lab-drop-hover,.lab-dragging').forEach(el=>el.classList.remove('lab-drop-hover','lab-dragging'));
       };
-      lifecycles.set(root,{cancelGesture,dispose:()=>{cancelGesture();clearInterval(timer);controller.abort();states.delete(root);lifecycles.delete(root);}});
+      lifecycles.set(root,{cancelGesture,dispose:()=>{cancelGesture();clearInterval(timer);clearTimeout(paintTimer);controller.abort();states.delete(root);lifecycles.delete(root);}});
       states.set(root,fresh(root.dataset.lab));render(root);
       const model=registry[root.dataset.lab];
       listen('focusin',e=>{const field=e.target.closest('[data-field]')||e.target.closest('.notes-picker')?.querySelector('[data-field]');if(field)model.focus?.(states.get(root),field.dataset.field);});
-      if(model.tick){timer=setInterval(()=>{if(!root.isConnected){lifecycles.get(root)?.dispose();return;}if(model.tick(states.get(root))&&!pointerTarget&&!root.closest('[hidden]')&&!root.querySelector('.notes-picker.is-open'))render(root);},model.tickInterval||200);}
+      const paintPending=()=>{if(dirty&&!pointerTarget&&!gesture&&!root.closest('[hidden]')&&!root.querySelector('.notes-picker.is-open')){dirty=false;render(root);}};
+      if(model.tick){timer=setInterval(()=>{if(!root.isConnected){lifecycles.get(root)?.dispose();return;}dirty=!!model.tick(states.get(root))||dirty;paintPending();},model.tickInterval||200);}
       listen('pointerover',e=>{if(model.hover?.(states.get(root),e,root))render(root);});
       listen('dblclick',e=>{if(e.target.closest('.lab-page-header')&&root.dataset.lab==='y2020q41'){states.get(root).editing=true;render(root);}});
       listen('keydown',e=>{const s=states.get(root);if(root.dataset.lab==='y2025q10'&&s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;render(root);}});
-      let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
+      let suppressUntil=0, gesture=null, pointerTarget=null, pressedId=null, dirty=false;
       const act=(a,v)=>{
         const model=registry[root.dataset.lab],s=states.get(root);
         root.querySelectorAll('input[data-field],textarea[data-field]').forEach(x=>{
@@ -94,6 +101,7 @@
       listen('pointerdown',e=>{
         if(gesture||e.isPrimary===false)return;
         pointerTarget=e.target.closest('button,input,select,textarea');
+        pressedId=e.pointerId;
         if(e.target.closest('.notes-picker'))return;
         // A fresh press on another command is intentional, not the drag's ghost click.
         if(pointerTarget?.dataset.labAct&&!pointerTarget.dataset.labDrag)suppressUntil=0;
@@ -118,7 +126,13 @@
         if(g.kind==='fill')root.querySelectorAll('[data-fill-index]').forEach(x=>{const r=x.getBoundingClientRect();if(e.clientY>=r.top&&e.clientY<=r.bottom){g.end=Number(x.dataset.fillIndex);x.classList.add('lab-selected');}});
       });
       const finish=(e,cancel=false)=>{
-        if(!gesture||e.pointerId!==gesture.pointerId)return;const g=gesture;clearTimeout(g.timer);gesture=null;pointerTarget=null;if(g.el.hasPointerCapture?.(g.pointerId))g.el.releasePointerCapture(g.pointerId);if(!g.moved)return;suppressUntil=Date.now()+400;const s=states.get(root);
+        if(!gesture){
+          if(e.pointerId!==pressedId)return;
+          pointerTarget=null;pressedId=null;
+          // Let the following click consume its original DOM target before repainting.
+          clearTimeout(paintTimer);paintTimer=setTimeout(()=>{if(states.has(root))paintPending();},0);return;
+        }
+        if(e.pointerId!==gesture.pointerId)return;const g=gesture;clearTimeout(g.timer);gesture=null;pointerTarget=null;pressedId=null;if(g.el.hasPointerCapture?.(g.pointerId))g.el.releasePointerCapture(g.pointerId);if(!g.moved){paintTimer=setTimeout(paintPending,0);return;}suppressUntil=Date.now()+400;dirty=false;const s=states.get(root);
         if(!cancel){
           if(g.kind==='ruler'&&g.value!==undefined){if(g.key==='both'){const d=number(g.value-s.rest,-Math.min(s.rest,s.first),Math.min(60,s.right-8)-Math.max(s.rest,s.first));s.rest+=d;s.first+=d;}else s[g.key]=g.value;}
           if(g.kind==='field'){const zone=[...root.querySelectorAll('[data-lab-drop]')].find(z=>{const r=z.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;});if(zone)model.dropField?.(s,g.key,zone.dataset.labDrop);else s.message='没有落入区域，字段保持原位置。';}
@@ -127,7 +141,10 @@
           registry[root.dataset.lab].gesture?.(s,{...g,endX:e.clientX,endY:e.clientY,ctrlKey:e.ctrlKey,shiftKey:e.shiftKey,altKey:e.altKey},root);
         }render(root);
       };
-      listen('pointerup',e=>finish(e));listen('pointercancel',e=>finish(e,true));listen('lostpointercapture',e=>finish(e,true));
+      // A finger can be released outside a plain input/button without pointer capture.
+      document.addEventListener('pointerup',e=>finish(e),{signal:controller.signal});
+      document.addEventListener('pointercancel',e=>finish(e,true),{signal:controller.signal});
+      listen('lostpointercapture',e=>finish(e,true));
     });
   }
   const eachRoot=(card,callback)=>card.querySelectorAll('[data-lab]').forEach(root=>callback(lifecycles.get(root)));
