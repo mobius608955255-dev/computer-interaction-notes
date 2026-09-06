@@ -1,0 +1,227 @@
+{
+  "schema": 1,
+  "shared": [
+    "src/labs/shared/math.js"
+  ],
+  "chapters": {
+    "1": {
+      "files": [
+        "src/labs/chapter1/foundations.js"
+      ],
+      "models": 6,
+      "ids": [
+        "y2022q4",
+        "y2026q41",
+        "y2025q2",
+        "y2026q3",
+        "merged-3",
+        "merged-1"
+      ]
+    },
+    "2": {
+      "files": [
+        "src/labs/chapter2/windows.js"
+      ],
+      "models": 11,
+      "ids": [
+        "y2022q34",
+        "y2022q44",
+        "y2022q75",
+        "y2026q34",
+        "y2025q26",
+        "y2025q32",
+        "y2026q26",
+        "y2020q24",
+        "y2020q3",
+        "y2025q33",
+        "y2020q2"
+      ]
+    },
+    "3": {
+      "files": [
+        "src/labs/chapter3/word.js"
+      ],
+      "models": 30,
+      "ids": [
+        "y2022q10",
+        "y2022q54",
+        "y2022q55",
+        "y2022q69",
+        "y2022q70",
+        "y2022q71",
+        "y2025q36",
+        "y2023q56",
+        "y2023q55",
+        "y2023q52",
+        "y2021q56",
+        "y2022q24",
+        "y2026q47",
+        "y2024q54",
+        "y2023q7",
+        "y2020q41",
+        "y2020q43",
+        "y2025q48",
+        "y2026q36",
+        "merged-8",
+        "y2025q47",
+        "y2024q8",
+        "merged-5",
+        "merged-7",
+        "y2020q63",
+        "y2024q7",
+        "merged-6",
+        "y2020q61",
+        "y2025q56",
+        "merged-9"
+      ]
+    },
+    "4": {
+      "files": [
+        "src/labs/chapter4/excel.js"
+      ],
+      "models": 39,
+      "ids": [
+        "y2022q58",
+        "y2022q59",
+        "y2022q61",
+        "y2022q66",
+        "y2024q67",
+        "y2020q57",
+        "y2020q52",
+        "y2024q57",
+        "y2021q9",
+        "y2021q25",
+        "y2021q47",
+        "y2021q49",
+        "y2021q50",
+        "y2021q51",
+        "y2021q52",
+        "y2021q58",
+        "y2026q50",
+        "merged-10",
+        "y2020q59",
+        "y2020q9",
+        "y2026q51",
+        "y2025q52",
+        "y2025q50",
+        "y2025q51",
+        "y2026q52",
+        "y2020q49",
+        "y2020q58",
+        "y2026q49",
+        "y2023q11",
+        "y2024q58",
+        "y2023q10",
+        "y2024q68",
+        "y2024q59",
+        "y2023q60",
+        "y2020q56",
+        "y2020q7",
+        "y2020q48",
+        "y2024q10",
+        "y2023q57",
+        "y2020q47"
+      ]
+    },
+    "5": {
+      "files": [
+        "src/labs/chapter5/presentation.js"
+      ],
+      "models": 15,
+      "ids": [
+        "y2022q72",
+        "y2021q10",
+        "y2023q35",
+        "y2026q54",
+        "y2025q10",
+        "y2025q53",
+        "y2020q12",
+        "y2020q11",
+        "y2020q53",
+        "y2026q55",
+        "y2024q65",
+        "y2023q13",
+        "merged-11",
+        "y2020q54",
+        "merged-12"
+      ]
+    },
+    "6": {
+      "files": [
+        "src/labs/chapter6/network.js"
+      ],
+      "models": 12,
+      "ids": [
+        "y2022q15",
+        "y2022q16",
+        "y2023q16",
+        "y2023q17",
+        "y2021q15",
+        "y2021q28",
+        "y2021q37",
+        "y2026q28",
+        "y2026q38",
+        "y2020q26",
+        "y2026q14",
+        "y2023q47"
+      ]
+    },
+    "7": {
+      "files": [
+        "src/labs/chapter7/media.js"
+      ],
+      "models": 3,
+      "ids": [
+        "y2023q19",
+        "y2024q32",
+        "merged-14"
+      ]
+    },
+    "8": {
+      "files": [
+        "src/labs/chapter8/security.js"
+      ],
+      "models": 4,
+      "ids": [
+        "y2022q39",
+        "y2021q18",
+        "merged-16",
+        "merged-15"
+      ]
+    },
+    "9": {
+      "files": [],
+      "models": 0,
+      "ids": []
+    },
+    "10": {
+      "files": [
+        "src/labs/chapter10/database.js"
+      ],
+      "models": 5,
+      "ids": [
+        "y2023q14",
+        "y2020q14",
+        "merged-21",
+        "merged-20",
+        "y2024q36"
+      ]
+    },
+    "11": {
+      "files": [
+        "src/labs/chapter11/algorithms.js"
+      ],
+      "models": 8,
+      "ids": [
+        "y2022q33",
+        "y2022q43",
+        "y2021q3",
+        "y2021q33",
+        "y2026q6",
+        "y2026q42",
+        "y2023q69",
+        "y2024q69"
+      ]
+    }
+  }
+}

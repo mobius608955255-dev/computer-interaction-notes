@@ -1,17 +1,86 @@
-/* PowerPoint models use independent source slides, selection and playback state. */
+// Generated from src/labs; edit the corresponding chapter source.
+/* Shared lab calculations. Runtime must load first. */
 (() => {
-  'use strict';
-  const {register,registry,ui}=window.NOTE_LABS;
-  const {btn,field,select,table,coach,output,office,dialog,esc}=ui;
-  const clone=x=>structuredClone(x);
-  const controls=x=>`<div class="lab-controls">${x}</div>`;
-  const check=(k,label,v)=>`<label><input type="checkbox" data-field="${k}" ${v?'checked':''}>${label}</label>`;
-  const themes={pink:{name:'樱粉',bg:'#fff1f6',ink:'#824566',accent:'#b66494',font:'sans-serif'},violet:{name:'紫藤',bg:'#f0eafb',ink:'#583f82',accent:'#8161b0',font:'serif'},blue:{name:'晴空',bg:'#ecf5ff',ink:'#365a80',accent:'#5083af',font:'sans-serif'}};
-  const newSlides=()=>['课程导览','数据与信息','备用案例','本章总结'].map((title,i)=>({id:i+1,title,body:['认识概念，理解操作。','同一数据可以在不同情境表达信息。','需要时再展示的补充内容。','先确定操作对象，再核对作用范围。'][i],hidden:false,object:true,theme:'pink'}));
-  const canvas=(slide,body='',extra='')=>`<div class="core-slide" ${extra}><h4>${esc(slide?.title||'没有幻灯片')}</h4>${body}</div>`;
-  const thumbs=(slides,selected,act='page')=>`<div class="core-thumbnails" aria-label="幻灯片缩略图">${slides.map((x,i)=>btn(`<span class="${x.hidden?'core-hidden-number':''}">${i+1}</span> ${esc(x.title)}${x.hidden?'<small>隐藏</small>':''}`,act,x.id,`aria-pressed="${Array.isArray(selected)?selected.includes(x.id):selected===x.id}"`)).join('')}</div>`;
+'use strict';
+const {esc}=window.NOTE_LABS.ui;
+const daysBetween=(a,b)=>Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000);
+const radixConvert = raw => {
+    if(!/^[01]{1,16}(\.[01]{1,12})?$/.test(raw))return null;
+    const [whole,frac='']=raw.split('.');
+    const left=whole.padStart(Math.ceil(whole.length/4)*4,'0');const right=frac.padEnd(Math.ceil(frac.length/4)*4,'0');
+    const groups=x=>x.match(/.{4}/g)||[];
+    return {binary:[groups(left).join(' '),groups(right).join(' ')].filter(Boolean).join(' . '),hex:parseInt(whole,2).toString(16).toUpperCase()+(frac?'.'+groups(right).map(x=>parseInt(x,2).toString(16).toUpperCase()).join(''):''),decimal:parseInt(whole,2)+[...frac].reduce((sum,v,i)=>sum+Number(v)*2**(-i-1),0)};
+  };
+function clusteredChart(labels,series){
+    const all=series.flatMap(x=>x.values),max=Math.max(1,...all),group=420/labels.length,bw=Math.min(40,group/(series.length+1));
+    return `<svg class="lab-data-chart" viewBox="0 0 480 270" role="img" aria-label="簇状柱形图"><line x1="40" x2="460" y1="220" y2="220" stroke="#687482"/>${labels.map((label,i)=>series.map((x,j)=>{const h=Number(x.values[i])/max*165,xp=40+i*group+15+j*bw;return `<rect x="${xp}" y="${220-h}" width="${bw-5}" height="${h}" fill="${x.color}"/><text x="${xp+(bw-5)/2}" y="${210-h}" text-anchor="middle">${x.values[i]}</text>`;}).join('')+`<text x="${40+i*group+group/2}" y="244" text-anchor="middle">${esc(label)}</text>`).join('')}</svg><div class="lab-chart-legend">${series.map(x=>`<span><i style="background:${x.color}"></i>${esc(x.name)}</span>`).join('')}</div>`;
+  }
+Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
+})();
 
-  register(['y2020q12'],'先选操作对象，再隐藏、删除或放映','任意选择一页或页内对象；删除结果跟随选区，隐藏页会被常规放映跳过。',{
+/* Chapter 5: presentation. Maintained source; edit this domain directly. */
+/* Source provenance: note-labs.js:2. Preserve this closure. */
+(() => {
+'use strict';
+const {register,registry,ui}=window.NOTE_LABS;
+const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
+register(['y2022q72'],'Word大纲如何变成一套幻灯片','改变段落层级，导入后点击缩略图，检查内容属于哪一页。',{levels:[1,2,1,2],slides:[],page:0},s=>{
+    const texts=['年度销售总结','总销量增长15%','下一年度计划','提高服务质量'];
+    return `<div class="lab-outline-source"><b>源文档 · 标题层级</b>${texts.map((t,i)=>select('level'+i,t,s.levels[i],[[1,'标题1'],[2,'标题2'],[0,'正文（本例不导入）']])).join('')}</div>`+office('PowerPoint','开始',btn('新建幻灯片 ▾ → 幻灯片（从大纲）','import'),`<div class="lab-deck"><aside>${s.slides.map((x,i)=>btn(`${i+1}　${esc(x.title)}`,'page',i,`aria-pressed="${s.page===i}"`)).join('')||'尚未导入'}</aside><div class="lab-slide">${s.slides[s.page]?`<h3>${esc(s.slides[s.page].title)}</h3><ul>${s.slides[s.page].items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'空白演示文稿'}</div></div>`)+output(s.slides.length?`已生成${s.slides.length}张幻灯片。改变源大纲后可再次导入观察。`:'标题1拆分页面，标题2附属于最近的标题1。');
+  },(s,a,v)=>{if(a==='page')s.page=Number(v);if(a==='import'){s.slides=[];['年度销售总结','总销量增长15%','下一年度计划','提高服务质量'].forEach((t,i)=>{if(s.levels[i]===1)s.slides.push({title:t,items:[]});else if(s.levels[i]===2&&s.slides.length)s.slides.at(-1).items.push(t);});s.page=0;}},(s,k,v)=>{s.levels[Number(k.slice(5))]=Number(v);});
+})();
+
+/* Source provenance: note-labs-2021.js:2. Preserve this closure. */
+(() => {
+'use strict';
+const {register,registry,ui} = window.NOTE_LABS;
+const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money} = ui;
+const area=(name,label,value,extra='')=>`<label>${label}<textarea data-field="${name}" ${extra}>${esc(value)}</textarea></label>`;
+register(['y2021q10'],'在空白幻灯片上真正拖出文本框','先选择文本框工具，在画布内按住拖动，再输入文字。',{tool:false,box:null,text:'',message:'单击空白背景不会自动建立文本对象。'},s=>
+    office('PowerPoint','插入',btn('文本框','tool','',`aria-pressed="${s.tool}"`),`<div class="lab-draw-slide" ${s.tool?'data-lab-drag="box"':''} aria-label="空白幻灯片画布">${s.box?`<div class="lab-drawn-box" style="left:${s.box.x}%;top:${s.box.y}%;width:${s.box.w}%;height:${s.box.h}%">${area('text','文本框内容',s.text,'aria-label="文本框内容"')}</div>`:'<span class="lab-canvas-hint">在这里拖出文本区域</span>'}</div>`)+`<div class="lab-controls">${btn('键盘辅助：创建文本框','create')}${btn('删除文本框','delete','',s.box?'':'disabled')}</div>${output(s.message)}`,
+    (s,a)=>{if(a==='tool'){s.tool=!s.tool;s.message=s.tool?'文本框工具已就绪，请在画布内拖动。':'已退出文本框工具，可以滑动页面或编辑已有文字。';}if(a==='create'){s.box={x:10,y:20,w:75,h:45};s.tool=false;s.message='已创建文本框，可在对象内输入。';}if(a==='delete'){s.box=null;s.text='';s.message='文本对象已删除，幻灯片背景仍保留。';}});
+registry.y2021q10.gesture=(s,g)=>{if(g.kind==='box'&&s.tool&&g.box){const b=g.box,minW=Math.min(100,Math.max(25,120/(g.rect?.width||480)*100)),minH=Math.min(100,Math.max(35,110/(g.rect?.height||300)*100));b.x=Math.min(b.x,100-minW);b.y=Math.min(b.y,100-minH);b.w=Math.max(minW,Math.min(b.w,100-b.x));b.h=Math.max(minH,Math.min(b.h,100-b.y));s.box=b;s.tool=false;s.message='拖动创建了一个文本框；文字属于此对象，不属于背景。';}};
+})();
+
+/* Source provenance: note-labs-audit.js:2. Preserve this closure. */
+(() => {
+'use strict';
+const {register,registry,ui,clusteredChart,daysBetween}=window.NOTE_LABS;
+const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
+const controls=x=>`<div class="lab-controls">${x}</div>`;
+register(['y2023q35'],'跨页音频与留在本页的视频分别播放','分别启动音频、视频，再切到另一页查看各自状态。',{cross:true,loop:false,rewind:false,page:1,audio:{playing:false,time:0},video:{playing:false,time:0}},s=>
+ office('PowerPoint','音频工具 · 播放',select('cross','跨幻灯片播放',String(s.cross),[['true','启用'],['false','关闭']])+select('loop','循环播放直到停止',String(s.loop),[['false','关闭'],['true','启用']])+select('rewind','播完返回开头',String(s.rewind),[['false','关闭'],['true','启用']]),`<div class="lab-slide"><h3>第${s.page}页</h3>${s.page===1?`<div class="lab-video-frame">视频：${s.video.playing?'播放':'停止'} ${s.video.time}/20秒</div>`:'<p>此页没有视频对象。</p>'}<p>音频：${s.audio.playing?'播放':'停止'} ${s.audio.time}/20秒</p></div>`)+controls(btn('播放音频','audio')+btn('播放视频','video','',s.page===1?'':'disabled')+btn('推进5秒（学习控制）','tick')+btn('下一页','next')+btn('返回第1页','first'))+output('音频的跨页、循环、返回开头是三个独立设置；换页后的视频不会自动继续或在返回时自动重播。'),
+ (s,a)=>{if(a==='audio'){s.audio.playing=true;if(s.audio.time===20)s.audio.time=0;}if(a==='video'&&s.page===1){s.video.playing=true;if(s.video.time===20)s.video.time=0;}if(a==='tick'){for(const k of ['audio','video']){const m=s[k];if(!m.playing)continue;m.time+=5;if(m.time>=20){if(k==='audio'&&s.loop)m.time=0;else{m.playing=false;m.time=k==='audio'&&s.rewind?0:20;}}}}if(a==='next'||a==='first'){s.page=a==='first'?1:s.page%3+1;s.video.playing=false;s.video.time=0;if(!s.cross){s.audio.playing=false;s.audio.time=0;}}},(s,k,v)=>{s[k]=v==='true';});
+register(['y2026q54'],'从正确入口处理溢出的占位符文字','比较缩小文字、扩大形状与拆分幻灯片；留意哪些操作改变边界。',{menu:false,format:false,mode:'none',page:1},s=>
+ office('PowerPoint','开始',btn('右击占位符 → 设置形状格式…','format'),
+  `<div class="lab-slide"><div class="lab-placeholder ${s.mode==='shape'?'grow':''}" style="font-size:${s.mode==='shrink'?'16':'24'}px">${s.mode==='split'?(s.page===1?'<p>研究背景</p>':'<p>数据来源与分析过程</p><p>结果讨论与后续计划</p>'):'<p>研究背景</p><p>数据来源与分析过程</p><p>结果讨论与后续计划</p>'}${btn('↕','menu','','class="lab-autofit" aria-label="自动调整选项"')}</div>${s.menu?`<div class="lab-context-menu" role="group" aria-label="占位符自动调整选项">${btn('根据占位符自动调整文本','shrink')}${btn('停止根据占位符调整文本','none')}${btn('拆分为两张幻灯片','split')}</div>`:''}</div>`+
+  (s.format?dialog('设置形状格式 → 文本选项 → 文本框','<p>调整形状大小以适应文字会扩大占位符，不能满足原题“不改变占位符大小”的要求。</p>',btn('调整形状大小以适应文字','shape')+btn('关闭','formatClose')):''))+
+ controls(s.mode==='split'?btn('第1页','page','1')+btn('第2页','page','2'):'')+output(s.mode==='split'?'溢出内容移到新的第2页，可分别查看。':s.mode==='shrink'?'占位符边界不变，文字字号缩小。':s.mode==='shape'?'文字字号保留，占位符高度增加。':'文字可能超出占位符。点左下角自动调整入口选择处理方式。'),
+ (s,a,v)=>{if(a==='menu'){s.menu=!s.menu;s.format=false;}else if(a==='format'){s.format=true;s.menu=false;}else if(a==='formatClose')s.format=false;else if(a==='page')s.page=Number(v);else if(['shrink','none','shape','split'].includes(a)){s.mode=a;s.menu=s.format=false;s.page=1;}});
+register(['y2025q10'],'组织节，再放映并用画笔标注','编辑节会改变缩略图分组；放映时可黑屏和真正按住画笔拖动。',{sections:[{name:'第一部分',slides:[0,1],closed:false},{name:'第二部分',slides:[2],closed:false}],selected:0,selection:'page',tab:'home',transitions:['none','none','none'],transition:'none',page:0,name:'第一部分',show:false,black:false,pen:false,color:'#cb443c',strokes:[]},s=>
+ controls((s.show?'':select('tab','功能区位置',s.tab,[['home','开始'],['transition','切换']]))+select('color','画笔颜色',s.color,[['#cb443c','红色'],['#2563a0','蓝色']]))+office('PowerPoint',s.show?'幻灯片放映':s.tab==='transition'?'切换':'开始',s.show?'':(s.tab==='home'?btn('节 → 重命名节','rename')+btn('节 → 添加节','new'):select('transition','切换效果',s.transition,[['none','无'],['fade','淡化'],['push','推进']])+btn('全部应用','transitionAll'))+btn('开始放映','show'),`<div class="lab-deck"><aside>${s.sections.map((g,i)=>`<section>${btn(g.closed?'▸':'▾','collapseSection',i,`aria-label="${g.closed?'展开':'折叠'}${esc(g.name)}" aria-expanded="${!g.closed}"`)}${btn(esc(g.name),'section',i,`aria-pressed="${s.selection==='section'&&s.selected===i}"`)}${g.closed?'':g.slides.map(n=>btn(`幻灯片${n+1} · ${{none:'无',fade:'淡化',push:'推进'}[s.transitions[n]]}`,'page',n,`aria-pressed="${s.selection==='section'?s.selected===i:s.page===n}"`)).join('')}</section>`).join('')}</aside><div class="lab-slide lab-ink-slide" ${s.show&&s.pen&&!s.black?'data-lab-drag="ink"':''} style="background:${s.show&&s.black?'#111':'#fff'}">${s.show&&s.black?'':`<h3>幻灯片${s.page+1}</h3><p>${['问题背景','研究方法','结果总结'][s.page]}</p>`}<svg class="lab-ink-layer" viewBox="0 0 100 100" preserveAspectRatio="none">${(s.show&&s.black?[]:s.strokes.filter(x=>x.page===s.page)).map(x=>`<polyline points="${x.points.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${x.color}" stroke-width=".7"/>`).join('')}</svg></div></div>${s.renaming?dialog('重命名节',field('name','节名称',s.name),btn('重命名','apply')+btn('取消','cancel')):''}`)+controls(s.show?btn('B · 黑屏/恢复','black')+btn(s.pen?'关闭画笔':'启用画笔','pen')+btn('下一页','next')+btn('结束放映','end'):'')+output('节标题选择该节全部页，旁边三角只负责折叠。在切换选项卡选择效果即应用于选区：选单页改该页，选节改整节；全部应用改整份演示稿。画笔在放映且启用时留下笔迹。'),
+ (s,a,v)=>{if(s.renaming&&!['apply','cancel'].includes(a))return;if(a==='section'){s.selected=Number(v);s.selection='section';s.page=s.sections[s.selected].slides[0];s.transition=s.transitions[s.page];}if(a==='collapseSection')s.sections[Number(v)].closed=!s.sections[Number(v)].closed;if(a==='transitionAll')s.transitions=s.transitions.map(()=>s.transition);if(a==='page'){s.selection='page';s.page=Number(v);s.transition=s.transitions[s.page];s.selected=s.sections.findIndex(g=>g.slides.includes(s.page));}if(a==='rename'){s.renameTarget=s.selected;s.name=s.sections[s.renameTarget].name;s.renaming=true;}if(a==='apply'&&s.renaming){s.sections[s.renameTarget].name=s.name||'未命名节';s.renaming=false;}if(a==='cancel')s.renaming=false;if(a==='new'){const idx=s.sections.findIndex(g=>g.slides.includes(s.page)),g=s.sections[idx],at=g.slides.indexOf(s.page);const tail=g.slides.splice(at);s.sections.splice(idx+1,0,{name:'新节',slides:tail,closed:false});s.sections=s.sections.filter(g=>g.slides.length);s.selected=s.sections.findIndex(g=>g.slides.includes(s.page));}if(a==='show')s.show=true;if(a==='black')s.black=!s.black;if(a==='pen')s.pen=!s.pen;if(a==='next')s.page=(s.page+1)%3;if(a==='end'){s.show=false;s.black=false;s.pen=false;s.selection='page';s.selected=s.sections.findIndex(g=>g.slides.includes(s.page));s.transition=s.transitions[s.page];}},(s,k,v)=>{if(s.renaming&&k!=='name')return;s[k]=v;if(k==='transition'){const pages=s.selection==='section'?s.sections[s.selected].slides:[s.page];pages.forEach(n=>s.transitions[n]=v);}});
+registry.y2025q10.gesture=(s,g)=>{if(g.kind==='ink'&&s.show&&s.pen&&!s.black&&g.points)s.strokes.push({page:s.page,color:s.color,points:g.points});};
+registry.y2025q10.afterRender=(s,root)=>{if(!s.renaming)return;root.querySelectorAll('button,input,select,textarea').forEach(el=>{if(!el.closest('.lab-dialog'))el.disabled=true;});};
+registry.y2025q10.keydown=(s,e)=>{if(s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;return true;}};
+register(['y2025q53'],'选择SmartArt节点，再改变结构或外观','单击节点边框选择；按住Ctrl可多选。切换对应工具选项卡操作。',{tab:'design',selected:[1],nodes:[{id:1,text:'公共基础',level:0,shape:'rect',link:false},{id:2,text:'专业基础',level:0,shape:'rect',link:false},{id:3,text:'实践课程',level:0,shape:'rect',link:false}],next:4,linkedView:false},s=>
+ controls(btn('SmartArt工具：设计','tab','design')+btn('SmartArt工具：格式','tab','format')+btn('插入','tab','insert'))+office('PowerPoint',s.tab==='design'?'SmartArt工具 · 设计':s.tab==='format'?'SmartArt工具 · 格式':'插入',s.tab==='design'?btn('添加形状 → 在后面添加','add')+btn('降级','demote')+btn('升级','promote'):s.tab==='format'?btn('更改形状 → 圆角矩形','round'):btn('超链接 → 课程体系.docx','link'),`<div class="lab-smartart"><h4>课程体系</h4>${s.nodes.map(n=>btn(esc(n.text)+(n.link?' ↗':''),'select',n.id,`class="lab-smart-node" style="margin-left:${n.level*22}px;border-radius:${n.shape==='round'?'18':'2'}px" aria-pressed="${s.selected.includes(n.id)}"`)).join('')}</div>${s.linkedView?dialog('课程体系.docx · 模拟打开','<p>课程体系说明文档的独立内容。</p>',btn('返回演示文稿','back')):''}`)+controls(btn('放映中打开所选节点的链接','follow'))+output(s.message||'节点边框的选择范围决定命令作用对象；更改形状在“格式”，添加和升降级在“设计”。'),
+ (s,a,v)=>{if(a==='tab')s.tab=v;if(a==='select'){const id=Number(v);s.selected=s._ctrl?[...new Set([...s.selected,id])]:[id];}const chosen=s.nodes.filter(n=>s.selected.includes(n.id));if(a==='round')chosen.forEach(n=>n.shape='round');if(a==='demote')chosen.forEach(n=>n.level=Math.min(2,n.level+1));if(a==='promote')chosen.forEach(n=>n.level=Math.max(0,n.level-1));if(a==='add'&&chosen.length){const n=chosen[chosen.length-1],i=s.nodes.indexOf(n),id=s.next++;s.nodes.splice(i+1,0,{id,text:'新节点',level:n.level,shape:'rect',link:false});s.selected=[id];}if(a==='link')chosen.forEach(n=>n.link=true);if(a==='follow'){s.linkedView=chosen.some(n=>n.link);if(!s.linkedView)s.message='所选节点还没有链接。';}if(a==='back')s.linkedView=false;});
+})();
+
+/* Source provenance: note-labs-presentation.js:2. Preserve this closure. */
+(() => {
+'use strict';
+const {register,registry,ui}=window.NOTE_LABS;
+const {btn,field,select,table,coach,output,office,dialog,esc}=ui;
+const clone=x=>structuredClone(x);
+const controls=x=>`<div class="lab-controls">${x}</div>`;
+const check=(k,label,v)=>`<label><input type="checkbox" data-field="${k}" ${v?'checked':''}>${label}</label>`;
+const themes={pink:{name:'樱粉',bg:'#fff1f6',ink:'#824566',accent:'#b66494',font:'sans-serif'},violet:{name:'紫藤',bg:'#f0eafb',ink:'#583f82',accent:'#8161b0',font:'serif'},blue:{name:'晴空',bg:'#ecf5ff',ink:'#365a80',accent:'#5083af',font:'sans-serif'}};
+const newSlides=()=>['课程导览','数据与信息','备用案例','本章总结'].map((title,i)=>({id:i+1,title,body:['认识概念，理解操作。','同一数据可以在不同情境表达信息。','需要时再展示的补充内容。','先确定操作对象，再核对作用范围。'][i],hidden:false,object:true,theme:'pink'}));
+const canvas=(slide,body='',extra='')=>`<div class="core-slide" ${extra}><h4>${esc(slide?.title||'没有幻灯片')}</h4>${body}</div>`;
+const thumbs=(slides,selected,act='page')=>`<div class="core-thumbnails" aria-label="幻灯片缩略图">${slides.map((x,i)=>btn(`<span class="${x.hidden?'core-hidden-number':''}">${i+1}</span> ${esc(x.title)}${x.hidden?'<small>隐藏</small>':''}`,act,x.id,`aria-pressed="${Array.isArray(selected)?selected.includes(x.id):selected===x.id}"`)).join('')}</div>`;
+register(['y2020q12'],'先选操作对象，再隐藏、删除或放映','任意选择一页或页内对象；删除结果跟随选区，隐藏页会被常规放映跳过。',{
     slides:newSlides(),selected:1,target:'slide',show:false,playing:null,undo:[],message:'当前选中第1页缩略图。选中页内对象后，Delete只删除对象。'
   },s=>{
     const active=s.slides.find(x=>x.id===(s.show?s.playing:s.selected));
@@ -39,10 +108,9 @@
     if(a==='next'){const at=s.slides.findIndex(x=>x.id===s.playing),next=s.slides.slice(at+1).find(x=>!x.hidden);if(next){s.playing=next.id;s.message='正在放映：'+next.title;}else{s.show=false;s.message='放映结束，源文稿与隐藏状态保持不变。';}}
     if(a==='end'){s.show=false;s.message='已结束放映。';}
   },(s,k,v)=>{if(k==='body'){const x=s.slides.find(x=>x.id===s.selected);if(x)x.body=v;}if(k==='jump'){s.playing=Number(v);s.message='通过放映导航访问所选页面，不更改它的隐藏状态。';}});
-  registry.y2020q12.keydown=(s,e)=>{if(e.key==='Delete'&&!s.show&&!e.target.closest('input,textarea,select')){e.preventDefault();registry.y2020q12.action(s,'delete');return true;}if(e.key==='Escape'&&s.show){e.preventDefault();registry.y2020q12.action(s,'end');return true;}};
-
-  const masterSlides=[{id:1,title:'课程封面',master:'A',layout:'title'},{id:2,title:'基础概念',master:'A',layout:'content'},{id:3,title:'操作方法',master:'A',layout:'content'},{id:4,title:'拓展阅读',master:'B',layout:'content'},{id:5,title:'复习封面',master:'B',layout:'title'}];
-  register(['y2020q11'],'改母版或版式，观察哪些页面继承','选择母版树的不同节点修改固定文字；五页预览始终同时显示各自归属。',{
+registry.y2020q12.keydown=(s,e)=>{if(e.key==='Delete'&&!s.show&&!e.target.closest('input,textarea,select')){e.preventDefault();registry.y2020q12.action(s,'delete');return true;}if(e.key==='Escape'&&s.show){e.preventDefault();registry.y2020q12.action(s,'end');return true;}};
+const masterSlides=[{id:1,title:'课程封面',master:'A',layout:'title'},{id:2,title:'基础概念',master:'A',layout:'content'},{id:3,title:'操作方法',master:'A',layout:'content'},{id:4,title:'拓展阅读',master:'B',layout:'content'},{id:5,title:'复习封面',master:'B',layout:'title'}];
+register(['y2020q11'],'改母版或版式，观察哪些页面继承','选择母版树的不同节点修改固定文字；五页预览始终同时显示各自归属。',{
     mode:'normal',node:'A',page:2,master:{A:'计算机笔记',B:'拓展资料'},layout:{'A/title':'复习导览','A/content':'学习要点','B/title':'附录','B/content':'延伸阅读'},colors:{A:'#b66494',B:'#6285b4'},hide:{},message:'第1—3页属于母版A，第4—5页属于母版B。'
   },s=>{
     const selected=masterSlides.find(x=>x.id===s.page),parts=s.node.split('/'),text=parts.length===1?s.master[s.node]:s.layout[s.node];
@@ -53,8 +121,7 @@
       output(s.message)+coach('本卡片修改的是母版或版式上的普通固定文本，不是占位符结构。隐藏背景图形后，本页自己创建的对象仍保留。改占位符布局后，已有页面可能还需重新应用版式。');
   },(s,a,v)=>{if(a==='view')s.mode=s.mode==='normal'?'master':'normal';if(a==='node'){s.node=v;s.message=v.includes('/')?'正在修改指定版式，只影响使用该版式的页面。':'正在修改母版'+v+'，另一组母版的页面不会跟着改变。';}if(a==='page')s.page=Number(v);},
   (s,k,v)=>{if(k==='masterText'){if(s.node.includes('/'))s.layout[s.node]=v;else s.master[s.node]=v;s.message='固定文字已改变，下面各页按其母版与版式归属继承。';}if(k==='color'){s.colors[s.node.split('/')[0]]=v;s.message='已修改该母版标识的颜色。';}if(k==='hide'){s.hide[s.page]=v;s.message=`第${s.page}页${v?'隐藏':'显示'}继承的背景图形，本页自己的内容保留。`;}});
-
-  register(['y2020q53'],'自己多选页面，再限定主题应用范围','按 Ctrl 多选或启用触屏辅助；主题可右击或长按，打开“应用于选定幻灯片”。',{
+register(['y2020q53'],'自己多选页面，再限定主题应用范围','按 Ctrl 多选或启用触屏辅助；主题可右击或长按，打开“应用于选定幻灯片”。',{
     slides:newSlides(),selected:[1],active:1,assist:false,theme:'violet',menu:false,background:null,message:'先任意选择目标页面；主题左键单击与菜单的选定范围要分清。'
   },s=>{
     const slide=s.slides.find(x=>x.id===s.active),t=themes[slide.theme];
@@ -69,10 +136,9 @@
     if(a==='allTheme'||a==='selectedTheme'){const theme=a==='allTheme'?v:s.theme;s.slides.filter(x=>a==='allTheme'||s.selected.includes(x.id)).forEach(x=>{x.theme=theme;delete x.background;});s.menu=false;s.message=`已将“${themes[theme].name}”应用于${a==='allTheme'?'全部页面':'第'+s.selected.join('、')+'页'}。`;}
     if(a==='background'){s.slides.find(x=>x.id===s.active).background='#fffbe9';s.message='只改当前页背景色，主题字体及强调色保持原值。';}
   });
-  registry.y2020q53.afterRender=(s,root)=>root.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('pointerdown',()=>{s.theme=b.dataset.theme;}));
-
-  const showTitles=['开场','数据','结论'];
-  register(['y2026q55'],'编辑放映清单，再按它真正播放','从源页添加、移除或调整顺序；取消不会覆盖已保存的方案。',{
+registry.y2020q53.afterRender=(s,root)=>root.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('pointerdown',()=>{s.theme=b.dataset.theme;}));
+const showTitles=['开场','数据','结论'];
+register(['y2026q55'],'编辑放映清单，再按它真正播放','从源页添加、移除或调整顺序；取消不会覆盖已保存的方案。',{
     pane:'none',saved:[0,1,2],draft:[],source:0,selected:0,page:0,show:false,playing:0,message:'源文稿始终保留3张幻灯片。'
   },s=>{
     const id=s.show?s.saved[s.playing]:s.page;
@@ -95,10 +161,10 @@
     if(a==='previous')s.playing=Math.max(0,s.playing-1);
     if(a==='next'){if(s.playing<s.saved.length-1)s.playing++;else{s.show=false;s.message='自定义放映结束，源幻灯片仍全部保留。';}}
   });
-  const baseDate=new Date(2026,8,5);
-  const dateLabel=day=>{const d=new Date(baseDate);d.setDate(d.getDate()+day);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;};
-  const footerDefaults={footer:false,number:false,date:false,hideTitle:false,kind:'fixed',text:'课程笔记',fixed:'2026/9/5'};
-  register(['y2024q65'],'标题版式不一定在第1页，编号也不会重排','把任意一页切成标题版式；应用页脚后观察标题页隐藏规则和固定日期。',{
+const baseDate=new Date(2026,8,5);
+const dateLabel=day=>{const d=new Date(baseDate);d.setDate(d.getDate()+day);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;};
+const footerDefaults={footer:false,number:false,date:false,hideTitle:false,kind:'fixed',text:'课程笔记',fixed:'2026/9/5'};
+register(['y2024q65'],'标题版式不一定在第1页，编号也不会重排','把任意一页切成标题版式；应用页脚后观察标题页隐藏规则和固定日期。',{
     pane:false,page:0,day:0,layouts:['content','title','content'],applied:[null,null,null],draft:footerDefaults,message:'第2页使用标题版式，第1页使用内容版式。'
   },s=>{
     const a=s.applied[s.page],hidden=a?.hideTitle&&s.layouts[s.page]==='title';
@@ -106,8 +172,7 @@
       (s.pane?dialog('页眉和页脚',check('date','日期和时间',s.draft.date)+select('kind','日期方式',s.draft.kind,[['fixed','固定'],['auto','自动更新']])+(s.draft.kind==='fixed'?field('fixed','固定日期文字',s.draft.fixed):'')+check('number','幻灯片编号',s.draft.number)+check('footer','页脚',s.draft.footer)+field('text','页脚文字',s.draft.text)+check('hideTitle','标题幻灯片中不显示',s.draft.hideTitle),btn('应用','apply')+btn('全部应用','all')+btn('取消','cancel')):''))+
       `<fieldset class="core-controls" ${s.pane?'disabled':''}>`+controls(select('layout','当前页版式（模拟“开始 → 版式”）',s.layouts[s.page],[['content','标题和内容'],['title','标题幻灯片']])+btn('学习时钟：推进一天','day','',s.pane?'disabled':''))+'</fieldset>'+output(s.message)+coach('标题幻灯片由版式决定，可以不在第一页。“标题幻灯片中不显示”隐藏日期、页脚、编号的显示，不会重新排列源页编号。固定日期是保存的文字；自动日期随本例时钟更新。');
   },(s,a,v)=>{if(a==='page'&&!s.pane)s.page=Number(v);if(a==='open'){s.draft=clone(s.applied[s.page]||footerDefaults);s.pane=true;}if(a==='cancel')s.pane=false;if(a==='apply'||a==='all'){s.applied=s.applied.map((old,i)=>a==='all'||i===s.page?clone(s.draft):old);s.pane=false;s.message=a==='all'?'设置已应用到3页，分别按各页版式判断是否显示。':'只更新当前第'+(s.page+1)+'页。';}if(a==='day')s.day++;},(s,k,v)=>{if(s.pane)s.draft[k]=v;else if(k==='layout')s.layouts[s.page]=v;});
-
-  function rehearsalUpdate(s,now){
+function rehearsalUpdate(s,now){
     if(!['rehearse','play'].includes(s.phase)||s.paused)return false;
     const delta=Math.max(0,now-s.last)/1000;s.last=now;s.elapsed+=delta;
     if(s.phase==='play'&&s.useTiming&&s.saved&&s.saved[s.page]!==null&&s.elapsed>=s.saved[s.page]){
@@ -115,7 +180,7 @@
     }
     return true;
   }
-  register(['y2023q13'],'记录、保存，再采用或忽略排练时间','每页停留时间由真实时钟记录；保存后可按计时自动放映，也可改为手动。',{
+register(['y2023q13'],'记录、保存，再采用或忽略排练时间','每页停留时间由真实时钟记录；保存后可按计时自动放映，也可改为手动。',{
     phase:'idle',page:0,elapsed:0,times:[null,null,null],saved:null,paused:false,last:0,useTiming:true,message:'尚未排练。'
   },s=>{
     const total=s.times.slice(0,s.page).reduce((n,x)=>n+x,0)+s.elapsed;
@@ -136,14 +201,15 @@
     if(a==='next'&&s.phase==='play'){if(s.page<2){s.page++;s.elapsed=0;s.last=now;}else{s.phase='idle';s.message='正式放映结束。';}}
     if(a==='stop'){s.phase='idle';s.elapsed=0;s.message='已结束正式放映，保存的计时没有删除。';}
   });
-  registry.y2023q13.tick=s=>rehearsalUpdate(s,Date.now());
-
-  const timingDefaults={effect:'fade',duration:0.6,click:true,auto:false,after:2};
-  function startSlide(s,id,now){s.current=id;s.phase=s.settings[id].effect==='none'?'slide':'transition';s.phaseStart=now;s.clock=0;s.animStart=null;s.show=true;s.message='进入第'+(id+1)+'页，使用目标页的切换设置。';}
-  const animName=id=>id==='title'?'标题':'图形';
-  const animDuration=(s,id)=>id==='title'?s.firstDuration:s.secondDuration;
-  function animEnd(s){const first=animDuration(s,s.order[0]),second=animDuration(s,s.order[1]);return Math.max(first,(s.secondStart==='with'?0:first)+s.delay+second);}
-  function timelineUpdate(s,now){
+registry.y2023q13.tick=s=>rehearsalUpdate(s,Date.now());
+registry.y2023q13.frameKey=s=>`${s.phase}:${s.page}:${s.paused}`;
+registry.y2023q13.patchFrame=(s,root)=>ui.patchRegions(root,registry.y2023q13.render(s),['.core-clock']);
+const timingDefaults={effect:'fade',duration:0.6,click:true,auto:false,after:2};
+function startSlide(s,id,now){s.current=id;s.phase=s.settings[id].effect==='none'?'slide':'transition';s.phaseStart=now;s.clock=0;s.animStart=null;s.show=true;s.message='进入第'+(id+1)+'页，使用目标页的切换设置。';}
+const animName=id=>id==='title'?'标题':'图形';
+const animDuration=(s,id)=>id==='title'?s.firstDuration:s.secondDuration;
+function animEnd(s){const first=animDuration(s,s.order[0]),second=animDuration(s,s.order[1]);return Math.max(first,(s.secondStart==='with'?0:first)+s.delay+second);}
+function timelineUpdate(s,now){
     if(!s.show)return false;
     s.clock=Math.max(0,(now-s.phaseStart)/1000);
     if(s.phase==='transition'&&s.clock>=(s.settings[s.current].effect==='none'?0:s.settings[s.current].duration)){s.phase='slide';s.phaseStart=now;s.clock=0;s.animStart=null;}
@@ -153,7 +219,7 @@
     }
     return true;
   }
-  register(['merged-11'],'真正计时：过渡、对象动画、换片各管一段','选择页面设置进入过渡，再改变第2页两对象的先后关系；放映会按实际时间推进。',{
+register(['merged-11'],'真正计时：过渡、对象动画、换片各管一段','选择页面设置进入过渡，再改变第2页两对象的先后关系；放映会按实际时间推进。',{
     order:['title','shape'],selectedAnim:'shape',actionTrigger:'click',actionTarget:2,editPage:1,settings:[clone(timingDefaults),clone(timingDefaults),clone(timingDefaults)],firstDuration:1,secondStart:'after',secondDuration:1,delay:0.5,show:false,current:0,phase:'slide',phaseStart:0,clock:0,animStart:null,message:'第2页的标题等待单击；图形可与标题同时或在标题之后开始。'
   },s=>{
     const setting=s.settings[s.editPage],page=s.show?s.current:s.editPage;
@@ -186,22 +252,25 @@
     if(numeric[k]){const [min,max]=numeric[k];v=Math.max(min,Math.min(max,Number(v)||min));}
     if(['effect','duration','click','auto','after'].includes(k))s.settings[s.editPage][k]=v;else s[k]=v;
   });
-  registry['merged-11'].hover=(s,e)=>{const target=e.target.closest('[data-lab-act="jump"]');if(!target||target.contains(e.relatedTarget)||e.pointerType==='touch'||s.actionTrigger!=='hover'||!s.show||s.current!==1)return false;registry['merged-11'].action(s,'hoverJump');return true;};
-  registry['merged-11'].tick=s=>timelineUpdate(s,Date.now());
-  registry['merged-11'].tickInterval=50;
-  registry['merged-11'].keydown=(s,e)=>{if(s.show&&(e.key==='Escape'||!e.target.closest('button,input,textarea,select'))&&[' ','ArrowRight','Enter','Escape'].includes(e.key)){e.preventDefault();registry['merged-11'].action(s,e.key==='Escape'?'stop':'screen');return true;}};
+registry['merged-11'].hover=(s,e)=>{const target=e.target.closest('[data-lab-act="jump"]');if(!target||target.contains(e.relatedTarget)||e.pointerType==='touch'||s.actionTrigger!=='hover'||!s.show||s.current!==1)return false;registry['merged-11'].action(s,'hoverJump');return true;};
+registry['merged-11'].tick=s=>timelineUpdate(s,Date.now());
+registry['merged-11'].tickInterval=50;
+registry['merged-11'].frameKey=s=>`${s.show}:${s.current}`;
+registry['merged-11'].patchFrame=(s,root)=>ui.patchRegions(root,registry['merged-11'].render(s),['.core-stage-window','.core-clock']);
+registry['merged-11'].keydown=(s,e)=>{if(s.show&&(e.key==='Escape'||!e.target.closest('button,input,textarea,select'))&&[' ','ArrowRight','Enter','Escape'].includes(e.key)){e.preventDefault();registry['merged-11'].action(s,e.key==='Escape'?'stop':'screen');return true;}};
 })();
 
+/* Source provenance: note-labs-presentation.js:199. Preserve this closure. */
 (() => {
-  'use strict';
-  const {register,ui}=window.NOTE_LABS;
-  const {btn,field,select,office,output,number,table}=ui;
-  const defaults={source:'none',transparency:0,x:0,y:0};
-  const background=s=>{
+'use strict';
+const {register,ui}=window.NOTE_LABS;
+const {btn,field,select,office,output,number,table}=ui;
+const defaults={source:'none',transparency:0,x:0,y:0};
+const background=s=>{
     const pattern=s.source==='stationery'?'repeating-linear-gradient(0deg,#fdf6e5 0px,#fdf6e5 22px,#b3c6d7 23px,#fdf6e5 24px)':s.source==='picture'?'repeating-linear-gradient(45deg,#91b3a0 0px,#91b3a0 30px,#d8e6d9 30px,#d8e6d9 60px)':'none';
     return `background-image:${pattern};background-position:${s.x}px ${s.y}px;opacity:${1-s.transparency/100}`;
   };
-  register(['y2020q54'],'调整背景，再检查当前页和全部页面','选择图片或信纸纹理，调整透明度与平铺偏移；全部应用和重置会改变不同范围。',{
+register(['y2020q54'],'调整背景，再检查当前页和全部页面','选择图片或信纸纹理，调整透明度与平铺偏移；全部应用和重置会改变不同范围。',{
     page:0,slides:[structuredClone(defaults),structuredClone(defaults),structuredClone(defaults)]
   },s=>{
     const current=s.slides[s.page];
@@ -213,12 +282,11 @@
     if(a==='all')s.slides=s.slides.map(()=>structuredClone(s.slides[s.page]));
     if(a==='reset')s.slides[s.page]=structuredClone(defaults);
   },(s,k,v)=>{s.slides[s.page][k]=k==='source'?v:number(v,k==='transparency'?0:-100,100);});
-
-  const subjects=['数学','英语','计算机'];
-  const classes=['一班','二班','三班','四班'];
-  const scores=[[80,75,90],[72,85,78],[90,80,88],[82,92,84]];
-  const colors=['#527eaa','#bc7750','#558777','#9b6694'];
-  register(['merged-12'],'按类别和按系列，出现的是哪一组柱','同一张3门课×4个班的图，切换分组方式并逐组播放。',{
+const subjects=['数学','英语','计算机'];
+const classes=['一班','二班','三班','四班'];
+const scores=[[80,75,90],[72,85,78],[90,80,88],[82,92,84]];
+const colors=['#527eaa','#bc7750','#558777','#9b6694'];
+register(['merged-12'],'按类别和按系列，出现的是哪一组柱','同一张3门课×4个班的图，切换分组方式并逐组播放。',{
     mode:'category',playing:false,step:0
   },s=>{
     const groups=s.mode==='category'?subjects:classes;

@@ -7,6 +7,7 @@
   const registry = {};
   const owners = new Map();
   const states = new WeakMap();
+  const frameKeys = new WeakMap();
   const lifecycles = new WeakMap();
   let serial = 0;
   const btn = (text,act,value='',extra='') => `<button type="button" data-lab-act="${act}" data-value="${esc(String(value))}" ${extra}>${text}</button>`;
@@ -33,7 +34,29 @@
   const number = (v,min,max) => Math.max(min,Math.min(max,Number(v)||0));
   const money = n => Number(n).toLocaleString('zh-CN',{maximumFractionDigits:2});
 
-  function render(root){
+  // Timed models name the regions that change; stable controls keep their DOM identity.
+  const patchRegions = (root, html, selectors) => {
+    const template=document.createElement('template');template.innerHTML=html;
+    const pairs=selectors.map(selector=>[root.querySelector(selector),template.content.querySelector(selector)]);
+    if(pairs.some(([old,next])=>!old||!next))return false;
+    function sync(old,next){
+      if(old.isEqualNode(next))return;
+      if(old.nodeType!==next.nodeType||old.nodeName!==next.nodeName){old.replaceWith(next.cloneNode(true));return;}
+      if(old.nodeType===Node.TEXT_NODE){old.data=next.data;return;}
+      if(old.nodeType!==Node.ELEMENT_NODE)return;
+      for(const attr of [...old.attributes])if(!next.hasAttribute(attr.name))old.removeAttribute(attr.name);
+      for(const attr of next.attributes)if(old.getAttribute(attr.name)!==attr.value)old.setAttribute(attr.name,attr.value);
+      const before=[...old.childNodes],after=[...next.childNodes];
+      for(let i=0;i<Math.max(before.length,after.length);i++){
+        if(!after[i])before[i].remove();else if(!before[i])old.append(after[i].cloneNode(true));else sync(before[i],after[i]);
+      }
+    }
+    pairs.forEach(([old,next])=>sync(old,next));return true;
+  };
+
+  function render(root, frame=false){
+    const state=states.get(root),model=registry[root.dataset.lab];
+    if(frame&&model.frameKey&&frameKeys.get(root)===model.frameKey(state)&&model.patchFrame?.(state,root))return;
     // Keep local scroll positions through a same-layout redraw, including textareas.
     const scrolls=[...root.querySelectorAll('*')].filter(el=>el.scrollLeft||el.scrollTop).map(el=>{
       const path=[];for(let node=el;node!==root;node=node.parentElement)path.unshift([...node.parentElement.children].indexOf(node));
@@ -47,6 +70,7 @@
     window.NOTE_CHOICES?.enhance(root);
     if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){if(target.tagName==='SELECT'&&window.NOTE_CHOICES)window.NOTE_CHOICES.focus(target);else target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
     registry[root.dataset.lab].afterRender?.(s,root);
+    frameKeys.set(root,model.frameKey?.(s));
     for(const saved of scrolls){const el=saved.path.reduce((node,i)=>node?.children[i],root);if(el&&el.tagName===saved.tag&&el.getAttribute('class')===saved.classes&&el.dataset.field===saved.field){el.scrollLeft=saved.left;el.scrollTop=saved.top;}}
   }
   function mount(card){
@@ -68,11 +92,10 @@
       states.set(root,fresh(root.dataset.lab));render(root);
       const model=registry[root.dataset.lab];
       listen('focusin',e=>{const field=e.target.closest('[data-field]')||e.target.closest('.notes-picker')?.querySelector('[data-field]');if(field)model.focus?.(states.get(root),field.dataset.field);});
-      const paintPending=()=>{if(dirty&&!pointerTarget&&!gesture&&!root.closest('[hidden]')&&!root.querySelector('.notes-picker.is-open')){dirty=false;render(root);}};
-      if(model.tick){timer=setInterval(()=>{if(!root.isConnected){lifecycles.get(root)?.dispose();return;}dirty=!!model.tick(states.get(root))||dirty;paintPending();},model.tickInterval||200);}
+      const paintPending=()=>{if(dirty&&!pointerTarget&&!gesture&&!root.closest('[hidden]')&&!root.querySelector('.notes-picker.is-open')){const frame=dirty==='frame';dirty=false;render(root,frame);}};
+      if(model.tick){timer=setInterval(()=>{if(!root.isConnected){lifecycles.get(root)?.dispose();return;}if(model.tick(states.get(root))&&!dirty)dirty='frame';paintPending();},model.tickInterval||200);}
       listen('pointerover',e=>{if(model.hover?.(states.get(root),e,root))render(root);});
-      listen('dblclick',e=>{if(e.target.closest('.lab-page-header')&&root.dataset.lab==='y2020q41'){states.get(root).editing=true;render(root);}});
-      listen('keydown',e=>{const s=states.get(root);if(root.dataset.lab==='y2025q10'&&s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;render(root);}});
+      listen('dblclick',e=>{if(model.dblclick?.(states.get(root),e,root))render(root);});
       let suppressUntil=0, gesture=null, pointerTarget=null, pressedId=null, dirty=false;
       const act=(a,v)=>{
         const model=registry[root.dataset.lab],s=states.get(root);
@@ -150,5 +173,5 @@
   const eachRoot=(card,callback)=>card.querySelectorAll('[data-lab]').forEach(root=>callback(lifecycles.get(root)));
   const unmount=card=>eachRoot(card,lifecycle=>lifecycle?.dispose());
   const cancel=card=>card.querySelectorAll('[data-lab]').forEach(root=>{if(lifecycles.has(root)){lifecycles.get(root).cancelGesture();render(root);}});
-  window.NOTE_LABS={mount,unmount,cancel,registry,register,ui:{btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}};
+  window.NOTE_LABS={mount,unmount,cancel,registry,register,ui:{btn,field,select,table,coach,output,office,dialog,paper,esc,number,money,patchRegions}};
 })();

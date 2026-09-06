@@ -162,7 +162,7 @@ test('input state is current even before blur/change fires',()=>{
 });
 test('each year is continuous and generated HTML assets exist',()=>{
  const notes=allNotes();for(const [year,count] of [[2020,65],[2021,60],[2022,75],[2023,70],[2024,70],[2025,60],[2026,60]])assert.deepEqual(notes.flatMap(n=>n.sources).filter(s=>s.year===year).map(s=>s.q).sort((a,b)=>a-b),Array.from({length:count},(_,i)=>i+1));
- for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');assert.equal(scriptsFor(ch).filter(f=>f.startsWith('generated/')).length,1);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}
+ for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');assert.equal(scriptsFor(ch).filter(f=>/^generated\/chapter\d+\.js$/.test(f)).length,1);assert.equal(scriptsFor(ch).filter(f=>f.startsWith('generated/labs-')).length,ch===9?0:1);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}
 });
 test('directory navigation reveals a search-hidden note; shortcuts respect editable context',()=>{
  const e=env(3),search=e.d.querySelector('#search-input');search.value='不存在的搜索';search.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#open-drawer').click();e.d.querySelector('#drawer a[href="#y2026q47"]').click();assert.equal(e.d.querySelector('#y2026q47').classList.contains('hidden'),false);assert.equal(search.value,'');
@@ -604,4 +604,65 @@ test('colloquial aliases retrieve the intended concept without reading mutable l
  for(const [chapter,query,id] of [[3,'目录不显示标题','merged-5'],[4,'去重','y2020q49'],[5,'文字放不下','y2026q54']]){
   const e=env(chapter),input=e.d.querySelector('#search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.equal(e.d.getElementById(id).classList.contains('hidden'),false);e.dom.window.close();
  }
+});
+
+
+test('full-site search normalizes aliases and resolves every note paragraph and related link',()=>{
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')), notes=allNotes(),byId=new Map(notes.map(n=>[n.id,n]));
+ assert.equal(index.filter(x=>x.kind==='note').length,220);
+ for(let chapter=1;chapter<=11;chapter++){
+  const e=env(chapter);
+  for(const entry of index.filter(x=>x.chapter===chapter))for(const field of entry.fields)assert.ok(e.d.getElementById(field.anchor),field.anchor);
+  for(const n of notes.filter(x=>x.chapter===chapter)){
+   const article=e.d.getElementById(n.id);
+   assert.equal(article.querySelectorAll('.points li').length,n.points.length);
+   for(const [i,p] of n.points.entries()){const expected=e.d.createElement('div');expected.innerHTML=p;assert.equal(e.d.getElementById(`${n.id}--point-${i}`).textContent,expected.textContent);}
+   for(const link of article.querySelectorAll('.note-related ul a')){const url=new URL(link.href);assert.ok(byId.has(url.hash.slice(1)));assert.equal(url.pathname,`/chapter${byId.get(url.hash.slice(1)).chapter}.html`);}
+  }
+  const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'),'utf8'));assert.equal(Object.keys(e.w.NOTE_LABS.registry).length,manifest.chapters[chapter].models,'no unrelated chapter registrations');
+  if(chapter===4){e.w.eval(fs.readFileSync(path.join(root,'notes-search.js'),'utf8'));const find=q=>e.w.NOTE_SEARCH.search(index,q);assert.ok(find('ＶＬＯＯＫＵＰ FALSE').some(r=>r.id==='y2020q57'));assert.ok(find('黑屏').some(r=>r.chapter===5));assert.ok(find('Ctrl Shift').some(r=>r.id==='y2020q24'));assert.equal(find('不存在的组合词 abcxyz').length,0);assert.ok(find('Delete').some(r=>r.kind==='comparison'));}
+  e.dom.window.close();
+ }
+});
+test('quick review preserves live state and deep links expand exact hidden paragraphs',()=>{
+ const e=env(2),c=open(e,'y2020q24');click(c,'modifier','ctrl');const lab=c.querySelector('[data-lab]'),key=()=>c.querySelector('[data-lab-act="modifier"][data-value="ctrl"]');
+ e.d.querySelector('[data-reading-mode="quick"]').click();assert.equal(e.d.querySelectorAll('.note-explanation[open]').length,0);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(key().getAttribute('aria-pressed'),'true');assert.equal(e.w.localStorage.getItem('notes-reading-mode'),'quick');
+ const target=e.d.getElementById('y2020q24--point-1');e.w.location.hash='#'+target.id;e.w.dispatchEvent(new e.w.HashChangeEvent('hashchange'));assert.equal(target.closest('details').open,true);assert.equal(target.classList.contains('note-search-target'),true);
+ e.d.querySelector('[data-reading-mode="detail"]').click();assert.equal(e.d.querySelectorAll('.note-explanation[open]').length,25);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(key().getAttribute('aria-pressed'),'true');e.dom.window.close();
+});
+test('PPT rename fixes its target and leaving slideshow synchronizes page, section and transition',()=>{
+ const e=env(5),c=open(e,'y2025q10');click(c,'rename');const name=c.querySelector('[data-field="name"]');name.value='改名后的第一节';name.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ assert.equal(c.querySelector('[data-lab-act="section"][data-value="1"]').disabled,true);assert.equal(c.querySelector('[data-lab-act="new"]').disabled,true);click(c,'section','1');click(c,'apply');assert.match(c.querySelector('[data-lab-act="section"][data-value="0"]').textContent,/改名后的第一节/);assert.match(c.querySelector('[data-lab-act="section"][data-value="1"]').textContent,/第二部分/);
+ click(c,'show');click(c,'next');click(c,'next');click(c,'end');click(c,'rename');assert.equal(c.querySelector('[data-field="name"]').value,'第二部分');change(e,c,'name','不应保存');click(c,'cancel');assert.match(c.querySelector('[data-lab-act="section"][data-value="1"]').textContent,/第二部分/);
+ const m=e.w.NOTE_LABS.registry.y2025q10,s=structuredClone(m.initial);m.action(s,'rename');m.action(s,'section','1');m.action(s,'new');m.action(s,'show');assert.equal(s.selected,0);assert.equal(s.sections.length,2);assert.equal(s.show,false);m.action(s,'cancel');s.transitions=['none','fade','push'];m.action(s,'show');m.action(s,'next');m.action(s,'next');m.action(s,'end');assert.equal(s.selected,1);assert.equal(s.transition,'push');assert.equal(s.selection,'page');e.dom.window.close();
+});
+test('advanced-filter copies survive mode switches, clearing, and source filtering',()=>{
+ const e=env(4),c=open(e,'y2020q9');click(c,'open');change(e,c,'destination','copy');click(c,'apply');const m=e.w.NOTE_LABS.registry.y2020q9,s=structuredClone(m.initial);s.destination='copy';m.action(s,'apply');const copy=JSON.stringify(s.copy);m.change(s,'mode','auto');m.action(s,'auto');m.action(s,'clear');m.change(s,'mode','advanced');assert.equal(JSON.stringify(s.copy),copy);
+ change(e,c,'mode','auto');click(c,'auto');click(c,'clear');change(e,c,'mode','advanced');assert.match(c.querySelector('.lab-output').textContent,/副本/);assert.ok(c.querySelectorAll('table').length>=2);e.dom.window.close();
+});
+test('timed transfer and presentations patch live regions without replacing stable controls',async()=>{
+ for(const [chapter,id,action] of [[6,'y2020q26','start'],[5,'y2023q13','start'],[5,'merged-11','start']]){
+  const e=env(chapter),c=open(e,id);let now=1000;e.w.Date.now=()=>now;click(c,action);const lab=c.querySelector('[data-lab]'),control=lab.querySelector(id==='y2020q26'?'[data-lab-act="reset"]':id==='y2023q13'?'[data-lab-act="pause"]':'[data-lab-act="stop"]');const before=lab.textContent;control.focus();now+=300;await new Promise(resolve=>setTimeout(resolve,250));
+  assert.equal(lab.contains(control),true,id+' keeps control node');assert.equal(e.d.activeElement,control,id+' keeps focus');assert.notEqual(lab.textContent,before,id+' advances output');
+  const m=e.w.NOTE_LABS.registry[id];assert.ok(m.frameKey&&m.patchFrame);e.dom.window.close();
+ }
+});
+
+function homeEnv(url='https://notes.example/index.html',fetchIndex){
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8'),dom=new JSDOM(html,{url,runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
+ w.HTMLElement.prototype.scrollIntoView=()=>{};w.fetch=fetchIndex||(async()=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'))}));
+ for(const match of html.matchAll(/<script src="\.\/([^"?]+)/g))w.eval(fs.readFileSync(path.join(root,match[1]),'utf8'));
+ return {dom,w,d:w.document};
+}
+const typeGlobal=(e,value)=>{const field=e.d.getElementById('global-search');field.value=value;field.dispatchEvent(new e.w.Event('input',{bubbles:true}));};
+test('search begun from a comparison survives refresh and shared URL restoration',async()=>{
+ const e=homeEnv('https://notes.example/index.html#compare-cmp-delete-context');assert.equal(e.d.querySelector('.comparison-topic[open]').id,'compare-cmp-delete-context');typeGlobal(e,'Delete');await new Promise(setImmediate);
+ const url=e.w.location.href;assert.equal(new URL(url).hash,'');assert.equal(new URL(url).searchParams.get('q'),'Delete');assert.ok(e.d.querySelectorAll('#global-results li').length);
+ const next=homeEnv(url);await new Promise(setImmediate);assert.equal(next.d.getElementById('global-search').value,'Delete');assert.equal(next.d.getElementById('global-search-results').hidden,false);assert.ok(next.d.querySelectorAll('#global-results li').length);e.dom.window.close();next.dom.window.close();
+});
+test('deferred search respects the newest query, clearing and retry after a failed index',async()=>{
+ let resolve;const pending=new Promise(r=>resolve=r),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
+ const e=homeEnv(undefined,()=>pending);typeGlobal(e,'Delete');typeGlobal(e,'SUMIF');resolve({ok:true,json:async()=>index});await new Promise(setImmediate);assert.match(e.d.getElementById('global-results').textContent,/SUMIF/);assert.equal(e.d.getElementById('global-search').value,'SUMIF');e.dom.window.close();
+ let finish;const unfinished=new Promise(r=>finish=r),f=homeEnv(undefined,()=>unfinished);typeGlobal(f,'Delete');f.d.getElementById('global-clear').click();finish({ok:true,json:async()=>index});await new Promise(setImmediate);assert.equal(f.d.getElementById('global-search-results').hidden,true);assert.equal(f.d.getElementById('browse-notes').hidden,false);f.dom.window.close();
+ let calls=0;const g=homeEnv(undefined,async()=>{if(++calls===1)throw Error('offline');return {ok:true,json:async()=>index};});typeGlobal(g,'Delete');await new Promise(setImmediate);assert.equal(g.d.getElementById('search-retry').hidden,false);g.d.getElementById('search-retry').click();await new Promise(setImmediate);assert.ok(g.d.querySelectorAll('#global-results li').length);typeGlobal(g,'<img src=x onerror=alert(1)>');await new Promise(setImmediate);assert.equal(g.d.querySelector('#global-results img'),null);g.dom.window.close();
 });

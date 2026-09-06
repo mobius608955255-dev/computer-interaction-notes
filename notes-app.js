@@ -35,6 +35,7 @@
       </section>
       <section class="chapter-tools" aria-label="搜索本章笔记"><div class="search"><span aria-hidden="true">⌕</span><label class="sr-only" for="search-input">搜索本章</label><input id="search-input" type="search" placeholder="搜索本章知识点" title="多个关键词用空格分隔" autocomplete="off"><button id="clear-search" type="button" aria-label="清空搜索" hidden>×</button></div><span class="count" id="result-count" role="status" aria-live="polite" aria-atomic="true"></span></section>
       <section id="search-empty" class="search-empty" hidden><p>本章没有找到相关笔记。</p><p>试试更短的关键词，或从顶部切换到相关章节。</p><button id="restore-notes" type="button">清空搜索，显示本章全部笔记</button></section>
+      <div class="learning-toolbar"><div class="reading-switch" role="group" aria-label="阅读视图"><button type="button" data-reading-mode="detail" aria-pressed="true">详读</button><button type="button" data-reading-mode="quick" aria-pressed="false">快速复习</button></div><nav class="learning-links" aria-label="继续查找"><a id="search-all" href="${homeUrl}">搜索全部11章</a><a href="${homeUrl}#browse-comparisons">易混知识对照</a></nav></div><p id="reading-hint"></p>
       <div id="notes-root"></div>
     </main>
     <footer class="site-footer"><a href="${homeUrl}">全部章节</a><a href="https://www.sdzk.cn/NewsInfo.aspx?BCID=1195&amp;CID=1133&amp;NewsID=7081" target="_blank" rel="noreferrer">现行考试要求</a></footer>`);
@@ -71,13 +72,21 @@
     return `<article class="note-item" id="${note.id}">
       ${refined ? '' : `<div class="note-topic">${note.topic}</div>`}
       <h3>${note.title}</h3>
-      <p class="conclusion"><b>核心结论：</b>${note.conclusion}</p>
-      ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>`<li>${note.points[i]}</li>`).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map(point => `<li>${point}</li>`).join('')}</ul>`}
-      ${note.comparison ? renderComparison(note.comparison) : ''}
-      <p class="boundary"><b>易错边界：</b>${note.boundary}</p>
-      <details class="note-provenance"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
+      <p class="conclusion" id="${note.id}--conclusion"><b>核心结论：</b>${note.conclusion}</p>
+      <details class="note-explanation" open><summary>推理与细节 · ${note.points.length}个要点</summary>
+      ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>`<li id="${note.id}--point-${i}">${note.points[i]}</li>`).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map((point,i) => `<li id="${note.id}--point-${i}">${point}</li>`).join('')}</ul>`}
+      <div id="${note.id}--comparison">${note.comparison ? renderComparison(note.comparison) : ''}</div></details>
+      <p class="boundary" id="${note.id}--boundary"><b>易错边界：</b>${note.boundary}</p>
+      <details class="note-provenance" id="${note.id}--sources"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
       ${renderSimulation(note)}
+      ${renderRelated(note)}
     </article>`;
+  }
+
+  function renderRelated(note) {
+    const links=window.NOTE_NAVIGATION?.[note.id], esc=simulation.escapeHTML;
+    if(!links || (!links.related.length&&!links.topics.length))return '';
+    return `<nav class="note-related" aria-label="${esc(note.title)}的关联知识"><p>联系起来理解</p><ul>${links.related.map(n=>`<li><a href="${chapterUrl(n.chapter)}#${n.id}">${esc(n.label)}<small>${esc(n.reason)}</small></a></li>`).join('')}</ul>${links.topics.map(t=>`<a class="topic-link" href="${homeUrl}#compare-${t.id}">对照：${esc(t.title)}</a>`).join('')}</nav>`;
   }
 
   function renderComparison(comparison) {
@@ -934,7 +943,7 @@
   // Index the notes once. Learner input and changing demonstration output must not change matches.
   const aliasesById=new Map(notes.map(note=>[note.id,(note.searchAliases||[]).join(' ')]));
   const searchIndex = $$('.note-item').map(item=>{
-    const copy=item.cloneNode(true);copy.querySelectorAll('.reality-demo').forEach(el=>el.remove());
+    const copy=item.cloneNode(true);copy.querySelectorAll('.reality-demo,.note-related').forEach(el=>el.remove());
     const demo=simulation.demos[item.id];
     return {item,text:normalizeSearch(copy.textContent+' '+(demo?.title||'')+' '+(demo?.task||'')+' '+(aliasesById.get(item.id)||''))};
   });
@@ -945,6 +954,7 @@
     $('#result-count').textContent = query ? `${shown} / ${notes.length}条` : `${shown}条笔记`;
     $('#clear-search').hidden=!$('#search-input').value;
     $('#search-empty').hidden=shown!==0;
+    $('#search-all').href=homeUrl+($('#search-input').value.trim()?'&q='+encodeURIComponent($('#search-input').value.trim()):'');
     requestAnimationFrame(updateProgress);
   };
   const clearSearch = () => { $('#search-input').value='';applySearch();$('#search-input').focus(); };
@@ -956,6 +966,8 @@
     let id;try{id=decodeURIComponent(hash.slice(1));}catch{return;}
     const target=document.getElementById(id);if(!target)return;
     if(target.closest('.hidden')||target.classList.contains('hidden')){$('#search-input').value='';applySearch();}
+    window.NOTE_READING?.reveal(target);
+    if(target.matches('details'))target.open=true;
     target.scrollIntoView({block:'start'});
     if(focus){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}
   }
@@ -963,6 +975,7 @@
   const updateProgress = () => { const root = document.documentElement; const max = root.scrollHeight - innerHeight; $('#progress-bar').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; };
   addEventListener('scroll', updateProgress, {passive:true});
   addEventListener('resize', updateProgress);
+  window.NOTE_READING?.init();
   if(location.hash)revealNote(location.hash);
   updateProgress();
 })();

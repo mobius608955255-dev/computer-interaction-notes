@@ -1,14 +1,44 @@
-/* Visible sampling and compression calculations, without format-name shortcuts. */
+// Generated from src/labs; edit the corresponding chapter source.
+/* Shared lab calculations. Runtime must load first. */
 (() => {
-  'use strict';
-  const {register,ui}=window.NOTE_LABS;
-  const {btn,field,select,table,coach,output,esc}=ui;
-  const controls=x=>`<div class="lab-controls">${x}</div>`;
-  const fmt=n=>Number(n).toLocaleString('zh-CN',{maximumFractionDigits:3});
-  const number=(v,min,max)=>String(v).trim()!==''&&Number.isFinite(Number(v))&&Number(v)>=min&&Number(v)<=max;
-  function pcm(s){if(!number(s.rate,1,192000)||!number(s.duration,0.001,86400))return null;const bits=Number(s.depth),channels=Number(s.channels);if(![8,16,24,32].includes(bits)||![1,2].includes(channels))return null;if(!Number.isInteger(Number(s.rate)*Number(s.duration)))return null;return {bitrate:Number(s.rate)*bits*channels,bytes:Number(s.rate)*bits*channels*Number(s.duration)/8};}
-  function samples(s){const rate=Number(s.sample),depth=Number(s.quant),frequency=Number(s.frequency),levels=2**depth;return Array.from({length:rate+1},(_,i)=>{const t=i/rate,raw=Math.sin(2*Math.PI*frequency*t),q=Math.round((raw+1)/2*(levels-1))/(levels-1)*2-1;return {t,raw,q};});}
-  register(['y2024q32'],'采样取时间点，量化分幅度档，再计算PCM大小','拖动采样率和位深，看同一条波形如何被记录；另页计算真题中的音频数据量。',{
+'use strict';
+const {esc}=window.NOTE_LABS.ui;
+const daysBetween=(a,b)=>Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000);
+const radixConvert = raw => {
+    if(!/^[01]{1,16}(\.[01]{1,12})?$/.test(raw))return null;
+    const [whole,frac='']=raw.split('.');
+    const left=whole.padStart(Math.ceil(whole.length/4)*4,'0');const right=frac.padEnd(Math.ceil(frac.length/4)*4,'0');
+    const groups=x=>x.match(/.{4}/g)||[];
+    return {binary:[groups(left).join(' '),groups(right).join(' ')].filter(Boolean).join(' . '),hex:parseInt(whole,2).toString(16).toUpperCase()+(frac?'.'+groups(right).map(x=>parseInt(x,2).toString(16).toUpperCase()).join(''):''),decimal:parseInt(whole,2)+[...frac].reduce((sum,v,i)=>sum+Number(v)*2**(-i-1),0)};
+  };
+function clusteredChart(labels,series){
+    const all=series.flatMap(x=>x.values),max=Math.max(1,...all),group=420/labels.length,bw=Math.min(40,group/(series.length+1));
+    return `<svg class="lab-data-chart" viewBox="0 0 480 270" role="img" aria-label="簇状柱形图"><line x1="40" x2="460" y1="220" y2="220" stroke="#687482"/>${labels.map((label,i)=>series.map((x,j)=>{const h=Number(x.values[i])/max*165,xp=40+i*group+15+j*bw;return `<rect x="${xp}" y="${220-h}" width="${bw-5}" height="${h}" fill="${x.color}"/><text x="${xp+(bw-5)/2}" y="${210-h}" text-anchor="middle">${x.values[i]}</text>`;}).join('')+`<text x="${40+i*group+group/2}" y="244" text-anchor="middle">${esc(label)}</text>`).join('')}</svg><div class="lab-chart-legend">${series.map(x=>`<span><i style="background:${x.color}"></i>${esc(x.name)}</span>`).join('')}</div>`;
+  }
+Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
+})();
+
+/* Chapter 7: media. Maintained source; edit this domain directly. */
+/* Source provenance: note-labs.js:2. Preserve this closure. */
+(() => {
+'use strict';
+const {register,registry,ui}=window.NOTE_LABS;
+const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
+register(['y2023q19'],'放大同一颗星：路径与像素','调节缩放，比较矢量路径重新绘制与位图像素格显现。',{zoom:1},s=>
+    `<div class="lab-controls">${field('zoom','放大倍数',s.zoom,'range','min="1" max="4" step="0.25"')}</div><div class="lab-image-compare"><section><b>矢量路径</b><div><svg viewBox="0 0 100 100" role="img" aria-label="矢量星形"><path transform="translate(50 50) scale(${s.zoom}) translate(-50 -50)" d="M50 12 60 38 88 40 66 58 74 86 50 70 26 86 34 58 12 40 40 38Z" fill="#427b68"/></svg></div></section><section><b>低分辨率位图示意</b><div><svg viewBox="0 0 100 100" shape-rendering="crispEdges" role="img" aria-label="放大后像素格显现"><g transform="translate(50 50) scale(${s.zoom}) translate(-50 -50)">${['000010000','000111000','111111111','011111110','001111100','001111100','011000110','010000010','000000000'].flatMap((r,y)=>[...r].map((v,x)=>v==='1'?`<rect x="${5+x*10}" y="${5+y*10}" width="10" height="10" fill="#427b68"/>`:'')).join('')}</g></svg></div></section></div>${output(`${s.zoom}倍；这里只模拟低分辨率位图，实际像素数越高，在相同放大下块感越不明显。`)}`,()=>{},(s,k,v)=>{s.zoom=Number(v);});
+})();
+
+/* Source provenance: note-labs-media.js:2. Preserve this closure. */
+(() => {
+'use strict';
+const {register,ui}=window.NOTE_LABS;
+const {btn,field,select,table,coach,output,esc}=ui;
+const controls=x=>`<div class="lab-controls">${x}</div>`;
+const fmt=n=>Number(n).toLocaleString('zh-CN',{maximumFractionDigits:3});
+const number=(v,min,max)=>String(v).trim()!==''&&Number.isFinite(Number(v))&&Number(v)>=min&&Number(v)<=max;
+function pcm(s){if(!number(s.rate,1,192000)||!number(s.duration,0.001,86400))return null;const bits=Number(s.depth),channels=Number(s.channels);if(![8,16,24,32].includes(bits)||![1,2].includes(channels))return null;if(!Number.isInteger(Number(s.rate)*Number(s.duration)))return null;return {bitrate:Number(s.rate)*bits*channels,bytes:Number(s.rate)*bits*channels*Number(s.duration)/8};}
+function samples(s){const rate=Number(s.sample),depth=Number(s.quant),frequency=Number(s.frequency),levels=2**depth;return Array.from({length:rate+1},(_,i)=>{const t=i/rate,raw=Math.sin(2*Math.PI*frequency*t),q=Math.round((raw+1)/2*(levels-1))/(levels-1)*2-1;return {t,raw,q};});}
+register(['y2024q32'],'采样取时间点，量化分幅度档，再计算PCM大小','拖动采样率和位深，看同一条波形如何被记录；另页计算真题中的音频数据量。',{
     mode:'wave',frequency:'3',sample:'16',quant:'3',rate:'44100',depth:'16',channels:'1',duration:'120'
   },s=>{
     let body='';if(s.mode==='wave'){
@@ -23,16 +53,15 @@
     }
     return controls(select('mode','观察内容',s.mode,[['wave','看采样与量化'],['pcm','计算PCM音频大小']]))+body;
   },()=>{});
-
-  function parsePixels(raw){const tokens=String(raw).trim().split(/[,，\s]+/);if(!tokens.length||tokens.length>24||tokens.some(v=>!/^\d+$/.test(v)||Number(v)>255))return null;return tokens.map(Number);}
-  const runLength=a=>a.reduce((out,n)=>{if(out.length&&out.at(-1)[0]===n)out.at(-1)[1]++;else out.push([n,1]);return out;},[]);
-  const swatches=a=>`<div class="ext-swatch-row">${a.map(n=>`<div><i style="background:rgb(${n},${n},${n})"></i><b>${n}</b></div>`).join('')}</div>`;
-  register(['merged-14'],'先改数据，再压缩：无损保证的是哪一步','编辑一行灰度像素，比较直接无损编码与先减色再编码；解码后逐项核对。',{
+function parsePixels(raw){const tokens=String(raw).trim().split(/[,，\s]+/);if(!tokens.length||tokens.length>24||tokens.some(v=>!/^\d+$/.test(v)||Number(v)>255))return null;return tokens.map(Number);}
+const runLength=a=>a.reduce((out,n)=>{if(out.length&&out.at(-1)[0]===n)out.at(-1)[1]++;else out.push([n,1]);return out;},[]);
+const swatches=a=>`<div class="ext-swatch-row">${a.map(n=>`<div><i style="background:rgb(${n},${n},${n})"></i><b>${n}</b></div>`).join('')}</div>`;
+register(['merged-14'],'先改数据，再压缩：无损保证的是哪一步','编辑一行灰度像素，比较直接无损编码与先减色再编码；解码后逐项核对。',{
     raw:'30,30,30,31,31,31,120,120,120,121,121,121',mode:'lossless',step:'32'
   },s=>{const original=parsePixels(s.raw),valid=original&&number(s.step,1,128),input=valid?(s.mode==='lossless'?original:original.map(v=>Math.min(255,Math.round(v/Number(s.step))*Number(s.step)))):null,runs=input?runLength(input):[],decoded=runs.flatMap(([value,count])=>Array(count).fill(value));
     return controls(field('raw','灰度值（1—24个整数，0—255，逗号分隔）',s.raw)+select('mode','进入无损编码前',s.mode,[['lossless','直接保留原始像素'],['reduce','先减少灰度档位']])+(s.mode==='reduce'?select('step','灰度间隔',s.step,[8,16,32,64,128].map(n=>[n,String(n)])):''))+
       (valid?`<section class="ext-dataset"><h4>原始像素</h4>${swatches(original)}</section><section class="ext-dataset"><h4>进入编码器的像素</h4>${swatches(input)}<p>游程表示（数值 × 连续次数）</p><code class="ext-code">${runs.map(([value,count])=>`${value} × ${count}`).join('；')}</code></section><section class="ext-dataset"><h4>解码后的像素</h4>${swatches(decoded)}</section>`+table(['比较对象','是否完全一致'],[['解码结果 vs 编码器输入','是，游程可逐项还原'],['解码结果 vs 最初像素',decoded.every((n,i)=>n===original[i])?'是':'否，编码前已丢失灰度差别']])+output(`原始序列 ${original.length} 个值；游程 ${runs.length} 组。若值与次数各占1 B，本例原始 ${original.length} B、游程 ${runs.length*2} B。${runs.length*2>original.length?'这次反而变大；无损压缩并不保证每份数据都变小。':''}`):output('请输入1—24个0—255整数，不能夹入文字。'))+
       coach('这是可逆的游程编码教学例子，不是PNG、GIF或JPEG的真实文件编码器。它展示：无损编码能保住输入的数据，却不能恢复此前减色丢掉的信息；游程表示也不等于图像文件实际字节数。');
   },()=>{});
-  window.NOTE_LABS.mediaMath={pcm,samples,parsePixels,runLength};
+window.NOTE_LABS.mediaMath={pcm,samples,parsePixels,runLength};
 })();

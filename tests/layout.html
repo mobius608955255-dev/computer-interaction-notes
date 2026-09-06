@@ -4,9 +4,9 @@
 <body><header><label>窗口宽度<select id="width"><option>390</option><option>360</option><option>760</option><option>1200</option></select></label><label>章节<select id="chapter"></select></label><label>演示<select id="note"></select></label><button id="open">打开并定位演示</button><button id="measure">测量溢出</button><button id="audit">检查本章全部卡片</button><button id="audit-all">检查11章两种手机宽度</button></header><iframe id="preview" title="窄屏笔记预览" width="390"></iframe><output id="result" aria-live="polite"></output>
 <script>
 const frame=document.getElementById('preview'),width=document.getElementById('width'),chapter=document.getElementById('chapter'),note=document.getElementById('note');
-chapter.innerHTML=Array.from({length:11},(_,i)=>`<option value="${i+1}">第${i+1}章</option>`).join('');
+chapter.innerHTML='<option value="0">首页</option>'+Array.from({length:11},(_,i)=>`<option value="${i+1}">第${i+1}章</option>`).join('');
 chapter.value='4';
-function load(){frame.src=`../chapter${chapter.value}.html?preview=${Date.now()}`;}
+function load(){frame.src=chapter.value==='0'?`../index.html?preview=${Date.now()}`:`../chapter${chapter.value}.html?preview=${Date.now()}`;}
 chapter.onchange=load;width.onchange=()=>frame.width=width.value;
 frame.onload=()=>{note.innerHTML=[...frame.contentDocument.querySelectorAll('.note-item')].map(n=>`<option value="${n.id}">${n.querySelector('h3').textContent}</option>`).join('');};
 document.getElementById('open').onclick=()=>{const c=frame.contentDocument.getElementById(note.value);if(!c)return;const b=c.querySelector('.simulation-toggle');if(b.getAttribute('aria-expanded')==='false')b.click();b.scrollIntoView({block:'start'});};
@@ -15,7 +15,7 @@ async function auditChapter(){
  const d=frame.contentDocument,w=frame.contentWindow,cards=[...d.querySelectorAll('.note-item')],issues=[];
  for(const c of cards){
   const toggle=c.querySelector('.simulation-toggle'),wasOpen=toggle.getAttribute('aria-expanded')==='true';if(!wasOpen)toggle.click();
-  await new Promise(resolve=>w.requestAnimationFrame(resolve));
+  // getBoundingClientRect below flushes layout; a background-frame RAF can be throttled.
   const clipped=[...c.querySelectorAll('.simulation-mount button,.simulation-mount label,.simulation-mount p,.simulation-mount output,.simulation-mount select')].filter(el=>{
    const rect=el.getBoundingClientRect();if(!rect.width||!rect.height)return false;
    if(el.closest('.lab-table-scroll,.lab-freeze-scroll,.lab-print-scroll,.lab-format-viewport,[hidden]'))return false;

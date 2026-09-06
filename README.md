@@ -1,6 +1,6 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=44)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=45)
 
 根据2020—2026年山东专升本计算机真题整理，保留教材11章结构。460道题归并为220条知识笔记，每题可追溯年份、题号与所属知识点。Windows和Office操作按Windows 10 / Office 2016口径解释；发现扫描答案错误时，以可靠标准纠正并说明边界。
 
@@ -19,31 +19,39 @@ npm run check
 
 | 文件 | 维护位置与职责 |
 |---|---|
-| `content/chapter1.json`—`chapter11.json` | 每条笔记唯一的正文记录，保留稳定ID、来源、章节归属与可选searchAliases搜索别名 |
+| `content/chapter1.json`—`chapter11.json` | 每条笔记唯一的正文记录，保留稳定ID、来源、章节归属、searchAliases别名、related关联与pointGroups分组 |
 | `content/chapters.json` | 教材目录 |
+| `content/comparisons.json` | 13个跨知识点对照主题，逐行引用原笔记 |
 | `content/references.json` | 知识点的标准参考来源 |
 | `content/legacy-demos.json` | 86个旧场景的步骤或选择元数据 |
-| `templates/`、`scripts/build.cjs` | 页面模板与确定性构建；按章生成数据，首页只加载目录摘要 |
+| `templates/`、`scripts/build.cjs` | 页面模板与确定性构建；按章生成数据和演示包 |
 | `generated/`、`chapter*.html`、`index.html` | 生成物，不直接修改 |
 | `site.config.json` | 全站资源及内链共用的版本号；构建另为资源生成内容摘要以避免旧缓存 |
-| `notes-app.js` | 阅读、搜索、目录、卡片挂载和保留的旧场景事件 |
+| `notes-app.js` | 正文渲染、本章搜索、目录、卡片挂载和保留的旧场景事件 |
+| `notes-reading.js` | 详读/快速复习与段落展开；保留同一正文和演示DOM |
+| `notes-search.js`、`notes-home.js` | 全站搜索与首页对照；搜索索引在首次查询时载入 |
+| `scripts/discovery.cjs` | 从正文生成段落索引、双向导航，验证关联与分组完整性 |
 | `notes-choices.js` | 页面内单选控件、键盘与焦点行为 |
-| `note-labs-runtime.js` | 演示注册、输入分发、重绘、指针与计时器生命周期，以及纯文本转义 |
-| `note-labs*.js`（除runtime） | 独立知识点模型；按主题扩展其原定义 |
+| `note-labs-runtime.js` | 演示注册、输入分发、重绘、局部画面更新、指针与计时器生命周期，以及纯文本转义 |
+| `src/labs/chapter*/` | 按章维护模型与计算逻辑；原IIFE闭包和两条必要包装链保留 |
+| `src/labs/shared/math.js`、`manifest.json` | 少量公共计算与章节入口顺序；构建直接拼接，不使用AST或运行时加载器 |
 | `simulations.js` | 仍在使用的旧场景，每个场景只保留最终一份定义 |
 | `tests/notes-regression.cjs` | 来源、真实页面加载顺序、状态变化与计算边界回归 |
 | `tests/layout.html` | 可手动使用的同源布局检查工具，不是学习入口 |
 
 ## 继续修改时
 
-1. 编辑对应章节的正文记录，扩展原模型。不要新增“最后覆盖一次”的内容补丁或重复注册；注册器遇到重复模型或别名会报错。
-2. 模型通过`initial/render/action/change`维护状态，`render`只呈现状态。拖动、异步动作和计时可使用运行时提供的钩子，不在模型中另建全局监听或无人清理的计时器。
-3. 用户输入必须用`NOTE_LABS.ui.esc`纯转义，不能先解码用户写入的实体。重置先卸载旧模型；收起取消未完成的手势并恢复已提交画面。
-4. 增加或修正行为时，测试实际可观察结果和重要边界。测试从章节HTML读取脚本顺序，避免另维护一套与生产不同的入口。
-5. 修改`site.config.json`版本号，运行构建与回归，提交源码和生成物。GitHub Pages继续从原仓库发布。
+1. 编辑对应章节的正文记录和`src/labs/chapterN/`内原模型。不要新增“最后覆盖一次”的内容补丁或重复注册；注册器遇到重复模型或别名会报错。
+2. `pointGroups.indices`须覆盖该笔记每个要点且恰好一次；重排points时同步检查分组。关联必须指向真实ID并写明阅读目的，比较表每行应引用原文。构建验证链接、分组与对照结构。
+3. 模型通过`initial/render/action/change`维护状态，`render`只呈现状态。拖动、异步动作和计时可使用运行时提供的钩子，不在模型中另建全局监听或无人清理的计时器。
+4. 用户输入必须用`NOTE_LABS.ui.esc`纯转义，不能先解码用户写入的实体。重置先卸载旧模型；收起取消未完成的手势并恢复已提交画面。
+5. 增加或修正行为时，测试实际可观察结果和重要边界。测试从章节HTML读取脚本顺序，避免另维护一套与生产不同的入口。
+6. 修改`site.config.json`版本号，运行构建与回归，提交源码和生成物。GitHub Pages继续从原仓库发布。
 
-每章当前加载8—9个脚本，未压缩JS总量约312—488KB，较v42减少55%—67%；这是静态资源体积，不是实测网络时间。新版保留220个笔记ID和460条来源映射。
+每章当前加载6—7个脚本，未压缩JS总量约200—405KB，较v44减少19%—38%；包含本轮新增的关联信息。这是静态资源体积，不是实测网络耗时。搜索索引仅在首页首次查询时下载，章节页无需加载全站正文。
 
-本轮手机交互与选项复核见[AUDIT-v44.md](AUDIT-v44.md)。前轮结构重构见[AUDIT-2026-09-06.md](AUDIT-2026-09-06.md)。旧版本记录见[docs/HISTORY.md](docs/HISTORY.md)，其中旧文件名和测试数量仅反映当时状态。
+计时模型用`frameKey`描述布局边界，通过`patchFrame`和`ui.patchRegions`更新明确指定的动态区域；跨页、结束或布局改变仍执行完整渲染。不能把输入区交给局部更新，也不能省略模型自己的事件钩子。新增模型后须同步manifest章节归属和回归。
+
+本轮整体改版与验证见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
 
 演示仍是围绕考点的局部教学模型；来源齐全不等于覆盖完整考纲，也不等同于完整Office软件。

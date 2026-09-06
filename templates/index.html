@@ -11,6 +11,7 @@
   <title>山东专升本计算机系统笔记</title>
   <script>(function(){var q=new URLSearchParams(location.search),c=Number(q.get('chapter'));if(c>=1&&c<=11){location.replace('./chapter'+c+'.html?v={{version}}#chapter-top');}})();</script>
   <link rel="stylesheet" href="./notes-2020.css?v={{version}}">
+  <link rel="stylesheet" href="./notes-learning.css?v={{version}}">
 </head>
 <body class="home-page">
   <header class="site-header">
@@ -24,24 +25,22 @@
       <p>按教材章节学习。真题只用于发现和校验知识点；相同考点合并，每个知识点都有依据真实考法单独设计的拟真场景。</p>
       <div class="chapter-meta"><span id="source-total"></span><span id="note-total"></span><span>教材11章</span></div>
     </section>
-    <section class="home-catalogue" aria-labelledby="catalogue-title">
+    <section class="discovery-search" aria-label="全站搜索">
+      <label for="global-search">想查哪个知识点？</label>
+      <div class="search"><input id="global-search" type="search" placeholder="搜索全部11章，如：Delete、绝对引用" autocomplete="off"><button id="global-clear" aria-label="清空全站搜索" type="button" hidden>×</button></div>
+      <p>可用空格组合关键词，直接定位到相关段落。</p>
+      <div id="global-search-results" hidden><p id="global-status" role="status" aria-live="polite"></p><ol id="global-results"></ol><button id="search-more" type="button" hidden>显示更多结果</button><button id="search-retry" type="button" hidden>重新载入搜索</button></div>
+    </section>
+    <section class="home-catalogue" id="browse-notes" aria-labelledby="catalogue-title">
       <div class="catalogue-heading"><p>教材目录</p><h2 id="catalogue-title">选择章节</h2></div>
       <div class="home-chapters" id="chapter-grid"></div>
       <noscript>请启用JavaScript查看章节目录。</noscript>
     </section>
+    <section id="browse-comparisons" aria-labelledby="comparisons-title"><div class="catalogue-heading"><p>集中辨析</p><h2 id="comparisons-title">易混知识对照</h2></div><div id="comparison-grid"></div></section>
   </main>
   <footer class="site-footer"><a href="./chapter1.html?v={{version}}">从第一章开始</a></footer>
   <script src="./generated/catalogue.js?v={{version}}"></script>
-  <script>
-    (function(){
-      var d=window.NOTE_CATALOGUE,g=document.getElementById('chapter-grid');
-      document.getElementById('source-total').textContent=d.sourceCount+'道真题来源';
-      document.getElementById('note-total').textContent=d.noteCount+'条知识笔记';
-      g.innerHTML=d.chapters.map(function(c){
-        var count=c.noteCount,sources=c.sourceCount;
-        return '<a class="home-chapter" href="./chapter'+c.number+'.html?v={{version}}"><span class="home-number">'+String(c.number).padStart(2,'0')+'</span><span class="home-copy"><strong>'+c.title+'</strong><small>'+c.sections.map(function(s){return s.id+' '+s.title}).join(' · ')+'</small></span><span class="home-count">'+count+'条 · '+sources+'题</span></a>';
-      }).join('');
-    })();
-  </script>
+  <script src="./notes-search.js?v={{version}}"></script>
+  <script src="./notes-home.js?v={{version}}"></script>
 </body>
 </html>
