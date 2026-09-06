@@ -355,3 +355,25 @@ test('bubble sorting computes one pass, both directions and stable equal values'
 test('released cloud instance cannot resume billing through its resize action',()=>{
  const e=env(9),c=open(e,'y2026q39');c.querySelector('[data-sim-choice="4"]').click();assert.equal(c.querySelector('[data-instance-state]').textContent,'已释放');const resize=c.querySelector('[data-sim-choice="0"]');assert.equal(resize.disabled,true);resize.click();assert.equal(c.querySelector('[data-bill]').textContent,'¥0.00/h');c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-instance-state]').textContent,'运行中');assert.equal(c.querySelector('[data-sim-choice="0"]').disabled,false);e.dom.window.close();
 });
+
+test('search matches separated normalized terms without indexing changing demo output',()=>{
+ const e=env(3),s=e.d.querySelector('#search-input');
+ const search=q=>{s.value=q;s.dispatchEvent(new e.w.Event('input',{bubbles:true}));return [...e.d.querySelectorAll('.note-item:not(.hidden)')].map(x=>x.id);};
+ const a=search('word'),b=search('ＷＯＲＤ');assert.ok(a.length);assert.deepEqual(b,a);
+ const c=open(e,'y2026q47');const token='演示临时输入不属于笔记';const p=e.d.createElement('p');p.textContent=token;c.querySelector('.simulation-body').append(p);
+ assert.deepEqual(search(token),[]);
+ const note=e.w.NOTES.notes.find(n=>n.id==='y2026q47');const key=note.title.slice(0,4);assert.ok(search(key+'  '+note.conclusion.slice(0,4)).includes(note.id));
+ assert.ok(search('邮件 合并').length);e.dom.window.close();
+});
+test('empty search explains recovery and restores every note with focus on search',()=>{
+ const e=env(6),s=e.d.querySelector('#search-input');s.value='找不到的知识点xyz';s.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ assert.equal(e.d.querySelector('#search-empty').hidden,false);assert.equal(e.d.querySelector('#clear-search').hidden,false);assert.match(e.d.querySelector('#result-count').textContent,/0 \/ 25/);
+ e.d.querySelector('#restore-notes').click();assert.equal(e.d.querySelectorAll('.note-item:not(.hidden)').length,25);assert.equal(e.d.querySelector('#search-empty').hidden,true);assert.equal(e.d.querySelector('#clear-search').hidden,true);assert.equal(e.d.activeElement,s);
+ s.value='IPv6';s.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#clear-search').click();assert.equal(s.value,'');assert.equal(e.d.querySelectorAll('.note-item.hidden').length,0);e.dom.window.close();
+});
+test('directory isolates background and transfers focus to the selected hidden note',()=>{
+ const e=env(3),s=e.d.querySelector('#search-input');s.value='找不到的知识点xyz';s.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#open-drawer').click();
+ assert.equal(e.d.querySelector('#main-content').inert,true);assert.equal(e.d.querySelector('.site-header').inert,true);
+ e.d.querySelector('#drawer a[href="#y2026q47"]').click();assert.equal(e.w.location.hash,'#y2026q47');assert.equal(e.d.activeElement.id,'y2026q47');assert.equal(e.d.querySelector('#main-content').inert,false);assert.equal(e.d.querySelector('#search-empty').hidden,true);
+ e.d.querySelector('#open-drawer').click();e.d.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(e.d.activeElement.id,'open-drawer');assert.equal(e.d.querySelector('.site-header').inert,false);e.dom.window.close();
+});

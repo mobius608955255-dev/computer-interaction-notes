@@ -8,7 +8,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 38;
+  const version = 39;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -33,7 +33,8 @@
         <p class="chapter-kicker" id="chapter-kicker"></p><h1 id="chapter-title"></h1><p class="chapter-summary" id="chapter-summary"></p>
         <div class="chapter-meta"><span id="chapter-count"></span><span id="source-count"></span></div>
       </section>
-      <section class="chapter-tools" aria-label="搜索本章笔记"><div class="search"><span aria-hidden="true">⌕</span><label class="sr-only" for="search-input">搜索本章</label><input id="search-input" type="search" placeholder="搜索本章知识点" autocomplete="off"></div><span class="count" id="result-count"></span></section>
+      <section class="chapter-tools" aria-label="搜索本章笔记"><div class="search"><span aria-hidden="true">⌕</span><label class="sr-only" for="search-input">搜索本章</label><input id="search-input" type="search" placeholder="搜索本章知识点" title="多个关键词用空格分隔" autocomplete="off"><button id="clear-search" type="button" aria-label="清空搜索" hidden>×</button></div><span class="count" id="result-count" role="status" aria-live="polite" aria-atomic="true"></span></section>
+      <section id="search-empty" class="search-empty" hidden><p>本章没有找到相关笔记。</p><p>试试更短的关键词，或从顶部切换到相关章节。</p><button id="restore-notes" type="button">清空搜索，显示本章全部笔记</button></section>
       <div id="notes-root"></div>
     </main>
     <footer class="site-footer"><a href="${homeUrl}">全部章节</a><a href="https://www.sdzk.cn/NewsInfo.aspx?BCID=1195&amp;CID=1133&amp;NewsID=7081" target="_blank" rel="noreferrer">现行考试要求</a></footer>`);
@@ -914,10 +915,11 @@
     $('[data-relation-result]',card).innerHTML=`<b>结果关系</b>${results[index]}`;
   }
 
-  const openDrawer = () => { $('#drawer').hidden=false; $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
-  const closeDrawer = () => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').hidden=true; $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); document.body.style.overflow = ''; $('#open-drawer').focus(); };
+  const drawerBackground = $$('.site-header, #main-content, .site-footer, .skip-link');
+  const openDrawer = () => { $('#drawer').hidden=false; $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); drawerBackground.forEach(el=>el.inert=true); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
+  const closeDrawer = (restoreFocus=true) => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').hidden=true; $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); drawerBackground.forEach(el=>el.inert=false); document.body.style.overflow = ''; if(restoreFocus)$('#open-drawer').focus(); };
   $('#open-drawer').addEventListener('click', openDrawer); $('#close-drawer').addEventListener('click', closeDrawer); $('#scrim').addEventListener('click', closeDrawer);
-  $('#drawer').addEventListener('click', event => { const link=event.target.closest('a'); if(link){closeDrawer(); revealNote(link.hash);} });
+  $('#drawer').addEventListener('click', event => { const link=event.target.closest('a'); if(link){event.preventDefault();closeDrawer(false);if(location.hash!==link.hash)history.pushState(null,'',link.hash);revealNote(link.hash,true);} });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); if (event.key === '/' && !event.isComposing && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest('input,textarea,select,[contenteditable]') && !$('#drawer').classList.contains('open')) { event.preventDefault(); $('#search-input').focus(); } });
   $('#drawer').addEventListener('keydown',event=>{
     if(event.key!=='Tab')return;
@@ -925,20 +927,38 @@
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   });
+  const normalizeSearch = text => text.normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
+  // Index the notes once. Learner input and changing demonstration output must not change matches.
+  const searchIndex = $$('.note-item').map(item=>{
+    const copy=item.cloneNode(true);copy.querySelectorAll('.reality-demo').forEach(el=>el.remove());
+    const demo=simulation.demos[item.id];
+    return {item,text:normalizeSearch(copy.textContent+' '+(demo?.title||'')+' '+(demo?.task||''))};
+  });
   const applySearch = () => {
-    const query = $('#search-input').value.trim().toLowerCase(); let shown = 0;
-    $$('.note-item').forEach(item => { const visible = !query || item.textContent.toLowerCase().includes(query); item.classList.toggle('hidden', !visible); if (visible) shown++; });
-    $$('.section-block').forEach(section => section.classList.toggle('hidden', !$$('.note-item:not(.hidden)', section).length)); $('#result-count').textContent = `${shown}条笔记`;
+    const query = normalizeSearch($('#search-input').value), terms=query?query.split(' '):[]; let shown = 0;
+    searchIndex.forEach(({item,text}) => { const visible = terms.every(term=>text.includes(term)); item.classList.toggle('hidden', !visible); if (visible) shown++; });
+    $$('.section-block').forEach(section => section.classList.toggle('hidden', !$$('.note-item:not(.hidden)', section).length));
+    $('#result-count').textContent = query ? `${shown} / ${notes.length}条` : `${shown}条笔记`;
+    $('#clear-search').hidden=!$('#search-input').value;
+    $('#search-empty').hidden=shown!==0;
+    requestAnimationFrame(updateProgress);
   };
+  const clearSearch = () => { $('#search-input').value='';applySearch();$('#search-input').focus(); };
   $('#search-input').addEventListener('input', applySearch);
-  function revealNote(hash){
+  $('#search-input').addEventListener('search', applySearch);
+  $('#clear-search').addEventListener('click', clearSearch);
+  $('#restore-notes').addEventListener('click', clearSearch);
+  function revealNote(hash, focus=false){
     let id;try{id=decodeURIComponent(hash.slice(1));}catch{return;}
     const target=document.getElementById(id);if(!target)return;
     if(target.closest('.hidden')||target.classList.contains('hidden')){$('#search-input').value='';applySearch();}
     target.scrollIntoView({block:'start'});
+    if(focus){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}
   }
-  addEventListener('hashchange',()=>revealNote(location.hash));
-  if(location.hash)revealNote(location.hash);
+  addEventListener('hashchange',()=>revealNote(location.hash,true));
   const updateProgress = () => { const root = document.documentElement; const max = root.scrollHeight - innerHeight; $('#progress-bar').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; };
-  addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+  addEventListener('scroll', updateProgress, {passive:true});
+  addEventListener('resize', updateProgress);
+  if(location.hash)revealNote(location.hash);
+  updateProgress();
 })();

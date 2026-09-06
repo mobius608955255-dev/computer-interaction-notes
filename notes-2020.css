@@ -160,3 +160,15 @@ h1 { margin: 0; font-size: clamp(34px, 7vw, 54px); line-height: 1.15; letter-spa
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; }
 }
+
+/* Search and directory refinements: readable controls without adding a toolbar. */
+.search input { font-size: 16px; }
+.search:focus-within { border-radius: 6px; outline: 2px solid var(--accent); outline-offset: 4px; }
+#clear-search { flex: 0 0 36px; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-size: 22px; cursor: pointer; }
+#clear-search[hidden], .search-empty[hidden] { display: none; }
+.search-empty { margin: 14px 0 24px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.search-empty p { margin: 0 0 10px; line-height: 1.75; }
+.search-empty p + p { color: var(--faint); font-size: 14px; }
+.search-empty button { max-width: 100%; min-height: 44px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--accent-soft); color: var(--ink); font: inherit; cursor: pointer; }
+.note-item:focus-visible, .section-block:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+@media print { .search-empty { display: none !important; } }
