@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {JSDOM}=require('jsdom');
 const root=path.resolve(__dirname,'..');
-const files=[2020,2021,2022,2023,2024,2025,2026].map(y=>`notes-${y}-data.js`).concat(['notes-data.js','demos-data.js','simulations.js','note-labs.js','note-labs-2021.js','note-labs-audit.js','notes-standard.js']);
+const files=[2020,2021,2022,2023,2024,2025,2026].map(y=>`notes-${y}-data.js`).concat(['notes-data.js','demos-data.js','simulations.js','notes-choices.js','note-labs.js','note-labs-2021.js','note-labs-audit.js','notes-standard.js']);
 function env(chapter=4){
   const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;Object.defineProperty(w.crypto,'subtle',{value:require('node:crypto').webcrypto.subtle});w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
@@ -19,6 +19,44 @@ function env(chapter=4){
 function open(e,id){const c=e.d.getElementById(id);assert.ok(c,`note ${id}`);c.querySelector('.simulation-toggle').click();return c;}
 function click(c,action,value){const s=`[data-lab-act="${action}"]${value!==undefined?`[data-value="${value}"]`:''}`;const b=c.querySelector(s);assert.ok(b,s);b.click();}
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
+function choice(c,name,value){const source=c.querySelector(`select[data-field="${name}"]`);assert.ok(source?.hidden,'native popup is removed');const i=[...source.options].findIndex(o=>o.value===value);return source.closest('.notes-picker').querySelector(`[data-choice-index="${i}"]`);}
+function tap(e,button){button.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));button.focus();button.dispatchEvent(new e.w.MouseEvent('pointerup',{bubbles:true,button:0}));button.click();}
+test('touch choices commit once, keep focus, and immediately control file transfer',()=>{
+ const e=env(2),c=open(e,'y2020q24');let calls=0;const model=e.w.NOTE_LABS.registry.y2020q24,original=model.change;model.change=(...args)=>{calls++;return original(...args);};
+ assert.equal(c.querySelectorAll('.notes-picker.is-inline').length,3);
+ tap(e,choice(c,'modifier','ctrl'));assert.equal(calls,1);assert.equal(e.d.activeElement.getAttribute('aria-checked'),'true');
+ tap(e,choice(c,'modifier','ctrl'));assert.equal(calls,1,'same choice does not reset the model');
+ click(c,'drop');assert.ok(c.querySelector('.lab-file'));assert.match(c.querySelector('[data-file-target]').textContent,/笔记.txt/);
+ tap(e,choice(c,'drive','D'));assert.equal(calls,2);assert.doesNotMatch(c.querySelector('[data-file-target]').textContent,/笔记.txt/);
+ tap(e,choice(c,'modifier','shift'));click(c,'drop');assert.equal(c.querySelector('.lab-file'),null);
+ c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('select[data-field="drive"]').value,'C');assert.equal(choice(c,'modifier','none').getAttribute('aria-checked'),'true');e.dom.window.close();
+});
+test('radio arrows survive rerenders and do not trigger demonstration hotkeys',()=>{
+ const e=env(2),c=open(e,'y2020q24');choice(c,'modifier','none').focus();
+ for(const [key,value] of [['ArrowRight','ctrl'],['ArrowRight','shift'],['End','link'],['Home','none']]){e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key}));assert.equal(c.querySelector('select[data-field="modifier"]').value,value);assert.equal(e.d.activeElement,choice(c,'modifier',value));}
+ assert.equal(c.querySelector('[data-field="modifier"]').closest('.notes-picker').querySelectorAll('[tabindex="0"]').length,1);e.dom.window.close();
+});
+test('long choices expand locally, cancel with Escape, and close on outside click',()=>{
+ const e=env(1),c=open(e,'merged-3');tap(e,choice(c,'mode','size'));const source=c.querySelector('[data-field="unit"]'),box=source.closest('.notes-picker');
+ assert.ok(box.classList.contains('is-collapsible'));box.querySelector('.choice-trigger').click();assert.equal(box.querySelector('.choice-options').hidden,false);
+ e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key:'ArrowDown'}));assert.equal(source.value,'MiB','navigation does not commit before selection');
+ e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key:'Escape'}));assert.equal(box.querySelector('.choice-options').hidden,true);assert.equal(e.d.activeElement,box.querySelector('.choice-trigger'));
+ box.querySelector('.choice-trigger').click();e.d.querySelector('h1').click();assert.equal(box.querySelector('.choice-options').hidden,true);e.dom.window.close();
+});
+test('blurred input and following touch choice both reach the model',()=>{
+ const e=env(1),c=open(e,'merged-3');tap(e,choice(c,'mode','size'));const input=c.querySelector('[data-field="amount"]');input.focus();input.value='2';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ const trigger=c.querySelector('[data-field="unit"]').closest('.notes-picker').querySelector('.choice-trigger');trigger.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));input.dispatchEvent(new e.w.Event('change',{bubbles:true}));trigger.focus();trigger.click();assert.ok(c.querySelector('.notes-picker.is-open'));
+ tap(e,choice(c,'unit','KiB'));assert.match(c.querySelector('.lab-output').textContent,/2 KiB = 2,048 B/);e.dom.window.close();
+});
+test('legacy option updates, disabled groups, and list-box exceptions are preserved',async()=>{
+ const e=env(4),host=e.d.createElement('div');host.innerHTML='<fieldset disabled><label>测试<select><option>A</option><option>B</option></select></label></fieldset><label>引用<select size="3"><option>A1:A5</option></select></label>';e.d.body.append(host);e.w.NOTE_CHOICES.enhance(host);
+ assert.equal(host.querySelectorAll('.notes-picker').length,1);assert.ok(host.querySelector('.choice-option').disabled);assert.equal(host.querySelector('select[size]').hidden,false);
+ host.querySelector('fieldset').disabled=false;e.w.NOTE_CHOICES.enhance(host);assert.equal(host.querySelector('.choice-option').disabled,false);
+ const source=host.querySelector('select');source.innerHTML='<option>新条目</option><option selected>当前条目</option>';await new Promise(r=>e.w.setTimeout(r,0));assert.equal(host.querySelector('[aria-checked="true"]').textContent,'当前条目✓');e.dom.window.close();
+});
+test('chapter selection has complete names and an accessible local menu',()=>{
+ const e=env(2),source=e.d.querySelector('#chapter-select'),box=source.closest('.notes-picker');assert.ok(source.hidden);assert.equal(box.querySelectorAll('.choice-option').length,11);assert.match(box.querySelector('.choice-current').textContent,/第2章/);box.querySelector('.choice-trigger').click();assert.equal(box.querySelector('.choice-options').hidden,false);e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key:'Escape'}));assert.equal(e.d.activeElement,box.querySelector('.choice-trigger'));e.dom.window.close();
+});
 test('460 unique sources; all seven years mapped; all 220 notes have simulations',()=>{
   const e=env();const notes=e.w.NOTES.notes;assert.equal(notes.length,220);assert.equal(e.w.NOTES.sourceCount,460);
   const keys=notes.flatMap(n=>n.sources.map(s=>`${s.year}-${s.q}`));assert.equal(new Set(keys).size,460);
@@ -202,7 +240,7 @@ test('Combination chart cancel preserves applied axis configuration',()=>{
  const e=env(),c=open(e,'y2026q52');click(c,'ab');c.querySelector('[data-lab-act="d"]').dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,ctrlKey:true}));click(c,'insert');click(c,'combo');change(e,c,'secondary',true);click(c,'apply');click(c,'combo');change(e,c,'secondary',false);click(c,'cancel');assert.match(c.querySelector('svg').textContent,/成功率%/);e.dom.window.close();
 });
 test('Word and Excel show 18 comparison tables, external reset controls, and keep keyboard focus',()=>{
- let count=0;for(const ch of [3,4]){const e=env(ch);count+=e.d.querySelectorAll('.note-comparison').length;assert.equal(e.d.querySelectorAll('.simulation-footer').length,0);const c=open(e,ch===3?'merged-7':'merged-10');assert.equal(c.querySelector('[data-sim-reset]').closest('.lab-office'),null);const control=c.querySelector('[data-field]');control.focus();control.dispatchEvent(new e.w.Event('change',{bubbles:true}));assert.equal(e.d.activeElement.dataset.field,control.dataset.field);e.dom.window.close();}assert.equal(count,18);
+ let count=0;for(const ch of [3,4]){const e=env(ch);count+=e.d.querySelectorAll('.note-comparison').length;assert.equal(e.d.querySelectorAll('.simulation-footer').length,0);const c=open(e,ch===3?'merged-7':'merged-10');assert.equal(c.querySelector('[data-sim-reset]').closest('.lab-office'),null);const control=c.querySelector('[data-field]');control.focus();control.dispatchEvent(new e.w.Event('change',{bubbles:true}));assert.equal(e.d.activeElement.closest('.notes-picker')?.querySelector('select').dataset.field||e.d.activeElement.dataset.field,control.dataset.field);e.dom.window.close();}assert.equal(count,18);
 });
 test('Trend forecast preserves slope and places its endpoint on the same month scale',()=>{
  const e=env(),c=open(e,'y2024q68');click(c,'open');change(e,c,'draft','1');click(c,'apply');let line=c.querySelector('[data-trend-line]');assert.equal(line.getAttribute('x2'),'280');const firstY=line.getAttribute('y2');click(c,'open');change(e,c,'draft','3');click(c,'cancel');assert.equal(c.querySelector('[data-trend-line]').getAttribute('y2'),firstY);click(c,'open');change(e,c,'draft','3');click(c,'apply');line=c.querySelector('[data-trend-line]');assert.equal(line.getAttribute('x2'),'360');assert.ok(Number(line.getAttribute('y2'))<Number(firstY));e.dom.window.close();

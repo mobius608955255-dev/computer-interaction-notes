@@ -8,7 +8,7 @@
   const chapter = data.chapters.find(item => item.number === chapterNumber);
   const notes = data.notes.filter(item => item.chapter === chapterNumber);
   const sourceCount = notes.reduce((sum, note) => sum + note.sources.length, 0);
-  const version = 40;
+  const version = 41;
   const chapterUrl = number => `./chapter${number}.html?v=${version}`;
   const homeUrl = `./index.html?v=${version}`;
   const appNames = {1:'原理实验室',2:'Windows 10',3:'Word 2016',4:'Excel 2016',5:'PowerPoint 2016',6:'网络实验室',7:'多媒体工作台',8:'安全控制台',9:'前沿技术沙盘',10:'数据库实验室',11:'算法运行器'};
@@ -61,6 +61,7 @@
     </section>`).join('');
 
   $('#chapter-select').innerHTML = data.chapters.map(item => `<option value="${item.number}" ${item.number === chapterNumber ? 'selected' : ''}>第${item.number}章　${item.title}</option>`).join('');
+  window.NOTE_CHOICES?.enhance(document.querySelector('.header-actions'));
   $('#chapter-select').addEventListener('change', event => { location.href = chapterUrl(event.target.value); });
   $('#note-list').innerHTML = notes.map(note => `<li><a href="#${note.id}"><span>${note.section}</span><b>${note.title}</b></a></li>`).join('');
 

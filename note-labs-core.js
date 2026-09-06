@@ -54,9 +54,9 @@
 
   register(['y2020q24'],'拖动同一个文件，比较同盘、跨盘与组合键','把文件真正拖入目标文件夹；源目录与目标目录分别显示操作后的结果。',{
     source:true,target:[],drive:'C',modifier:'none',mode:'left',menu:false,message:'同盘普通拖动默认移动。可切到 D 盘，或使用 Ctrl / Shift。'
-  },s=>controls(select('drive','目标盘符',s.drive,[['C','C: 同一驱动器'],['D','D: 不同驱动器']])+select('modifier','触屏组合键辅助',s.modifier,[['none','不按组合键'],['ctrl','Ctrl：复制'],['shift','Shift：移动'],['link','Ctrl + Shift：快捷方式']])+select('mode','拖动方式',s.mode,[['left','普通拖动'],['right','右键拖动菜单']]))+
+  },s=>`<div class="lab-controls core-drag-options">${select('drive','目标文件夹',s.drive,[['C','C 盘 · 同盘'],['D','D 盘 · 跨盘']])+select('modifier','组合键（触屏辅助）',s.modifier,[['none','不按组合键：默认行为'],['ctrl','Ctrl：复制'],['shift','Shift：移动'],['link','Ctrl + Shift：快捷方式']],'data-choice-layout="keys"')+select('mode','拖动方式',s.mode,[['left','普通拖动'],['right','右键拖动菜单']])}</div>`+
     `<div class="lab-file-transfer core-file-transfer"><section><b>源文件夹 C:\\资料</b>${s.source?'<button type="button" data-lab-drag="file" data-lab-act="select" class="lab-file" aria-label="拖动笔记.txt">笔记.txt</button>':'<p>源文件已移走</p>'}</section><section data-file-target><b>目标文件夹 ${s.drive}:\\复习</b>${s.target.length?s.target.map(x=>`<p data-file-result>${esc(x)}</p>`).join(''):'<p>放到这里</p>'}</section></div>`+
-    (s.menu?`<div class="lab-context-menu" aria-label="拖放菜单">${btn('复制到这里','copy')}${btn('移动到这里','move')}${btn('创建快捷方式','link')}${btn('取消','cancel')}</div>`:'')+controls(btn('键盘辅助：执行拖放','drop','',s.source?'':'disabled')+btn('重新放回源文件','restore'))+output(s.message)+coach('电脑可在松开鼠标时按住 Ctrl、Shift 或 Ctrl+Shift；触屏辅助选择器在模拟窗口外。停留长按约 0.6 秒可打开操作菜单。本例是普通文件，假定有权限且目标没有同名冲突。'),
+    (s.menu?`<div class="lab-context-menu" aria-label="拖放菜单">${btn('复制到这里','copy')}${btn('移动到这里','move')}${btn('创建快捷方式','link')}${btn('取消','cancel')}</div>`:'')+controls(btn('键盘辅助：执行拖放','drop','',s.source?'':'disabled')+btn('重新放回源文件','restore'))+output(s.message)+coach('手机可先点选上方组合键，再拖动文件。电脑可在松开鼠标时按住 Ctrl、Shift 或 Ctrl+Shift。停留长按约 0.6 秒可打开操作菜单。本例是普通文件，假定有权限且目标没有同名冲突。'),
   (s,a)=>{
     if(a==='restore'){s.source=true;s.target=[];s.menu=false;s.message='源文件已恢复，可重新比较拖动规则。';return;}
     if(a==='menu'&&s.source){s.menu=true;return;}if(a==='cancel'){s.menu=false;return;}

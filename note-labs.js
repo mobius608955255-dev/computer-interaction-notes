@@ -8,7 +8,7 @@
   let serial = 0;
   const btn = (text,act,value='',extra='') => `<button type="button" data-lab-act="${act}" data-value="${esc(String(value))}" ${extra}>${text}</button>`;
   const field = (name,label,value,type='text',extra='') => `<label>${label}<input data-field="${name}" type="${type}" value="${esc(String(value))}" ${extra}></label>`;
-  const select = (name,label,value,options) => `<label>${label}<select data-field="${name}">${options.map(o=>`<option value="${esc(String(o[0]))}" ${String(o[0])===String(value)?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
+  const select = (name,label,value,options,extra='') => `<label>${label}<select data-field="${name}" ${extra}>${options.map(o=>`<option value="${esc(String(o[0]))}" ${String(o[0])===String(value)?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
   const table = (head,rows) => `<div class="lab-table-scroll" tabindex="0" aria-label="数据表，可横向滚动"><table><thead><tr>${head.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   const coach = text => `<div class="lab-coach"><b>操作提示</b><p>${text}</p></div>`;
   const output = text => `<output class="lab-output" aria-live="polite">${text}</output>`;
@@ -221,10 +221,12 @@
 
   function render(root){
     const focused=root.contains(document.activeElement)?document.activeElement:null;
-    const descriptor=focused?.dataset.field?['field',focused.dataset.field]:focused?.dataset.labAct?['labAct',focused.dataset.labAct,focused.dataset.value]:null;
+    const choiceSource=focused?.closest('.notes-picker')?.querySelector('select');
+    const descriptor=choiceSource?.dataset.field?['field',choiceSource.dataset.field]:focused?.dataset.field?['field',focused.dataset.field]:focused?.dataset.labAct?['labAct',focused.dataset.labAct,focused.dataset.value]:null;
     const selection=focused&&['text','search'].includes(focused.type)||focused?.tagName==='TEXTAREA'?[focused.selectionStart,focused.selectionEnd]:null;
     const s=states.get(root);root.innerHTML=registry[root.dataset.lab].render(s);
-    if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
+    window.NOTE_CHOICES?.enhance(root);
+    if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){if(target.tagName==='SELECT'&&window.NOTE_CHOICES)window.NOTE_CHOICES.focus(target);else target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
     registry[root.dataset.lab].afterRender?.(s,root);
   }
   function mount(card){
@@ -232,8 +234,8 @@
       if(states.has(root))return;
       states.set(root,fresh(root.dataset.lab));render(root);
       const model=registry[root.dataset.lab];
-      root.addEventListener('focusin',e=>{const field=e.target.closest('[data-field]');if(field)model.focus?.(states.get(root),field.dataset.field);});
-      if(model.tick){const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);return;}if(model.tick(states.get(root))&&!pointerTarget&&!root.closest('[hidden]'))render(root);},model.tickInterval||200);}
+      root.addEventListener('focusin',e=>{const field=e.target.closest('[data-field]')||e.target.closest('.notes-picker')?.querySelector('[data-field]');if(field)model.focus?.(states.get(root),field.dataset.field);});
+      if(model.tick){const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);return;}if(model.tick(states.get(root))&&!pointerTarget&&!root.closest('[hidden]')&&!root.querySelector('.notes-picker.is-open'))render(root);},model.tickInterval||200);}
       root.addEventListener('dblclick',e=>{if(e.target.closest('.lab-page-header')&&root.dataset.lab==='y2020q41'){states.get(root).editing=true;render(root);}});
       root.addEventListener('keydown',e=>{const s=states.get(root);if(root.dataset.lab==='y2025q10'&&s.show&&!e.target.closest('input,textarea,select')&&e.key.toLowerCase()==='b'){e.preventDefault();s.black=!s.black;render(root);}});
       let suppressUntil=0, gesture=null, pointerTarget=null, dirty=false;
@@ -252,7 +254,7 @@
           if(root.isConnected&&states.get(root)===s)render(root);
         });
       };
-      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
+      root.addEventListener('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty&&!root.querySelector('.notes-picker.is-open')){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
       root.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"],[data-lab-drag="file"]')){e.preventDefault();act('menu');}});
       // Capture typing immediately; do not depend on blur/change before a toolbar click.
       root.addEventListener('input',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;});
@@ -263,6 +265,7 @@
       });
       root.addEventListener('pointerdown',e=>{
         pointerTarget=e.target.closest('button,input,select,textarea');
+        if(e.target.closest('.notes-picker'))return;
         // A fresh press on another command is intentional, not the drag's ghost click.
         if(pointerTarget?.dataset.labAct&&!pointerTarget.dataset.labDrag)suppressUntil=0;
         const el=e.target.closest('[data-lab-drag]');if(!el||![0,2].includes(e.button))return;if(e.target.closest('input,textarea,select')&&el!==e.target)return;

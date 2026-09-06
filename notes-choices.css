@@ -1,0 +1,47 @@
+/* Keep choice text readable and on the page, including Android. */
+.notes-picker { min-width:0; max-width:100%; width:100%; color:#493642; position:relative; }
+.choice-source,.notes-picker [hidden] { display:none!important; }
+.notes-picker .choice-label { display:block; font:600 .875rem/1.6 system-ui,sans-serif; color:#705663; margin-bottom:7px; overflow-wrap:anywhere; }
+.lab-controls>.notes-picker { flex:1 1 220px; }
+.lab-ribbon>.notes-picker { flex:1 1 180px; }
+.notes-picker .choice-options { display:grid; grid-template-columns:1fr; gap:6px; min-width:0; }
+.notes-picker.is-inline .choice-options { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.notes-picker.is-inline .choice-options:has(>:only-child) { grid-template-columns:1fr; }
+.notes-picker :is(.choice-option,.choice-trigger) { appearance:none; display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; min-width:0; max-width:100%; min-height:46px; margin:0; padding:10px 12px; border:1px solid #e1c9d5; border-radius:10px; background:#fff; color:#513d48; font:500 1rem/1.5 system-ui,sans-serif; text-align:left; white-space:normal; overflow-wrap:anywhere; box-shadow:none; cursor:pointer; touch-action:manipulation; }
+.notes-picker .choice-option>span:first-child,.notes-picker .choice-current { min-width:0; }
+.notes-picker .choice-check { flex:0 0 14px; font-size:14px; font-weight:800; color:#a6306c; visibility:hidden; }
+.notes-picker .choice-option[aria-checked="true"] { background:#fce8f1; border-color:#b8467c; color:#872754; box-shadow:inset 0 0 0 1px #b8467c; }
+.notes-picker .choice-option[aria-checked="true"] .choice-check { visibility:visible; }
+.notes-picker :is(.choice-option,.choice-trigger):focus-visible { outline:3px solid #ba3e79; outline-offset:3px; }
+.notes-picker :is(.choice-option,.choice-trigger):disabled { opacity:.5; cursor:default; }
+.notes-picker.is-collapsible .choice-options { margin-top:8px; padding:7px; max-height:280px; max-height:min(45dvh,280px); overflow-y:auto; overscroll-behavior:contain; border:1px solid #e1c9d5; border-radius:12px; background:#fff8fb; scrollbar-color:#cf94af #fff8fb; }
+.notes-picker.is-collapsible .choice-option { border-color:transparent; }
+.notes-picker.is-collapsible .choice-option[aria-checked="true"] { border-color:#b8467c; }
+.notes-picker .choice-chevron { flex:none; color:#a14d76; font-size:20px; line-height:1; }
+.notes-picker.is-open .choice-chevron { transform:rotate(180deg); }
+.notes-picker.is-keys .choice-option { display:grid; grid-template-columns:minmax(0,1fr) 14px; gap:1px 6px; min-height:66px; }
+.notes-picker.is-keys .choice-option strong { font-size:1rem; line-height:1.5; font-weight:650; }
+.notes-picker.is-keys .choice-option small { grid-column:1; color:#79576a; font-size:.875rem; line-height:1.5; }
+.notes-picker.is-keys .choice-check { grid-column:2; grid-row:1 / span 2; }
+.note-lab .core-drag-options { align-items:start; gap:14px; }
+.core-drag-options>.notes-picker { flex:1 1 100%; }
+.notes-picker.is-chapter { width:min(310px,45vw); flex:1; position:static; }
+.notes-picker.is-chapter>.choice-label { display:none; }
+.notes-picker.is-chapter .choice-trigger { min-height:44px; padding:7px 10px; font-size:.875rem; }
+.notes-picker.is-chapter .choice-options { position:absolute; top:100%; right:max(12px,calc((100vw - var(--reading))/2)); z-index:55; width:min(350px,calc(100vw - 24px)); max-height:min(65dvh,440px); box-shadow:0 12px 30px #65374924; }
+.notes-picker.is-chapter .choice-option { font-size:.9375rem; min-height:48px; }
+@media(hover:hover) {
+  .notes-picker .choice-option:not(:disabled):hover,.notes-picker .choice-trigger:not(:disabled):hover { background:#fff0f6; border-color:#c47a9d; }
+  .notes-picker .choice-option[aria-checked="true"]:hover { background:#f8dce9; }
+}
+@media(min-width:700px) {
+  .core-drag-options>.notes-picker { flex:1 1 190px; }
+  .core-drag-options>.notes-picker.is-keys { flex-basis:270px; }
+}
+@media(max-width:400px) {
+  .notes-picker :is(.choice-option,.choice-trigger) { padding:9px; gap:6px; }
+  .notes-picker.is-chapter { width:min(47vw,205px); }
+}
+@media print {
+  .notes-picker .choice-options { max-height:none!important; overflow:visible!important; }
+}
