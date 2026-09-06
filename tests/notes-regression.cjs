@@ -21,20 +21,24 @@ function click(c,action,value){const s=`[data-lab-act="${action}"]${value!==unde
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
 function choice(c,name,value){const source=c.querySelector(`select[data-field="${name}"]`);assert.ok(source?.hidden,'native popup is removed');const i=[...source.options].findIndex(o=>o.value===value);return source.closest('.notes-picker').querySelector(`[data-choice-index="${i}"]`);}
 function tap(e,button){button.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));button.focus();button.dispatchEvent(new e.w.MouseEvent('pointerup',{bubbles:true,button:0}));button.click();}
-test('touch choices commit once, keep focus, and immediately control file transfer',()=>{
+test('touch choices commit once while modifier keys toggle independently',()=>{
  const e=env(2),c=open(e,'y2020q24');let calls=0;const model=e.w.NOTE_LABS.registry.y2020q24,original=model.change;model.change=(...args)=>{calls++;return original(...args);};
- assert.equal(c.querySelectorAll('.notes-picker.is-inline').length,3);
- tap(e,choice(c,'modifier','ctrl'));assert.equal(calls,1);assert.equal(e.d.activeElement.getAttribute('aria-checked'),'true');
- tap(e,choice(c,'modifier','ctrl'));assert.equal(calls,1,'same choice does not reset the model');
+ const key=k=>c.querySelector(`[data-lab-act="modifier"][data-value="${k}"]`);
+ assert.equal(c.querySelectorAll('.notes-picker.is-inline').length,2);assert.deepEqual([...c.querySelectorAll('.core-modifier-keys button')].map(b=>b.textContent),['Ctrl','Shift','Alt']);
+ tap(e,key('ctrl'));assert.equal(key('ctrl').getAttribute('aria-pressed'),'true');assert.equal(e.d.activeElement,key('ctrl'));
+ tap(e,key('ctrl'));assert.equal(key('ctrl').getAttribute('aria-pressed'),'false');tap(e,key('ctrl'));
  click(c,'drop');assert.ok(c.querySelector('.lab-file'));assert.match(c.querySelector('[data-file-target]').textContent,/笔记.txt/);
- tap(e,choice(c,'drive','D'));assert.equal(calls,2);assert.doesNotMatch(c.querySelector('[data-file-target]').textContent,/笔记.txt/);
- tap(e,choice(c,'modifier','shift'));click(c,'drop');assert.equal(c.querySelector('.lab-file'),null);
- c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('select[data-field="drive"]').value,'C');assert.equal(choice(c,'modifier','none').getAttribute('aria-checked'),'true');e.dom.window.close();
+ tap(e,choice(c,'drive','D'));assert.equal(calls,1);assert.doesNotMatch(c.querySelector('[data-file-target]').textContent,/笔记.txt/);
+ tap(e,choice(c,'drive','D'));assert.equal(calls,1,'repeated single choice does not reset the model');
+ tap(e,key('shift'));assert.equal(key('ctrl').getAttribute('aria-pressed'),'true');assert.equal(key('shift').getAttribute('aria-pressed'),'true');click(c,'drop');assert.match(c.querySelector('[data-file-target]').textContent,/快捷方式/);assert.ok(c.querySelector('.lab-file'));
+ click(c,'restore');tap(e,key('ctrl'));click(c,'drop');assert.equal(c.querySelector('.lab-file'),null);
+ c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('select[data-field="drive"]').value,'C');for(const k of ['ctrl','shift','alt'])assert.equal(key(k).getAttribute('aria-pressed'),'false');
+ tap(e,key('alt'));click(c,'drop');assert.match(c.querySelector('[data-file-target]').textContent,/快捷方式/);assert.ok(c.querySelector('.lab-file'));e.dom.window.close();
 });
 test('radio arrows survive rerenders and do not trigger demonstration hotkeys',()=>{
- const e=env(2),c=open(e,'y2020q24');choice(c,'modifier','none').focus();
- for(const [key,value] of [['ArrowRight','ctrl'],['ArrowRight','shift'],['End','link'],['Home','none']]){e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key}));assert.equal(c.querySelector('select[data-field="modifier"]').value,value);assert.equal(e.d.activeElement,choice(c,'modifier',value));}
- assert.equal(c.querySelector('[data-field="modifier"]').closest('.notes-picker').querySelectorAll('[tabindex="0"]').length,1);e.dom.window.close();
+ const e=env(2),c=open(e,'y2020q24');choice(c,'mode','left').focus();
+ for(const [key,value] of [['ArrowRight','right'],['ArrowRight','left'],['End','right'],['Home','left']]){e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key}));assert.equal(c.querySelector('select[data-field="mode"]').value,value);assert.equal(e.d.activeElement,choice(c,'mode',value));}
+ assert.equal(c.querySelector('[data-field="mode"]').closest('.notes-picker').querySelectorAll('[tabindex="0"]').length,1);e.dom.window.close();
 });
 test('long choices expand locally, cancel with Escape, and close on outside click',()=>{
  const e=env(1),c=open(e,'merged-3');tap(e,choice(c,'mode','size'));const source=c.querySelector('[data-field="unit"]'),box=source.closest('.notes-picker');
@@ -299,7 +303,9 @@ test('CPU advances PC on fetch and stores the sum only at STORE',()=>{
 test('File drag uses destination volume and actual pointerup modifier keys',()=>{
  const e=env(2),c=open(e,'y2020q24');
  const drag=(mods={})=>{const f=c.querySelector('[data-lab-drag="file"]');c.querySelector('[data-file-target]').getBoundingClientRect=()=>({left:150,right:290,top:80,bottom:240});for(const [type,x,y] of [['pointerdown',20,50],['pointermove',200,140],['pointerup',200,140]])f.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y,...mods}));};
- change(e,c,'drive','D');drag();assert.ok(c.querySelector('[data-lab-drag="file"]'));assert.equal(c.querySelectorAll('[data-file-result]').length,1);change(e,c,'drive','C');drag({ctrlKey:true});assert.ok(c.querySelector('[data-lab-drag="file"]'));change(e,c,'drive','D');drag({shiftKey:true});assert.equal(c.querySelector('[data-lab-drag="file"]'),null);e.dom.window.close();
+ change(e,c,'drive','D');drag();assert.ok(c.querySelector('[data-lab-drag="file"]'));assert.equal(c.querySelectorAll('[data-file-result]').length,1);change(e,c,'drive','C');drag({ctrlKey:true});assert.ok(c.querySelector('[data-lab-drag="file"]'));change(e,c,'drive','D');drag({shiftKey:true});assert.equal(c.querySelector('[data-lab-drag="file"]'),null);
+ for(const mods of [{ctrlKey:true,shiftKey:true},{altKey:true}]){change(e,c,'drive','C');drag(mods);assert.ok(c.querySelector('.lab-file'));assert.match(c.querySelector('[data-file-target]').textContent,/快捷方式/);}
+ change(e,c,'drive','C');change(e,c,'mode','right');click(c,'modifier','ctrl');drag();assert.ok(c.querySelector('.lab-context-menu'));assert.equal(c.querySelectorAll('[data-file-result]').length,0);click(c,'cancel');assert.ok(c.querySelector('.lab-file'));e.dom.window.close();
 });
 test('Duplicate file copy reports a conflict rather than claiming another copy',()=>{
  const e=env(2),m=e.w.NOTE_LABS.registry.y2020q24,s=structuredClone(m.initial);s.drive='D';m.action(s,'drop');m.action(s,'drop');assert.equal(s.target.length,1);assert.match(s.message,/已存在/);assert.equal(s.source,true);e.dom.window.close();

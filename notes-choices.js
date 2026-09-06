@@ -22,10 +22,9 @@
       labelCopy?.querySelectorAll('select').forEach(el => el.remove());
       const title = source.getAttribute('aria-label') || labelCopy?.textContent.trim() || source.title || '选择';
       const chapter = source.id === 'chapter-select';
-      const keys = source.dataset.choiceLayout === 'keys';
       const options = [...source.options];
-      const inline = !chapter && (keys || (options.length <= 4 && options.every(o => o.textContent.trim().length <= 18) && !source.closest('.lab-office')));
-      const box = element('div', 'notes-picker' + (inline ? ' is-inline' : ' is-collapsible') + (chapter ? ' is-chapter' : '') + (keys ? ' is-keys' : ''));
+      const inline = !chapter && options.length <= 4 && options.every(o => o.textContent.trim().length <= 18) && !source.closest('.lab-office');
+      const box = element('div', 'notes-picker' + (inline ? ' is-inline' : ' is-collapsible') + (chapter ? ' is-chapter' : ''));
       const heading = element('span', 'choice-label', title);
       heading.id = 'choice-label-' + (++serial);
       const list = element('div', 'choice-options');
@@ -66,11 +65,7 @@
             button.dataset.choiceIndex = index;
             button.setAttribute('role', 'radio');
             const text = option.textContent.trim();
-            if (keys) {
-              const split = text.indexOf('：');
-              button.append(element('strong', '', split < 0 ? text : text.slice(0, split)));
-              if (split >= 0) button.append(element('small', '', text.slice(split + 1)));
-            } else button.append(element('span', '', text));
+            button.append(element('span', '', text));
             const mark = element('span', 'choice-check', '✓');
             mark.setAttribute('aria-hidden', 'true');
             button.append(mark);

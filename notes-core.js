@@ -239,10 +239,10 @@
       }
     },
     "y2020q24": {
-      "conclusion": "资源管理器中，普通文件在同一卷的不同文件夹间左键拖动通常移动，跨卷通常复制；Ctrl、Shift及右键拖放菜单可明确请求动作。",
+      "conclusion": "资源管理器中，普通文件在同一卷的不同文件夹间左键拖动通常移动，跨卷通常复制；Ctrl、Shift、Alt及右键拖放菜单可明确请求动作。",
       "points": [
         "这里的“同盘／跨盘”主要按逻辑卷区分；一块物理硬盘上的C盘与D盘也属于跨卷。",
-        "Ctrl拖动通常复制，Shift拖动通常移动，Ctrl＋Shift拖动通常创建快捷方式；右键拖动可在松手后从菜单选择。",
+        "Ctrl拖动通常复制，Shift拖动通常移动，Ctrl＋Shift或Alt拖动通常创建快捷方式；右键拖动可在松手后从菜单选择。",
         "复制在目标建立副本并保留源文件；移动成功后文件离开原文件夹；快捷方式只建立指向目标的入口。",
         "资源管理器剪切文件通常先标记待移动，粘贴成功后才完成移动；图标变淡不表示文件已经删除。",
         "多文件可批量重命名，系统通常追加序号以区分名称；扩展名与实际格式仍须分别判断。",
@@ -278,6 +278,11 @@
           ],
           [
             "Ctrl＋Shift＋拖动",
+            "创建快捷方式",
+            "保留"
+          ],
+          [
+            "Alt＋拖动",
             "创建快捷方式",
             "保留"
           ],
@@ -753,6 +758,10 @@
       ]
     ],
     "y2020q24": [
+      [
+        "Microsoft：Windows 键盘快捷方式",
+        "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
+      ],
       [
         "Microsoft：Shell Clipboard Formats",
         "https://learn.microsoft.com/en-us/windows/win32/shell/clipboard"

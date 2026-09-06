@@ -19,12 +19,13 @@
 .notes-picker.is-collapsible .choice-option[aria-checked="true"] { border-color:#b8467c; }
 .notes-picker .choice-chevron { flex:none; color:#a14d76; font-size:20px; line-height:1; }
 .notes-picker.is-open .choice-chevron { transform:rotate(180deg); }
-.notes-picker.is-keys .choice-option { display:grid; grid-template-columns:minmax(0,1fr) 14px; gap:1px 6px; min-height:66px; }
-.notes-picker.is-keys .choice-option strong { font-size:1rem; line-height:1.5; font-weight:650; }
-.notes-picker.is-keys .choice-option small { grid-column:1; color:#79576a; font-size:.875rem; line-height:1.5; }
-.notes-picker.is-keys .choice-check { grid-column:2; grid-row:1 / span 2; }
 .note-lab .core-drag-options { align-items:start; gap:14px; }
-.core-drag-options>.notes-picker { flex:1 1 100%; }
+.core-drag-options>.notes-picker,.core-drag-options>.core-modifier-controls { flex:1 1 100%; min-width:0; }
+.note-lab .core-modifier-label { display:block; margin-bottom:7px; color:#705663; font:600 .875rem/1.6 system-ui,sans-serif; }
+.note-lab .core-modifier-keys { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.note-lab .core-modifier-keys button { min-width:0; min-height:48px; width:100%; margin:0; padding:10px 8px; border:1px solid #e1c9d5; border-bottom-width:3px; border-radius:10px; background:#fff; color:#513d48; font:600 1rem/1.5 system-ui,sans-serif; overflow-wrap:anywhere; touch-action:manipulation; }
+.note-lab .core-modifier-keys button[aria-pressed="true"] { background:#fce8f1; border-color:#b8467c; color:#872754; box-shadow:inset 0 0 0 1px #b8467c; }
+.note-lab .core-modifier-keys button:focus-visible { outline:3px solid #ba3e79; outline-offset:3px; }
 .notes-picker.is-chapter { width:min(310px,45vw); flex:1; position:static; }
 .notes-picker.is-chapter>.choice-label { display:none; }
 .notes-picker.is-chapter .choice-trigger { min-height:44px; padding:7px 10px; font-size:.875rem; }
@@ -35,8 +36,7 @@
   .notes-picker .choice-option[aria-checked="true"]:hover { background:#f8dce9; }
 }
 @media(min-width:700px) {
-  .core-drag-options>.notes-picker { flex:1 1 190px; }
-  .core-drag-options>.notes-picker.is-keys { flex-basis:270px; }
+  .core-drag-options>.notes-picker,.core-drag-options>.core-modifier-controls { flex:1 1 190px; }
 }
 @media(max-width:400px) {
   .notes-picker :is(.choice-option,.choice-trigger) { padding:9px; gap:6px; }

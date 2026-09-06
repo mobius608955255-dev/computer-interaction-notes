@@ -53,14 +53,15 @@
   });
 
   register(['y2020q24'],'拖动同一个文件，比较同盘、跨盘与组合键','把文件真正拖入目标文件夹；源目录与目标目录分别显示操作后的结果。',{
-    source:true,target:[],drive:'C',modifier:'none',mode:'left',menu:false,message:'同盘普通拖动默认移动。可切到 D 盘，或使用 Ctrl / Shift。'
-  },s=>`<div class="lab-controls core-drag-options">${select('drive','目标文件夹',s.drive,[['C','C 盘 · 同盘'],['D','D 盘 · 跨盘']])+select('modifier','组合键（触屏辅助）',s.modifier,[['none','不按组合键：默认行为'],['ctrl','Ctrl：复制'],['shift','Shift：移动'],['link','Ctrl + Shift：快捷方式']],'data-choice-layout="keys"')+select('mode','拖动方式',s.mode,[['left','普通拖动'],['right','右键拖动菜单']])}</div>`+
+    source:true,target:[],drive:'C',ctrl:false,shift:false,alt:false,mode:'left',menu:false,message:'同盘普通拖动默认移动。可切换目标盘符，或点选按键后再拖动。'
+  },s=>`<div class="lab-controls core-drag-options">${select('drive','目标文件夹',s.drive,[['C','C 盘 · 同盘'],['D','D 盘 · 跨盘']])}<div class="core-modifier-controls" role="group" aria-label="组合键（触屏辅助）"><span class="core-modifier-label">组合键（触屏辅助）</span><div class="core-modifier-keys">${[['ctrl','Ctrl'],['shift','Shift'],['alt','Alt']].map(([key,label])=>btn(label,'modifier',key,`aria-pressed="${s[key]}"`)).join('')}</div></div>${select('mode','鼠标按键',s.mode,[['left','左键'],['right','右键']])}</div>`+
     `<div class="lab-file-transfer core-file-transfer"><section><b>源文件夹 C:\\资料</b>${s.source?'<button type="button" data-lab-drag="file" data-lab-act="select" class="lab-file" aria-label="拖动笔记.txt">笔记.txt</button>':'<p>源文件已移走</p>'}</section><section data-file-target><b>目标文件夹 ${s.drive}:\\复习</b>${s.target.length?s.target.map(x=>`<p data-file-result>${esc(x)}</p>`).join(''):'<p>放到这里</p>'}</section></div>`+
-    (s.menu?`<div class="lab-context-menu" aria-label="拖放菜单">${btn('复制到这里','copy')}${btn('移动到这里','move')}${btn('创建快捷方式','link')}${btn('取消','cancel')}</div>`:'')+controls(btn('键盘辅助：执行拖放','drop','',s.source?'':'disabled')+btn('重新放回源文件','restore'))+output(s.message)+coach('手机可先点选上方组合键，再拖动文件。电脑可在松开鼠标时按住 Ctrl、Shift 或 Ctrl+Shift。停留长按约 0.6 秒可打开操作菜单。本例是普通文件，假定有权限且目标没有同名冲突。'),
-  (s,a)=>{
+    (s.menu?`<div class="lab-context-menu" aria-label="拖放菜单">${btn('复制到这里','copy')}${btn('移动到这里','move')}${btn('创建快捷方式','link')}${btn('取消','cancel')}</div>`:'')+controls(btn('键盘辅助：执行拖放','drop','',s.source?'':'disabled')+btn('重新放回源文件','restore'))+output(s.message)+coach('点一下按住，再点一下松开；可同时选中多个键，全部松开就是普通拖动。Ctrl 为复制，Shift 为移动，Ctrl+Shift 或 Alt 为创建快捷方式。电脑按松开鼠标时的实际按键执行。停留长按约 0.6 秒可打开操作菜单。本例是普通文件，假定有权限且目标没有同名冲突。'),
+  (s,a,v)=>{
+    if(a==='modifier'&&['ctrl','shift','alt'].includes(v)){s[v]=!s[v];return;}
     if(a==='restore'){s.source=true;s.target=[];s.menu=false;s.message='源文件已恢复，可重新比较拖动规则。';return;}
     if(a==='menu'&&s.source){s.menu=true;return;}if(a==='cancel'){s.menu=false;return;}
-    if(a==='drop'){if(s.mode==='right'){s.menu=true;return;}a=s.modifier==='ctrl'?'copy':s.modifier==='shift'?'move':s.modifier==='link'?'link':s.drive==='C'?'move':'copy';}
+    if(a==='drop'){if(s.mode==='right'){s.menu=true;return;}a=s.alt||s.ctrl&&s.shift?'link':s.ctrl?'copy':s.shift?'move':s.drive==='C'?'move':'copy';}
     if(['copy','move','link'].includes(a)&&s.source){const name=a==='link'?'笔记.txt — 快捷方式.lnk':'笔记.txt';if(s.target.includes(name)){s.menu=false;s.message='目标中已存在同名项目，本次操作未执行；可重新放回源文件后再比较。';return;}s.target.push(name);if(a==='move')s.source=false;s.menu=false;s.message=a==='copy'?'已复制：源文件保留，目标新增副本。':a==='move'?'已移动：目标出现文件，源文件夹不再显示它。':'已创建快捷方式：目标保存入口，原文件仍在 C:\\资料。';}
   },(s,k,v)=>{s[k]=v;if(k==='drive'){s.target=[];s.source=true;s.menu=false;s.message='已切换到新的目标文件夹，并恢复示例源文件。';}});
   registry.y2020q24.gesture=(s,g,root)=>{
@@ -68,7 +69,7 @@
     const r=root.querySelector('[data-file-target]').getBoundingClientRect();
     if(g.endX<r.left||g.endX>r.right||g.endY<r.top||g.endY>r.bottom){s.message='没有放入目标文件夹，原文件保持不变。';return;}
     if(g.button===2||s.mode==='right'){s.menu=true;return;}
-    const key=g.ctrlKey&&g.shiftKey?'link':g.ctrlKey?'copy':g.shiftKey?'move':null;
+    const key=g.altKey||g.ctrlKey&&g.shiftKey?'link':g.ctrlKey?'copy':g.shiftKey?'move':null;
     registry.y2020q24.action(s,key||'drop');
   };
 
