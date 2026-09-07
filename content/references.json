@@ -305,6 +305,34 @@
     [
       "customize page numbers and their formats in different word document sections",
       "https://support.microsoft.com/en-us/word/customize-page-numbers-and-their-formats-in-different-word-document-sections"
+    ],
+    [
+      "Microsoft：页眉页脚进入退出",
+      "https://support.microsoft.com/en-us/word/training/insert-a-header-or-footer"
+    ],
+    [
+      "Microsoft：首页不同与单页修改",
+      "https://support.microsoft.com/en-us/word/change-or-delete-a-header-or-footer-on-a-single-page"
+    ],
+    [
+      "Microsoft：链接与页码重编不是同一设置",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.headerfooter.linktoprevious"
+    ],
+    [
+      "Microsoft：续前节与起始编号",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.pagenumbers.restartnumberingatsection"
+    ],
+    [
+      "Microsoft：首页不显示页码不等于不计数",
+      "https://support.microsoft.com/en-us/word/training/insert-page-numbers"
+    ],
+    [
+      "Microsoft：页码域与手工数字",
+      "https://support.microsoft.com/en-us/word/field-codes-page-field"
+    ],
+    [
+      "Microsoft：页码位置、字体与对齐",
+      "https://support.microsoft.com/en-us/word/add-page-numbers-to-a-header-or-footer-in-word"
     ]
   ],
   "y2020q43": [
@@ -325,6 +353,22 @@
     [
       "use section breaks to change the layout or formatting in one section of your word document",
       "https://support.microsoft.com/en-us/word/use-section-breaks-to-change-the-layout-or-formatting-in-one-section-of-your-word-document"
+    ],
+    [
+      "Microsoft：分栏宽度、间距和分隔线",
+      "https://support.microsoft.com/en-us/word/adjust-column-widths-on-a-page"
+    ],
+    [
+      "Microsoft：分栏作用于当前节",
+      "https://support.microsoft.com/en-us/word/columns-dialog-box"
+    ],
+    [
+      "Microsoft：分栏符作用与快捷键",
+      "https://support.microsoft.com/en-us/word/insert-a-column-break"
+    ],
+    [
+      "Microsoft：分页/分栏快捷键",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
     ]
   ],
   "y2020q61": [
@@ -335,6 +379,34 @@
     [
       "use section breaks to change the layout or formatting in one section of your word document",
       "https://support.microsoft.com/en-us/word/use-section-breaks-to-change-the-layout-or-formatting-in-one-section-of-your-word-document"
+    ],
+    [
+      "Microsoft：修改节的起始类型",
+      "https://support.microsoft.com/en-us/word/change-a-section-break"
+    ],
+    [
+      "Microsoft：删除分节符的结果",
+      "https://support.microsoft.com/en-us/word/delete-a-section-break"
+    ],
+    [
+      "Microsoft：页面设置对象与属性",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.pagesetup"
+    ],
+    [
+      "Microsoft：方向的应用范围",
+      "https://support.microsoft.com/en-us/word/print-with-landscape-orientation-in-word"
+    ],
+    [
+      "Microsoft：页边距入口",
+      "https://support.microsoft.com/en-us/word/training/change-margins"
+    ],
+    [
+      "Microsoft：分页/分栏快捷键",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：手动分页符删除与自动分页区别",
+      "https://support.microsoft.com/en-us/word/remove-a-page-break-in-word"
     ]
   ],
   "y2021q56": [
@@ -1181,6 +1253,14 @@
     [
       "Microsoft：Word插入空域、更新域与切换域结果的快捷键",
       "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：页码域与手工数字",
+      "https://support.microsoft.com/en-us/word/field-codes-page-field"
+    ],
+    [
+      "Microsoft：Windows插入域路径与PAGE",
+      "https://support.microsoft.com/en-us/word/insert-edit-and-view-fields-in-word"
     ]
   ],
   "y2024q26": [

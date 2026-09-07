@@ -25,6 +25,64 @@ function open(e,id){const c=e.d.getElementById(id);assert.ok(c,`note ${id}`);c.q
 function click(c,action,value){const buttons=[...c.querySelectorAll(`[data-lab-act="${action}"]`)];const b=buttons.find(el=>value===undefined||el.dataset.value===String(value));assert.ok(b,`${action}: ${value??''}`);b.click();}
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
 function choice(c,name,value){const source=c.querySelector(`select[data-field="${name}"]`);assert.ok(source?.hidden,'native popup is removed');const i=[...source.options].findIndex(o=>o.value===value);return source.closest('.notes-picker').querySelector(`[data-choice-index="${i}"]`);}
+
+test('2B appended knowledge preserves every old paragraph, source and key in affected notes',()=>{
+ const baseline=[['y2020q41',5,'cd9be7787177b42484540a1143ead60338f4f840fc410379c7d631366a661d15'],['y2020q44',4,'d6aedf090d8747c6d897d0b3bb2716b7ab15cb9fe9dac8bee332a014ba4ac296'],['y2020q61',4,'42537236f3198d3af007158408b4fc0124e8a38783163532035ed1dbc8f122d8'],['y2024q55',4,'ca41e72265fe6993049c1e967a9526dfce8e8d703cdd752b3c5c282b6407e648']];
+ const e=env(3);
+ for(const [id,count,digest] of baseline){
+  const n=e.w.NOTES.notes.find(n=>n.id===id),payload=[n.id,n.points.slice(0,count),n.sources,n.keys];
+  assert.equal(require('node:crypto').createHash('sha256').update(JSON.stringify(payload)).digest('hex'),digest,id);
+  for(let i=0;i<n.points.length;i++){
+   const point=e.d.getElementById(`${id}--point-${i}`);assert.ok(point);assert.equal(point.closest('details'),null);
+   const actual=[...point.querySelectorAll(`[data-source-field="point-${i}"]`)].map(el=>el.textContent).join('');assert.equal(actual,n.points[i],id+'/'+i);
+  }
+ }
+ e.dom.window.close();
+});
+test('2B local and directory subtopics resolve distinct real search paragraphs',()=>{
+ const e=env(3),input=e.d.getElementById('search-input');
+ for(const [id,index] of [['y2020q61',10],['y2020q41',9],['y2020q44',6]]){
+  const c=open(e,id),hash=`#${id}--point-${index}`,link=c.querySelector(`.note-subtopics a[href="${hash}"]`),directory=e.d.querySelector(`#drawer a[href="${hash}"]`);
+  assert.ok(link);assert.equal(link.textContent,directory.textContent);e.d.getElementById('open-drawer').click();directory.click();assert.equal(e.w.location.hash,hash);assert.equal(e.d.activeElement.id,hash.slice(1));assert.equal(c.querySelector('.simulation-toggle').getAttribute('aria-expanded'),'true');
+ }
+ input.value='应用于';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ for(const id of ['y2020q61','y2020q44']){
+  const links=[...e.d.querySelectorAll(`#${id} .note-search-jumps a`)];assert.ok(links.length>1);
+  assert.equal(new Set(links.map(a=>a.textContent)).size,links.length);
+  for(const a of links)assert.ok(e.d.querySelector(a.hash).classList.contains('note-search-match'));
+ }
+ e.d.getElementById('clear-search').click();assert.equal(e.d.querySelector('.note-search-jumps'),null);e.dom.window.close();
+});
+test('2B page setup isolates paper and margins, cancels drafts and undoes section merging',()=>{
+ const e=env(3),c=open(e,'y2020q61'),page=()=>c.querySelector('[data-layout-page]').dataset;
+ click(c,'breakMenu');click(c,'nextPage');change(e,c,'point','end');click(c,'breakMenu');click(c,'nextPage');click(c,'view',1);
+ click(c,'setup');change(e,c,'draftPaper','A5');change(e,c,'draftMargin','10');change(e,c,'draftDirection','landscape');click(c,'cancel');assert.equal(page().paper,'A4');assert.equal(page().margin,'20');
+ click(c,'setup');change(e,c,'draftPaper','A5');change(e,c,'draftMargin','10');change(e,c,'draftDirection','landscape');click(c,'apply');assert.equal(page().paper,'A5');assert.equal(page().margin,'10');
+ click(c,'view',0);assert.equal(page().paper,'A4');assert.equal(page().direction,'portrait');click(c,'view',2);assert.equal(page().margin,'20');
+ click(c,'view',1);click(c,'deleteSection');click(c,'view',0);assert.equal(page().paper,'A5');assert.equal(page().direction,'landscape');click(c,'undo');click(c,'view',0);assert.equal(page().paper,'A4');assert.equal(page().direction,'portrait');
+ click(c,'setup');change(e,c,'draftScope','all');change(e,c,'draftMargin','10');click(c,'apply');for(const i of [0,1,2]){click(c,'view',i);assert.equal(page().margin,'10');}e.dom.window.close();
+});
+test('2B number format changes representation independently of continuation and footer links',()=>{
+ const e=env(3),c=open(e,'y2020q41'),footer=()=>c.querySelector('.lab-page-footer').textContent;
+ change(e,c,'scenario','numbers');click(c,'num_page',2);click(c,'num_break');click(c,'num_edit');click(c,'num_insert');assert.equal(footer(),'3');
+ click(c,'num_format');change(e,c,'numDraftFormat','roman');click(c,'num_cancel');assert.equal(footer(),'3');
+ click(c,'num_format');change(e,c,'numDraftFormat','roman');click(c,'num_apply');assert.equal(footer(),'iii');click(c,'num_link');assert.equal(footer(),'iii');
+ click(c,'num_format');change(e,c,'numDraftMode','restart');change(e,c,'numDraftStart','1');click(c,'num_apply');assert.equal(footer(),'i');click(c,'num_page',4);assert.equal(footer(),'ii');click(c,'num_page',1);assert.equal(footer(),'1');e.dom.window.close();
+});
+test('2B partial columns change actual section layout and preserve boundaries when restored',()=>{
+ const e=env(3),c=open(e,'y2020q44'),counts=()=>[...c.querySelectorAll('[data-column-count]')].map(x=>x.dataset.columnCount);
+ click(c,'isolate');assert.deepEqual(counts(),['1','1','1']);assert.equal(c.querySelectorAll('[data-continuous-break]').length,2);
+ click(c,'open');change(e,c,'draftCount','2');change(e,c,'draftLine',true);click(c,'cancel');assert.deepEqual(counts(),['1','1','1']);
+ click(c,'open');change(e,c,'draftCount','2');change(e,c,'draftGap','10');change(e,c,'draftLine',true);click(c,'apply');assert.deepEqual(counts(),['1','2','1']);const body=c.querySelector('[data-column-section="2"]');assert.equal(body.dataset.columnGap,'10');assert.equal(body.dataset.columnLine,'true');assert.equal(body.querySelector('[data-column-flow]').style.columnCount,'2');
+ click(c,'columnBreak');assert.equal(c.querySelector('[data-column-break]').style.breakBefore,'column');assert.equal(c.querySelectorAll('[data-continuous-break]').length,2);click(c,'removeBreak');assert.equal(c.querySelector('[data-column-break]'),null);
+ click(c,'open');change(e,c,'draftCount','1');click(c,'apply');assert.deepEqual(counts(),['1','1','1']);assert.equal(c.querySelectorAll('[data-continuous-break]').length,2);click(c,'undo');assert.deepEqual(counts(),['1','2','1']);
+ click(c,'open');change(e,c,'draftScope','all');click(c,'apply');assert.deepEqual(counts(),['2','2','2']);c.querySelector('[data-sim-reset]').click();assert.deepEqual(counts(),['1']);e.dom.window.close();
+});
+test('2B unsupported single-column break flow keeps the draft and existing readable layout',()=>{
+ const e=env(3),c=open(e,'y2020q44');click(c,'isolate');click(c,'open');change(e,c,'draftCount','2');click(c,'apply');click(c,'columnBreak');
+ click(c,'open');change(e,c,'draftCount','1');click(c,'apply');assert.ok(c.querySelector('.lab-dialog'));assert.equal(c.querySelector('[data-column-section="2"]').dataset.columnCount,'2');assert.match(c.querySelector('.lab-dialog').textContent,/不是Word本身的限制/);
+ click(c,'cancel');click(c,'removeBreak');click(c,'open');change(e,c,'draftCount','1');click(c,'apply');assert.equal(c.querySelector('.lab-dialog'),null);assert.equal(c.querySelector('[data-column-section="2"]').dataset.columnCount,'1');e.dom.window.close();
+});
 function tap(e,button){button.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));button.focus();button.dispatchEvent(new e.w.MouseEvent('pointerup',{bubbles:true,button:0}));button.click();}
 function pointer(e,el,type,{id=1,x=20,y=20,primary=true,pointerType='touch',...rest}={}){
  const event=new e.w.MouseEvent(type,{bubbles:true,cancelable:true,button:0,clientX:x,clientY:y,...rest});

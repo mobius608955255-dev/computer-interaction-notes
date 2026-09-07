@@ -125,10 +125,7 @@
     "y2025q34": function (demo) {
       return win('截图和草图', `<div class="v25-snipping"><div class="snip-canvas"><b>课程资料</b><span class="watermark">示例水印</span><i class="crop-corner"></i></div><div class="snip-tools">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['▱','⌗','✎','AI'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div></div>`)+feedback('截图工具截取、裁剪和标注可见画面，不会自动重建水印覆盖的内容。');
     },
-    "y2020q44": function (demo) {
-      const commands = getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="ribbon-command"><i>${['▥','▯▯','▦','⇥'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('');
-      return office('Word','校报.docx','布局',commands,`<div class="word-page columns-page"><h4>校园科技节</h4><div class="column-text" data-column-text><p>人工智能与医学交叉正在形成新的研究方向。计算机不仅负责计算，还能辅助影像分析、临床决策与科研设计。</p><p>报刊式分栏让文字先填满左栏，再流向右栏；它不是把两个窗口并排摆放。</p></div><span class="section-mark">:::::::::::::::::::: 分节符（连续） ::::::::::::::::::::</span></div>`)+feedback('真正的“分栏”改变正文流向；“并排查看”只改变屏幕上的窗口排列。');
-    },
+
     "y2024q66": function (demo) {
       const controls=getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('');
       return office('Word','图文报告.docx','开始','<span>段落</span>',`<div class="word-page v24-lineheight-page"><p>图1展示采样结果：</p><div class="inline-image-line"><span class="baseline">文字基线</span><div class="inline-photo"><i></i><b>肺部影像</b></div></div><p>图片是嵌入型对象，与这一行文字共用行框。</p></div>`,`<aside class="v24-line-panel"><header>段落 · 行距</header>${controls}</aside>`)+feedback('固定值把行框高度锁死；“最小值”允许内容更高时自动把行撑开。');

@@ -100,14 +100,7 @@ register(['y2020q43'],'先设首行缩进，再比较两种换行','Enter建立�
  office('Word','开始 · 段落',select('special','特殊格式',s.special,[['first','首行缩进'],['hanging','悬挂缩进'],['none','无']])+field('amount','字符数',s.amount,'number','min="0" max="4"'),paper(`<div class="lab-paragraph-demo" style="${s.special==='hanging'?`padding-left:${s.amount}em;`:''}"><p style="text-indent:${s.special==='first'?s.amount:s.special==='hanging'?-s.amount:0}em">第一行按段落格式缩进，自动换行的后续行使用同一段落规则。${s.break==='line'?'<span class="lab-mark">↵</span><br>':'<span class="lab-mark">¶</span></p><p style="text-indent:'+(s.special==='first'?s.amount:s.special==='hanging'?-s.amount:0)+'em">'}第二段内容从这里开始，观察这一行是否重新应用首行缩进。</p></div>`))+controls(btn('模拟键盘：Enter','break','paragraph')+btn('模拟键盘：Shift+Enter','break','line'))+output(s.break==='line'?'这里只有一个段落，手动换行后的新行不是新的首行。':'这里有两个段落，第二段重新应用首行缩进。'),
  (s,a,v)=>{s.break=v;},(s,k,v)=>{s[k]=k==='amount'?number(v,0,4):v;});
 registry.y2020q41.dblclick=(s,e)=>{if(e.target.closest('.lab-page-header')){s.editing=true;return true;}};
-const headerModel=registry.y2020q41;
-const headerRender=headerModel.render;
-const headerAction=headerModel.action;
-const headerChange=headerModel.change;
-Object.assign(headerModel.initial,{scenario:'headers',physical:3,split:false,nEditing:false,nLinked:true,numbers:[false,false],nStart:1,nDialog:false,nMessage:''});
-headerModel.render=s=>controls(select('scenario','操作任务',s.scenario,[['headers','页眉文字与前节链接'],['numbers','封面目录无页码，正文从1开始']]))+(s.scenario==='headers'?headerRender(s):office('Word',s.nEditing?'页眉和页脚工具 · 设计':'布局',s.nEditing?btn(s.nLinked?'链接到前一节：开':'链接到前一节：关','num_link','',s.split&&s.physical>=3?'':'disabled')+btn('插入页码','num_insert')+btn('设置页码格式…','num_format')+btn('关闭页脚编辑','num_close'):btn('分隔符 → 下一页','num_break')+btn('编辑页脚','num_edit'),`${s.nDialog?dialog('页码格式',field('nStart','起始页码',s.nStart,'number','min="1" max="99"'),btn('确定','num_apply')):''}${paper(`<h4>${['封面','目录','正文第一章','正文第二页'][s.physical-1]}</h4><p>第${s.physical}个物理页面 · 第${s.split&&s.physical>=3?2:1}节</p><div class="lab-page-footer">${s.numbers[s.split&&s.physical>=3?1:0]?(s.split&&s.physical>=3?s.physical-3+Number(s.nStart):s.physical):'未插入页码'}</div>`)}`)+controls([1,2,3,4].map(i=>btn(['封面','目录','正文首页','正文后页'][i-1],'num_page',i)).join(''))+output(s.nMessage||'在目录末尾插入下一页分节符；到正文页脚取消前节链接，再插入页码并设起始页码1。'));
-headerModel.action=(s,a,v)=>{if(!a.startsWith('num_'))return headerAction(s,a,v);if(a==='num_page')s.physical=Number(v);if(a==='num_break'){if(s.physical!==2){s.nMessage='先选择目录页，在目录末尾建立正文新节。';return;}s.split=true;s.physical=3;s.nMessage='正文已从第2节开始；分页和分节不是同一个操作。';}if(a==='num_edit')s.nEditing=true;if(a==='num_close')s.nEditing=false;if(a==='num_link'&&s.split&&s.physical>=3)s.nLinked=!s.nLinked;if(a==='num_insert'){if(!s.split||s.nLinked)s.numbers=[true,true];else s.numbers[s.physical>=3?1:0]=true;s.nMessage=s.nLinked?'链接未断开，前置页也出现页码。可重置后按正确顺序操作。':'正文页脚已独立插入页码。';}if(a==='num_format')s.nDialog=true;if(a==='num_apply'){s.nStart=number(s.nStart,1,99);s.nDialog=false;}};
-headerModel.change=(s,k,v)=>{if(k==='scenario')s.scenario=v;else if(k==='nStart')s.nStart=v;else headerChange(s,k,v);};
+
 })();
 
 /* Source provenance: note-labs-study.js:6. Preserve this closure. */
@@ -288,13 +281,21 @@ register(['y2020q63'],'先移动整张表，再调整格内文字','表格属性
  (s,a)=>{if(a==='properties'){s.pane=true;s.draftAlign=s.tableAlign;}if(a==='cancel'){s.pane=false;s.message='取消表格属性草稿，已应用的位置保持。';}if(a==='apply'){s.tableAlign=s.draftAlign;s.pane=false;s.message='只改变整表位置，格内文字对齐保持。';}if(a==='cellCenter'){s.cellH='center';s.message='只改变格内的水平对齐，整表位置与垂直对齐保持。';}if(a==='cellMiddle'){s.cellH='center';s.cellV='middle';s.message='格内文字水平与垂直居中，整表位置保持。';}if(a==='cellReset'){s.cellH='left';s.cellV='top';s.message='格内文字回到左上，整表位置保持。';}});
 const header=registry.y2020q41;
 const base={render:header.render,action:header.action,change:header.change};
-Object.assign(header.initial,{numModes:['restart','continue'],numStarts:[1,1],numDraftMode:'continue',numDraftStart:1,numDialogSection:0});
+Object.assign(header.initial,{scenario:'headers',physical:3,split:false,nEditing:false,nLinked:true,numbers:[false,false],nDialog:false,nMessage:'',numFormats:['decimal','decimal'],numDraftFormat:'decimal',numModes:['restart','continue'],numStarts:[1,1],numDraftMode:'continue',numDraftStart:1,numDialogSection:0});
+header.title='分别管理页眉链接、页码格式与编号';
+header.task='先选操作任务；改变链接、编号格式或起号后，切换前后页检查结果。';
 const secIndex=s=>s.split&&s.physical>=3?1:0;
 function pageNumber(s){const section=secIndex(s);if(section===0)return Number(s.numStarts[0])+s.physical-1;if(s.numModes[1]==='continue')return Number(s.numStarts[0])+s.physical-1;return Number(s.numStarts[1])+s.physical-3;}
+function formattedPage(s){
+ const value=pageNumber(s);if(s.numFormats[secIndex(s)]==='decimal')return value;
+ let n=value,result='';for(const [v,symbol] of [[100,'c'],[90,'xc'],[50,'l'],[40,'xl'],[10,'x'],[9,'ix'],[5,'v'],[4,'iv'],[1,'i']])while(n>=v){result+=symbol;n-=v;}return result;
+}
+const headerLimits=()=>ui.coach('两项任务分别观察预置页眉链接与两节页码。未模拟首页/奇偶页的全部类型、真实文字分页及Word2016原生界面；编号示例限1至99，实体手机未实测。','本演示的范围与限制');
+const scenarioControl=s=>controls(select('scenario','操作任务',s.scenario,[['headers','页眉文字与前节链接'],['numbers','封面目录无页码，正文从1开始']]));
 header.render=s=>{
- if(s.scenario==='headers')return base.render(s);
+ if(s.scenario==='headers')return scenarioControl(s)+base.render(s)+headerLimits();
  const section=secIndex(s);
- return controls(select('scenario','操作任务',s.scenario,[['headers','页眉文字与前节链接'],['numbers','封面目录无页码，正文从1开始']]))+office('Word',s.nEditing?'页眉和页脚工具 · 设计':'布局',s.nEditing?btn(s.nLinked?'链接到前一节：开':'链接到前一节：关','num_link','',s.split&&section===1&&!s.nDialog?'':'disabled')+btn('页码 → 当前位置','num_insert','',s.nDialog?'disabled':'')+btn('设置页码格式…','num_format','',s.nDialog?'disabled':'')+btn('删除页码','num_remove','',s.nDialog?'disabled':'')+btn('关闭页脚编辑','num_close','',s.nDialog?'disabled':''):btn('分隔符 → 下一页','num_break','',s.split?'disabled':'')+btn('插入 → 页脚 → 编辑页脚','num_edit'),`${s.nDialog?dialog('页码格式',select('numDraftMode','页码编号',s.numDraftMode,s.numDialogSection===0?[['restart','起始页码']]:[['continue','续前节'],['restart','起始页码']])+field('numDraftStart','起始页码',s.numDraftStart,'number',`min="1" max="99" ${s.numDraftMode==='continue'?'disabled':''}`),btn('确定','num_apply')+btn('取消','num_cancel')):''}${paper(`<h4>${['封面','目录','正文第一章','正文第二页'][s.physical-1]}</h4><p>第${s.physical}个物理页面 · 第${section+1}节</p><div class="lab-page-footer">${s.numbers[section]?pageNumber(s):'未插入页码'}</div>`)}`)+controls([1,2,3,4].map(i=>btn(['封面','目录','正文首页','正文后页'][i-1],'num_page',i,s.nDialog?'disabled':'')).join(''))+output(s.nMessage||'分节后默认续前节。断开页脚链接只改变共享内容，不会自动把正文页码重置为1。');
+ return scenarioControl(s)+office('Word',s.nEditing?'页眉和页脚工具 · 设计':'布局',s.nEditing?btn(s.nLinked?'链接到前一节：开':'链接到前一节：关','num_link','',s.split&&section===1&&!s.nDialog?'':'disabled')+btn('页码 → 当前位置','num_insert','',s.nDialog?'disabled':'')+btn('设置页码格式…','num_format','',s.nDialog?'disabled':'')+btn('删除页码','num_remove','',s.nDialog?'disabled':'')+btn('关闭页脚编辑','num_close','',s.nDialog?'disabled':''):btn('分隔符 → 下一页','num_break','',s.split?'disabled':'')+btn('插入 → 页脚 → 编辑页脚','num_edit'),`${s.nDialog?dialog('页码格式',select('numDraftFormat','编号格式',s.numDraftFormat,[['decimal','1, 2, 3, …'],['roman','i, ii, iii, …']])+select('numDraftMode','页码编号',s.numDraftMode,s.numDialogSection===0?[['restart','起始页码']]:[['continue','续前节'],['restart','起始页码']])+field('numDraftStart','起始页码',s.numDraftStart,'number',`min="1" max="99" ${s.numDraftMode==='continue'?'disabled':''}`),btn('确定','num_apply')+btn('取消','num_cancel')):''}${paper(`<h4>${['封面','目录','正文第一章','正文第二页'][s.physical-1]}</h4><p>第${s.physical}个物理页面 · 第${section+1}节</p><div class="lab-page-footer">${s.numbers[section]?formattedPage(s):'未插入页码'}</div>`)}`)+controls([1,2,3,4].map(i=>btn(['封面','目录','正文首页','正文后页'][i-1],'num_page',i,s.nDialog?'disabled':'')).join(''))+output(s.nMessage||'分节后默认续前节。断开页脚链接只改变共享内容，不会自动把正文页码重置为1。')+headerLimits();
 };
 header.action=(s,a,v)=>{
  if(!a.startsWith('num_'))return base.action(s,a,v);
@@ -302,23 +303,23 @@ header.action=(s,a,v)=>{
  if(a==='num_page'&&!s.nDialog)s.physical=Number(v);
  if(a==='num_break'){
   if(s.physical!==2){s.nMessage='在目录末尾插入下一页分节符，才能隔开前置页与正文。';return;}
-  s.split=true;s.physical=3;s.numbers[1]=s.numbers[0];s.numModes[1]='continue';s.nMessage='正文进入第2节；新节默认续前节编号，页脚仍链接到前一节。';
+  s.split=true;s.physical=3;s.numbers[1]=s.numbers[0];s.numModes[1]='continue';s.numFormats[1]=s.numFormats[0];s.nMessage='正文进入第2节；新节默认续前节编号，页脚仍链接到前一节。';
  }
  if(a==='num_edit')s.nEditing=true;
  if(a==='num_close')s.nEditing=false;
- if(a==='num_link'&&s.split&&section===1){if(s.nLinked)s.numbers[1]=s.numbers[0];else s.numbers[1]=s.numbers[0];s.nLinked=!s.nLinked;s.nMessage=s.nLinked?'页脚重新链接，正文采用前节页脚内容；编号方式仍由本节页码格式决定。':'取消页脚链接，保留原页脚内容；编号方式仍为本节现有设置。';}
+ if(a==='num_link'&&s.split&&section===1){s.numbers[1]=s.numbers[0];s.nLinked=!s.nLinked;s.nMessage=s.nLinked?'页脚重新链接，正文采用前节页脚内容；编号方式仍由本节页码格式决定。':'取消页脚链接，保留原页脚内容；编号方式仍为本节现有设置。';}
  if(a==='num_insert'||a==='num_remove'){
   const present=a==='num_insert';if(!s.split||s.nLinked)s.numbers=[present,present];else s.numbers[section]=present;
   s.nMessage=(present?'已插入页码。':'已删除页码。')+(s.nLinked?'页脚链接有效，相关各节共享此页脚内容。':'只影响当前独立节的页脚。');
  }
- if(a==='num_format'){s.numDialogSection=section;s.numDraftMode=s.numModes[section];s.numDraftStart=s.numStarts[section];s.nDialog=true;}
+ if(a==='num_format'){s.numDialogSection=section;s.numDraftFormat=s.numFormats[section];s.numDraftMode=s.numModes[section];s.numDraftStart=s.numStarts[section];s.nDialog=true;}
  if(a==='num_cancel'){s.nDialog=false;s.nMessage='已取消页码格式草稿；原有页码仍按之前的设置显示。';}
  if(a==='num_apply'){
   if(s.numDraftMode==='restart'&&(!/^\d+$/.test(String(s.numDraftStart))||Number(s.numDraftStart)<1||Number(s.numDraftStart)>99)){s.nMessage='本例起始页码请输入1至99的整数。';return;}
-  const target=s.numDialogSection;s.numModes[target]=s.numDraftMode;s.numStarts[target]=number(s.numDraftStart,1,99);s.nDialog=false;s.nMessage=`第${target+1}节编号已设为`+(s.numModes[target]==='continue'?'续前节。':`从${s.numStarts[target]}开始。`);
+  const target=s.numDialogSection;s.numFormats[target]=s.numDraftFormat;s.numModes[target]=s.numDraftMode;s.numStarts[target]=number(s.numDraftStart,1,99);s.nDialog=false;s.nMessage=`第${target+1}节编号已设为`+(s.numModes[target]==='continue'?'续前节。':`从${s.numStarts[target]}开始。`);
  }
 };
-header.change=(s,k,v)=>{if(k==='numDraftMode')s.numDraftMode=v;else if(k==='numDraftStart')s.numDraftStart=v;else base.change(s,k,v);};
+header.change=(s,k,v)=>{if(k==='scenario')s.scenario=v;else if(k==='numDraftFormat')s.numDraftFormat=v;else if(k==='numDraftMode')s.numDraftMode=v;else if(k==='numDraftStart')s.numDraftStart=v;else base.change(s,k,v);};
 header.pageNumber=pageNumber;
 })();
 
@@ -455,11 +456,11 @@ const initialPages=[
     {section:1,lines:[{text:'统计资料',heading:true},{text:'这里是需要横向放置的资料。'},{text:'目标：只改变本页方向。'}]},
     {section:1,lines:[{text:'正文继续',heading:true},{text:'这是目标页之后的正文。'},{text:'后文仍应保持纵向。'}]}
   ];
-function snapshot(s){s.history.push(clone({pages:s.pages,orientations:s.orientations,nextSection:s.nextSection,page:s.page,point:s.point}));}
+function snapshot(s){s.history.push(clone({pages:s.pages,orientations:s.orientations,papers:s.papers,margins:s.margins,nextSection:s.nextSection,page:s.page,point:s.point}));}
 function insertNextPage(s){
     snapshot(s);
     const current=s.pages[s.page],old=current.section,newSection=s.nextSection++,index=s.page+1;
-    s.orientations[newSection]=s.orientations[old];
+    s.orientations[newSection]=s.orientations[old];s.papers[newSection]=s.papers[old];s.margins[newSection]=s.margins[old];
     if(s.point==='first'||s.point==='start'){
       // Split at the visible insertion point after the first paragraph, preserving paragraph formatting.
       const tail=current.lines.splice(s.point==='start'?0:Math.min(1,current.lines.length));
@@ -474,38 +475,52 @@ function insertNextPage(s){
     s.page=index;s.point='start';s.menu='';
     s.message=`已插入“下一页”分节符，插入点移到第${index+1}页的新节。新节先继承原方向；原有其他节保持不变。`;
   }
-function setDirection(s,direction,scope='section'){
-    snapshot(s);
-    if(scope==='all')Object.keys(s.orientations).forEach(k=>s.orientations[k]=direction);
-    else s.orientations[s.pages[s.page].section]=direction;
-    const section=s.pages[s.page].section,affected=s.pages.flatMap((p,i)=>scope==='all'||p.section===section?[i+1]:[]);
-    s.message=`${scope==='all'?'整篇文档':'当前第'+sectionNumber(s,section)+'节'}改为${direction==='landscape'?'横向':'纵向'}；受影响页：${affected.join('、')}。`;
-    s.menu='';s.pane=false;
-  }
-register(['y2020q61'],'先隔离节，再让中间一页横向','在卡片外定位光标，再使用“布局→分隔符→下一页”。任意时刻都可改变方向并检查受影响的页。',
-    {pages:initialPages,orientations:{1:'portrait'},nextSection:2,page:0,point:'end',menu:'',pane:false,draftDirection:'portrait',draftScope:'section',history:[],message:'初始三页属于同一节。此时改变任意一页所在节的方向，三页都会改变。'},s=>{
-      const page=s.pages[s.page],section=sectionNumber(s,page.section),direction=s.orientations[page.section],landscape=direction==='landscape';
-      const commands=btn('分隔符 ▾','breakMenu','',s.pane?'disabled':'')+btn('纸张方向 ▾','directionMenu','',s.pane?'disabled':'')+btn('页面设置…','setup','',s.pane?'disabled':'');
-      const menu=s.menu==='break'?dialog('分隔符','<b>分节符</b>'+btn('下一页','nextPage'),btn('关闭','close')):s.menu==='direction'?dialog('纸张方向',btn('纵向','direction','portrait')+btn('横向','direction','landscape'),btn('关闭','close')):'';
-      const setup=s.pane?dialog('页面设置',select('draftDirection','纸张方向',s.draftDirection,[['portrait','纵向'],['landscape','横向']])+select('draftScope','应用于',s.draftScope,[['section','本节'],['all','整篇文档']]),btn('确定','apply')+btn('取消','cancel')):'';
-      const cursor='<span aria-label="插入点" style="display:inline-block;height:1.2em;border-left:2px solid #86539b;vertical-align:middle"></span>';
-      const lines=page.lines.map((line,i)=>`<${line.heading?'h4':'p'} style="font-size:${line.heading?'19':'16'}px;line-height:1.7;margin:0 0 12px">${esc(line.text)}${s.point==='first'&&i===0?cursor:''}</${line.heading?'h4':'p'}>`).join('');
-      return controls(`<fieldset ${s.pane?'disabled':''} style="display:contents">${select('page','查看并定位到',s.page,s.pages.map((p,i)=>[i,`第${i+1}页 · 第${sectionNumber(s,p.section)}节`]))+select('point','光标位置（辅助定位）',s.point,[['start','当前页开头'],['end','当前页内容末尾'],['first','当前页第一段末尾']])}</fieldset>`)+
-        office('Word','布局',commands,`${menu}${setup}<div style="padding:12px 0;background:#e9e6ec"><div data-layout-page data-direction="${direction}" data-section="${section}" style="box-sizing:border-box;width:${landscape?'100%':'74%'};max-width:${landscape?'450':'320'}px;aspect-ratio:${landscape?'297 / 210':'210 / 297'};min-height:${landscape?'190':'285'}px;margin:0 auto;background:white;border:1px solid #d4ccd7;padding:18px 14px;box-shadow:0 2px 4px #30203310">${s.point==='start'?cursor:''}${lines||'<p style="color:#958898;font-size:16px">（空白页）</p>'}${s.point==='end'||s.point==='first'&&!page.lines.length?cursor:''}</div></div><p style="font-size:14px;margin-bottom:0">第 ${s.page+1} / ${s.pages.length} 页　·　第 ${section} 节　·　${landscape?'横向':'纵向'}</p>`)+
-        `<div style="margin-top:14px"><b>逐页检查方向</b><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-top:8px">${s.pages.map((p,i)=>{const land=s.orientations[p.section]==='landscape';return btn(`<span aria-hidden="true" style="display:block;width:${land?'54':'36'}px;height:${land?'36':'51'}px;margin:0 auto 8px;background:${s.page===i?'#ead7ef':'#fff'};border:1px solid #a78aac"></span>第${i+1}页<small style="display:block">第${sectionNumber(s,p.section)}节 · ${land?'横向':'纵向'}</small>`,'view',i,`aria-pressed="${s.page===i}" style="padding:12px 5px;min-height:106px" ${s.pane?'disabled':''}`);}).join('')}</div></div>`+
-        controls(btn('撤销上一步','undo','',s.history.length&&!s.pane?'':'disabled'))+output(s.message);
-    },(s,a,v)=>{
-      if(a==='breakMenu')s.menu=s.menu==='break'?'':'break';
-      if(a==='directionMenu')s.menu=s.menu==='direction'?'':'direction';
-      if(a==='close')s.menu='';
-      if(a==='view'){s.page=Number(v);s.menu='';s.message='已切换到第'+(s.page+1)+'页；该页属于第'+sectionNumber(s,s.pages[s.page].section)+'节。';}
-      if(a==='nextPage')insertNextPage(s);
-      if(a==='direction')setDirection(s,v);
-      if(a==='setup'){s.pane=true;s.menu='';s.draftDirection=s.orientations[s.pages[s.page].section];s.draftScope='section';}
-      if(a==='cancel'){s.pane=false;s.message='页面设置已取消，各节原有方向保持不变。';}
-      if(a==='apply')setDirection(s,s.draftDirection,s.draftScope);
-      if(a==='undo'&&s.history.length){Object.assign(s,s.history.pop());s.menu='';s.pane=false;s.message='已撤销上一步，恢复原来的分节边界、方向和正文。';}
-    },(s,k,v)=>{if(k==='page'){if(s.pane)return;s.page=Number(v);s.menu='';s.message='已定位到第'+(s.page+1)+'页。';}else if(k==='point'){if(s.pane)return;s.point=v;s.message='插入点已移至'+{start:'本页开头。',end:'本页内容末尾。',first:'第一段末尾。'}[v];}else s[k]=v;});
+function applyPageSetup(s,settings,scope='section'){
+ snapshot(s);
+ const section=s.pages[s.page].section,targets=scope==='all'?[...new Set(s.pages.map(p=>p.section))]:[section];
+ for(const id of targets){
+  if(settings.direction)s.orientations[id]=settings.direction;
+  if(settings.paper)s.papers[id]=settings.paper;
+  if(settings.margin!==undefined)s.margins[id]=Number(settings.margin);
+ }
+ const affected=s.pages.flatMap((p,i)=>targets.includes(p.section)?[i+1]:[]);
+ s.message=`已应用于${scope==='all'?'整篇文档':'当前第'+sectionNumber(s,section)+'节'}；受影响页：${affected.join('、')}。方向、纸张与页边距按各节保存。`;
+ s.menu='';s.pane=false;
+}
+function setDirection(s,direction,scope='section'){applyPageSetup(s,{direction},scope);}
+function deleteSection(s){
+ const current=s.pages[s.page].section,index=s.pages.findIndex(p=>p.section===current);if(index===0)return;
+ snapshot(s);const previous=s.pages[index-1].section;
+ for(const page of s.pages)if(page.section===previous)page.section=current;
+ for(const map of [s.orientations,s.papers,s.margins])delete map[previous];
+ s.message='已删除当前节之前的分节符：两部分合为一节，采用原后节的方向、纸张和页边距。示意页保留，真实分页需在Word中检查。';s.menu='';
+}
+register(['y2020q61'],'先隔离节，再修改方向、纸张与页边距','定位光标后使用“下一页”分节，再在页面设置中确认应用范围；可取消草稿或撤销已应用操作。',
+ {pages:initialPages,orientations:{1:'portrait'},papers:{1:'A4'},margins:{1:20},nextSection:2,page:0,point:'end',menu:'',pane:false,draftDirection:'portrait',draftPaper:'A4',draftMargin:20,draftScope:'section',history:[],message:'初始三页属于同一节。此时设置本节，三页都会改变。'},s=>{
+  const page=s.pages[s.page],section=sectionNumber(s,page.section),direction=s.orientations[page.section],landscape=direction==='landscape';
+  const size=s.papers[page.section],margin=s.margins[page.section],dimensions=size==='A4'?[210,297]:[148,210],width=dimensions[landscape?1:0],height=dimensions[landscape?0:1];
+  const commands=btn('分隔符 ▾','breakMenu','',s.pane?'disabled':'')+btn('纸张方向 ▾','directionMenu','',s.pane?'disabled':'')+btn('页面设置…','setup','',s.pane?'disabled':'');
+  const menu=s.menu==='break'?dialog('分隔符','<b>分节符</b>'+btn('下一页','nextPage'),btn('关闭','close')):s.menu==='direction'?dialog('纸张方向',btn('纵向','direction','portrait')+btn('横向','direction','landscape'),btn('关闭','close')):'';
+  const setup=s.pane?dialog('页面设置',select('draftDirection','纸张方向',s.draftDirection,[['portrait','纵向'],['landscape','横向']])+select('draftPaper','纸张大小',s.draftPaper,[['A4','A4 · 210×297毫米'],['A5','A5 · 148×210毫米']])+select('draftMargin','上下左右页边距（本例统一）',s.draftMargin,[[20,'2厘米'],[10,'1厘米']])+select('draftScope','应用于',s.draftScope,[['section','本节'],['all','整篇文档']]),btn('确定','apply')+btn('取消','cancel')):'';
+  const cursor='<span aria-label="插入点" style="display:inline-block;height:1.2em;border-left:2px solid #86539b;vertical-align:middle"></span>';
+  const lines=page.lines.map((line,i)=>`<${line.heading?'h4':'p'} style="font-size:${line.heading?'19':'16'}px;line-height:1.7;margin:0 0 12px">${esc(line.text)}${s.point==='first'&&i===0?cursor:''}</${line.heading?'h4':'p'}>`).join('');
+  return controls(`<fieldset ${s.pane?'disabled':''} style="display:contents">${select('page','查看并定位到',s.page,s.pages.map((p,i)=>[i,`第${i+1}页 · 第${sectionNumber(s,p.section)}节`]))+select('point','光标位置（辅助定位）',s.point,[['start','当前页开头'],['end','当前页内容末尾'],['first','当前页第一段末尾']])}</fieldset>`)+
+   office('Word','布局',commands,`${menu}${setup}<div style="padding:12px 0;background:#e9e6ec"><div data-layout-page data-direction="${direction}" data-section="${section}" data-paper="${size}" data-margin="${margin}" style="box-sizing:border-box;width:100%;max-width:${landscape?'450':'320'}px;aspect-ratio:${width} / ${height};min-height:210px;margin:0 auto;background:white;border:1px solid #d4ccd7;padding:${margin/width*100}%;box-shadow:0 2px 4px #30203310"><div style="outline:1px dashed #bcacc4;outline-offset:4px">${s.point==='start'?cursor:''}${lines||'<p>（空白页）</p>'}${s.point==='end'||s.point==='first'&&!page.lines.length?cursor:''}</div></div></div><p>第 ${s.page+1} / ${s.pages.length} 页 · 第 ${section} 节 · ${landscape?'横向':'纵向'} · ${size} · 页边距${margin/10}厘米</p>`)+
+   `<div style="margin-top:14px"><b>逐页检查设置</b><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:8px">${s.pages.map((p,i)=>{const land=s.orientations[p.section]==='landscape';return btn(`<span aria-hidden="true" style="display:block;width:${land?'54':'36'}px;height:${land?'36':'51'}px;margin:0 auto 8px;background:${s.page===i?'#ead7ef':'#fff'};border:1px solid #a78aac"></span>第${i+1}页<small style="display:block">第${sectionNumber(s,p.section)}节 · ${land?'横向':'纵向'}<br>${s.papers[p.section]} · ${s.margins[p.section]/10}厘米</small>`,'view',i,`aria-pressed="${s.page===i}" style="padding:12px 5px;min-height:116px" ${s.pane?'disabled':''}`);}).join('')}</div></div>`+
+   controls(btn('删除当前节之前的分节符','deleteSection','',section>1&&!s.pane?'':'disabled')+btn('撤销上一步','undo','',s.history.length&&!s.pane?'':'disabled'))+output(s.message)+ui.coach('本例用预置页面观察下一页分节、节合并与页面设置范围；虚线是正文区域示意。纸面按屏幕适配，未实现Word的真实文字重排、连续/奇偶页分节、装订线和所有“应用于”选项；Word2016与实体手机未实测。','本演示的范围与限制');
+ },(s,a,v)=>{
+  if(a==='breakMenu')s.menu=s.menu==='break'?'':'break';
+  if(a==='directionMenu')s.menu=s.menu==='direction'?'':'direction';
+  if(a==='close')s.menu='';
+  if(a==='view'){s.page=Number(v);s.menu='';s.message='已切换到第'+(s.page+1)+'页；该页属于第'+sectionNumber(s,s.pages[s.page].section)+'节。';}
+  if(a==='nextPage')insertNextPage(s);
+  if(a==='deleteSection')deleteSection(s);
+  if(a==='direction')setDirection(s,v);
+  if(a==='setup'){const id=s.pages[s.page].section;s.pane=true;s.menu='';s.draftDirection=s.orientations[id];s.draftPaper=s.papers[id];s.draftMargin=s.margins[id];s.draftScope='section';}
+  if(a==='cancel'){s.pane=false;s.message='页面设置已取消，各节原有设置保持不变。';}
+  if(a==='apply')applyPageSetup(s,{direction:s.draftDirection,paper:s.draftPaper,margin:s.draftMargin},s.draftScope);
+  if(a==='undo'&&s.history.length){Object.assign(s,s.history.pop());s.menu='';s.pane=false;s.message='已撤销上一步，恢复原来的分节边界、方向、纸张、页边距和正文。';}
+ },(s,k,v)=>{if(k==='page'){if(s.pane)return;s.page=Number(v);s.menu='';s.message='已定位到第'+(s.page+1)+'页。';}else if(k==='point'){if(s.pane)return;s.point=v;s.message='插入点已移至'+{start:'本页开头。',end:'本页内容末尾。',first:'第一段末尾。'}[v];}else s[k]=v;});
 registry.y2020q61.insertNextPage=insertNextPage;
 registry.y2020q61.setDirection=setDirection;
 const objectInfo={

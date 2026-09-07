@@ -57,9 +57,10 @@
         "src/labs/chapter3/word.js",
         "src/labs/chapter3/printing.js",
         "src/labs/chapter3/paragraph-spacing.js",
-        "src/labs/chapter3/text-editing.js"
+        "src/labs/chapter3/text-editing.js",
+        "src/labs/chapter3/columns.js"
       ],
-      "models": 37,
+      "models": 38,
       "ids": [
         "y2022q10",
         "y2022q54",
@@ -97,7 +98,8 @@
         "syllabus-word-screen-clipping",
         "syllabus-word-print-controls",
         "syllabus-word-paragraph-spacing",
-        "syllabus-word-text-editing"
+        "syllabus-word-text-editing",
+        "y2020q44"
       ]
     },
     "4": {

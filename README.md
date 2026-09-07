@@ -70,4 +70,4 @@ npm run check
 
 已完成试点：[CONTENT-ROUND1.md](CONTENT-ROUND1.md)。当前批次与恢复点：[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
 
-本轮展示修整与恢复入口：[READABILITY-v51.md](READABILITY-v51.md)。2A 内容保留，2B 暂停。
+v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。2A成果保留；2B本地升级与恢复入口见[CONTENT-ROUND2.md](CONTENT-ROUND2.md)，本回合不推送发布。
