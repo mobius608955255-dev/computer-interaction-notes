@@ -39,7 +39,7 @@
 ${esc(s.text)}</textarea></label>`))}
       <p data-edit-range>当前选择 ${s.end - s.start} 个字符。</p>
       <div class="lab-edit-clipboard"><b>卡片内剪贴板</b><pre data-edit-clipboard>${esc(s.clipboard || '尚未复制')}</pre></div>
-      ${output(s.message)}${coach('本卡只处理普通文本，使用自己的剪贴板；不访问系统剪贴板、不模拟富文本粘贴或Office的24项列表。支持此处显示的实体快捷键，撤销只恢复卡片内近期编辑。')}
+      ${output(s.message)}${coach('本卡只处理普通文本，使用自己的剪贴板；不访问系统剪贴板、不模拟富文本粘贴或Office的24项列表。支持此处显示的实体快捷键，撤销只恢复卡片内近期编辑。', '本演示的范围与限制')}
     </div>`, edit);
   const model = registry[id];
   model.afterRender = (s, root) => {

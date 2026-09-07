@@ -591,7 +591,118 @@
         ]
       }
     ],
-    "trigger": "按 2026 年考试要求的文件与文件夹管理范围补充；具体软件事实见下列 Microsoft 资料。课堂覆盖已作内部核验，未进行原生 Windows 10 实测。"
+    "trigger": "按 2026 年考试要求的文件与文件夹管理范围补充；具体软件事实见下列 Microsoft 资料。课堂覆盖已作内部核验，未进行原生 Windows 10 实测。",
+    "pointPresentation": {
+      "3": {
+        "title": "新建文件夹",
+        "navigationLabel": "新建文件夹",
+        "blocks": [
+          {
+            "label": "主要步骤",
+            "steps": [
+              "新建文件夹：先进入",
+              "再按",
+              "输入名称"
+            ]
+          },
+          {
+            "label": "其他入口",
+            "from": "也可用"
+          },
+          {
+            "label": "创建结果",
+            "from": "新目录"
+          },
+          {
+            "label": "权限与重名",
+            "from": "没有写入权限"
+          }
+        ]
+      },
+      "4": {
+        "title": "新建文件",
+        "navigationLabel": "新建文件",
+        "blocks": [
+          {
+            "label": "操作入口"
+          },
+          {
+            "label": "菜单出现哪些类型",
+            "from": "右键“新建”"
+          },
+          {
+            "label": "不要混淆",
+            "from": "空文件夹"
+          }
+        ]
+      },
+      "5": {
+        "title": "单个重命名",
+        "navigationLabel": "单个重命名",
+        "blocks": [
+          {
+            "label": "进入改名并确认",
+            "steps": [
+              "单个重命名：选中",
+              "按 F2",
+              "输入新名称"
+            ]
+          },
+          {
+            "label": "改名的结果",
+            "from": "重命名改变"
+          },
+          {
+            "label": "检查扩展名",
+            "from": "显示扩展名"
+          },
+          {
+            "label": "另一种入口",
+            "from": " 默认双击"
+          }
+        ]
+      },
+      "6": {
+        "title": "批量重命名",
+        "navigationLabel": "批量重命名",
+        "blocks": [
+          {
+            "label": "核对选区与结果",
+            "steps": [
+              "批量重命名要先核对选区",
+              "按 F2",
+              "再查看"
+            ]
+          },
+          {
+            "label": "编号的限制",
+            "from": "不同扩展名"
+          },
+          {
+            "label": "需要精确名称时",
+            "from": "改名前"
+          }
+        ]
+      }
+    },
+    "fieldPresentation": {
+      "boundary": {
+        "blocks": [
+          {
+            "role": "demo"
+          }
+        ]
+      },
+      "trigger": {
+        "blocks": [
+          {},
+          {
+            "from": "课堂覆盖",
+            "role": "demo"
+          }
+        ]
+      }
+    }
   },
   {
     "id": "syllabus-windows-search",
@@ -662,7 +773,16 @@
         ]
       }
     ],
-    "trigger": "按 2026 年考试要求的文件与文件夹管理范围补充；具体软件事实见下列 Microsoft 资料。课堂覆盖已作内部核验，未进行原生 Windows 10 实测。"
+    "trigger": "按 2026 年考试要求的文件与文件夹管理范围补充；具体软件事实见下列 Microsoft 资料。课堂覆盖已作内部核验，未进行原生 Windows 10 实测。",
+    "fieldPresentation": {
+      "boundary": {
+        "blocks": [
+          {
+            "role": "demo"
+          }
+        ]
+      }
+    }
   },
   {
     "q": 3,
@@ -1032,7 +1152,60 @@
           14
         ]
       }
-    ]
+    ],
+    "pointPresentation": {
+      "0": {
+        "title": "文件名字符与路径",
+        "navigationLabel": "文件名与类型"
+      },
+      "1": {
+        "title": "保留设备名"
+      },
+      "2": {
+        "title": "扩展名、关联与实际格式"
+      },
+      "3": {
+        "title": "完整名称与显示名称"
+      },
+      "4": {
+        "title": "只读与写入、删除权限",
+        "navigationLabel": "常规属性与权限"
+      },
+      "5": {
+        "title": "隐藏、存档与访问保护"
+      },
+      "6": {
+        "title": "同目录重名与大小写"
+      },
+      "7": {
+        "title": "查看属性与打开方式"
+      },
+      "8": {
+        "title": "隐藏属性与显示开关"
+      },
+      "9": {
+        "title": "存档、索引与系统属性"
+      },
+      "10": {
+        "title": "高级属性入口与应用范围",
+        "navigationLabel": "NTFS压缩入口"
+      },
+      "11": {
+        "title": "EFS适用版本与压缩互斥",
+        "navigationLabel": "EFS加密"
+      },
+      "12": {
+        "title": "EFS证书、私钥与备份",
+        "navigationLabel": "EFS证书与备份"
+      },
+      "13": {
+        "title": "网络共享的设置步骤",
+        "navigationLabel": "共享"
+      },
+      "14": {
+        "title": "属性、共享与安全权限的区别"
+      }
+    }
   },
   {
     "q": 75,
@@ -1105,7 +1278,13 @@
           6
         ]
       }
-    ]
+    ],
+    "pointPresentation": {
+      "6": {
+        "title": "NTFS压缩与ZIP的区别",
+        "navigationLabel": "NTFS压缩与ZIP的区别"
+      }
+    }
   },
   {
     "q": 25,

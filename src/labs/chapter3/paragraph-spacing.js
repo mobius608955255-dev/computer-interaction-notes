@@ -32,7 +32,7 @@
           <div class="lab-spacing-sample" data-spacing-sample>${rows.map(row => `<div data-spacing-line style="height:${height}pt;line-height:${height}pt">${row}</div>`).join('')}</div>
           <div data-spacing-after style="height:${s.after}pt;background:#eaddf5"></div><div class="lab-spacing-caption">段后区域 · ${s.after}磅</div>`))}
         ${output(settingSummary(s) + (s.kind === 'exact' && s.amount < 18 ? ' 本示例固定值偏小，文字可能被行框裁切。' : ''))}
-        ${coach('这里只展示一个段落，色块标明段落外的留白；三行样本文字保持不变。单倍高度依赖字体，本例采用固定样本比较比例，不预测真实Word的行数、页数或相邻段落间距。')}
+        ${coach('这里只展示一个段落，色块标明段落外的留白；三行样本文字保持不变。单倍高度依赖字体，本例采用固定样本比较比例，不预测真实Word的行数、页数或相邻段落间距。', '本演示的范围与限制')}
       </div>`;
     }, (s, action) => {
       if (action === 'open') s.draft = { before: s.before, after: s.after, kind: s.kind, amount: s.amount };

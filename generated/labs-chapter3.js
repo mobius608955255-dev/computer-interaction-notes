@@ -699,7 +699,7 @@ register(['merged-9'],'把高、宽和纵横比对应起来','原图高8.5 cm、
           <div class="lab-spacing-sample" data-spacing-sample>${rows.map(row => `<div data-spacing-line style="height:${height}pt;line-height:${height}pt">${row}</div>`).join('')}</div>
           <div data-spacing-after style="height:${s.after}pt;background:#eaddf5"></div><div class="lab-spacing-caption">段后区域 · ${s.after}磅</div>`))}
         ${output(settingSummary(s) + (s.kind === 'exact' && s.amount < 18 ? ' 本示例固定值偏小，文字可能被行框裁切。' : ''))}
-        ${coach('这里只展示一个段落，色块标明段落外的留白；三行样本文字保持不变。单倍高度依赖字体，本例采用固定样本比较比例，不预测真实Word的行数、页数或相邻段落间距。')}
+        ${coach('这里只展示一个段落，色块标明段落外的留白；三行样本文字保持不变。单倍高度依赖字体，本例采用固定样本比较比例，不预测真实Word的行数、页数或相邻段落间距。', '本演示的范围与限制')}
       </div>`;
     }, (s, action) => {
       if (action === 'open') s.draft = { before: s.before, after: s.after, kind: s.kind, amount: s.amount };
@@ -756,7 +756,7 @@ register(['merged-9'],'把高、宽和纵横比对应起来','原图高8.5 cm、
 ${esc(s.text)}</textarea></label>`))}
       <p data-edit-range>当前选择 ${s.end - s.start} 个字符。</p>
       <div class="lab-edit-clipboard"><b>卡片内剪贴板</b><pre data-edit-clipboard>${esc(s.clipboard || '尚未复制')}</pre></div>
-      ${output(s.message)}${coach('本卡只处理普通文本，使用自己的剪贴板；不访问系统剪贴板、不模拟富文本粘贴或Office的24项列表。支持此处显示的实体快捷键，撤销只恢复卡片内近期编辑。')}
+      ${output(s.message)}${coach('本卡只处理普通文本，使用自己的剪贴板；不访问系统剪贴板、不模拟富文本粘贴或Office的24项列表。支持此处显示的实体快捷键，撤销只恢复卡片内近期编辑。', '本演示的范围与限制')}
     </div>`, edit);
   const model = registry[id];
   model.afterRender = (s, root) => {

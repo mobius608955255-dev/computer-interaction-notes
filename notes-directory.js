@@ -13,14 +13,14 @@
       </details>
       <nav aria-label="本章知识点" id="note-list">${chapter.sections.map(section=>{
         const items=notes.filter(note=>note.section===section.id);if(!items.length)return '';
-        return `<section class="directory-section"><h2><span>${esc(section.id)}</span>${esc(section.title)}</h2><ol class="note-list">${items.map(note=>`<li><a href="#${note.id}">${esc(note.title)}</a></li>`).join('')}</ol></section>`;
+        return `<section class="directory-section"><h2><span>${esc(section.id)}</span>${esc(section.title)}</h2><ol class="note-list">${items.map(note=>`<li><a href="#${note.id}">${esc(note.title)}</a>${window.NOTE_PRESENTATION.subtopics(note).length?`<div class="directory-subtopics">${window.NOTE_PRESENTATION.subtopics(note).map(link=>`<a href="#${link.anchor}">${esc(link.label)}</a>`).join('')}</div>`:''}</li>`).join('')}</ol></section>`;
       }).join('')}</nav>`;
     const closeButton=document.getElementById('close-drawer'),chapterMenu=drawer.querySelector('.directory-chapters');
     let previousOverflow='';
     function markCurrent(){
       const noteId=location.hash.slice(1).split('--')[0];
       drawer.querySelectorAll('.note-list a').forEach(link=>{
-        if(link.hash==='#'+noteId)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');
+        if(link.hash===location.hash||link.hash==='#'+noteId)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');
       });
     }
     function open(){

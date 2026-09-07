@@ -230,7 +230,121 @@
         "label": "批量改词与格式",
         "reason": "从单次修改过渡到核对查找条件后批量处理。"
       }
-    ]
+    ],
+    "pointPresentation": {
+      "3": {
+        "title": "复制与移动文字",
+        "navigationLabel": "复制与移动",
+        "blocks": [
+          {
+            "label": "复制：保留原文",
+            "steps": [
+              "复制文字：选中源文字",
+              "Ctrl+C",
+              "单击目标位置",
+              "Ctrl+V",
+              "核对两处文字"
+            ]
+          },
+          {
+            "label": "移动：改变文字位置",
+            "from": "移动文字：",
+            "steps": [
+              "移动文字：选中",
+              "Ctrl+X",
+              "确定目标位置",
+              "Ctrl+V",
+              "核对新位置"
+            ]
+          },
+          {
+            "label": "剪切后发生什么",
+            "from": "正文文本剪切"
+          }
+        ]
+      },
+      "4": {
+        "title": "用鼠标拖动文字",
+        "navigationLabel": "拖动文字",
+        "blocks": [
+          {
+            "label": "操作方式"
+          },
+          {
+            "label": "设置条件与区别",
+            "from": "此操作受"
+          },
+          {
+            "from": "手机网页",
+            "role": "demo"
+          }
+        ]
+      },
+      "5": {
+        "title": "三种粘贴格式",
+        "navigationLabel": "粘贴与格式",
+        "blocks": [
+          {},
+          {
+            "label": "保留源格式",
+            "from": "“保留源格式”"
+          },
+          {
+            "label": "合并格式",
+            "from": "“合并格式”"
+          },
+          {
+            "label": "只保留文本",
+            "from": "“只保留文本”"
+          },
+          {
+            "label": "Word2016快捷键",
+            "from": "Word2016"
+          }
+        ]
+      },
+      "6": {
+        "title": "Office剪贴板",
+        "navigationLabel": "Office剪贴板",
+        "blocks": [
+          {
+            "label": "入口与用途"
+          },
+          {
+            "label": "容量限制",
+            "from": "继续收集"
+          },
+          {
+            "label": "与Windows剪贴板区分",
+            "from": "它与Windows"
+          },
+          {
+            "label": "重复粘贴与保存",
+            "from": "普通粘贴"
+          }
+        ]
+      }
+    },
+    "fieldPresentation": {
+      "boundary": {
+        "blocks": [
+          {},
+          {
+            "from": "选区和键盘",
+            "role": "demo"
+          }
+        ]
+      },
+      "trigger": {
+        "blocks": [
+          {},
+          {
+            "from": "网页演示",
+            "role": "demo"
+          }
+        ]
+      }
+    }
   },
   {
     "q": 10,
@@ -360,7 +474,38 @@
       "F7",
       "拼写",
       "语法"
-    ]
+    ],
+    "pointPresentation": {
+      "3": {
+        "title": "自动更正",
+        "navigationLabel": "自动更正"
+      },
+      "4": {
+        "title": "字数统计",
+        "navigationLabel": "字数统计",
+        "blocks": [
+          {
+            "label": "打开统计窗口"
+          },
+          {
+            "label": "先确定统计范围",
+            "from": "先选中文字"
+          },
+          {
+            "label": "分清统计指标",
+            "from": "字数、字符数"
+          },
+          {
+            "label": "附加内容与排版条件",
+            "from": "需要计入"
+          },
+          {
+            "label": "例子：单词与字符不同",
+            "from": " 例如computer"
+          }
+        ]
+      }
+    }
   },
   {
     "q": 7,
@@ -1565,7 +1710,116 @@
         "label": "换行与分页控制",
         "reason": "区分行距、段落结构与分页设置。"
       }
-    ]
+    ],
+    "pointPresentation": {
+      "0": {
+        "title": "设置对象与入口",
+        "navigationLabel": "设置对象与入口",
+        "blocks": [
+          {
+            "label": "处理哪些段落"
+          },
+          {
+            "label": "操作入口",
+            "from": "用开始"
+          },
+          {
+            "label": "作用范围提醒",
+            "from": "字符选区"
+          }
+        ]
+      },
+      "1": {
+        "title": "段前与段后",
+        "navigationLabel": "段前与段后",
+        "blocks": [
+          {
+            "label": "控制段落外留白"
+          },
+          {
+            "label": "核对输入单位",
+            "from": "按题目单位"
+          },
+          {
+            "label": "相邻段落的条件",
+            "from": "相邻段落"
+          }
+        ]
+      },
+      "2": {
+        "title": "单倍与倍数行距",
+        "navigationLabel": "倍数行距"
+      },
+      "3": {
+        "title": "最小值与固定值",
+        "navigationLabel": "最小值与固定值",
+        "blocks": [
+          {
+            "label": "最小值"
+          },
+          {
+            "label": "固定值",
+            "from": "“固定值”"
+          },
+          {
+            "label": "裁切问题",
+            "from": "固定值越小"
+          }
+        ]
+      },
+      "4": {
+        "title": "设置1.5倍行距、段后6磅",
+        "navigationLabel": "设置步骤与核对",
+        "blocks": [
+          {
+            "label": "题目要求"
+          },
+          {
+            "label": "设置步骤",
+            "from": "先选正文",
+            "steps": [
+              "先选正文",
+              "段落对话框",
+              "行距选",
+              "段后输入",
+              "确定"
+            ]
+          },
+          {
+            "label": "核对结果",
+            "from": "再核对"
+          },
+          {
+            "label": "范围与易错",
+            "from": "标题不在"
+          }
+        ]
+      },
+      "5": {
+        "title": "设置未生效时的检查",
+        "navigationLabel": "设置没有生效",
+        "blocks": [
+          {
+            "label": "依次排查"
+          },
+          {
+            "label": "默认值的来源",
+            "from": "默认格式"
+          }
+        ]
+      }
+    },
+    "fieldPresentation": {
+      "trigger": {
+        "blocks": [
+          {},
+          {
+            "from": "网页演示",
+            "role": "demo"
+          }
+        ]
+      }
+    }
   },
   {
     "q": 66,

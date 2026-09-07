@@ -8,7 +8,12 @@
       const article=document.getElementById(note.id),demo=simulation.demos[note.id];
       return {id:note.id,title:note.title,chapter:note.chapter,
         aliases:[...(note.searchAliases||[]),...(note.pointGroups||[]).map(g=>g.title),demo?.title||'',demo?.task||''],
-        fields:[...article.querySelectorAll('.conclusion,.points li,.boundary,.note-comparison,.note-worked,.note-provenance')].map(el=>({anchor:el.id||el.parentElement.id,text:el.textContent}))};
+        fields:[...article.querySelectorAll('.conclusion,[data-note-point],.boundary,.note-demo-limits,.note-comparison,.note-worked,.note-provenance')].map(el=>({
+          anchor:el.id||el.parentElement.id,
+          aliases:el.hasAttribute('data-note-point')?[window.NOTE_PRESENTATION.pointMeta(note,el.dataset.notePoint).navigationLabel||'']:[],
+          title:el.dataset.pointTitle||el.closest('.note-point-group')?.querySelector('h4')?.textContent|| (el.matches('.note-demo-limits')?'本演示的范围与限制':el.matches('details')?'来源与核验记录':el.matches('.boundary')?'易错边界':el.matches('.conclusion')?'核心结论':el.querySelector('h4')?.textContent||'相关内容'),
+          text:el.hasAttribute('data-note-point')?[...el.querySelectorAll(`[data-source-field="point-${el.dataset.notePoint}"]`)].map(part=>part.textContent).join(''):el.textContent
+        }))};
     });
     function restoreDisclosures(){
       for(const detail of autoOpened)detail.open=false;
@@ -32,10 +37,18 @@
         if(query&&targets.length){
           const nav=document.createElement('nav');nav.className='note-search-jumps';nav.setAttribute('aria-label','跳到命中段落');
           const label=document.createElement('span');label.textContent='跳到命中段落';nav.append(label);
-          targets.slice(0,3).forEach((target,i)=>{
+          const labels=targets.map(target=>{
+            const field=matches.get(article.id).matches.find(f=>f.anchor===target.id);
+            return {target,title:field.title,text:field.text,summary:window.NOTE_SEARCH.snippet(field.text,query,110)};
+          });
+          // If clipped extracts collide, expose their complete actual text.
+          // Numbers alone must never be the only distinction between two hits.
+          labels.forEach(item=>{if(labels.some(other=>other!==item&&other.title===item.title&&other.summary===item.summary))item.summary=item.text;});
+          labels.forEach(({target,title,summary})=>{
             const link=document.createElement('a');link.href='#'+target.id;
-            const group=target.closest('.note-point-group')?.querySelector('h4')?.textContent;
-            link.textContent=`${i+1}. ${group|| (target.matches('details')?'来源与核验记录':target.matches('.boundary')?'易错边界':target.matches('.conclusion')?'核心结论':target.querySelector('h4')?.textContent||'相关内容')}`;
+            const heading=document.createElement('strong');heading.textContent=title;
+            const extract=document.createElement('span');extract.className='note-hit-summary';extract.textContent=summary;
+            link.append(heading,extract);
             nav.append(link);
           });
           article.querySelector('h3').after(nav);

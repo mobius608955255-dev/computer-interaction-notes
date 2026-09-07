@@ -108,7 +108,7 @@ test('all chapters mount, open, reset and collapse every card without exceptions
     assert.deepEqual(JSON.parse(JSON.stringify(e.w.NOTES.notes)),allNotes().filter(n=>n.chapter===chapter),'generated content matches canonical chapter');
     assert.equal(e.d.querySelectorAll('.directory-chapters a').length,11);
     assert.equal(e.d.querySelectorAll('[data-reading-mode],details.note-explanation').length,0);
-    assert.equal(e.d.querySelectorAll('.directory-section .note-list a').length,e.w.NOTES.notes.length);
+    assert.equal(e.d.querySelectorAll('.directory-section .note-list > li > a').length,e.w.NOTES.notes.length);
     assert.equal(e.d.querySelectorAll('[data-sim-mount]>*').length,0,'scenes are lazy mounted');
     for(const b of e.d.querySelectorAll('.simulation-toggle')){b.click();assert.equal(b.getAttribute('aria-expanded'),'true');const c=b.closest('[data-sim-id]');assert.ok(c.querySelector('[data-sim-mount]').children.length);c.querySelector('[data-sim-reset]').click();b.click();assert.equal(b.getAttribute('aria-expanded'),'false');}
     assert.deepEqual(errors,[],'chapter '+chapter);e.dom.window.close();
@@ -649,8 +649,14 @@ test('full-site search normalizes aliases and resolves every note paragraph and 
   for(const entry of index.filter(x=>x.chapter===chapter))for(const field of entry.fields)assert.ok(e.d.getElementById(field.anchor),field.anchor);
   for(const n of notes.filter(x=>x.chapter===chapter)){
    const article=e.d.getElementById(n.id);
-   assert.equal(article.querySelectorAll('.points li').length,n.points.length);
-   for(const [i,p] of n.points.entries()){const expected=e.d.createElement('div');expected.innerHTML=p;assert.equal(e.d.getElementById(`${n.id}--point-${i}`).textContent,expected.textContent);}
+   assert.equal(article.querySelectorAll('[data-note-point]').length,n.points.length);
+   for(const [i,p] of n.points.entries()){
+    const expected=e.d.createElement('div');expected.innerHTML=p;
+    const anchor=e.d.getElementById(`${n.id}--point-${i}`);assert.equal(anchor.dataset.notePoint,String(i));
+    const fragments=[...article.querySelectorAll(`[data-source-field="point-${i}"]`)];
+    assert.equal(fragments.map(el=>el.textContent).join(''),expected.textContent,'all original prose survives structure and demo relocation');
+    assert.ok(fragments.some(el=>anchor.contains(el)),'historical anchor still contains its original knowledge prose');
+   }
    for(const link of article.querySelectorAll('.note-related ul a')){const url=new URL(link.href);assert.ok(byId.has(url.hash.slice(1)));assert.equal(url.pathname,`/chapter${byId.get(url.hash.slice(1)).chapter}.html`);}
   }
   const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'),'utf8'));assert.equal(Object.keys(e.w.NOTE_LABS.registry).length,manifest.chapters[chapter].models,'no unrelated chapter registrations');
@@ -876,4 +882,62 @@ test('Word text editing moves the actual selection and keeps clipboard text afte
  click(c,'cut');editor=c.querySelector('[data-edit-text]');assert.equal(editor.value,original.slice(2));editor.setSelectionRange(editor.value.length,editor.value.length);editor.dispatchEvent(new e.w.Event('select'));click(c,'paste');editor=c.querySelector('[data-edit-text]');assert.equal(editor.value,original.slice(2)+'笔记');
  click(c,'paste');assert.equal(c.querySelector('[data-edit-text]').value,original.slice(2)+'笔记笔记');click(c,'undo');assert.equal(c.querySelector('[data-edit-text]').value,original.slice(2)+'笔记');assert.equal(c.querySelector('[data-edit-clipboard]').textContent,'笔记');
  click(c,'undo');click(c,'undo');assert.equal(c.querySelector('[data-edit-text]').value,original);e.dom.window.close();
+});
+
+// v51 display-only compatibility snapshot: IDs, ordered prose and source identities from v50.
+// A future knowledge correction must explicitly review this snapshot and its old semantic anchors.
+test('reading metadata preserves v50 historical point semantics and source identities',()=>{
+ const digests=[["syllabus-windows-selection", "0bbdba56a5b90f1aca10a007f4018eefe0f3c86f31e6d58d892a39423f59ebcf"], ["syllabus-windows-search", "2a9d22aca37178caeb0adf24cf39832feea8173195d090bd2678e350bbb0aa4f"], ["merged-4", "f19f447594cff3504e291c464bee5a761203c392d046a66651d56dcc51e4c339"], ["y2022q75", "d1dfb7b5825a4c7d1e45636900fd45ef5d858503ddc037794ef75c747e712527"], ["syllabus-word-text-editing", "4acb50661b47845d2652af32a5f838e83ed9e0e3f02ff6e00f1692b8a9a9d47a"], ["y2023q55", "e5d100571cfaca103bb9a896ea2b4fa9d49aa8577a5513100e7cb62054b24274"], ["syllabus-word-paragraph-spacing", "c179f6c288551d883b4d34408d9870ef98b41b46506cd19bc4a309d4aeae5a58"]];
+ const notes=allNotes(),hash=value=>require('node:crypto').createHash('sha256').update(JSON.stringify(value)).digest('hex');
+ for(const [id,expected] of digests){const n=notes.find(note=>note.id===id);assert.equal(hash([n.id,n.points,n.sources]),expected,id);}
+ for(const chapter of [2,3]){
+  const e=env(chapter);
+  for(const n of e.w.NOTES.notes.filter(n=>n.pointPresentation||n.fieldPresentation)){
+   e.w.NOTE_PRESENTATION.validate(n);
+   for(const field of ['boundary','trigger']){
+    const fragments=[...e.d.getElementById(n.id).querySelectorAll(`[data-source-field="${field}"]`)];
+    const source=e.d.createElement('div');source.innerHTML=n[field];assert.equal(fragments.map(el=>el.textContent).join(''),source.textContent,n.id+'/'+field);
+   }
+  }
+  e.dom.window.close();
+ }
+});
+test('same-group search hits expose distinct actual excerpts and do not index step list items',()=>{
+ const e=env(2),input=e.d.getElementById('search-input');
+ for(const query of ['EFS','压缩','隐藏']){
+  input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+  const links=[...e.d.querySelectorAll('#merged-4 .note-search-jumps a')];assert.ok(links.length>=2,query);
+  assert.equal(new Set(links.map(a=>a.textContent.trim())).size,links.length,query+' has distinct entrances');
+  for(const a of links){assert.ok(a.querySelector('strong').textContent);assert.ok(a.querySelector('.note-hit-summary').textContent.includes(query));assert.ok(e.d.querySelector(a.hash).classList.contains('note-search-match'));}
+  if(query==='EFS')assert.deepEqual(links.filter(a=>a.hash.includes('--point-')).map(a=>[a.hash,a.querySelector('strong').textContent]),[['#merged-4--point-11','EFS适用版本与压缩互斥'],['#merged-4--point-12','EFS证书、私钥与备份']]);
+ }
+ input.value='新建';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ for(const a of e.d.querySelectorAll('#syllabus-windows-selection .note-search-jumps a'))assert.ok(e.d.querySelector(a.hash).id,'every hit has an actual stable anchor');
+ e.d.getElementById('clear-search').click();assert.equal(e.d.querySelector('.note-search-jumps'),null);e.dom.window.close();
+});
+test('display names are searchable and relocated demo text links to its visible location',()=>{
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
+ for(const [chapter,query,id,anchor] of [[2,'EFS加密','merged-4','point-11'],[2,'常规属性与权限','merged-4','point-4'],[2,'文件名与类型','merged-4','point-0'],[3,'设置没有生效','syllabus-word-paragraph-spacing','point-5'],[3,'手机网页','syllabus-word-text-editing','demo-limits']]){
+  const e=env(chapter),input=e.d.getElementById('search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+  const links=[...e.d.querySelectorAll(`#${id} .note-search-jumps a`)];assert.ok(links.some(a=>a.hash===`#${id}--${anchor}`),query);
+  const global=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(global.matches.some(f=>f.anchor===`${id}--${anchor}`),query+' on home');
+  if(query==='手机网页'){assert.ok(links.every(a=>!a.hash.endsWith('--point-4')));assert.ok(global.matches.every(f=>!f.anchor.endsWith('--point-4')));}
+  e.dom.window.close();
+ }
+});
+test('subtopic navigation resolves old anchors, preserves demos and keeps essential limits visible',()=>{
+ for(const [chapter,id,label,point] of [[2,'merged-4','EFS加密',11],[2,'syllabus-windows-selection','新建文件夹',3],[3,'y2023q55','字数统计',4]]){
+  const e=env(chapter),c=open(e,id),lab=c.querySelector('[data-lab]'),target=e.d.getElementById(`${id}--point-${point}`);
+  const local=[...c.querySelectorAll('.note-subtopics a')].find(a=>a.textContent===label),directory=e.d.querySelector(`#drawer a[href="${local.hash}"]`);
+  assert.equal(local.hash,'#'+target.id);assert.equal(directory.textContent,label);assert.equal(target.closest('details'),null);
+  const input=e.d.getElementById('search-input');input.value='no-match-xyz';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+  e.d.getElementById('open-drawer').click();directory.click();assert.equal(e.w.location.hash,local.hash);assert.equal(e.d.activeElement,target);assert.equal(input.value,'');assert.equal(e.d.getElementById('drawer').hidden,true);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('.simulation-toggle').getAttribute('aria-expanded'),'true');
+  e.dom.window.close();
+ }
+ const w=env(2),selection=w.d.getElementById('syllabus-windows-selection');
+ assert.equal(selection.querySelector('.boundary'),null);assert.match(selection.querySelector('.note-demo-limits').textContent,/未.*实测|尚未.*实测/);
+ assert.equal(selection.querySelector('.note-demo-limits').closest('details'),null);assert.ok(selection.querySelector('[id$="--point-3"] .note-operation-steps'));
+ const e=env(3),c=e.d.getElementById('syllabus-word-text-editing');assert.doesNotMatch(c.querySelector('.boundary').textContent,/选区和键盘/);assert.match(c.querySelector('.note-demo-limits').textContent,/选区和键盘/);assert.equal(c.querySelectorAll('[id$="--point-3"] .note-operation-steps').length,2);
+ assert.ok(e.d.querySelectorAll('#y2023q55--point-4 .note-prose-block').length>=4);assert.equal(e.d.querySelector('#y2023q55--point-4').closest('details'),null);
+ w.dom.window.close();e.dom.window.close();
 });

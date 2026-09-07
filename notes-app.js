@@ -3,6 +3,7 @@
 
   const data = window.NOTES;
   const simulation = window.NOTE_SIMULATIONS;
+  const presentation = window.NOTE_PRESENTATION;
   const chapterNumber = Number(document.body.dataset.chapter);
   const refined = true;
   const chapter = data.chapters.find(item => item.number === chapterNumber);
@@ -64,15 +65,41 @@
       ${refined ? '' : `<div class="note-topic">${note.topic}</div>`}
       <h3>${note.title}</h3>
       <p class="conclusion" id="${note.id}--conclusion"><b>核心结论：</b>${note.conclusion}</p>
+      ${renderSubtopics(note)}
       <div class="note-explanation">
-      ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>`<li id="${note.id}--point-${i}">${note.points[i]}</li>`).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map((point,i) => `<li id="${note.id}--point-${i}">${point}</li>`).join('')}</ul>`}
+      ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>renderPoint(note,i)).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map((point,i) => renderPoint(note,i)).join('')}</ul>`}
       <div id="${note.id}--comparison">${note.comparison ? renderComparison(note.comparison) : ''}</div></div>
-      <p class="boundary" id="${note.id}--boundary"><b>易错边界：</b>${note.boundary}</p>
+      ${presentation.parts(note,'boundary').some(p=>p.role!=='demo')?`<div class="boundary" id="${note.id}--boundary"><b>易错边界：</b>${renderProse(note,'boundary')}</div>`:''}
       ${(note.workedExamples||[]).map((example,i)=>renderWorked(note,example,i)).join('')}
-      <details class="note-provenance" id="${note.id}--sources"><summary>${note.origin==='syllabus'?'考纲与参考资料':`真题来源 · ${note.sources.length}题`}</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
+      <details class="note-provenance" id="${note.id}--sources"><summary>${note.origin==='syllabus'?'考纲与参考资料':`真题来源 · ${note.sources.length}题`}</summary><div class="note-source">${sources}</div>${note.fieldPresentation?.trigger?renderProse(note,'trigger'):`<p>${renderProse(note,'trigger')}</p>`}${references}</details>
+      ${renderDemoLimits(note)}
       ${renderSimulation(note)}
       ${renderRelated(note)}
     </article>`;
+  }
+
+  function renderSubtopics(note) {
+    const links=presentation.subtopics(note),esc=simulation.escapeHTML;
+    return links.length?`<nav class="note-subtopics" aria-label="${esc(note.title)}的子主题">${links.map(link=>`<a href="#${link.anchor}">${esc(link.label)}</a>`).join('')}</nav>`:'';
+  }
+  function renderBlock(part,field) {
+    const esc=simulation.escapeHTML,source=text=>`<span data-source-field="${field}">${text}</span>`;
+    const body=part.steps?`<ol class="note-operation-steps">${presentation.split(part.text,part.steps.map(from=>({from}))).map(step=>`<li>${source(step.text)}</li>`).join('')}</ol>`:`<p>${source(part.text)}</p>`;
+    return `<div class="note-prose-block">${part.label?`<h6>${esc(part.label)}</h6>`:''}${body}</div>`;
+  }
+  function renderProse(note,field) {
+    if(!presentation.fieldMeta(note,field).blocks)return `<span data-source-field="${field}">${presentation.fieldText(note,field)}</span>`;
+    return presentation.parts(note,field).filter(part=>part.role!=='demo').map(part=>renderBlock(part,field)).join('');
+  }
+  function renderPoint(note,index) {
+    const field='point-'+index,meta=presentation.pointMeta(note,index),esc=simulation.escapeHTML;
+    return `<li id="${note.id}--${field}" data-note-point="${index}"${meta.title?` data-point-title="${esc(meta.title)}" class="note-structured-point"`:''}>${meta.title?`<h5>${esc(meta.title)}</h5>`:''}${renderProse(note,field)}</li>`;
+  }
+  function renderDemoLimits(note) {
+    const fields=[...note.points.map((_,i)=>'point-'+i),'boundary','trigger'];
+    const blocks=fields.flatMap(field=>presentation.parts(note,field).filter(part=>part.role==='demo').map(part=>({field,part})));
+    if(!blocks.length)return '';
+    return `<aside class="note-demo-limits" id="${note.id}--demo-limits" aria-label="本演示的范围与限制"><h4>本演示的范围与限制</h4>${blocks.map(({field,part})=>`<div${field==='boundary'&&presentation.parts(note,field).every(p=>p.role==='demo')?` id="${note.id}--boundary"`:''}>${renderBlock(part,field)}</div>`).join('')}</aside>`;
   }
 
   function renderWorked(note,example,index) {

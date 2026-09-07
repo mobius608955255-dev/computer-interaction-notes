@@ -8,8 +8,8 @@
   const prepare = entries => {
     if(!indexes.has(entries)) indexes.set(entries,entries.map(entry=>({
       entry,title:normalize(entry.title),
-      text:normalize([entry.title,...(entry.aliases||[]),...entry.fields.map(f=>f.text)].join(' ')),
-      fields:entry.fields.map((field,order)=>({field,order,text:normalize(field.text)}))
+      text:normalize([entry.title,...(entry.aliases||[]),...entry.fields.flatMap(f=>[f.title||'',...(f.aliases||[]),f.text])].join(' ')),
+      fields:entry.fields.map((field,order)=>({field,order,text:normalize([field.title||'',...(field.aliases||[]),field.text].join(' '))}))
     })));
     return indexes.get(entries);
   };

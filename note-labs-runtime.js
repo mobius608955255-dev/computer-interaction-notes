@@ -14,7 +14,7 @@
   const field = (name,label,value,type='text',extra='') => `<label>${label}<input data-field="${name}" type="${type}" value="${esc(String(value))}" ${extra}></label>`;
   const select = (name,label,value,options,extra='') => `<label>${label}<select data-field="${name}" ${extra}>${options.map(o=>`<option value="${esc(String(o[0]))}" ${String(o[0])===String(value)?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
   const table = (head,rows) => `<div class="lab-table-scroll" tabindex="0" aria-label="数据表，可横向滚动"><table><thead><tr>${head.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  const coach = text => `<div class="lab-coach"><b>操作提示</b><p>${text}</p></div>`;
+  const coach = (text, title = '操作提示') => `<div class="lab-coach${title === '本演示的范围与限制' ? ' lab-demo-limits' : ''}"><b>${esc(title)}</b><p>${text}</p></div>`;
   const output = text => `<output class="lab-output" aria-live="polite">${text}</output>`;
   const tabs = (name,value,items) => `<select data-field="${name}" hidden aria-label="功能区位置">${items.map(([key,label])=>`<option value="${key}" ${key===value?'selected':''}>${label}</option>`).join('')}</select>${items.map(([key,label])=>`<button type="button" data-lab-tab="${name}" data-value="${key}" aria-pressed="${key===value}">${label}</button>`).join('')}`;
   const office = (app,tab,commands,body,navigation='') => `<div class="lab-office lab-${app.toLowerCase()}"><header>${app} 2016 · 局部操作仿真</header><nav aria-label="功能区位置">${navigation||`<span>${esc(tab)}</span>`}</nav><div class="lab-ribbon">${commands}</div><div class="lab-workspace">${body}</div><footer>演示文档 · 操作仅影响本卡片</footer></div>`;

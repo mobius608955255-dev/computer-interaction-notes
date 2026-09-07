@@ -21,7 +21,7 @@
   }
   function resultHTML(result){
     const href=result.kind==='comparison'?`./index.html?v=${version}#compare-${result.id}`:`./chapter${result.chapter}.html?v=${version}#${result.field.anchor}`;
-    return `<li><a class="search-result" href="${href}"><small>${result.kind==='comparison'?'易混知识对照':`第${result.chapter}章 · ${esc(result.chapterTitle)}`}</small><strong>${esc(result.title)}</strong><p>${esc(snippet(result.field.text,$('#global-search').value))}</p></a></li>`;
+    return `<li><a class="search-result" href="${href}"><small>${result.kind==='comparison'?'易混知识对照':`第${result.chapter}章 · ${esc(result.chapterTitle)}`}</small><strong>${esc(result.field.title||result.title)}</strong>${result.field.title?`<span>${esc(result.title)}</span>`:''}<p>${esc(snippet(result.field.text,$('#global-search').value))}</p></a></li>`;
   }
   function renderResults(append=false){
     const list=$('#global-results'),start=append?list.children.length:0;
