@@ -265,6 +265,18 @@
     [
       "check spelling and grammar in office",
       "https://support.microsoft.com/en-us/office/check-spelling-and-grammar-in-office"
+    ],
+    [
+      "Microsoft：Show word count",
+      "https://support.microsoft.com/en-us/word/training/show-word-count"
+    ],
+    [
+      "Microsoft：Turn AutoCorrect on or off in Word",
+      "https://support.microsoft.com/en-us/word/turn-autocorrect-on-or-off-in-word"
+    ],
+    [
+      "Microsoft：Add or remove AutoCorrect entries in Word",
+      "https://support.microsoft.com/en-us/word/add-or-remove-autocorrect-entries-in-word"
     ]
   ],
   "y2025q48": [
@@ -275,6 +287,14 @@
     [
       "find and replace text within an email message or item",
       "https://support.microsoft.com/en-us/outlook/find-and-replace-text-within-an-email-message-or-item"
+    ],
+    [
+      "Microsoft：Replace Text",
+      "https://support.microsoft.com/en-us/word/replace-text"
+    ],
+    [
+      "Microsoft：Find.Execute method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.find.execute"
     ]
   ],
   "y2020q41": [
@@ -295,6 +315,10 @@
     [
       "indent the first line of a paragraph",
       "https://support.microsoft.com/en-us/word/training/indent-the-first-line-of-a-paragraph"
+    ],
+    [
+      "Microsoft：Use Line and Page Breaks settings in Word",
+      "https://support.microsoft.com/en-us/word/line-and-page-breaks"
     ]
   ],
   "y2020q44": [
@@ -327,6 +351,10 @@
     [
       "using the ruler in word",
       "https://support.microsoft.com/en-us/word/using-the-ruler-in-word"
+    ],
+    [
+      "Microsoft：Adjust indents and spacing",
+      "https://support.microsoft.com/en-us/word/adjust-indents-and-spacing"
     ]
   ],
   "y2023q52": [
@@ -1649,6 +1677,84 @@
     [
       "Search indexing in Windows",
       "https://support.microsoft.com/en-us/windows/experience/performance-optimization/search-indexing-in-windows"
+    ]
+  ],
+  "syllabus-word-text-editing": [
+    [
+      "Microsoft：Type over text in Word for Windows",
+      "https://support.microsoft.com/en-us/word/type-over-text-in-word-for-windows"
+    ],
+    [
+      "Microsoft：Control the formatting when you paste text",
+      "https://support.microsoft.com/en-us/word/control-the-formatting-when-you-paste-text"
+    ],
+    [
+      "Microsoft：Copy and paste using the Office Clipboard",
+      "https://support.microsoft.com/en-us/word/copy-and-paste-using-the-office-clipboard"
+    ],
+    [
+      "Microsoft：Word Options (Advanced)",
+      "https://support.microsoft.com/en-us/word/word-options-advanced"
+    ],
+    [
+      "Microsoft：Paste Text Only shortcut in Word",
+      "https://techcommunity.microsoft.com/blog/microsoft365insiderblog/paste-text-only-shortcut-in-word/4218362"
+    ]
+  ],
+  "y2024q7": [
+    [
+      "Microsoft：Select text",
+      "https://support.microsoft.com/en-us/word/select-text"
+    ],
+    [
+      "Microsoft：Keyboard shortcuts in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ]
+  ],
+  "merged-7": [
+    [
+      "Microsoft：Use the Format Painter",
+      "https://support.microsoft.com/en-us/word/use-the-format-painter"
+    ],
+    [
+      "Microsoft：Change the spaces between text in Word",
+      "https://support.microsoft.com/en-us/word/change-the-spaces-between-text-in-word"
+    ],
+    [
+      "Microsoft：Keyboard shortcuts in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：Change the font size",
+      "https://support.microsoft.com/en-US/Office/fonts/change-the-font-size"
+    ],
+    [
+      "Microsoft：Application.InchesToPoints method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.application.inchestopoints"
+    ],
+    [
+      "Microsoft：文字边框与底纹的范围",
+      "https://support.microsoft.com/en-us/word/add-a-border-to-some-text-in-word"
+    ]
+  ],
+  "syllabus-word-paragraph-spacing": [
+    [
+      "Microsoft：Adjust indents and spacing",
+      "https://support.microsoft.com/en-us/word/adjust-indents-and-spacing"
+    ],
+    [
+      "Microsoft：Use Line and Page Breaks settings in Word",
+      "https://support.microsoft.com/en-us/word/line-and-page-breaks"
+    ]
+  ],
+  "y2026q47": [
+    [
+      "Microsoft：Change the spaces between text in Word",
+      "https://support.microsoft.com/en-us/word/change-the-spaces-between-text-in-word"
+    ],
+    [
+      "Microsoft：Use Line and Page Breaks settings in Word",
+      "https://support.microsoft.com/en-us/word/line-and-page-breaks"
     ]
   ]
 }

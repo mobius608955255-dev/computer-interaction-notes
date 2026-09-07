@@ -421,18 +421,22 @@ function rangeDescription(s){
 function selectedText(s){return s.start===s.end?'当前没有选中文字。':s.doc.slice(s.start,s.end).replace(/\n/g,'↵\n');}
 function moveSelection(s,key){
     const focus=caretFocus(s),anchor=selectionAnchor(s);let next=focus,extend=false;
+    if(key==='home'||key==='shiftHome'){next=focus===0?0:s.doc.lastIndexOf('\n',focus-1)+1;extend=key==='shiftHome';}
+    if(key==='end'){const end=s.doc.indexOf('\n',focus);next=end<0?s.doc.length:end;}
+    if(key==='all'){s.start=0;s.end=s.doc.length;s.direction='forward';s.focusEditor=true;s.message='Ctrl+A选中本例全文。';return;}
     if(key==='ctrlHome')next=0;
     if(key==='ctrlEnd')next=s.doc.length;
     if(key==='shiftEnd'){const end=s.doc.indexOf('\n',focus);next=end<0?s.doc.length:end;extend=true;}
     if(key==='ctrlShiftHome'){next=0;extend=true;}
     if(key==='ctrlShiftEnd'){next=s.doc.length;extend=true;}
     const fixed=extend?anchor:next;s.start=Math.min(fixed,next);s.end=Math.max(fixed,next);s.direction=next<fixed?'backward':'forward';s.focusEditor=true;
-    s.message={ctrlHome:'Ctrl+Home把插入点移到全文开头。',ctrlEnd:'Ctrl+End把插入点移到全文末尾。',shiftEnd:'Shift+End保留选区锚点，把活动端扩展到当前行末。',ctrlShiftHome:'Ctrl+Shift+Home保留选区锚点，把活动端扩展到全文开头。',ctrlShiftEnd:'Ctrl+Shift+End保留选区锚点，把活动端扩展到全文末尾。'}[key];
+    s.message={home:'Home把插入点移到当前行首。',end:'End把插入点移到当前行末。',shiftHome:'Shift+Home保留选区锚点，把活动端扩展到当前行首。',ctrlHome:'Ctrl+Home把插入点移到全文开头。',ctrlEnd:'Ctrl+End把插入点移到全文末尾。',shiftEnd:'Shift+End保留选区锚点，把活动端扩展到当前行末。',ctrlShiftHome:'Ctrl+Shift+Home保留选区锚点，把活动端扩展到全文开头。',ctrlShiftEnd:'Ctrl+Shift+End保留选区锚点，把活动端扩展到全文末尾。'}[key];
   }
 register(['y2024q7'],'亲手放置插入点，再用键盘改变选区','在正文中单击、拖动选择或修改文字；下方键盘按钮操作的是真实文本选区。',{
     doc,start:initialCaret,end:initialCaret,direction:'forward',focusEditor:false,message:'初始插入点在第3行。“行末”和“文末”是两个不同的位置。'
-  },s=>office('Word','开始','<span>正文编辑区 · 可单击定位、拖动选择</span>',paper(`<label style="display:block">文档正文<textarea data-field="doc" data-selection-editor wrap="off" spellcheck="false" rows="7" aria-label="可编辑的Word示例正文" style="display:block;box-sizing:border-box;width:100%;max-width:100%;resize:vertical;overflow:auto;white-space:pre;font:16px/1.9 system-ui,sans-serif;padding:12px;border:1px solid #d0bbd7;border-radius:5px;caret-color:#714787;tab-size:4">${esc(s.doc)}</textarea></label>`))+
-      controls(btn('Ctrl+Home','key','ctrlHome')+btn('Ctrl+End','key','ctrlEnd')+btn('Shift+End','key','shiftEnd')+btn('Ctrl+Shift+Home','key','ctrlShiftHome')+btn('Ctrl+Shift+End','key','ctrlShiftEnd'))+
+  },s=>office('Word','开始','<span>正文编辑区 · 可单击定位、拖动选择</span>',paper(`<label style="display:block">文档正文<textarea data-field="doc" data-selection-editor wrap="off" spellcheck="false" rows="7" aria-label="可编辑的Word示例正文" style="display:block;box-sizing:border-box;width:100%;max-width:100%;resize:vertical;overflow:auto;white-space:pre;font:16px/1.9 system-ui,sans-serif;padding:12px;border:1px solid #d0bbd7;border-radius:5px;caret-color:#714787;tab-size:4">
+${esc(s.doc)}</textarea></label>`))+
+      controls(btn('Home','key','home')+btn('End','key','end')+btn('Ctrl+Home','key','ctrlHome')+btn('Ctrl+End','key','ctrlEnd')+btn('Shift+Home','key','shiftHome')+btn('Shift+End','key','shiftEnd')+btn('Ctrl+Shift+Home','key','ctrlShiftHome')+btn('Ctrl+Shift+End','key','ctrlShiftEnd')+btn('Ctrl+A','key','all'))+
       `<p data-selection-position>${rangeDescription(s)}</p><div style="padding:12px;background:#f5edf8;border-left:3px solid #b187bd"><b>当前选中的实际内容</b><pre data-selection-text style="white-space:pre-wrap;overflow-wrap:anywhere;font:16px/1.8 system-ui,sans-serif;margin:8px 0 0">${esc(selectedText(s))}</pre></div>`+
       `<output class="lab-output" data-selection-message aria-live="polite">${s.message}</output><p style="font-size:14px">本例正文不自动折行；每个回车建立一行。长行可在编辑区横向滚动。下方按键是独立模拟键盘，也支持直接使用这些实体键。</p>`,
     (s,a,v)=>{if(a==='key')moveSelection(s,v);},
@@ -456,6 +460,9 @@ keyboard.keydown=(s,e)=>{
     let key=null;if(e.ctrlKey&&!e.altKey&&e.key==='Home')key=e.shiftKey?'ctrlShiftHome':'ctrlHome';
     if(e.ctrlKey&&!e.altKey&&e.key==='End')key=e.shiftKey?'ctrlShiftEnd':'ctrlEnd';
     if(!e.ctrlKey&&!e.altKey&&e.shiftKey&&e.key==='End')key='shiftEnd';
+    if(!e.ctrlKey&&!e.altKey&&e.key==='Home')key=e.shiftKey?'shiftHome':'home';
+    if(!e.ctrlKey&&!e.altKey&&!e.shiftKey&&e.key==='End')key='end';
+    if(e.ctrlKey&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='a')key='all';
     if(!key)return;e.preventDefault();moveSelection(s,key);return true;
   };
 const figureArt=(kind)=>kind==='network'?`<svg viewBox="0 0 300 100" role="img" aria-label="终端通过交换机连接服务器" style="display:block;width:100%;max-width:300px;margin:auto"><path d="M75 50H115M185 50H225" stroke="#9c75aa" stroke-width="3"/><rect x="0" y="25" width="75" height="50" rx="8" fill="#eeddf5"/><rect x="115" y="25" width="70" height="50" rx="8" fill="#ead3e9"/><rect x="225" y="25" width="75" height="50" rx="8" fill="#e4d8f1"/><g text-anchor="middle" font-size="17" fill="#44304f"><text x="37.5" y="56">终端</text><text x="150" y="56">交换机</text><text x="262.5" y="56">服务器</text></g></svg>`:`<svg viewBox="0 0 300 100" role="img" aria-label="处理器、内存、外存三个不同部件" style="display:block;width:100%;max-width:300px;margin:auto"><rect x="45" y="8" width="210" height="24" rx="5" fill="#dac5e9"/><rect x="28" y="38" width="244" height="24" rx="5" fill="#ead5ef"/><rect x="10" y="68" width="280" height="24" rx="5" fill="#f4dfe9"/><g text-anchor="middle" font-size="17" fill="#44304f"><text x="150" y="27">处理器</text><text x="150" y="57">内存</text><text x="150" y="87">外存</text></g></svg>`;
@@ -656,4 +663,123 @@ register(['merged-9'],'把高、宽和纵横比对应起来','原图高8.5 cm、
     s.preview?`<div class="lab-mini-deck">${s.preview.pages.map(n=>`<div><b>第${n}页</b><p>正文内容</p>${s.preview.markup?'<small>审阅标记</small>':''}</div>`).join('')}</div><p>每份${s.preview.pages.length}面、${s.preview.sheets}张纸；共${s.preview.copies}份，需要${s.preview.sheets*s.preview.copies}张纸。</p>`:'<p class="lab-empty">设置后生成预览</p>')+output(esc(s.message)),
     (s,a)=>{if(a!=='preview')return;const chosen=pages(s.range);if(!chosen?.length){s.preview=null;s.message='请输入1—8内的页码或升序范围，如2,5-7。';return;}s.preview={pages:chosen,copies:s.copies,markup:s.markup,sheets:Math.ceil(chosen.length/(s.duplex?2:1))};s.message='预览按当前设置生成。不打印标记只影响输出，并未接受或删除修订。';},
     (s,k,v)=>{s[k]=k==='copies'?Math.round(number(v,1,5)):['duplex','markup'].includes(k)?v==='true':v;s.preview=null;s.message='设置已改变，请重新生成预览。';});
+})();
+
+/* Word paragraph spacing: one bounded state model, no document pagination engine. */
+(() => {
+  'use strict';
+  const { register, ui } = window.NOTE_LABS;
+  const { btn, field, select, office, paper, dialog, output, coach, number } = ui;
+  const kinds = [['single', '单倍'], ['oneHalf', '1.5倍'], ['double', '2倍'], ['multiple', '多倍'], ['minimum', '最小值'], ['exact', '固定值']];
+  const defaults = { before: 0, after: 6, kind: 'oneHalf', amount: 1.5 };
+  function sampleHeight(s) {
+    if (s.kind === 'minimum') return Math.max(18, s.amount);
+    if (s.kind === 'exact') return s.amount;
+    return 18 * ({ single: 1, oneHalf: 1.5, double: 2 }[s.kind] || s.amount);
+  }
+  function settingSummary(s) {
+    const name = kinds.find(([key]) => key === s.kind)[1];
+    const value = s.kind === 'multiple' ? ` ${s.amount}倍` : ['minimum', 'exact'].includes(s.kind) ? ` ${s.amount}磅` : '';
+    return `段前 ${s.before}磅；段后 ${s.after}磅；行距 ${name}${value}。`;
+  }
+  register(['syllabus-word-paragraph-spacing'], '分开调整段前、段后和段内行距', '先设间距，再观察哪些区域改变；取消对话框应保留原设置。',
+    { ...defaults, draft: null }, s => {
+      const d = s.draft;
+      const numeric = d && ['multiple', 'minimum', 'exact'].includes(d.kind);
+      const height = sampleHeight(s);
+      const rows = ['同一段落的第一行', '同一段落的第二行', '同一段落的第三行'];
+      return `<div class="lab-word-spacing">${office('Word', '开始 · 段落', btn('段落对话框 ↘', 'open'),
+        (d ? dialog('段落 · 缩进和间距',
+          field('before', '段前（磅）', d.before, 'number', 'min="0" max="36" step="1"') +
+          field('after', '段后（磅）', d.after, 'number', 'min="0" max="36" step="1"') +
+          select('kind', '行距', d.kind, kinds) +
+          (numeric ? field('amount', d.kind === 'multiple' ? '设置值（倍）' : '设置值（磅）', d.amount, 'number', d.kind === 'multiple' ? 'min="0.5" max="3" step="0.1"' : 'min="8" max="40" step="1"') : ''),
+          btn('确定', 'apply') + btn('取消', 'cancel')) : '') +
+        paper(`<div class="lab-spacing-caption">段前区域 · ${s.before}磅</div><div data-spacing-before style="height:${s.before}pt;background:#f5dfec"></div>
+          <div class="lab-spacing-sample" data-spacing-sample>${rows.map(row => `<div data-spacing-line style="height:${height}pt;line-height:${height}pt">${row}</div>`).join('')}</div>
+          <div data-spacing-after style="height:${s.after}pt;background:#eaddf5"></div><div class="lab-spacing-caption">段后区域 · ${s.after}磅</div>`))}
+        ${output(settingSummary(s) + (s.kind === 'exact' && s.amount < 18 ? ' 本示例固定值偏小，文字可能被行框裁切。' : ''))}
+        ${coach('这里只展示一个段落，色块标明段落外的留白；三行样本文字保持不变。单倍高度依赖字体，本例采用固定样本比较比例，不预测真实Word的行数、页数或相邻段落间距。')}
+      </div>`;
+    }, (s, action) => {
+      if (action === 'open') s.draft = { before: s.before, after: s.after, kind: s.kind, amount: s.amount };
+      if (action === 'cancel') s.draft = null;
+      if (action === 'apply' && s.draft) { Object.assign(s, s.draft); s.draft = null; }
+    }, (s, key, value) => {
+      if (!s.draft) return;
+      if (key === 'kind' && kinds.some(([name]) => name === value)) {
+        s.draft.kind = value;
+        s.draft.amount = ['minimum', 'exact'].includes(value) ? 18 : 1.5;
+      } else if (key === 'before' || key === 'after') s.draft[key] = number(value, 0, 36);
+      else if (key === 'amount') s.draft.amount = s.draft.kind === 'multiple' ? number(value, 0.5, 3) : number(value, 8, 40);
+    });
+})();
+
+/* A text-only editing exercise with its own clipboard; no system clipboard access. */
+(() => {
+  'use strict';
+  const { register, registry, ui } = window.NOTE_LABS;
+  const { btn, office, paper, output, coach, esc } = ui;
+  const id = 'syllabus-word-text-editing';
+  function remember(s) {
+    s.history.push({ text: s.text, start: s.start, end: s.end });
+    if (s.history.length > 20) s.history.shift();
+  }
+  function edit(s, action) {
+    const selected = s.text.slice(s.start, s.end);
+    if (action === 'copy' || action === 'cut') {
+      if (!selected) { s.message = '先选中要处理的文字。'; return; }
+      s.clipboard = selected;
+      if (action === 'cut') {
+        remember(s); s.text = s.text.slice(0, s.start) + s.text.slice(s.end); s.end = s.start;
+      }
+      s.message = action === 'copy' ? '已复制，原文字仍保留；再单击目标位置粘贴。' : '已剪切，原文字已从编辑区移除；再单击目标位置粘贴。';
+    }
+    if (action === 'paste') {
+      if (!s.clipboard) { s.message = '卡片内剪贴板为空，请先复制或剪切。'; return; }
+      remember(s); s.text = s.text.slice(0, s.start) + s.clipboard + s.text.slice(s.end);
+      s.start += s.clipboard.length; s.end = s.start;
+      s.message = '已粘贴到当前选区或插入点；剪贴板内容仍保留，可再次粘贴。';
+    }
+    if (action === 'undo') {
+      const previous = s.history.pop();
+      if (!previous) { s.message = '当前没有可撤销的编辑。'; return; }
+      Object.assign(s, previous); s.message = '已撤销最近一次编辑；复制的文本仍在卡片内剪贴板。';
+    }
+    s.focusEditor = true;
+  }
+  register([id], '实际选中文字，再比较复制与剪切', '在编辑区拖选文字，复制或剪切后单击目标位置粘贴；观察源文字和剪贴板是否保留。',
+    { text: '笔记整理：先阅读，再练习。\n复习记录：', start: 0, end: 0, clipboard: '', history: [], focusEditor: false, message: '请先选中文字。' },
+    s => `<div class="lab-word-editing">${office('Word', '开始 · 剪贴板',
+      btn('复制 · Ctrl+C', 'copy') + btn('剪切 · Ctrl+X', 'cut') + btn('粘贴 · Ctrl+V', 'paste') + btn('撤销 · Ctrl+Z', 'undo'),
+      paper(`<label>可编辑的示例正文<textarea data-edit-text aria-label="复制移动练习正文" rows="5" spellcheck="false">
+${esc(s.text)}</textarea></label>`))}
+      <p data-edit-range>当前选择 ${s.end - s.start} 个字符。</p>
+      <div class="lab-edit-clipboard"><b>卡片内剪贴板</b><pre data-edit-clipboard>${esc(s.clipboard || '尚未复制')}</pre></div>
+      ${output(s.message)}${coach('本卡只处理普通文本，使用自己的剪贴板；不访问系统剪贴板、不模拟富文本粘贴或Office的24项列表。支持此处显示的实体快捷键，撤销只恢复卡片内近期编辑。')}
+    </div>`, edit);
+  const model = registry[id];
+  model.afterRender = (s, root) => {
+    const editor = root.querySelector('[data-edit-text]');
+    const paint = () => {
+      root.querySelector('[data-edit-range]').textContent = `当前选择 ${s.end - s.start} 个字符。`;
+      root.querySelector('[data-edit-clipboard]').textContent = s.clipboard || '尚未复制';
+      root.querySelector('output').textContent = s.message;
+    };
+    const capture = () => {
+      if (s.text !== editor.value) { remember(s); s.text = editor.value; s.message = '正文已编辑；可撤销这次输入。'; }
+      s.start = editor.selectionStart; s.end = editor.selectionEnd; paint();
+    };
+    editor.setSelectionRange(s.start, s.end);
+    if (s.focusEditor) { s.focusEditor = false; editor.focus({ preventScroll: true }); }
+    for (const event of ['select', 'selectionchange', 'pointerup', 'keyup', 'input', 'beforeinput']) editor.addEventListener(event, capture);
+    root.querySelectorAll('[data-lab-act]').forEach(button => button.addEventListener('pointerdown', capture));
+  };
+  model.keydown = (s, event) => {
+    if (!event.target.matches('[data-edit-text]') || !event.ctrlKey || event.altKey || event.shiftKey) return;
+    const action = { c: 'copy', x: 'cut', v: 'paste', z: 'undo' }[event.key.toLowerCase()];
+    if (!action) return;
+    event.preventDefault(); s.start = event.target.selectionStart; s.end = event.target.selectionEnd;
+    edit(s, action); return true;
+  };
 })();

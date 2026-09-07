@@ -55,9 +55,11 @@
     "3": {
       "files": [
         "src/labs/chapter3/word.js",
-        "src/labs/chapter3/printing.js"
+        "src/labs/chapter3/printing.js",
+        "src/labs/chapter3/paragraph-spacing.js",
+        "src/labs/chapter3/text-editing.js"
       ],
-      "models": 35,
+      "models": 37,
       "ids": [
         "y2022q10",
         "y2022q54",
@@ -93,7 +95,9 @@
         "syllabus-office-exchange",
         "syllabus-word-smartart",
         "syllabus-word-screen-clipping",
-        "syllabus-word-print-controls"
+        "syllabus-word-print-controls",
+        "syllabus-word-paragraph-spacing",
+        "syllabus-word-text-editing"
       ]
     },
     "4": {

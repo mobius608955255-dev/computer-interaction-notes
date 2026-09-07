@@ -9,7 +9,7 @@ const scriptsFor=chapter=>[...fs.readFileSync(path.join(root,`chapter${chapter}.
 const allNotes=()=>Array.from({length:11},(_,i)=>JSON.parse(fs.readFileSync(path.join(root,`content/chapter${i+1}.json`),'utf8'))).flat();
 const releaseVersion=JSON.parse(fs.readFileSync(path.join(root,'site.config.json'),'utf8')).version;
 test('v47 supplements and worked examples preserve the 460 original source identities',()=>{
- const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.equal(supplements.length,16);
+ const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.equal(supplements.length,18);
  assert.deepEqual(supplements.filter(n=>n.chapter===2).map(n=>n.id),['syllabus-windows-paths','syllabus-windows-selection','syllabus-windows-search']);
  assert.ok(supplements.every(n=>n.sources.length===0));assert.equal(notes.flatMap(n=>n.workedExamples||[]).length,16);
  for(const n of notes)for(const example of n.workedExamples||[])assert.ok(n.sources.some(s=>s.year===example.year&&s.q===example.q));
@@ -60,6 +60,21 @@ test('blurred input and following touch choice both reach the model',()=>{
  const e=env(1),c=open(e,'merged-3');tap(e,choice(c,'mode','size'));const input=c.querySelector('[data-field="amount"]');input.focus();input.value='2';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
  const trigger=c.querySelector('[data-field="unit"]').closest('.notes-picker').querySelector('.choice-trigger');trigger.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));input.dispatchEvent(new e.w.Event('change',{bubbles:true}));trigger.focus();trigger.click();assert.ok(c.querySelector('.notes-picker.is-open'));
  tap(e,choice(c,'unit','KiB'));assert.match(c.querySelector('.lab-output').textContent,/2 KiB = 2,048 B/);e.dom.window.close();
+});
+test('native pointer focus transfer keeps the choice open until the option click',async()=>{
+ const e=env(3),c=open(e,'syllabus-word-paragraph-spacing');click(c,'open');
+ const box=c.querySelector('[data-field="kind"]').closest('.notes-picker');box.querySelector('.choice-trigger').click();
+ const option=choice(c,'kind','exact'),focused=e.d.activeElement;
+ // Model the browser's intermediate activeElement=body, with the incoming
+ // option already identified by FocusEvent.relatedTarget.
+ Object.defineProperty(e.d,'activeElement',{configurable:true,get:()=>e.d.body});
+ focused.dispatchEvent(new e.w.FocusEvent('focusout',{bubbles:true,relatedTarget:option}));
+ await Promise.resolve();
+ assert.equal(box.querySelector('.choice-options').hidden,false);
+ delete e.d.activeElement;
+ option.focus();option.click();
+ assert.equal(c.querySelector('[data-field="kind"]').value,'exact');
+ assert.ok(c.querySelector('[data-field="amount"]'));e.dom.window.close();
 });
 test('legacy option updates, disabled groups, and list-box exceptions are preserved',async()=>{
  const e=env(4),host=e.d.createElement('div');host.innerHTML='<fieldset disabled><label>测试<select><option>A</option><option>B</option></select></label></fieldset><label>引用<select size="3"><option>A1:A5</option></select></label>';e.d.body.append(host);e.w.NOTE_CHOICES.enhance(host);
@@ -837,4 +852,28 @@ test('long notes expose real search paragraph anchors and clear transient jump l
  const c=e.d.getElementById('merged-4'),links=[...c.querySelectorAll('.note-search-jumps a')];assert.ok(links.length>=2);assert.ok(links.some(a=>a.hash==='#merged-4--point-11'));assert.ok(links.every(a=>e.d.querySelector(a.hash)?.classList.contains('note-search-match')));
  links[0].click();await new Promise(resolve=>e.w.setTimeout(resolve,0));assert.equal(e.w.location.hash,links[0].hash);
  e.d.getElementById('clear-search').click();assert.equal(e.d.querySelector('.note-search-jumps'),null);assert.equal(e.d.querySelector('.note-search-match'),null);assert.equal(e.d.querySelectorAll('.note-item:not(.hidden)').length,28);e.dom.window.close();
+});
+
+test('Word paragraph spacing applies independent values and cancellation preserves the page',()=>{
+ const e=env(3),c=open(e,'syllabus-word-paragraph-spacing');
+ const sample=()=>c.querySelector('[data-spacing-line]').style.height;
+ const original=sample();click(c,'open');change(e,c,'before','12');change(e,c,'after','24');change(e,c,'kind','double');
+ click(c,'cancel');assert.equal(sample(),original);assert.equal(c.querySelector('[data-spacing-before]').style.height,'0pt');
+ click(c,'open');change(e,c,'before','12');change(e,c,'after','24');change(e,c,'kind','exact');change(e,c,'amount','10');click(c,'apply');
+ assert.equal(c.querySelector('[data-spacing-before]').style.height,'12pt');assert.equal(c.querySelector('[data-spacing-after]').style.height,'24pt');assert.equal(sample(),'10pt');assert.match(c.querySelector('output').textContent,/固定值 10磅.*裁切/);
+ click(c,'open');change(e,c,'kind','minimum');change(e,c,'amount','10');click(c,'apply');assert.equal(sample(),'18pt');assert.equal(c.querySelectorAll('[data-spacing-line]').length,3);e.dom.window.close();
+});
+test('Word Home and Shift+Home use the active line while Ctrl+A selects the actual editable document',()=>{
+ const e=env(3),c=open(e,'y2024q7');let editor=c.querySelector('[data-selection-editor]');editor.value='\n第一行\n第二行文字';editor.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ editor=c.querySelector('[data-selection-editor]');editor.setSelectionRange(0,0);editor.dispatchEvent(new e.w.Event('select'));click(c,'key','home');editor=c.querySelector('[data-selection-editor]');assert.equal(editor.selectionStart,0);
+ editor.setSelectionRange(8,8);editor.dispatchEvent(new e.w.Event('select'));editor.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Home',shiftKey:true,bubbles:true,cancelable:true}));editor=c.querySelector('[data-selection-editor]');assert.equal(editor.selectionStart,5);assert.equal(editor.selectionEnd,8);assert.equal(editor.selectionDirection,'backward');
+ click(c,'key','end');editor=c.querySelector('[data-selection-editor]');assert.equal(editor.selectionStart,editor.value.length);assert.equal(editor.selectionStart,editor.selectionEnd);click(c,'key','all');editor=c.querySelector('[data-selection-editor]');assert.equal(editor.selectionStart,0);assert.equal(editor.selectionEnd,editor.value.length);e.dom.window.close();
+});
+test('Word text editing moves the actual selection and keeps clipboard text after paste and undo',()=>{
+ const e=env(3),c=open(e,'syllabus-word-text-editing');let editor=c.querySelector('[data-edit-text]');const original=editor.value;
+ editor.setSelectionRange(0,2);editor.dispatchEvent(new e.w.Event('select'));editor.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'c',ctrlKey:true,bubbles:true,cancelable:true}));
+ editor=c.querySelector('[data-edit-text]');assert.equal(editor.value,original);assert.equal(c.querySelector('[data-edit-clipboard]').textContent,'笔记');
+ click(c,'cut');editor=c.querySelector('[data-edit-text]');assert.equal(editor.value,original.slice(2));editor.setSelectionRange(editor.value.length,editor.value.length);editor.dispatchEvent(new e.w.Event('select'));click(c,'paste');editor=c.querySelector('[data-edit-text]');assert.equal(editor.value,original.slice(2)+'笔记');
+ click(c,'paste');assert.equal(c.querySelector('[data-edit-text]').value,original.slice(2)+'笔记笔记');click(c,'undo');assert.equal(c.querySelector('[data-edit-text]').value,original.slice(2)+'笔记');assert.equal(c.querySelector('[data-edit-clipboard]').textContent,'笔记');
+ click(c,'undo');click(c,'undo');assert.equal(c.querySelector('[data-edit-text]').value,original);e.dom.window.close();
 });

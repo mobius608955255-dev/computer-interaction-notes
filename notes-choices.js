@@ -143,10 +143,15 @@
         if (inline) commit(choices[index]);
         else { choices.forEach(b => b.tabIndex = -1); choices[index].tabIndex = 0; choices[index].focus({preventScroll: true}); }
       });
-      box.addEventListener('focusout', () => queueMicrotask(() => {
-        if (!box.isConnected) { if (opened === picker) opened = null; return; }
-        if (!box.contains(document.activeElement)) close();
-      }));
+      box.addEventListener('focusout', event => {
+        // Native pointer focus can briefly leave activeElement on body between
+        // blur and focus. Keep an in-picker transfer open until its click lands.
+        if (event.relatedTarget && box.contains(event.relatedTarget)) return;
+        queueMicrotask(() => {
+          if (!box.isConnected) { if (opened === picker) opened = null; return; }
+          if (!box.contains(document.activeElement)) close();
+        });
+      });
       sync();
     }
   }
