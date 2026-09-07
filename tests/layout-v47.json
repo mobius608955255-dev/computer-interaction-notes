@@ -1,0 +1,181 @@
+{
+  "complete": true,
+  "results": [
+    {
+      "chapter": "1",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 19,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "2",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 25,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "3",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 40,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "4",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 46,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "5",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 22,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "6",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 26,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "7",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 10,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "8",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 11,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "9",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 11,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "10",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 12,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "11",
+      "frameWidth": 360,
+      "width": 345,
+      "cards": 11,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "1",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 19,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "2",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 25,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "3",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 40,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "4",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 46,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "5",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 22,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "6",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 26,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "7",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 10,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "8",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 11,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "9",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 11,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "10",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 12,
+      "overflow": 0,
+      "issues": []
+    },
+    {
+      "chapter": "11",
+      "frameWidth": 390,
+      "width": 375,
+      "cards": 11,
+      "overflow": 0,
+      "issues": []
+    }
+  ]
+}

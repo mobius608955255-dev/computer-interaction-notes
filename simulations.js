@@ -42,9 +42,9 @@
     },
     "y2026q18": function (demo) {
       return `<div class="sovereignty-map">
-        <div class="sovereignty-core"><b>长期自主运行</b><span data-sim-gauge>100%</span></div>
+        <div class="sovereignty-core"><b>长期自主运行</b><span data-sim-gauge>四项能力</span></div>
         <div class="dependency-ring">${getItems(demo).map((item, i) => `<button type="button" data-sim-choice="${i}" class="dependency-node node-${i}"><i>${['⌘','§','◇','↻'][i]}</i><b>${escapeHTML(item.label)}</b><small>${['能否修改','能否合法用','能否替代','能否维护'][i]}</small></button>`).join('')}</div>
-        <p class="diagram-caption">点开任一依赖环节，中心仪表会显示缺失它的真实后果。</p>
+        <p class="diagram-caption">点开依赖环节，查看它支撑的具体能力。</p>
       </div>${feedback('“国产”只是来源标签；自主可控是一条不能断裂的能力链。')}`;
     },
     "y2025q21": function (demo) {
@@ -60,18 +60,6 @@
         </div>
         <div class="trend-chips">${choice(demo, 2, 'trend-chip')}</div>
       </div>${feedback('看散点位置：性能和体积不是一条必然同向的直线。')}`;
-    },
-    "y2020q31": function (demo) {
-      return `<div class="binary-desk" data-binary-board>
-        <div class="binary-paper">
-          <div class="borrow-row" data-borrow-row>　　</div>
-          <div class="binary-line"><span></span><b>1 0 0 1</b></div>
-          <div class="binary-line"><span>−</span><b>0 1 1 1</b></div>
-          <div class="binary-rule"></div><div class="binary-answer" data-binary-answer>· · · ·</div>
-        </div>
-        <div class="binary-pencil"><span>当前数位</span><b data-binary-column>等待开始</b></div>
-        <div class="binary-keys">${demo.steps.map((item, i) => step(demo, i, item.label, `binary-key key-${i}`)).join('')}</div>
-      </div>${feedback('从最低位开始；遇到0不够减1时，向高位借1，相当于本位增加2。')}`;
     },
     "y2020q23": function (demo) {
       return `<div class="language-terminal">
@@ -129,33 +117,12 @@
     "merged-4": function (demo) {
       return win('文件资源管理器', `<div class="v26-file-layers"><div class="v26-explorer-list"><header><span>名称</span><span>类型</span><span>属性</span></header><article><i>W</i><b data-v26-file-name>report.docx</b><span>Word 文档</span><small>—</small></article><article class="folder-row"><i>▰</i><b>课程资料</b><span>文件夹</span><small>只读 ◼</small></article></div><aside><b>检查层级</b>${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><span>${escapeHTML(item.label)}</span><small>${escapeHTML(item.stage)}</small></button>`).join('')}</aside><div class="v26-child-folder">▰ 新建文件夹 <b>已创建</b></div></div>`)+feedback('扩展名负责类型标识，关联负责打开程序，属性和访问权限又是另外两层。');
     },
-    "y2026q25": function (demo) {
-      return win('Windows 10', `<div class="settings-flow">
-        <section class="settings-view desktop-settings-view" data-stage-view="0"><div class="desktop-icons"><i>回收站</i></div><div class="desktop-context-menu"><button type="button" data-sim-step="0">个性化</button></div></section>
-        <section class="settings-view personalization-view" data-stage-view="1"><aside><b>主页</b><span>背景</span><button type="button" data-sim-step="1">主题</button><span>字体</span><span>锁屏界面</span></aside><main><header>个性化</header><div class="settings-hero">选择背景、颜色、主题与锁屏界面</div></main></section>
-        <section class="settings-view themes-view" data-stage-view="2"><aside><b>个性化</b><strong>主题</strong></aside><main><header>主题</header><div class="theme-preview-card"><i></i><b>Windows</b></div><h4>相关的设置</h4><button type="button" class="settings-link" data-sim-step="2">桌面图标设置</button></main></section>
-        <section class="settings-view icon-dialog-view" data-stage-view="3"><div class="real-dialog"><header>桌面图标设置</header><fieldset><legend>桌面图标</legend><label class="step-checkbox"><input type="checkbox" data-icon-checkbox data-sim-step="3"> 计算机</label><label><input type="checkbox" checked> 回收站</label></fieldset><div class="dialog-preview"><i data-thispc>此电脑</i><i>回收站</i></div><button type="button" class="primary-command" data-sim-step="4">应用</button></div></section>
-        <section class="settings-view desktop-result-view" data-stage-view="4"><div class="desktop-icons"><i class="this-pc-visible">此电脑</i><i>回收站</i></div><div class="success-toast">“此电脑”已恢复到桌面</div></section>
-      </div>`)+feedback('按Windows 10的真实层级进入设置；每一步都会打开新的页面或对话框。');
-    },
-    "y2026q35": function (demo) {
-      return win('文件资源管理器', `<div class="explorer-body quick-scene"><aside><b>快速访问</b><div data-quick-list><span>桌面</span><span class="pinned">课程资料　📌</span></div><b>此电脑</b><span>文档</span></aside><main><div class="pathbar">D:\学习\课程资料</div><div class="folder-card"><i>▰</i><b>课程资料</b><small>原位置：D:\学习</small></div><div class="context-menu">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></main></div>`)+feedback('快速访问只是导航入口；取消固定不会移动或删除原文件夹。');
-    },
-    "y2026q8": function (demo) {
-      return win('设备管理器', `<div class="device-manager"><div class="device-tree"><span>〉音频输入和输出</span><b>⌄ 显示适配器</b>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="device-state state-${i}"><i>${['!','↓','?'][i]}</i><span>${['NVIDIA 显示适配器','USB 输入设备','未知设备'][i]}</span></button>`).join('')}<span>〉网络适配器</span></div><div class="device-properties"><header>设备状态</header><p data-device-status>选择带状态标记的设备，读取“属性”中的诊断信息。</p><button>更新驱动程序…</button><button>扫描检测硬件改动</button></div></div>`)+feedback('黄色感叹号是警报，不是结论；下一步要打开属性读取设备状态。');
-    },
     "y2026q9": function (demo) {
       return win('本地组策略编辑器', `<div class="policy-editor"><aside><b>计算机配置</b><span>管理模板</span><span>系统</span><strong>可移动存储访问</strong></aside><main><header>策略设置</header><div class="policy-row"><b>可移动磁盘：拒绝读取权限</b><span data-read-policy>未配置</span></div><div class="policy-row"><b>可移动磁盘：拒绝写入权限</b><span data-write-policy>未配置</span></div><div class="policy-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="usb-test"><i>USB</i><span data-usb-read>可读取</span><span data-usb-write>可写入</span></div></main></div>`)+feedback('读权限和写权限是两条独立策略，可以形成三种不同限制组合。');
-    },
-    "y2024q5": function (demo) {
-      return `<div class="v25-stage-shell v24-clean-stages"><section data-v25-stage="0">${win('设置 · 存储','<div class="v24-storage"><header><b>本地磁盘 (C:)</b><span>已用 184 GB / 256 GB</span><i></i></header><button data-sim-step="0">临时文件　正在计算…</button></div>',false)}</section><section data-v25-stage="1">${win('临时文件','<div class="v24-clean-scan"><div class="scan-ring">6.8<small>GB 可清理</small></div><button data-sim-step="1">查看文件分类</button></div>',false)}</section><section data-v25-stage="2">${win('临时文件','<div class="v24-clean-list"><label><input type="checkbox" checked> Windows更新清理 <b>4.2 GB</b></label><label><input type="checkbox" checked> 缩略图 <b>580 MB</b></label><label class="keep"><input type="checkbox"> 下载 <b>1.6 GB · 保留</b></label><label class="keep"><input type="checkbox"> 回收站 <b>420 MB · 先检查</b></label><button data-sim-step="2">确认勾选范围</button></div>',false)}</section><section data-v25-stage="3">${win('临时文件','<div class="v24-clean-confirm"><b>将删除 4.78 GB</b><p>不会删除未勾选的“下载”和“回收站”。</p><button data-sim-step="3">删除文件</button></div>',false)}</section><section data-v25-stage="4"><div class="v24-space-result"><b>72.8 GB 可用</b><span>临时文件已清理</span><i></i></div></section></div>${feedback('先审阅分类再删除；“下载”和“回收站”不该被机械勾选。')}`;
     },
     "y2024q33": function (demo) {
       const names=['程序主体','用户病例标注','偏好与缓存','共享运行库'];
       return `<div class="v24-uninstall"><div class="uninstall-app"><i>IM</i><b>影像标注工具</b><span>卸载程序正在评估内容…</span></div><div class="uninstall-tree">${names.map((name,i)=>`<button data-sim-choice="${i}" class="uninstall-item item-${i}"><i>${['EXE','DATA','CFG','DLL'][i]}</i><b>${name}</b><small>${['随程序移除','属于用户','可能保留','检查依赖'][i]}</small></button>`).join('')}</div><div class="uninstall-ledger"><span>卸载 ≠ 抹除全部文件</span><b>先分清所有权与依赖</b></div></div>${feedback('卸载器优先移除程序本体；用户数据和共享组件有充分理由被保留。')}`;
-    },
-    "y2026q33": function (demo) {
-      return win('系统属性', `<div class="restore-dialog"><div class="restore-header"><b>系统保护</b><span>为系统设置和以前版本的文件创建还原点。</span></div><div class="drive-protection"><strong>本地磁盘 (C:)　保护：<i data-protection>启用</i></strong><div class="restore-points" data-restore-points><span>9月1日 更新前</span><span>8月28日 安装Office前</span><span>8月20日 手动创建</span></div><div class="disk-meter"><i data-disk-meter></i></div></div><div class="restore-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>`)+feedback('空间与恢复能力是一组交换关系；关闭保护会同时清掉相应恢复基础。');
     },
     "y2025q34": function (demo) {
       return win('截图和草图', `<div class="v25-snipping"><div class="snip-canvas"><b>课程资料</b><span class="watermark">示例水印</span><i class="crop-corner"></i></div><div class="snip-tools">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}"><i>${['▱','⌗','✎','AI'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div></div>`)+feedback('截图工具截取、裁剪和标注可见画面，不会自动重建水印覆盖的内容。');
@@ -180,14 +147,6 @@
     "y2024q55": function (demo) {
       return `<div class="v25-stage-shell v24-word-stages"><section data-v25-stage="0">${office('Word','实验报告.docx','页眉和页脚工具/设计','<span>页眉编辑</span>','<div class="word-page v24-pagefield"><div class="page-header"><button data-sim-step="0" class="page-shape selected">页码框</button></div><h4>实验报告</h4></div>')}</section><section data-v25-stage="1">${office('Word','实验报告.docx','页眉和页脚工具/设计','<span>形状文字编辑</span>','<div class="word-page v24-pagefield"><div class="page-header"><button data-sim-step="1" class="page-shape editing">在内部放置光标<i></i></button></div><h4>实验报告</h4></div>')}</section><section data-v25-stage="2">${office('Word','实验报告.docx','页眉和页脚工具/设计','<div class="page-number-menu"><button data-sim-step="2">页码 → 当前位置</button><span>页面顶端</span><span>页面底端</span></div>','<div class="word-page v24-pagefield"><div class="page-header"><div class="page-shape editing"><i></i></div></div></div>')}</section><section data-v25-stage="3">${office('Word','实验报告.docx','页眉和页脚工具/设计','<div class="page-number-menu"><button data-sim-step="3">普通数字</button><span>强调线条</span></div>','<div class="word-page v24-pagefield"><div class="page-header"><div class="page-shape editing">1</div></div></div>')}</section><section data-v25-stage="4">${office('Word','实验报告.docx','页眉和页脚工具/设计','<button data-sim-step="4" class="ribbon-command">关闭页眉和页脚</button>','<div class="word-page v24-pagefield"><div class="page-header"><div class="page-shape">1</div></div><h4>实验报告</h4></div>')}</section><section data-v25-stage="5"><div class="v24-page-spread"><article><div>1</div><b>第一页</b></article><article><div>2</div><b>第二页</b></article><article><div>3</div><b>第三页</b></article></div></section></div>${feedback('必须先让光标进入形状文字区；“当前位置”才会把PAGE域插入现有形状。')}`;
     },
-    "y2020q8": function (demo) {
-      const scenarios = getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('');
-      return office('Excel','工作簿1.xlsx','开始','',`<div class="excel-sheet sheet-delete"><div class="empty-grid">当前工作表内容</div><div class="sheet-tabs" data-sheet-tabs><button class="active">Sheet1</button><button>Sheet2</button><button aria-label="新建工作表">＋</button></div><div class="sheet-menu"><span>插入</span><span>删除</span><span>重命名</span><span>移动或复制</span></div><div class="excel-dialog" data-excel-dialog><b>Microsoft Excel</b><p>工作簿内至少含有一张可见工作表。</p><button>确定</button></div></div>`)+coach('操作情境','下列是三种完整情境，不是工作表内部按钮；选择后观察真实标签栏与系统提示怎样变化。',scenarios)+feedback('删除Sheet2可以成功；只剩Sheet1时再次删除，Excel会阻止操作。');
-    },
-    "y2024q11": function (demo) {
-      const inputs=getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><code>${escapeHTML(item.label)}</code></button>`).join('');
-      return office('Excel','公式练习.xlsx','开始','<span>常规格式</span>',`<div class="excel-sheet v24-formula-parse"><div class="formula-bar"><b>fx</b><code data-parse-input>等待输入</code></div><div class="parse-cell"><small>A1</small><b data-parse-result>—</b></div><div class="parser-path"><span>输入</span><i>→</i><span>解析类型</span><i>→</i><span>显示结果</span></div></div>`)+coach('输入台','这些是要键入公式栏的内容，不是Excel功能区按钮。',inputs)+feedback('没有等号时，2*3只是文本；Excel的乘法运算符是半角星号。');
-    },
     "y2020q10": function (demo) {
       const commands = getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="ribbon-command"><i>${['▦','▣','▶'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('');
       return office('PowerPoint','医学AI汇报.pptx','视图',commands,`<div class="ppt-view-stage"><aside class="ppt-thumbnails">${Array.from({length:6},(_,i)=>`<button type="button" data-slide-nav="${i+1}"><span>${i+1}</span><i style="--slide:${i}"></i></button>`).join('')}</aside><div class="ppt-main-slide" data-ppt-view><small data-slide-number>01</small><h4 data-slide-heading>人工智能辅助医学影像</h4><div class="ppt-hero-chart"><i></i><i></i><i></i></div><p data-slide-subtitle>课程汇报</p></div><div class="slide-sorter" data-slide-sorter>${Array.from({length:6},(_,i)=>`<button type="button" data-drag-kind="slide" data-slide-num="${i+1}" aria-label="拖动第${i+1}张幻灯片重排"><i style="--slide:${i}"></i><span>第${i+1}页</span></button>`).join('')}</div></div>`)+coach('页面与排序','普通视图可直接点左侧缩略图换页；切到浏览视图后，按住任一缩略图拖到另一页上即可重排。')+feedback('幻灯片浏览视图把全部页面平铺，最适合整体重排；普通视图适合编辑单页。');
@@ -195,26 +154,8 @@
     "y2023q45": function (demo) {
       return `<div class="v26-ppt-files"><div class="file-launcher"><div class="ppt-file"><i>P</i><b data-ppt-ext>.pptx</b><small data-ppt-action>进入编辑界面</small></div><div class="launch-window"><span>PowerPoint 2016</span><b data-launch-mode>编辑模式</b></div></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('.ppsx改变默认打开行为，不会把内容变成不可编辑，也不提供加密保护。')}`;
     },
-    "y2024q46": function (demo) {
-      return `<div class="v25-stage-shell v24-ppt-stages"><section data-v25-stage="0">${office('PowerPoint','花卉图鉴.pptx','开始','<button data-sim-step="0" class="file-tab">文件</button>','<div class="ppt-main-slide"><h4>花卉图鉴</h4></div>')}</section><section data-v25-stage="1"><div class="v24-backstage"><aside><b>信息</b><span>新建</span><span>打开</span><span>保存</span><button data-sim-step="1">选项</button></aside><main><h3>花卉图鉴.pptx</h3><p>应用设置位于后台视图底部。</p></main></div></section><section data-v25-stage="2"><div class="v24-options"><aside><span>常规</span><button data-sim-step="2">高级</button><span>保存</span><span>语言</span></aside><main><h3>PowerPoint选项</h3><p>选择左侧“高级”。</p></main></div></section><section data-v25-stage="3"><div class="v24-options"><aside><b>高级</b></aside><main><h3>显示</h3><label>使用此视图打开所有文档 <select><option>普通视图</option><option>幻灯片浏览视图</option></select></label><button data-sim-step="3">选择幻灯片浏览视图</button></main></div></section><section data-v25-stage="4"><div class="v24-options"><aside><b>高级</b></aside><main><h3>显示</h3><label>默认打开视图 <strong>幻灯片浏览视图</strong></label><button data-sim-step="4">确定并重新打开</button></main></div></section><section data-v25-stage="5">${office('PowerPoint','花卉图鉴.pptx','视图','<span>幻灯片浏览</span>','<div class="v24-slide-sorter">'+[1,2,3,4,5,6].map(i=>`<article><i>${i}</i><b>${['封面','荷花','牡丹','菊花','月季','致谢'][i-1]}</b></article>`).join('')+'</div>')}</section></div>${feedback('默认打开视图是应用选项；状态栏按钮只切换当前窗口，不应混在幻灯片内容里。')}`;
-    },
-    "y2024q12": function (demo) {
-      const keys=getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><kbd>${escapeHTML(item.label)}</kbd></button>`).join('');
-      return office('PowerPoint','花卉图鉴.pptx','开始','<span>新建幻灯片</span>',`<div class="v24-new-slide"><aside>${[1,2,3].map(i=>`<article><i>${i}</i><span>${['封面','荷花','牡丹'][i-1]}</span></article>`).join('')}<article class="created"><i>4</i><span>新幻灯片</span></article></aside><div class="ppt-main-slide"><small>03</small><h4>牡丹</h4><p>国色天香</p></div><div class="new-presentation"><b>演示文稿2</b><span>新文件，原文件仍为3页</span></div></div>`)+coach('快捷键','快捷键属于键盘，不是幻灯片内按钮。',keys)+feedback('Ctrl+M在当前文件新增幻灯片；Ctrl+N创建一个新的演示文稿。');
-    },
-    "y2024q26": function (demo) {
-      const controls=getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('');
-      return office('PowerPoint','医学节.pptx','绘图工具/格式','<span>艺术字样式 · 排列</span>',`<div class="ppt-main-slide v24-wordart-slide"><div class="wordart-group"><b class="wordart-object-v24">医学之光<i class="rotation-handle"></i></b><span class="sun-object">✦</span></div><p>第十届医学科技节</p></div>`,`<aside class="v24-wordart-panel"><header>对象操作</header>${controls}</aside>`)+feedback('艺术字是图形对象：可以旋转、填充和组合，但组合不会把组内对象熔成位图。');
-    },
-    "y2026q53": function (demo) {
-      const commands = getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="ribbon-command">${escapeHTML(item.label)}</button>`).join('');
-      return office('PowerPoint','病例展示.pptx','格式',commands,`<div class="ppt-picture-stage"><aside class="animation-pane"><b>动画窗格</b><span><i>1</i> 图片：淡入</span><span><i>2</i> 标题：浮入</span></aside><div class="ppt-main-slide"><div class="ppt-selected-picture" data-ppt-picture><div class="scan-image">CT<br><small>原图</small></div><i class="resize-handle nw"></i><i class="resize-handle ne"></i><i class="resize-handle sw"></i><button type="button" class="resize-handle se" data-drag-kind="picture-resize" aria-label="拖动右下角缩放图片"></button><button type="button" class="crop-grip" data-drag-kind="picture-crop" aria-label="拖动右侧裁剪图片"></button><span class="picture-effect">柔化边缘 5 磅</span></div><h4>影像学表现</h4></div><div class="picture-source-gallery"><span>MRI 新图</span><span>本地文件</span><span>剪贴板</span></div></div>`)+coach('直接操作图片','替换后可拖动右下角缩放柄，也可拖动右侧黑色裁剪柄检查可见区域；这些是真实对象手柄。')+feedback('“更改图片”保留原对象身份，所以位置、大小、边框和动画大多能继续保留。');
-    },
     "y2020q15": function (demo) {
       return `<div class="network-zoom-map"><div class="map-ring wan"><span>WAN · 世界</span><div class="map-ring man"><span>MAN · 城市</span><div class="map-ring lan"><span>LAN · 校园/楼宇</span><div class="map-building">教学楼</div></div></div></div><div class="map-controls">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="map-zoom zoom-${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('点覆盖范围，镜头会落到LAN、MAN或WAN对应的尺度。')}`;
-    },
-    "y2026q13": function (demo) {
-      return `<div class="print-network"><div class="print-client client-a"><b>电脑 A</b>${choice(demo,0,'print-submit')}</div><div class="print-client client-b"><b>电脑 B</b>${choice(demo,1,'print-submit')}</div><div class="network-lines"><i></i><i></i></div><div class="shared-printer"><span>网络打印机</span><div class="paper-slot"></div><div class="print-queue" data-print-queue><small>队列为空</small></div>${choice(demo,2,'share-toggle')}</div></div>${feedback('两台电脑提交后进入同一队列，说明共享的是一台硬件资源，而不是复制了一台打印机。')}`;
     },
     "merged-13": function (demo) {
       const layers=[['应用层','HTTP · DNS','应用/表示/会话'],['传输层','TCP · UDP','传输层'],['网际层','IP','网络层'],['网络接口层','Ethernet · Wi-Fi','数据链路/物理']];
@@ -237,7 +178,7 @@
       return `<div class="web-ide"><aside class="file-tree"><b>网站项目</b>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="file-type file-${i}"><i>${['HTML','CSS','JS','DOC'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</aside><main><div class="editor-tabs"><span>index.html　×</span></div><pre><code>&lt;h1&gt;计算机笔记&lt;/h1&gt;\n&lt;p&gt;网页由结构、样式和脚本组成。&lt;/p&gt;</code></pre><div class="live-preview"><h4>计算机笔记</h4><p>网页由结构、样式和脚本组成。</p></div></main></div>${feedback('HTML、CSS和JavaScript是网页资源；docx即使能被浏览器下载，也不是网页源文件。')}`;
     },
     "y2020q36": function (demo) {
-      return `<div class="anchor-builder"><div class="html-code-line"><span>&lt;</span>${choice(demo,0,'code-token tag-token')} ${choice(demo,1,'code-token attr-token')}<span>=&quot;chapter1.html&quot;&gt;</span>${choice(demo,2,'code-token text-token')}<span>&lt;/a&gt;</span></div><div class="anchor-wire"><i></i></div><div class="link-preview"><b>浏览器预览</b><a href="#" data-preview-link>第一章</a><span>目标：chapter1.html</span></div>${choice(demo,3,'remove-href')}</div>${feedback('a是元素，href决定目标，标签之间的文字才是用户真正看到并点击的内容。')}`;
+      return `<div class="anchor-builder"><div class="html-code-line"><span>&lt;</span>${choice(demo,0,'code-token tag-token')} <span data-anchor-attribute>${choice(demo,1,'code-token attr-token')}<span>=&quot;chapter1.html&quot;</span></span><span>&gt;</span>${choice(demo,2,'code-token text-token')}<span>&lt;/a&gt;</span></div><div class="anchor-wire"><i></i></div><div class="link-preview"><b>浏览器预览</b><a href="chapter1.html" data-preview-link>第一章</a><span>目标：chapter1.html</span></div>${choice(demo,3,'remove-href')}</div>${feedback('a是元素，href决定目标，标签之间的文字才是用户真正看到并点击的内容。')}`;
     },
     "y2024q17": function (demo) {
       const stages=[['临床问题','糖尿病患者远程随访是否改善依从性？'],['概念拆分','糖尿病　远程随访　依从性'],['资源选择','医学文献数据库'],['检索式','diabetes AND (telemedicine OR remote follow-up)'],['结果评价','128篇 → 筛出18篇高相关研究'],['迭代完成','补充时间范围与研究类型']];
@@ -255,12 +196,6 @@
     "y2020q27": function (demo) {
       return `<div class="media-stage"><div class="creative-canvas"><div class="media-layer text-layer">文字</div><div class="media-layer image-layer">图像</div><div class="media-layer sound-layer">♪ 声音</div><div class="media-layer video-layer">▶ 视频</div></div><div class="media-shelf">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="shelf-item item-${i}"><i>${['Aa ◉ ♪','▶ ◫','SSD USB'][i]}</i><b>${escapeHTML(item.label)}</b></button>`).join('')}</div><div class="carrier-slot"><span>硬盘 / U盘只负责保存文件</span></div></div>${feedback('能表达信息的是媒体元素；硬盘、U盘属于保存这些文件的物理载体。')}`;
     },
-    "y2020q38": function (demo) {
-      return `<div class="frame-rate-lab"><div class="flipbook-screen"><div class="moving-ball" data-moving-ball></div><div class="motion-ghosts">${Array.from({length:8},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><span data-fps-label>24 fps</span></div><div class="video-timeline">${Array.from({length:12},(_,i)=>`<i style="--i:${i}">${i+1}</i>`).join('')}</div><div class="video-controls">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="video-meter"><span>流畅度</span><i data-smooth-meter></i><span>数据量</span><i data-data-meter></i></div></div>${feedback('帧率决定每秒画面数；分辨率决定每帧像素数；码率决定压缩后每秒数据量。')}`;
-    },
-    "y2023q18": function (demo) {
-      return `<div class="v26-stream-lab"><div class="video-frame"><b>LIVE</b><span>远程手术教学直播</span><i class="playhead"></i></div><div class="buffer-track"><span class="downloaded"></span><i class="play-pos">播放</i><i class="download-pos">下载</i></div><div class="buffer-readout"><b data-buffer-label>缓冲 8.4 秒</b><span>播放头不能追上下载位置</span></div><div class="v26-choice-grid">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('边传边播靠的是下载位置始终领先播放位置；缓冲区就是两者之间的安全距离。')}`;
-    },
     "y2026q4": function (demo) {
       return `<div class="multimedia-console"><div class="conference-screen"><div class="video-person"><i></i><b>实时视频</b></div><div class="shared-slide"><b>CT影像讲解</b><div class="scan-lines"></div></div><div class="live-captions">正在识别语音并生成字幕…</div></div><div class="conference-controls">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="feature-control feature-${i}"><i>${['▦','☝','●','□'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="latency-chip">LIVE · 38 ms</div></div>${feedback('多种媒体被集成；用户能改变内容；采集、处理和反馈必须及时。')}`;
     },
@@ -268,7 +203,7 @@
       return `<div class="color-workbench"><div class="color-output screen-output"><div class="rgb-lights"><i class="red"></i><i class="green"></i><i class="blue"></i></div><b>显示器 · 自发光</b></div><div class="color-mode-switch">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="color-output print-output"><div class="cmyk-dots"><i class="cyan"></i><i class="magenta"></i><i class="yellow"></i><i class="black"></i></div><b>印刷纸张 · 反射光</b></div><div class="gamut-warning" data-gamut-warning>屏幕亮蓝可能超出印刷色域</div></div>${feedback('RGB用光做加色混合；CMYK用油墨吸收光做减色混合，输出介质决定模式。')}`;
     },
     "y2024q43": function (demo) {
-      return `<div class="v24-sharpen-lab"><div class="sharpen-image"><div class="scan-anatomy"><i class="lung left"></i><i class="lung right"></i><span class="edge"></span><em class="noise"></em></div><b>边缘</b><small>噪声与光晕</small></div><div class="sharpen-controls">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><i>${[0,35,90,'×'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="frequency-bars"><span>低频结构</span><i></i><span>高频边缘/噪声</span><i></i></div></div>${feedback('适度锐化提升边缘对比；过度锐化会把噪声和光晕一起放大。')}`;
+      return `<div class="v24-sharpen-lab"><div class="sharpen-image"><div class="scan-anatomy"><i class="lung left"></i><i class="lung right"></i><span class="edge"></span><em class="noise"></em></div><b>边缘</b><small>噪声与光晕</small></div><div class="sharpen-controls">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><i>${['原','适','过','?'][i]}</i><span>${escapeHTML(item.label)}</span></button>`).join('')}</div><div class="frequency-bars"><span>低频结构</span><i></i><span>高频边缘/噪声</span><i></i></div></div>${feedback('适度锐化提升边缘对比；过度锐化会把噪声和光晕一起放大。')}`;
     },
     "y2023q39": function (demo) {
       const states=[['校外电脑','未连接','连接VPN网关并认证'],['身份验证','MFA ✓','协商密钥并建立隧道'],['加密隧道','AES-GCM','访问授权的内网资源'],['校园内网','图书馆数据库 ✓','断开VPN'],['连接已断开','临时路由已撤销','']];
@@ -281,7 +216,7 @@
       return `<div class="v25-defense-map"><div class="protected-core">数据系统</div>${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="defense-${i}"><i>${['脸','🔒','IDS','✍'][i]}</i><b>${escapeHTML(item.label)}</b><small>${['认证','机密性','检测','来源与完整性'][i]}</small></button>`).join('')}</div>${feedback('四种技术分别保护不同安全目标，组合起来才形成纵深防御。')}`;
     },
     "y2026q16": function (demo) {
-      return `<div class="cia-hospital"><div class="hospital-server"><header>电子病历系统</header><div class="service-screen" data-service-screen><b>服务在线</b><span>12 名医护正在访问</span></div></div><div class="cia-gauges"><div class="cia-gauge confidential"><b data-cia-c>100%</b><span>机密性</span></div><div class="cia-gauge integrity"><b data-cia-i>100%</b><span>完整性</span></div><div class="cia-gauge availability"><b data-cia-a>100%</b><span>可用性</span></div></div><div class="attack-console">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="attack attack-${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('触发一个事件，观察它最直接击中CIA三属性中的哪一项。')}`;
+      return `<div class="cia-hospital"><div class="hospital-server"><header>成绩管理系统</header><div class="service-screen" data-service-screen><b>服务在线</b><span>授权师生可以访问</span></div></div><div class="cia-gauges"><div class="cia-gauge confidential"><b data-cia-c>未见异常</b><span>机密性</span></div><div class="cia-gauge integrity"><b data-cia-i>未见异常</b><span>完整性</span></div><div class="cia-gauge availability"><b data-cia-a>未见异常</b><span>可用性</span></div></div><div class="attack-console">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="attack attack-${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('触发一个事件，观察它最直接击中CIA三属性中的哪一项。')}`;
     },
     "y2020q28": function (demo) {
       return `<div class="v26-malware-lab"><div class="infected-machine"><header>LAB-PC-07</header><div class="system-health"><b>文件完整性</b><i></i><b>系统性能</b><i></i></div><div class="virus-core">VIRUS<small>潜伏 → 触发 → 破坏</small></div></div><div class="defense-stack">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}" class="d${i}"><i>${['!','✉','↻','钥','盾'][i]}</i><b>${escapeHTML(item.label)}</b><small>${escapeHTML(item.stage)}</small></button>`).join('')}</div></div>${feedback('“删除文件、拖慢系统”描述病毒特征；补丁、权限、备份等描述防护层。')}`;
@@ -293,7 +228,7 @@
       return `<div class="ai-publish-studio"><div class="draft-post"><span class="ai-badge">AI 草稿</span><h4>某医院已实现100%治愈率</h4><p>未经核验的夸张医学信息准备公开发布。</p><div class="post-image-placeholder">合成示意图</div><button class="publish-button" data-sim-choice="3">立即发布</button></div><div class="publish-gates">${getItems(demo).slice(0,3).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="publish-gate gate-${i}"><i>${i+1}</i><b>${escapeHTML(item.label)}</b><span data-gate-status>未检查</span></button>`).join('')}</div><div class="publication-status" data-publication-status>发布锁定：还有 3 项未完成</div></div>${feedback('事实、权利和标识是发布前的三道门；“AI生成”不免除传播者责任。')}`;
     },
     "merged-18": function (demo) {
-      return `<div class="vr-cockpit"><div class="headset-view"><div class="vr-world" data-vr-world><div class="virtual-room"><i></i><i></i><i></i><span>虚拟训练室</span></div><div class="tracking-reticle">＋</div></div><div class="headset-frame"></div></div><div class="vr-sensors"><span>头部定位 <b data-vr-track>OFF</b></span><span>手柄交互 <b data-vr-hand>OFF</b></span><span>实时反馈 <b data-vr-live>OFF</b></span></div><div class="vr-scenes">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('3D画面只是视觉形式；典型VR还要有沉浸、空间跟踪和实时交互。')}`;
+      return `<div class="vr-cockpit"><div class="headset-view"><div class="vr-world" data-vr-world><div class="virtual-room"><i></i><i></i><i></i><span>虚拟训练室</span></div><div class="tracking-reticle">＋</div></div><div class="headset-frame"></div></div><div class="vr-sensors"><span>头部定位 <b data-vr-track>待选</b></span><span>用户交互 <b data-vr-hand>待选</b></span><span>实时反馈 <b data-vr-live>待选</b></span></div><div class="vr-scenes">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('3D画面只是视觉形式；典型VR还要有沉浸、空间跟踪和实时交互。')}`;
     },
     "y2026q39": function (demo) {
       return `<div class="cloud-control-panel"><aside class="cloud-nav"><b>云服务器 ECS</b><span>实例</span><span>镜像</span><span>安全组</span><span>费用中心</span></aside><main><div class="instance-card"><header><i></i><b>study-server-01</b><span data-instance-state>运行中</span></header><div class="resource-dials"><div><b data-vcpu>2</b><span>vCPU</span></div><div><b data-vram>4 GB</b><span>内存</span></div><div><b data-bill>¥0.32/h</b><span>按量费用</span></div></div><div class="cloud-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div><div class="resource-pool">共享资源池 <i></i><i></i><i></i><i></i></div></main></div>${feedback('云计算的关键不是“远程”，而是资源池化、按需弹性、网络交付和可度量。')}`;
@@ -307,10 +242,6 @@
     "y2025q40": function (demo) {
       return `<div class="v25-causality"><div class="book-node a">买书A</div><div class="book-node b">买书B</div><div class="interest-node">共同兴趣</div><i class="corr-line">相关</i><i class="cause-a">↙</i><i class="cause-b">↘</i><div class="causal-actions">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('A与B共同出现可能来自第三个因素；相关性可预测，但不能单独证明因果。')}`;
     },
-    "merged-17": function (demo) {
-      const blocks=[['#1042','A→B 2.0'],['#1043','B→C 1.5'],['#1044','C→D 0.8'],['#1045','D→E 0.3']];
-      return `<div class="blockchain-lab"><div class="chain-mode">${choice(demo,0,'chain-mode-button')}${choice(demo,1,'chain-mode-button')}</div><div class="block-chain">${blocks.map((x,i)=>`<button type="button" ${i===1?'data-sim-choice="2"':''} class="block block-${i}"><b>${x[0]}</b><span>${x[1]}</span><code>${['8A1F','3C9D','71B2','0FE8'][i]}</code></button><i>→</i>`).join('')}</div><div class="consensus-nodes"><i>节点 A</i><i>节点 B</i><i>节点 C</i><span data-chain-status>哈希链接完整</span></div>${choice(demo,3,'zk-proof-button')}</div>${feedback('篡改历史块会改变哈希并断开后续链接；“难篡改”不是绝对不可改，隐私也需额外设计。')}`;
-    },
     "y2020q30": function (demo) {
       return `<div class="ai-lab"><div class="ai-senses"><div class="camera-feed"><i></i><span>视觉输入</span></div><div class="mic-wave"><i></i><i></i><i></i><span>声音输入</span></div></div><div class="model-core"><b>模型</b><span>识别 · 学习 · 推理 · 决策</span><i data-model-pulse></i></div><div class="ai-apps">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}" class="ai-app app-${i}"><i>${['◉','◎','◇','⏱'][i]}</i><b>${escapeHTML(item.label)}</b></button>`).join('')}</div><div class="rule-timer">固定规则：19:00 → 开灯</div></div>${feedback('自动执行不等于AI；要看系统是否在进行感知、学习、推理或自适应决策。')}`;
     },
@@ -318,22 +249,10 @@
       return `<div class="v25-ai-editor"><div class="prompt-pane"><small>原句</small><p>某疗法可能改善症状。</p><button data-sim-choice="0">生成润色稿</button></div><div class="ai-draft"><span>AI草稿</span><p>这项疗法能够保证彻底治愈。</p><i>⚠ “可能改善”被夸大为“保证治愈”</i></div><div class="verify-pane">${getItems(demo).slice(1).map((item,i)=>`<button data-sim-choice="${i+1}">${escapeHTML(item.label)}</button>`).join('')}</div></div>${feedback('润色属于自然语言生成，但任何事实变化都必须回到证据核验。')}`;
     },
     "y2026q45": function (demo) {
-      return `<div class="compute-benchmark"><div class="chip-die"><b>AI 加速器</b><div class="compute-cores">${Array.from({length:64},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><div class="memory-bus" data-memory-bus><span>HBM 带宽</span><i></i></div></div><div class="benchmark-screen"><header>推理基准</header><div class="benchmark-bars"><span>峰值 <i style="--w:100%"></i><b>100 TOPS</b></span><span>实际 <i data-real-performance style="--w:63%"></i><b data-real-tops>63 TOPS</b></span></div><div class="benchmark-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div></div>${feedback('实际算力受并行单元、内存带宽、软件优化和数值精度共同限制。')}`;
+      return `<div class="compute-benchmark"><div class="chip-die"><b>AI 加速器</b><div class="compute-cores">${Array.from({length:64},(_,i)=>`<i style="--i:${i}"></i>`).join('')}</div><div class="memory-bus" data-memory-bus><span>HBM 带宽</span><i></i></div></div><div class="benchmark-screen"><header>性能影响因素 · 定性对照</header><div class="benchmark-readout"><b data-real-tops>选择条件，检查限制在哪里</b></div><div class="benchmark-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div></div></div>${feedback('实际算力受并行单元、内存带宽、软件优化和数值精度共同限制。')}`;
     },
     "y2024q20": function (demo) {
       return `<div class="v24-metaverse"><div class="headset"><i class="lens l"></i><i class="lens r"></i><b>XR</b></div><div class="data-orbits">${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}" class="orbit o${i}"><i>${['◎','⌂','◆','!'][i]}</i><b>${escapeHTML(item.label)}</b></button>`).join('')}</div><div class="privacy-vault"><b>最小采集</b><span>明确目的</span><span>权限控制</span><span>保留期限</span></div></div>${feedback('沉浸式设备会产生视线、动作和空间等高敏感数据；技术越丰富，治理越不能省略。')}`;
-    },
-    "y2023q15": function (demo) {
-      const rows=updated=>`<table><tr><th>学号</th><th>姓名</th><th>班级</th></tr><tr class="target"><td>2023008</td><td>王宁</td><td>${updated?'临床2班':'临床1班'}</td></tr><tr><td>2023012</td><td>李悦</td><td>临床1班</td></tr></table>`;
-      const pages=[
-        `<div class="v26-sql-update"><pre>SELECT * FROM student<br>WHERE 学号='2023008';</pre>${rows(false)}<button data-sim-step="0">预览命中范围：1 行</button></div>`,
-        `<div class="v26-sql-update"><pre><button data-sim-step="1">UPDATE student</button><br>SET 班级='临床2班'<br>WHERE 学号='2023008';</pre>${rows(false)}</div>`,
-        `<div class="v26-sql-update"><pre>UPDATE student<br><button data-sim-step="2">SET 班级='临床2班'</button><br>WHERE 学号='2023008';</pre>${rows(false)}</div>`,
-        `<div class="v26-sql-update"><pre>UPDATE student<br>SET 班级='临床2班'<br><button data-sim-step="3">WHERE 学号='2023008'</button>;</pre><aside>没有 WHERE 将更新全部记录</aside>${rows(false)}</div>`,
-        `<div class="v26-sql-update"><pre>UPDATE student SET 班级='临床2班'<br>WHERE 学号='2023008';</pre>${rows(false)}<button data-sim-step="4">执行并复查</button></div>`,
-        `<div class="v26-sql-update success"><pre>1 row updated</pre>${rows(true)}<b>其他记录未改变</b></div>`
-      ];
-      return `<div class="v25-stage-shell v26-sql-stages">${pages.map((p,i)=>`<section data-v25-stage="${i}">${p}</section>`).join('')}</div>${feedback('UPDATE改已有记录；最危险的错误不是拼错命令，而是忘记先核对WHERE范围。')}`;
     },
     "y2024q47": function (demo) {
       const states=[['现有结构','学号　姓名　班级'],['编写语句','ALTER TABLE student ADD 年龄 INT;'],['执行迁移','旧记录的年龄先为NULL'],['结构检查','学号　姓名　班级　年龄'],['验证完成','应用读写与约束均正常']];

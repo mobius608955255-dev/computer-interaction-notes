@@ -8,6 +8,11 @@ const root=path.resolve(__dirname,'..');
 const scriptsFor=chapter=>[...fs.readFileSync(path.join(root,`chapter${chapter}.html`),'utf8').matchAll(/<script src="\.\/([^"?]+)/g)].map(m=>m[1]);
 const allNotes=()=>Array.from({length:11},(_,i)=>JSON.parse(fs.readFileSync(path.join(root,`content/chapter${i+1}.json`),'utf8'))).flat();
 const releaseVersion=JSON.parse(fs.readFileSync(path.join(root,'site.config.json'),'utf8')).version;
+test('v47 supplements and worked examples preserve the 460 original source identities',()=>{
+ const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.equal(supplements.length,13);
+ assert.ok(supplements.every(n=>n.sources.length===0));assert.equal(notes.flatMap(n=>n.workedExamples||[]).length,16);
+ for(const n of notes)for(const example of n.workedExamples||[])assert.ok(n.sources.some(s=>s.year===example.year&&s.q===example.q));
+});
 function env(chapter=4,{url,oldReadingMode}={}){
   const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:url||'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;Object.defineProperty(w.crypto,'subtle',{value:require('node:crypto').webcrypto.subtle});w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
@@ -75,7 +80,7 @@ test('one directory contains chapter links and grouped notes with a working focu
  trigger.click();d.getElementById('scrim').click();assert.equal(d.activeElement,trigger);e.dom.window.close();
 });
 test('460 unique sources; all seven years mapped; canonical notes have valid sections',()=>{
-  const e=env();const notes=allNotes();assert.equal(notes.length,220);assert.equal(e.w.NOTES.sourceCount,460);
+  const e=env();const notes=allNotes();assert.equal(notes.filter(n=>n.origin!=='syllabus').length,220);assert.equal(e.w.NOTES.sourceCount,460);
   const keys=notes.flatMap(n=>n.sources.map(s=>`${s.year}-${s.q}`));assert.equal(new Set(keys).size,460);
   assert.deepEqual(Array.from(notes.flatMap(n=>n.sources).filter(s=>s.year===2022).map(s=>s.q).sort((a,b)=>a-b)),Array.from({length:75},(_,i)=>i+1));
   for(const n of notes)assert.ok(e.w.NOTES.chapters[n.chapter-1].sections.some(s=>s.id===n.section),n.id);
@@ -175,7 +180,7 @@ test('input state is current even before blur/change fires',()=>{
 });
 test('each year is continuous and generated HTML assets exist',()=>{
  const notes=allNotes();for(const [year,count] of [[2020,65],[2021,60],[2022,75],[2023,70],[2024,70],[2025,60],[2026,60]])assert.deepEqual(notes.flatMap(n=>n.sources).filter(s=>s.year===year).map(s=>s.q).sort((a,b)=>a-b),Array.from({length:count},(_,i)=>i+1));
- for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');assert.equal(scriptsFor(ch).filter(f=>/^generated\/chapter\d+\.js$/.test(f)).length,1);assert.equal(scriptsFor(ch).filter(f=>f.startsWith('generated/labs-')).length,ch===9?0:1);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}
+ for(let ch=1;ch<=11;ch++){const html=fs.readFileSync(path.join(root,`chapter${ch}.html`),'utf8');assert.equal(scriptsFor(ch).filter(f=>/^generated\/chapter\d+\.js$/.test(f)).length,1);assert.equal(scriptsFor(ch).filter(f=>f.startsWith('generated/labs-')).length,1);for(const match of html.matchAll(/(?:src|href)="\.\/([^"?]+)(?:\?[^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,match[1])),match[1]);}
 });
 test('directory navigation reveals a search-hidden note; shortcuts respect editable context',()=>{
  const e=env(3),search=e.d.querySelector('#search-input');search.value='不存在的搜索';search.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#open-drawer').click();e.d.querySelector('#drawer a[href="#y2026q47"]').click();assert.equal(e.d.querySelector('#y2026q47').classList.contains('hidden'),false);assert.equal(search.value,'');
@@ -263,7 +268,7 @@ test('Reference copying supports base-26 columns and rejects fractional displace
  const e=env(),c=open(e,'merged-10');change(e,c,'style','relative');change(e,c,'dx','25');assert.match(c.querySelector('.lab-office table').textContent,/=AA3/);change(e,c,'dy','1.5');assert.match(c.querySelector('.lab-office table').textContent,/请输入整数/);change(e,c,'dy','-3');assert.match(c.querySelector('.lab-office table').textContent,/#REF!/);e.dom.window.close();
 });
 test('Clear filter retains arrows; turning filter off removes them and restores rows',()=>{
- const e=env(),c=open(e,'y2026q51');change(e,c,'mode','auto');click(c,'auto');click(c,'clear');assert.match(c.querySelector('thead').textContent,/性别 ▾/);click(c,'auto');click(c,'toggleAuto');assert.doesNotMatch(c.querySelector('thead').textContent,/▾/);assert.match(c.querySelector('tbody').textContent,/周林/);e.dom.window.close();
+ const e=env(),c=open(e,'y2026q51');change(e,c,'mode','auto');click(c,'auto');click(c,'clear');assert.match(c.querySelector('.note-lab thead').textContent,/性别 ▾/);click(c,'auto');click(c,'toggleAuto');assert.doesNotMatch(c.querySelector('.note-lab thead').textContent,/▾/);assert.match(c.querySelector('.note-lab tbody').textContent,/周林/);e.dom.window.close();
 });
 test('CSV reimport cancel restores previously imported rows and options',()=>{
  const e=env(),c=open(e,'y2021q47');click(c,'start');click(c,'next');click(c,'next');click(c,'finish');const previous=c.querySelector('table').textContent;click(c,'start');click(c,'next');change(e,c,'delimiter','tab');click(c,'cancel');assert.equal(c.querySelector('table').textContent,previous);e.dom.window.close();
@@ -271,8 +276,8 @@ test('CSV reimport cancel restores previously imported rows and options',()=>{
 test('Combination chart cancel preserves applied axis configuration',()=>{
  const e=env(),c=open(e,'y2026q52');click(c,'ab');c.querySelector('[data-lab-act="d"]').dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,ctrlKey:true}));click(c,'insert');click(c,'combo');change(e,c,'secondary',true);click(c,'apply');click(c,'combo');change(e,c,'secondary',false);click(c,'cancel');assert.match(c.querySelector('svg').textContent,/成功率%/);e.dom.window.close();
 });
-test('Word and Excel show 18 comparison tables, external reset controls, and keep keyboard focus',()=>{
- let count=0;for(const ch of [3,4]){const e=env(ch);count+=e.d.querySelectorAll('.note-comparison').length;assert.equal(e.d.querySelectorAll('.simulation-footer').length,0);const c=open(e,ch===3?'merged-7':'merged-10');assert.equal(c.querySelector('[data-sim-reset]').closest('.lab-office'),null);const control=c.querySelector('[data-field]');control.focus();control.dispatchEvent(new e.w.Event('change',{bubbles:true}));assert.equal(e.d.activeElement.closest('.notes-picker')?.querySelector('select').dataset.field||e.d.activeElement.dataset.field,control.dataset.field);e.dom.window.close();}assert.equal(count,18);
+test('Word and Excel show their canonical comparison tables, external reset controls, and keep keyboard focus',()=>{
+ let count=0;for(const ch of [3,4]){const e=env(ch);count+=e.d.querySelectorAll('.note-comparison').length;assert.equal(e.d.querySelectorAll('.simulation-footer').length,0);const c=open(e,ch===3?'merged-7':'merged-10');assert.equal(c.querySelector('[data-sim-reset]').closest('.lab-office'),null);const control=c.querySelector('[data-field]');control.focus();control.dispatchEvent(new e.w.Event('change',{bubbles:true}));assert.equal(e.d.activeElement.closest('.notes-picker')?.querySelector('select').dataset.field||e.d.activeElement.dataset.field,control.dataset.field);e.dom.window.close();}assert.equal(count,allNotes().filter(n=>[3,4].includes(n.chapter)&&n.comparison).length);
 });
 test('Trend forecast preserves slope and places its endpoint on the same month scale',()=>{
  const e=env(),c=open(e,'y2024q68');click(c,'open');change(e,c,'draft','1');click(c,'apply');let line=c.querySelector('[data-trend-line]');assert.equal(line.getAttribute('x2'),'280');const firstY=line.getAttribute('y2');click(c,'open');change(e,c,'draft','3');click(c,'cancel');assert.equal(c.querySelector('[data-trend-line]').getAttribute('y2'),firstY);click(c,'open');change(e,c,'draft','3');click(c,'apply');line=c.querySelector('[data-trend-line]');assert.equal(line.getAttribute('x2'),'360');assert.ok(Number(line.getAttribute('y2'))<Number(firstY));e.dom.window.close();
@@ -439,8 +444,8 @@ test('search matches separated normalized terms without indexing changing demo o
 });
 test('empty search explains recovery and restores every note with focus on search',()=>{
  const e=env(6),s=e.d.querySelector('#search-input');s.value='找不到的知识点xyz';s.dispatchEvent(new e.w.Event('input',{bubbles:true}));
- assert.equal(e.d.querySelector('#search-empty').hidden,false);assert.equal(e.d.querySelector('#clear-search').hidden,false);assert.match(e.d.querySelector('#result-count').textContent,/0 \/ 25/);
- e.d.querySelector('#restore-notes').click();assert.equal(e.d.querySelectorAll('.note-item:not(.hidden)').length,25);assert.equal(e.d.querySelector('#search-empty').hidden,true);assert.equal(e.d.querySelector('#clear-search').hidden,true);assert.equal(e.d.activeElement,s);
+ assert.equal(e.d.querySelector('#search-empty').hidden,false);assert.equal(e.d.querySelector('#clear-search').hidden,false);assert.equal(e.d.querySelector('#result-count').textContent,`0 / ${e.w.NOTES.notes.length}条`);
+ e.d.querySelector('#restore-notes').click();assert.equal(e.d.querySelectorAll('.note-item:not(.hidden)').length,e.w.NOTES.notes.length);assert.equal(e.d.querySelector('#search-empty').hidden,true);assert.equal(e.d.querySelector('#clear-search').hidden,true);assert.equal(e.d.activeElement,s);
  s.value='IPv6';s.dispatchEvent(new e.w.Event('input',{bubbles:true}));e.d.querySelector('#clear-search').click();assert.equal(s.value,'');assert.equal(e.d.querySelectorAll('.note-item.hidden').length,0);e.dom.window.close();
 });
 test('directory isolates background and transfers focus to the selected hidden note',()=>{
@@ -607,8 +612,8 @@ test('chart title, axis titles and legend position are separate visible elements
  change(e,c,'showTitle',false);assert.equal(c.querySelector('[data-chart-title]'),null);assert.equal(c.querySelectorAll('[data-axis-title]').length,2);e.dom.window.close();
 });
 test('text autofit menu keeps shape growth in the shape-format entry',()=>{
- const e=env(5),c=open(e,'y2026q54');click(c,'menu');assert.equal(c.querySelector('[aria-label="占位符自动调整选项"] [data-lab-act="shape"]'),null);click(c,'shrink');assert.equal(c.querySelector('.lab-placeholder').style.fontSize,'16px');assert.equal(c.querySelector('.lab-placeholder.grow'),null);
- click(c,'format');click(c,'shape');assert.equal(c.querySelector('.lab-placeholder').style.fontSize,'24px');assert.ok(c.querySelector('.lab-placeholder.grow'));e.dom.window.close();
+ const e=env(5),c=open(e,'y2026q54');click(c,'menu');assert.equal(c.querySelector('[aria-label="占位符自动调整选项"] [data-lab-act="shape"]'),null);click(c,'shrink');assert.equal(c.querySelector('.lab-placeholder p').style.fontSize,'16px');assert.equal(c.querySelector('.lab-placeholder.grow'),null);
+ click(c,'format');click(c,'shape');assert.equal(c.querySelector('.lab-placeholder p').style.fontSize,'24px');assert.ok(c.querySelector('.lab-placeholder.grow'));e.dom.window.close();
 });
 test('draft hides document images; Web layout restores them and remains editable',()=>{
  const e=env(3),c=open(e,'merged-5');assert.equal(c.querySelectorAll('[data-document-image]').length,2);click(c,'view','draft');assert.equal(c.querySelectorAll('[data-document-image]').length,0);click(c,'view','web');assert.equal(c.querySelectorAll('[data-document-image]').length,2);change(e,c,'title','网页中编辑');assert.match(c.querySelector('.lab-workspace').textContent,/网页中编辑/);click(c,'view','print');assert.match(c.querySelector('.lab-workspace').textContent,/网页中编辑/);e.dom.window.close();
@@ -622,7 +627,7 @@ test('colloquial aliases retrieve the intended concept without reading mutable l
 
 test('full-site search normalizes aliases and resolves every note paragraph and related link',()=>{
  const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')), notes=allNotes(),byId=new Map(notes.map(n=>[n.id,n]));
- assert.equal(index.filter(x=>x.kind==='note').length,220);
+ assert.equal(index.filter(x=>x.kind==='note').length,notes.length);
  for(let chapter=1;chapter<=11;chapter++){
   const e=env(chapter);
   for(const entry of index.filter(x=>x.chapter===chapter))for(const field of entry.fields)assert.ok(e.d.getElementById(field.anchor),field.anchor);
@@ -720,4 +725,76 @@ test('deferred search respects the newest query, clearing and retry after a fail
  const e=homeEnv(undefined,()=>pending);typeGlobal(e,'Delete');typeGlobal(e,'SUMIF');resolve({ok:true,json:async()=>index});await new Promise(setImmediate);assert.match(e.d.getElementById('global-results').textContent,/SUMIF/);assert.equal(e.d.getElementById('global-search').value,'SUMIF');e.dom.window.close();
  let finish;const unfinished=new Promise(r=>finish=r),f=homeEnv(undefined,()=>unfinished);typeGlobal(f,'Delete');f.d.getElementById('global-clear').click();finish({ok:true,json:async()=>index});await new Promise(setImmediate);assert.equal(f.d.getElementById('global-search-results').hidden,true);assert.equal(f.d.getElementById('browse-notes').hidden,false);f.dom.window.close();
  let calls=0;const g=homeEnv(undefined,async()=>{if(++calls===1)throw Error('offline');return {ok:true,json:async()=>index};});typeGlobal(g,'Delete');await new Promise(setImmediate);assert.equal(g.d.getElementById('search-retry').hidden,false);g.d.getElementById('search-retry').click();await new Promise(setImmediate);assert.ok(g.d.querySelectorAll('#global-results li').length);typeGlobal(g,'<img src=x onerror=alert(1)>');await new Promise(setImmediate);assert.equal(g.d.querySelector('#global-results img'),null);g.dom.window.close();
+});
+
+test('v47 disk cleanup confirms the selected categories once and cancellation frees no space',()=>{
+ const e=env(2),m=e.w.NOTE_LABS.registry.y2024q5,s=structuredClone(m.initial);m.change(s,'downloads',true);m.action(s,'review');assert.equal(s.pending.size,6380);m.action(s,'cancel');assert.equal(s.used,184000);m.action(s,'review');m.action(s,'confirm');assert.equal(s.used,177620);assert.equal(s.remaining.downloads,0);assert.equal(s.remaining.recycle,420);m.action(s,'confirm');assert.equal(s.used,177620);e.dom.window.close();
+});
+test('v47 workbook preserves new sheets and protects the final visible sheet',()=>{
+ const e=env(4),m=e.w.NOTE_LABS.registry.y2020q8,s=structuredClone(m.initial);m.action(s,'new');m.action(s,'new');assert.equal(s.sheets.length,4);m.action(s,'hide');m.action(s,'delete');m.action(s,'cancel');assert.equal(s.sheets.length,4);m.action(s,'delete');m.action(s,'confirm');m.action(s,'hide');assert.equal(s.sheets.filter(x=>x.visible).length,1);m.action(s,'delete');assert.equal(s.pending,null);assert.match(s.message,/最后一张/);e.dom.window.close();
+});
+test('v47 formula parser respects precedence, decimals, long integers and errors',()=>{
+ const e=env(4),parse=e.w.NOTE_LABS.registry.y2024q11.parseInput;
+ for(const [input,result] of [['=(2+3)*4','20'],['=0.1+0.2','0.3'],['=1000000000000+1','1000000000001'],['2*3','2*3'],['=2×3','#NAME?'],['=4/0','#DIV/0!']])assert.equal(parse(input).value,result,input);e.dom.window.close();
+});
+test('v47 binary borrowing crosses consecutive zeroes without changing the arithmetic result',()=>{
+ const e=env(1),m=e.w.NOTE_LABS.registry.y2020q31,s=structuredClone(m.initial);m.change(s,'a','10000');m.change(s,'b','00001');m.action(s,'load');for(let i=0;i<5;i++)m.action(s,'step');assert.match(m.render(s),/15/);assert.match(m.render(s),/01111/);e.dom.window.close();
+});
+test('v47 UPDATE invalidates a stale preview and escapes displayed SQL string literals',()=>{
+ const e=env(10),c=open(e,'y2023q15');click(c,'preview');change(e,c,'score','65');assert.equal(c.querySelector('[data-lab-act="run"]').disabled,true);click(c,'preview');click(c,'run');assert.match(c.querySelector('.note-lab table').textContent,/李明65/);change(e,c,'id',"02'");assert.match(c.querySelector('.lab-code').textContent,/id = '02''';/);click(c,'preview');assert.match(c.querySelector('output').textContent,/命中0行/);change(e,c,'where','false');click(c,'preview');click(c,'run');assert.equal([...c.querySelectorAll('.note-lab tbody tr')].filter(r=>r.textContent.endsWith('65')).length,3);e.dom.window.close();
+});
+test('v47 shared printing follows submission order and rejects new jobs after sharing closes',()=>{
+ const e=env(6),m=e.w.NOTE_LABS.registry.y2026q13,s=structuredClone(m.initial);m.action(s,'submit','B');m.action(s,'submit','A');assert.deepEqual(Array.from(s.jobs,j=>j.owner),['B','A']);m.change(s,'shared',false);m.action(s,'submit','A');assert.equal(s.jobs.length,2);m.action(s,'print');assert.equal(s.jobs[0].owner,'A');m.action(s,'cancel',String(s.jobs[0].id));assert.equal(s.jobs.length,0);e.dom.window.close();
+});
+test('v47 disabled devices retain missing-driver state until a driver is installed',()=>{
+ const e=env(2),m=e.w.NOTE_LABS.registry.y2026q8,s=structuredClone(m.initial);m.action(s,'enable');m.action(s,'enable');assert.equal(s.mode,'driver');m.action(s,'update');assert.equal(s.mode,'normal');m.change(s,'mode','absent');m.action(s,'scan');assert.equal(s.mode,'absent');assert.doesNotMatch(m.render(s),/未知设备/);e.dom.window.close();
+});
+test('v47 restore quotas, desktop drafts and quick-access shortcuts keep independent state',()=>{
+ const e=env(2),r=e.w.NOTE_LABS.registry;let m=r.y2026q33,s=structuredClone(m.initial);m.action(s,'toggle');m.action(s,'confirm');m.change(s,'quota',10);m.action(s,'delete');assert.equal(s.points.length,0);assert.equal(s.enabled,false);assert.match(m.render(s),/没有可用还原点/);
+ m=r.y2026q25;s=structuredClone(m.initial);m.action(s,'open');m.change(s,'draftComputer',true);m.change(s,'draftRecycle',false);m.action(s,'apply');m.change(s,'draftRecycle',true);m.action(s,'cancel');assert.equal(s.computer,true);assert.equal(s.recycle,false);
+ m=r.y2026q35;s=structuredClone(m.initial);m.action(s,'unpin');assert.equal(s.exists,true);m.action(s,'pin');m.action(s,'delete');m.action(s,'pin');assert.equal(s.pinned,false);assert.equal(s.exists,false);e.dom.window.close();
+});
+test('v47 default presentation view is committed explicitly and applied on reopening',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry.y2024q46,s=structuredClone(m.initial);for(const a of ['file','options','advanced'])m.action(s,a);m.change(s,'draft','sorter');m.action(s,'cancel');m.action(s,'reopen');assert.equal(s.view,'normal');for(const a of ['file','options','advanced'])m.action(s,a);m.change(s,'draft','notes');m.action(s,'save');assert.equal(s.view,'normal');m.action(s,'reopen');assert.equal(s.view,'notes');e.dom.window.close();
+});
+test('v47 slide duplicate preserves content and repeated insertion increases the deck',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry.y2024q12,s=structuredClone(m.initial);m.action(s,'duplicate');assert.equal(s.docs[0].slides[1].title,'牡丹');assert.equal(s.docs[0].slides[1].body,s.docs[0].slides[0].body);m.action(s,'new');m.action(s,'new');assert.equal(s.docs[0].slides.length,5);assert.equal(s.docs[0].slides[3].body,'');m.action(s,'document');assert.equal(s.docs.length,2);assert.equal(s.docs[0].slides.length,5);e.dom.window.close();
+});
+test('v47 picture replacement preserves identity but reinsertion creates a new object',()=>{
+ const e=env(5),m=e.w.NOTE_LABS.registry.y2026q53,s=structuredClone(m.initial);m.change(s,'crop',20);m.action(s,'replace');assert.equal(s.source,'B');assert.equal(s.crop,20);assert.equal(s.animation,true);m.action(s,'reinsert');m.action(s,'inspect');assert.equal(s.object,2);assert.equal(s.source,'B');assert.equal(s.animation,false);assert.equal(s.crop,0);e.dom.window.close();
+});
+test('v47 ordinary textboxes have no placeholder menu and mixed fonts scale proportionally',()=>{
+ const e=env(5),c=open(e,'y2026q54');click(c,'menu');click(c,'shrink');assert.deepEqual([...c.querySelectorAll('.lab-placeholder p')].map(p=>p.style.fontSize),['16px','12px','12px']);change(e,c,'object','textbox');assert.equal(c.querySelector('.lab-autofit'),null);click(c,'format');click(c,'shrink');assert.equal(c.querySelector('.lab-placeholder p').style.fontSize,'16px');e.dom.window.close();
+});
+test('v47 frame playback pauses after programmatic slider updates without changing total duration',async()=>{
+ const e=env(7);try{const c=open(e,'y2020q38');click(c,'play');await new Promise(r=>setTimeout(r,90));const slider=c.querySelector('[data-field="time"]');assert.ok(Number(slider.value)>0);assert.equal(slider.value,slider.defaultValue);click(c,'play');const time=c.querySelector('[data-field="time"]').value;await new Promise(r=>setTimeout(r,60));assert.equal(c.querySelector('[data-field="time"]').value,time);change(e,c,'fps','60');assert.match(c.querySelector('.note-lab table').textContent,/60 fps \/ 120 帧/);}finally{e.dom.window.close();}
+});
+test('v47 seeking past downloaded media produces zero buffer and waits for data',()=>{
+ const e=env(7),m=e.w.NOTE_LABS.registry.y2023q18,s=structuredClone(m.initial);m.change(s,'position',20);m.action(s,'play');m.change(s,'rate',0);m.action(s,'tick');assert.equal(s.position,20);assert.equal(s.downloaded,12);assert.match(m.render(s),/等待下载/);m.change(s,'rate',2);for(let i=0;i<5;i++)m.action(s,'tick');assert.equal(s.downloaded,22);assert.equal(s.position,21);e.dom.window.close();
+});
+test('v47 block tampering remains visible when changing admission mode or recomputing one block',()=>{
+ const e=env(9),m=e.w.NOTE_LABS.registry['merged-17'],s=structuredClone(m.initial);m.change(s,'block0','甲向乙转账100');m.action(s,'verify');assert.match(s.message,/1/);m.change(s,'mode','permissioned');assert.match(m.render(s),/发现被改动/);m.action(s,'rehash');m.action(s,'verify');assert.match(s.message,/2/);e.dom.window.close();
+});
+test('v47 conceptual readouts and hyperlink source agree with their selected condition',()=>{
+ let e=env(8),c=open(e,'y2026q16');c.querySelector('[data-sim-choice="0"]').click();assert.match(c.querySelector('[data-service-screen]').textContent,/不可用/);assert.equal(c.querySelector('[data-cia-a]').textContent,'受损');e.dom.window.close();
+ e=env(6);c=open(e,'y2020q36');const hash=e.w.location.hash;c.querySelector('[data-preview-link]').click();assert.equal(e.w.location.hash,hash);c.querySelector('[data-sim-choice="3"]').click();assert.equal(c.querySelector('[data-preview-link]').hasAttribute('href'),false);assert.equal(c.querySelector('[data-anchor-attribute]').hidden,true);e.dom.window.close();
+});
+test('v47 expanded operation surface preserves live nodes and focus when returning',()=>{
+ const e=env(4);e.w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};e.w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new e.w.Event('close'));};
+ const c=open(e,'y2024q11'),lab=c.querySelector('[data-lab]');change(e,c,'raw','=8*7');click(c,'apply');const opener=c.querySelector('[data-sim-expand]');opener.click();assert.ok(c.querySelector('dialog').open);assert.equal(c.querySelector('[data-lab]'),lab);assert.match(c.querySelector('.note-lab table').textContent,/56/);c.querySelector('[data-demo-close]').click();assert.equal(c.querySelector('dialog'),null);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(e.d.activeElement,opener);e.dom.window.close();
+});
+test('v47 Office ribbon buttons switch the displayed commands and retain button focus',()=>{
+ const e=env(3),c=open(e,'merged-5');const target=c.querySelector('[data-lab-tab="tab"][data-value="home"]');assert.ok(target);target.focus();target.click();assert.ok(c.querySelector('[data-lab-act="style"]'));assert.equal(e.d.activeElement.dataset.labTab,'tab');assert.equal(e.d.activeElement.dataset.value,'home');assert.equal(c.querySelectorAll('.lab-office nav button[aria-pressed="true"]').length,1);e.dom.window.close();
+});
+test('v47 text fields can be counted in a PivotTable value area',()=>{
+ const e=env(4),c=open(e,'y2024q67');click(c,'pick','产品');click(c,'place','value');assert.equal(c.querySelector('[data-field="aggregate"]').value,'count');assert.match(c.querySelector('.lab-pivot-layout').textContent,/总计6/);e.dom.window.close();
+});
+test('v47 syllabus models recalculate trends, protection, print sheets and input tables',()=>{
+ let e=env(4),c=open(e,'syllabus-sparkline');change(e,c,'raw','4,-8,5,10');change(e,c,'type','win');assert.match(c.querySelector('svg').getAttribute('aria-label'),/4、-8、5、10/);change(e,c,'raw','4,坏值,5,10');assert.equal(c.querySelector('svg'),null);
+ c=open(e,'syllabus-worksheet-protection');click(c,'protect');assert.equal(c.querySelector('[data-field="a"]').disabled,true);assert.equal(c.querySelector('[data-field="b"]').disabled,false);click(c,'protect');assert.equal(c.querySelector('[data-field="a"]').disabled,false);
+ c=open(e,'syllabus-excel-whatif-table');assert.match(c.querySelector('.note-lab tbody').textContent,/80400010050001206000/);change(e,c,'price',60);assert.match(c.querySelector('.note-lab tbody').textContent,/80480010060001207200/);e.dom.window.close();
+ e=env(3);c=open(e,'syllabus-word-print-controls');change(e,c,'range','2-4');change(e,c,'duplex','true');click(c,'preview');assert.match(c.querySelector('.lab-workspace').textContent,/需要4张纸/);change(e,c,'range','9');click(c,'preview');assert.equal(c.querySelector('.lab-mini-deck'),null);e.dom.window.close();
+});
+test('v47 multikey sort honors secondary ties and both score directions',()=>{
+ const e=env(4),m=e.w.NOTE_LABS.registry['syllabus-excel-multikey-sort'],s=structuredClone(m.initial);m.action(s,'sort');assert.deepEqual(Array.from(s.rows,x=>x.id),['01','02','04','03']);m.change(s,'first','score');m.change(s,'descending','false');m.action(s,'sort');assert.deepEqual(Array.from(s.rows,x=>x.id),['04','03','01','02']);e.dom.window.close();
 });

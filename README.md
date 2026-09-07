@@ -1,8 +1,8 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=46)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=47)
 
-根据2020—2026年山东专升本计算机真题整理，保留教材11章结构。460道题归并为220条知识笔记，每题可追溯年份、题号与所属知识点。Windows和Office操作按Windows 10 / Office 2016口径解释；发现扫描答案错误时，以可靠标准纠正并说明边界。
+根据2020—2026年山东专升本计算机真题整理，保留教材11章结构。460道题归并为220条知识笔记，另补13条考纲知识，共233条，每题可追溯年份、题号与所属知识点。Windows和Office操作按Windows 10 / Office 2016口径解释；发现扫描答案错误时，以可靠标准纠正并说明边界。
 
 ## 开发
 
@@ -19,23 +19,24 @@ npm run check
 
 | 文件 | 维护位置与职责 |
 |---|---|
-| `content/chapter1.json`—`chapter11.json` | 每条笔记唯一的正文记录，保留稳定ID、来源、章节归属、searchAliases别名、related关联与pointGroups分组 |
+| `content/chapter1.json`—`chapter11.json` | 每条笔记唯一的正文记录，保留稳定ID、来源、章节归属、searchAliases别名、related关联、pointGroups分组及有来源边界的workedExamples解析 |
 | `content/chapters.json` | 教材目录 |
 | `content/comparisons.json` | 13个跨知识点对照主题，逐行引用原笔记 |
 | `content/references.json` | 知识点的标准参考来源 |
-| `content/legacy-demos.json` | 86个旧场景的步骤或选择元数据 |
+| `content/legacy-demos.json` | 69个保留的旧场景的步骤或选择元数据 |
 | `templates/`、`scripts/build.cjs` | 页面模板与确定性构建；按章生成数据和演示包 |
 | `generated/`、`chapter*.html`、`index.html` | 生成物，不直接修改 |
 | `site.config.json` | 全站资源及内链共用的版本号；构建另为资源生成内容摘要以避免旧缓存 |
 | `notes-app.js` | 正文渲染、段落跳转、卡片挂载和保留的旧场景事件 |
+| `notes-demo-view.js`、`notes-demo-view.css` | 扩大操作区并保持原DOM、状态与返回焦点；新增模型的紧凑布局 |
 | `notes-directory.js` | 单一目录入口、章节切换、分组知识点导航与焦点管理 |
 | `notes-chapter-search.js` | 本章搜索、命中段落提示、临时展开来源和查询恢复 |
 | `notes-search.js`、`notes-home.js` | 共享搜索规则与缓存、首页结果分页和对照恢复；全站索引在首次查询时载入 |
 | `scripts/discovery.cjs` | 从正文生成段落索引、双向导航，验证关联与分组完整性 |
 | `notes-choices.js` | 页面内单选控件、键盘与焦点行为 |
-| `note-labs-runtime.js` | 演示注册、输入分发、重绘、局部画面更新、指针与计时器生命周期，以及纯文本转义 |
+| `note-labs-runtime.js` | 演示注册、输入分发、重绘、局部画面更新、指针与计时器生命周期、可操作功能区，以及纯文本转义 |
 | `src/labs/chapter*/` | 按章维护模型与计算逻辑；原IIFE闭包和两条必要包装链保留 |
-| `src/labs/shared/math.js`、`manifest.json` | 少量公共计算与章节入口顺序；构建直接拼接，不使用AST或运行时加载器 |
+| `src/labs/shared/math.js`、`manifest.json` | 少量公共计算、考纲情境对照与章节入口顺序；构建直接拼接，不使用AST或运行时加载器 |
 | `simulations.js` | 仍在使用的旧场景，每个场景只保留最终一份定义 |
 | `tests/notes-regression.cjs` | 来源、真实页面加载顺序、状态变化与计算边界回归 |
 | `tests/layout.html` | 可手动使用的同源布局检查工具，不是学习入口 |
@@ -53,6 +54,6 @@ npm run check
 
 计时模型用`frameKey`描述布局边界，通过`patchFrame`和`ui.patchRegions`更新明确指定的动态区域；跨页、结束或布局改变仍执行完整渲染。不能把输入区交给局部更新，也不能省略模型自己的事件钩子。新增模型后须同步manifest章节归属和回归。
 
-本轮目录、阅读简化与连续操作修复见[AUDIT-v46.md](AUDIT-v46.md)。整体内容和模型结构改版见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
+本轮内容审校、13条考纲补充与卡片改造见[AUDIT-v47.md](AUDIT-v47.md)。目录、阅读简化与连续操作修复见[AUDIT-v46.md](AUDIT-v46.md)。整体内容和模型结构改版见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
 
 演示仍是围绕考点的局部教学模型；来源齐全不等于覆盖完整考纲，也不等同于完整Office软件。

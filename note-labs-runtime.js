@@ -16,7 +16,8 @@
   const table = (head,rows) => `<div class="lab-table-scroll" tabindex="0" aria-label="数据表，可横向滚动"><table><thead><tr>${head.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   const coach = text => `<div class="lab-coach"><b>操作提示</b><p>${text}</p></div>`;
   const output = text => `<output class="lab-output" aria-live="polite">${text}</output>`;
-  const office = (app,tab,commands,body) => `<div class="lab-office lab-${app.toLowerCase()}"><header>${app} 2016 · 局部操作仿真</header><nav aria-label="功能区位置">${[...new Set(['文件','开始','插入',tab])].map(t=>t===tab?`<span>${t}</span>`:t).join('　')}</nav><div class="lab-ribbon">${commands}</div><div class="lab-workspace">${body}</div><footer>演示文档 · 操作仅影响本卡片</footer></div>`;
+  const tabs = (name,value,items) => `<select data-field="${name}" hidden aria-label="功能区位置">${items.map(([key,label])=>`<option value="${key}" ${key===value?'selected':''}>${label}</option>`).join('')}</select>${items.map(([key,label])=>`<button type="button" data-lab-tab="${name}" data-value="${key}" aria-pressed="${key===value}">${label}</button>`).join('')}`;
+  const office = (app,tab,commands,body,navigation='') => `<div class="lab-office lab-${app.toLowerCase()}"><header>${app} 2016 · 局部操作仿真</header><nav aria-label="功能区位置">${navigation||`<span>${esc(tab)}</span>`}</nav><div class="lab-ribbon">${commands}</div><div class="lab-workspace">${body}</div><footer>演示文档 · 操作仅影响本卡片</footer></div>`;
   const dialog = (title,body,commands) => `<section class="lab-dialog" role="group" aria-label="${title}"><header>${title}</header><div>${body}</div><footer>${commands}</footer></section>`;
   const paper = body => `<div class="lab-paper">${body}</div>`;
   const register = (ids,title,task,initial,render,action,change) => {
@@ -64,11 +65,11 @@
     });
     const focused=root.contains(document.activeElement)?document.activeElement:null;
     const choiceSource=focused?.closest('.notes-picker')?.querySelector('select');
-    const descriptor=choiceSource?.dataset.field?['field',choiceSource.dataset.field]:focused?.dataset.field?['field',focused.dataset.field]:focused?.dataset.labAct?['labAct',focused.dataset.labAct,focused.dataset.value]:null;
+    const descriptor=choiceSource?.dataset.field?['field',choiceSource.dataset.field]:focused?.dataset.field?['field',focused.dataset.field]:focused?.dataset.labAct?['labAct',focused.dataset.labAct,focused.dataset.value]:focused?.dataset.labTab?['labTab',focused.dataset.labTab,focused.dataset.value]:null;
     const selection=focused&&['text','search'].includes(focused.type)||focused?.tagName==='TEXTAREA'?[focused.selectionStart,focused.selectionEnd]:null;
     const s=states.get(root);root.innerHTML=registry[root.dataset.lab].render(s);
     window.NOTE_CHOICES?.enhance(root);
-    if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){if(target.tagName==='SELECT'&&window.NOTE_CHOICES)window.NOTE_CHOICES.focus(target);else target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
+    if(descriptor){const target=[...root.querySelectorAll('[data-field],[data-lab-act],[data-lab-tab]')].find(el=>el.dataset[descriptor[0]]===descriptor[1]&&(descriptor[0]==='field'||el.dataset.value===descriptor[2]));if(target&&!target.disabled){if(target.tagName==='SELECT'&&window.NOTE_CHOICES)window.NOTE_CHOICES.focus(target);else target.focus({preventScroll:true});if(selection&&target.setSelectionRange)target.setSelectionRange(...selection);}}
     registry[root.dataset.lab].afterRender?.(s,root);
     frameKeys.set(root,model.frameKey?.(s));
     for(const saved of scrolls){const el=saved.path.reduce((node,i)=>node?.children[i],root);if(el&&el.tagName===saved.tag&&el.getAttribute('class')===saved.classes&&el.dataset.field===saved.field){el.scrollLeft=saved.left;el.scrollTop=saved.top;}}
@@ -97,14 +98,14 @@
       listen('pointerover',e=>{if(model.hover?.(states.get(root),e,root))render(root);});
       listen('dblclick',e=>{if(model.dblclick?.(states.get(root),e,root))render(root);});
       let suppressUntil=0, gesture=null, pointerTarget=null, pressedId=null, dirty=false;
-      const act=(a,v)=>{
+      const act=(a,v,field)=>{
         const model=registry[root.dataset.lab],s=states.get(root);
         root.querySelectorAll('input[data-field],textarea[data-field]').forEach(x=>{
           const value=x.type==='checkbox'?x.checked:x.value,initial=x.type==='checkbox'?x.defaultChecked:x.defaultValue;
           if(value===initial)return;
           if(model.change)model.change(s,x.dataset.field,value);else s[x.dataset.field]=value;
         });
-        const pending=model.action(s,a,v);render(root);
+        const pending=field?(model.change?model.change(s,field,v):(s[field]=v)):model.action(s,a,v);render(root);
         if(pending&&typeof pending.then==='function')pending.then(()=>{
           if(root.isConnected&&states.get(root)===s)render(root);
         }).catch(()=>{
@@ -112,7 +113,7 @@
           if(root.isConnected&&states.get(root)===s)render(root);
         });
       };
-      listen('click',e=>{const b=e.target.closest('[data-lab-act]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty&&!root.querySelector('.notes-picker.is-open')){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value);});
+      listen('click',e=>{const b=e.target.closest('[data-lab-act],[data-lab-tab]');pointerTarget=null;states.get(root)._ctrl=e.ctrlKey||e.metaKey;if(!b||b.disabled){if(dirty&&!root.querySelector('.notes-picker.is-open')){dirty=false;const target=e.target.closest('[data-field]');const name=target?.dataset.field;render(root);if(name)root.querySelector(`[data-field="${name}"]`)?.focus();}return;}e.stopPropagation();if(Date.now()<suppressUntil)return;dirty=false;act(b.dataset.labAct,b.dataset.value,b.dataset.labTab);});
       listen('contextmenu',e=>{if(e.target.closest('[data-lab-drag="hold"],[data-lab-drag="file"]')){e.preventDefault();act('menu');}});
       // Capture typing immediately; do not depend on blur/change before a toolbar click.
       listen('input',e=>{const x=e.target.closest('[data-field]');if(!x)return;const s=states.get(root),v=x.type==='checkbox'?x.checked:x.value;const fn=registry[root.dataset.lab].change;if(fn)fn(s,x.dataset.field,v);else s[x.dataset.field]=v;});
@@ -173,5 +174,5 @@
   const eachRoot=(card,callback)=>card.querySelectorAll('[data-lab]').forEach(root=>callback(lifecycles.get(root)));
   const unmount=card=>eachRoot(card,lifecycle=>lifecycle?.dispose());
   const cancel=card=>card.querySelectorAll('[data-lab]').forEach(root=>{if(lifecycles.has(root)){lifecycles.get(root).cancelGesture();render(root);}});
-  window.NOTE_LABS={mount,unmount,cancel,registry,register,ui:{btn,field,select,table,coach,output,office,dialog,paper,esc,number,money,patchRegions}};
+  window.NOTE_LABS={mount,unmount,cancel,registry,register,ui:{btn,field,select,table,coach,output,office,tabs,dialog,paper,esc,number,money,patchRegions}};
 })();

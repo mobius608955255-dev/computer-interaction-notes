@@ -1,28 +1,33 @@
 {
   "schema": 1,
   "shared": [
-    "src/labs/shared/math.js"
+    "src/labs/shared/math.js",
+    "src/labs/shared/syllabus.js"
   ],
   "chapters": {
     "1": {
       "files": [
-        "src/labs/chapter1/foundations.js"
+        "src/labs/chapter1/foundations.js",
+        "src/labs/chapter1/arithmetic.js"
       ],
-      "models": 6,
+      "models": 7,
       "ids": [
         "y2022q4",
         "y2026q41",
         "y2025q2",
         "y2026q3",
         "merged-3",
-        "merged-1"
+        "merged-1",
+        "y2020q31"
       ]
     },
     "2": {
       "files": [
-        "src/labs/chapter2/windows.js"
+        "src/labs/chapter2/windows.js",
+        "src/labs/chapter2/maintenance.js",
+        "src/labs/chapter2/settings.js"
       ],
-      "models": 11,
+      "models": 16,
       "ids": [
         "y2022q34",
         "y2022q44",
@@ -34,14 +39,20 @@
         "y2020q24",
         "y2020q3",
         "y2025q33",
-        "y2020q2"
+        "y2020q2",
+        "y2024q5",
+        "y2026q33",
+        "y2026q35",
+        "y2026q8",
+        "y2026q25"
       ]
     },
     "3": {
       "files": [
-        "src/labs/chapter3/word.js"
+        "src/labs/chapter3/word.js",
+        "src/labs/chapter3/printing.js"
       ],
-      "models": 30,
+      "models": 35,
       "ids": [
         "y2022q10",
         "y2022q54",
@@ -72,14 +83,22 @@
         "merged-6",
         "y2020q61",
         "y2025q56",
-        "merged-9"
+        "merged-9",
+        "syllabus-document-coauthor",
+        "syllabus-office-exchange",
+        "syllabus-word-smartart",
+        "syllabus-word-screen-clipping",
+        "syllabus-word-print-controls"
       ]
     },
     "4": {
       "files": [
-        "src/labs/chapter4/excel.js"
+        "src/labs/chapter4/excel.js",
+        "src/labs/chapter4/workbook.js",
+        "src/labs/chapter4/syllabus.js",
+        "src/labs/chapter4/analysis.js"
       ],
-      "models": 39,
+      "models": 45,
       "ids": [
         "y2022q58",
         "y2022q59",
@@ -120,14 +139,21 @@
         "y2020q48",
         "y2024q10",
         "y2023q57",
-        "y2020q47"
+        "y2020q47",
+        "y2020q8",
+        "y2024q11",
+        "syllabus-sparkline",
+        "syllabus-worksheet-protection",
+        "syllabus-excel-multikey-sort",
+        "syllabus-excel-whatif-table"
       ]
     },
     "5": {
       "files": [
-        "src/labs/chapter5/presentation.js"
+        "src/labs/chapter5/presentation.js",
+        "src/labs/chapter5/editing.js"
       ],
-      "models": 15,
+      "models": 20,
       "ids": [
         "y2022q72",
         "y2021q10",
@@ -143,14 +169,20 @@
         "y2023q13",
         "merged-11",
         "y2020q54",
-        "merged-12"
+        "merged-12",
+        "y2024q46",
+        "y2024q12",
+        "y2026q53",
+        "y2024q26",
+        "syllabus-ppt-output"
       ]
     },
     "6": {
       "files": [
-        "src/labs/chapter6/network.js"
+        "src/labs/chapter6/network.js",
+        "src/labs/chapter6/printing.js"
       ],
-      "models": 12,
+      "models": 14,
       "ids": [
         "y2022q15",
         "y2022q16",
@@ -163,18 +195,24 @@
         "y2026q38",
         "y2020q26",
         "y2026q14",
-        "y2023q47"
+        "y2023q47",
+        "syllabus-mobile-communication",
+        "y2026q13"
       ]
     },
     "7": {
       "files": [
-        "src/labs/chapter7/media.js"
+        "src/labs/chapter7/media.js",
+        "src/labs/chapter7/playback.js"
       ],
-      "models": 3,
+      "models": 6,
       "ids": [
         "y2023q19",
         "y2024q32",
-        "merged-14"
+        "merged-14",
+        "y2020q38",
+        "y2023q18",
+        "syllabus-media-edit-export"
       ]
     },
     "8": {
@@ -190,21 +228,28 @@
       ]
     },
     "9": {
-      "files": [],
-      "models": 0,
-      "ids": []
+      "files": [
+        "src/labs/chapter9/chain.js"
+      ],
+      "models": 2,
+      "ids": [
+        "merged-17",
+        "syllabus-quantum-basics"
+      ]
     },
     "10": {
       "files": [
-        "src/labs/chapter10/database.js"
+        "src/labs/chapter10/database.js",
+        "src/labs/chapter10/update.js"
       ],
-      "models": 5,
+      "models": 6,
       "ids": [
         "y2023q14",
         "y2020q14",
         "merged-21",
         "merged-20",
-        "y2024q36"
+        "y2024q36",
+        "y2023q15"
       ]
     },
     "11": {

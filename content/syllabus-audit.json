@@ -1,0 +1,1250 @@
+{
+  "year": 2026,
+  "source": {
+    "latestVerifiedYear": 2026,
+    "published": "2025-11-29",
+    "publisher": "山东省教育招生考试院",
+    "noticeUrl": "https://www.sdzk.cn/NewsInfo.aspx?NewsID=7081",
+    "pdfUrl": "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf",
+    "computerPrintedPages": [
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "computerPdfPages": [
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "verified2027Statement": "2026考纲附注明确2027计算机考试要求保持Windows 10、Word 2016、Excel 2016、PowerPoint 2016版本不变。",
+    "releaseStatus2027": "本次截至核对日未找到独立2027完整考纲；版本声明不能推导为整套内容不变。",
+    "recommendedSiteCopy": "依2026年官方考试要求整理；官方已明确2027继续采用Windows 10与Office 2016。2027完整要求以省考试院后续公告为准。"
+  },
+  "method": "逐条读取官方考纲PDF计算机部分，并只读检查11章220条笔记的标题、结论、要点、边界。covered表示本小项基本要求有实质正文，不等于已覆盖所有潜在命题；partial表示已有正文但至少一项明确要求不足；gap表示该小项的教学正文缺失。",
+  "baselineMapping": [
+    {
+      "syllabusItem": "一（一）",
+      "syllabusPage": 15,
+      "pdfPage": 16,
+      "scope": "信息、数据与信息社会",
+      "status": "partial",
+      "noteIds": [
+        "y2025q23"
+      ],
+      "assessment": "数据/信息关系已有；信息技术的采集、处理、存储、传递以及信息社会的特征缺系统说明。"
+    },
+    {
+      "syllabusItem": "一（二）",
+      "syllabusPage": 15,
+      "pdfPage": 16,
+      "scope": "计算机发展、应用与国产计算机",
+      "status": "partial",
+      "noteIds": [
+        "y2025q21",
+        "y2026q1",
+        "y2026q18"
+      ],
+      "assessment": "代际与发展方向已有；应用分类、企业发展史和国产计算机具体特点未成体系。"
+    },
+    {
+      "syllabusItem": "一（三）",
+      "syllabusPage": 15,
+      "pdfPage": 16,
+      "scope": "数制转换与数据表示",
+      "status": "covered",
+      "noteIds": [
+        "y2026q41",
+        "y2020q31",
+        "y2025q2",
+        "merged-3",
+        "y2024q32"
+      ],
+      "assessment": "整数小数转换、单位、编码与媒体数据量均有实际正文。"
+    },
+    {
+      "syllabusItem": "一（四）",
+      "syllabusPage": 15,
+      "pdfPage": 16,
+      "scope": "系统组成、工作原理和微机硬件",
+      "status": "covered",
+      "noteIds": [
+        "merged-1",
+        "merged-2",
+        "y2022q4",
+        "y2025q1",
+        "y2026q3",
+        "y2020q22"
+      ],
+      "assessment": "软件/硬件、存储程序、总线与性能指标已有正文。"
+    },
+    {
+      "syllabusItem": "一（五）",
+      "syllabusPage": 15,
+      "pdfPage": 16,
+      "scope": "多媒体概念与常用处理工具",
+      "status": "partial",
+      "noteIds": [
+        "y2026q4",
+        "merged-14",
+        "y2020q27",
+        "y2024q32",
+        "y2024q43"
+      ],
+      "assessment": "概念与容量已有；音频剪辑、图像裁剪导出、视频轨道/转场/导出的完整操作流程缺失。"
+    },
+    {
+      "syllabusItem": "二（一）",
+      "syllabusPage": 15,
+      "pdfPage": 16,
+      "scope": "计算思维概念与应用",
+      "status": "covered",
+      "noteIds": [
+        "y2025q4"
+      ],
+      "assessment": "正文包含分解、抽象、模式识别、算法设计与跨领域应用。"
+    },
+    {
+      "syllabusItem": "二（二）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "利用计算思维解决简单问题",
+      "status": "partial",
+      "noteIds": [
+        "y2025q4",
+        "y2023q69",
+        "y2022q43"
+      ],
+      "assessment": "已有循环追踪；缺从现实问题→输入输出→模型→算法→检验的一例完整问题建模。"
+    },
+    {
+      "syllabusItem": "二（三）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "算法、求解策略与复杂度优化",
+      "status": "partial",
+      "noteIds": [
+        "y2026q6",
+        "y2022q33",
+        "y2024q69"
+      ],
+      "assessment": "算法特征、时空权衡与冒泡已有；枚举/递推/分治等策略和明确的复杂度计数案例仍缺。"
+    },
+    {
+      "syllabusItem": "二（四）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "程序结构、流程表达与面向对象",
+      "status": "covered",
+      "noteIds": [
+        "y2026q5",
+        "y2026q42",
+        "y2021q33",
+        "y2025q24"
+      ],
+      "assessment": "三种控制结构、流程图、伪代码和对象思想已有。"
+    },
+    {
+      "syllabusItem": "三（一）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "操作系统与国产系统",
+      "status": "partial",
+      "noteIds": [
+        "y2026q7",
+        "y2024q6",
+        "y2025q7"
+      ],
+      "assessment": "特征分类已有；麒麟、统信、鸿蒙的特点与应用缺正文。"
+    },
+    {
+      "syllabusItem": "三（二）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Windows桌面、控件、剪贴板与任务管理器",
+      "status": "covered",
+      "noteIds": [
+        "y2020q2",
+        "y2022q34",
+        "y2025q33",
+        "y2026q34",
+        "y2026q25",
+        "y2026q26"
+      ],
+      "assessment": "基本对象和操作场景已覆盖。"
+    },
+    {
+      "syllabusItem": "三（三）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Windows文件与文件夹",
+      "status": "covered",
+      "noteIds": [
+        "merged-4",
+        "y2020q24",
+        "y2020q3",
+        "y2022q75"
+      ],
+      "assessment": "命名属性、复制移动、删除回收与压缩有正文。"
+    },
+    {
+      "syllabusItem": "三（四）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Windows设置及实用工具",
+      "status": "partial",
+      "noteIds": [
+        "y2025q26",
+        "y2026q8",
+        "y2024q5",
+        "y2025q34"
+      ],
+      "assessment": "设置与附件功能边界已有，附件的实际打开、编辑、保存步骤偏少。"
+    },
+    {
+      "syllabusItem": "四（一）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "文档格式、常用软件与WPS",
+      "status": "gap",
+      "noteIds": [],
+      "assessment": "正文没有集中说明docx/doc/rtf/txt/pdf用途差别及WPS特点；仅其他章节零星出现扩展名。"
+    },
+    {
+      "syllabusItem": "四（二）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Word编辑、视图与多窗口",
+      "status": "partial",
+      "noteIds": [
+        "merged-5",
+        "y2024q7",
+        "y2025q48"
+      ],
+      "assessment": "视图、选择、查找替换已有；撤消/恢复、多窗口比较与同步滚动未系统覆盖。"
+    },
+    {
+      "syllabusItem": "四（三）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Word格式化与页面排版",
+      "status": "covered",
+      "noteIds": [
+        "merged-7",
+        "merged-8",
+        "y2020q41",
+        "y2020q61",
+        "y2021q56",
+        "y2020q44"
+      ],
+      "assessment": "字符段落、分页分节分栏、样式模板与页眉页脚已有。"
+    },
+    {
+      "syllabusItem": "四（四）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Word表格",
+      "status": "covered",
+      "noteIds": [
+        "y2024q8",
+        "y2020q60",
+        "y2020q62",
+        "y2020q63"
+      ],
+      "assessment": "已有转换、计算、排序、框线、标题行和居中区别。"
+    },
+    {
+      "syllabusItem": "四（五）",
+      "syllabusPage": 16,
+      "pdfPage": 17,
+      "scope": "Word图文混排",
+      "status": "partial",
+      "noteIds": [
+        "merged-9",
+        "y2025q47",
+        "y2025q56",
+        "y2026q36",
+        "y2023q7"
+      ],
+      "assessment": "图片形状公式已有；Word内SmartArt和屏幕截图创建步骤缺失。"
+    },
+    {
+      "syllabusItem": "四（六）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "Word保护、打印、邮件合并、引用与审阅",
+      "status": "partial",
+      "noteIds": [
+        "y2022q71",
+        "y2025q36",
+        "merged-6",
+        "y2023q56",
+        "y2022q55"
+      ],
+      "assessment": "保护合并引用审阅已有；打印范围、份数、单/双面和批注/修订打印选择缺失。"
+    },
+    {
+      "syllabusItem": "四（七）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "文档协同编辑",
+      "status": "gap",
+      "noteIds": [],
+      "assessment": "全文“协同”只命中GPU/推荐/多媒体，与文档协同无关；共享权限、共同编辑、评论及版本恢复未覆盖。"
+    },
+    {
+      "syllabusItem": "五（一）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "常用电子表格软件",
+      "status": "gap",
+      "noteIds": [],
+      "assessment": "无Excel/WPS表格/在线表格的基本用途与格式兼容说明。"
+    },
+    {
+      "syllabusItem": "五（二）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "工作簿、单元格区域与数据清单",
+      "status": "partial",
+      "noteIds": [
+        "y2020q8",
+        "y2024q59"
+      ],
+      "assessment": "簿表关系已有；数据清单的一行一记录、一列一字段、唯一标题与无中断区域缺完整解释。"
+    },
+    {
+      "syllabusItem": "五（三）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "工作表与行列单元格操作",
+      "status": "partial",
+      "noteIds": [
+        "y2023q11",
+        "y2020q8",
+        "y2022q66",
+        "y2020q48",
+        "y2024q10",
+        "y2022q61"
+      ],
+      "assessment": "移动复制、隐藏、填充、清除批注已有；锁定单元格要配合保护工作表缺专门操作。"
+    },
+    {
+      "syllabusItem": "五（四）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "公式函数及相对绝对三维引用",
+      "status": "covered",
+      "noteIds": [
+        "merged-10",
+        "y2021q9",
+        "y2024q11",
+        "y2026q50",
+        "y2020q57",
+        "y2021q51"
+      ],
+      "assessment": "真正三维引用SUM(一月:三月!B2)已在y2021q9，不能误报缺失。"
+    },
+    {
+      "syllabusItem": "五（五）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "格式化、行列尺寸和条件格式",
+      "status": "covered",
+      "noteIds": [
+        "y2020q7",
+        "y2022q66",
+        "y2020q47",
+        "y2024q59",
+        "y2025q52",
+        "y2020q52"
+      ],
+      "assessment": "显示格式、调整尺寸及条件规则有具体例子。"
+    },
+    {
+      "syllabusItem": "五（六）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "排序筛选、汇总、透视和模拟分析",
+      "status": "partial",
+      "noteIds": [
+        "y2020q9",
+        "y2020q58",
+        "y2023q57",
+        "y2024q67",
+        "y2021q47",
+        "y2021q58"
+      ],
+      "assessment": "已有核心数据处理与单变量求解；一/双变量模拟运算表缺失，排序的多关键字完整操作偏少。"
+    },
+    {
+      "syllabusItem": "五（七）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "图表和迷你图",
+      "status": "partial",
+      "noteIds": [
+        "y2026q52",
+        "y2020q59",
+        "y2021q52"
+      ],
+      "assessment": "图表已有；迷你图全文无命中，数据范围/位置范围、折线柱形盈亏类型未覆盖。"
+    },
+    {
+      "syllabusItem": "五（八）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "Excel页面布局与打印",
+      "status": "covered",
+      "noteIds": [
+        "y2023q10",
+        "y2024q58"
+      ],
+      "assessment": "居中、缩放、打印标题、多个打印区域与冻结边界已有。"
+    },
+    {
+      "syllabusItem": "六（一）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "常用演示文稿软件",
+      "status": "gap",
+      "noteIds": [],
+      "assessment": "缺PowerPoint、WPS演示等工具与交换格式的基本说明。"
+    },
+    {
+      "syllabusItem": "六（二）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "PPT视图与页面外观",
+      "status": "covered",
+      "noteIds": [
+        "y2020q10",
+        "y2020q11",
+        "y2020q53",
+        "y2020q54"
+      ],
+      "assessment": "视图、主题、母版、背景有实际说明。"
+    },
+    {
+      "syllabusItem": "六（三）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "PPT内容与SmartArt编辑",
+      "status": "covered",
+      "noteIds": [
+        "y2025q53",
+        "y2026q53",
+        "y2026q54",
+        "y2024q26",
+        "y2024q12"
+      ],
+      "assessment": "内容载体、SmartArt层级和图片替换已有。"
+    },
+    {
+      "syllabusItem": "六（四）",
+      "syllabusPage": 17,
+      "pdfPage": 18,
+      "scope": "PPT动画、动作、切换与放映",
+      "status": "covered",
+      "noteIds": [
+        "merged-11",
+        "merged-12",
+        "y2023q13",
+        "y2023q35",
+        "y2026q55"
+      ],
+      "assessment": "动作与动画、切换时间、排练和自定义放映已有。"
+    },
+    {
+      "syllabusItem": "六（五）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "PPT打印、共享、导出和选项",
+      "status": "partial",
+      "noteIds": [
+        "y2024q46",
+        "y2023q45",
+        "y2024q65"
+      ],
+      "assessment": "选项和放映文件格式有正文；讲义/备注/大纲打印及PDF/视频导出缺完整正文。"
+    },
+    {
+      "syllabusItem": "七（一）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "数据库概念、模型、关系运算与DBMS",
+      "status": "partial",
+      "noteIds": [
+        "y2020q13",
+        "y2023q14",
+        "merged-20"
+      ],
+      "assessment": "概念与关系代数已有；人工管理→文件系统→数据库发展及常见关系DBMS举例缺。"
+    },
+    {
+      "syllabusItem": "七（二）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "SQL基本语句与数据库设计",
+      "status": "covered",
+      "noteIds": [
+        "merged-21",
+        "y2023q15",
+        "y2024q36",
+        "y2024q47",
+        "y2025q12",
+        "y2025q11"
+      ],
+      "assessment": "查询增删改、表结构与设计阶段已有。"
+    },
+    {
+      "syllabusItem": "七（三）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "四种常见NoSQL模型",
+      "status": "partial",
+      "noteIds": [
+        "y2026q12"
+      ],
+      "assessment": "四类名称和图数据库应用已有；键值/文档/列族的各自结构与适用场景尚欠具体。"
+    },
+    {
+      "syllabusItem": "八（一）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "网络组成、分类、指标与体系结构",
+      "status": "partial",
+      "noteIds": [
+        "y2020q15",
+        "y2020q26",
+        "merged-13",
+        "y2021q15"
+      ],
+      "assessment": "基础模型指标已有；组成、拓扑及发展方向仍可补成概念框架。"
+    },
+    {
+      "syllabusItem": "八（二）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "Internet接入、IP/DNS/WWW/浏览器/邮件",
+      "status": "partial",
+      "noteIds": [
+        "y2025q13",
+        "y2021q28",
+        "y2023q17",
+        "y2023q47",
+        "y2024q16",
+        "y2026q14"
+      ],
+      "assessment": "协议地址与接入已有；WWW请求响应过程与浏览器缓存/书签/历史等基本操作缺。"
+    },
+    {
+      "syllabusItem": "八（三）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "FTP、Telnet与网络应用",
+      "status": "partial",
+      "noteIds": [
+        "y2022q15",
+        "y2023q18"
+      ],
+      "assessment": "协议分工与流媒体已有；即时通信、下载保存等具体应用流程缺。"
+    },
+    {
+      "syllabusItem": "八（四）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "网站网页、Web服务与HTML",
+      "status": "partial",
+      "noteIds": [
+        "y2020q16",
+        "y2020q36",
+        "y2021q37",
+        "y2022q16",
+        "y2026q38"
+      ],
+      "assessment": "基本HTML标记已有；动态与静态网页区别、Web服务器与客户端语言分工缺完整正文。"
+    },
+    {
+      "syllabusItem": "八（五）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "信息检索概念与流程",
+      "status": "covered",
+      "noteIds": [
+        "y2024q17",
+        "y2024q28"
+      ],
+      "assessment": "从需求到结果评价的流程与手工/计算机检索已有。"
+    },
+    {
+      "syllabusItem": "八（六）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "搜索引擎自定义与布尔/截词/位置/限制检索",
+      "status": "covered",
+      "noteIds": [
+        "y2026q28"
+      ],
+      "assessment": "运算规则、分母与平台边界、NEAR与字段限制已有。"
+    },
+    {
+      "syllabusItem": "八（七）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "网页及社交平台信息检索",
+      "status": "partial",
+      "noteIds": [
+        "y2024q17",
+        "y2021q18"
+      ],
+      "assessment": "来源评价与风险判断已有；平台内搜索、时间/账号/话题过滤的实践未成正文。"
+    },
+    {
+      "syllabusItem": "八（八）",
+      "syllabusPage": 18,
+      "pdfPage": 19,
+      "scope": "学术、专利、商标与专用资源检索",
+      "status": "partial",
+      "noteIds": [
+        "y2025q37",
+        "y2025q38"
+      ],
+      "assessment": "全文及专利检索有正文；期刊论文书目信息、商标检索等专用字段流程缺。"
+    },
+    {
+      "syllabusItem": "九（一）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "信息安全基本知识",
+      "status": "covered",
+      "noteIds": [
+        "y2026q16",
+        "y2024q49",
+        "merged-15"
+      ],
+      "assessment": "可用性攻击、保密/完整性与认证边界有正文。"
+    },
+    {
+      "syllabusItem": "九（二）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "密码、防火墙、反病毒与防护",
+      "status": "covered",
+      "noteIds": [
+        "merged-15",
+        "merged-16",
+        "y2020q28"
+      ],
+      "assessment": "核心机制及实际防护有正文。"
+    },
+    {
+      "syllabusItem": "九（三）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "伦理、隐私与虚假信息辨别",
+      "status": "covered",
+      "noteIds": [
+        "y2020q20",
+        "y2026q30",
+        "y2021q18"
+      ],
+      "assessment": "核验、署名、权限与披露有正文。"
+    },
+    {
+      "syllabusItem": "九（四）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "法律法规与职业自律",
+      "status": "partial",
+      "noteIds": [
+        "y2020q20",
+        "y2026q30"
+      ],
+      "assessment": "伦理原则有，明确法律框架及职业责任缺；新增法律细节须再查正式法规现行文本。"
+    },
+    {
+      "syllabusItem": "九（五）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "自主可控与国产安全产品",
+      "status": "partial",
+      "noteIds": [
+        "y2026q18"
+      ],
+      "assessment": "自主可控原则有；国产产品的类型、功能与适用情境缺。"
+    },
+    {
+      "syllabusItem": "十（一）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "新一代信息技术的基本概念",
+      "status": "partial",
+      "noteIds": [
+        "y2026q39",
+        "merged-19",
+        "y2025q18",
+        "merged-17",
+        "y2020q30",
+        "y2024q20"
+      ],
+      "assessment": "云/物联网/大数据/区块链/AI/元宇宙已有；移动通信和量子信息全文缺失。"
+    },
+    {
+      "syllabusItem": "十（二）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "新技术代表技术的特点",
+      "status": "partial",
+      "noteIds": [
+        "y2026q39",
+        "merged-19",
+        "y2025q18",
+        "merged-17",
+        "merged-18"
+      ],
+      "assessment": "已覆盖技术有特点说明；缺量子信息、移动通信特征及边界。"
+    },
+    {
+      "syllabusItem": "十（三）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "新技术应用、社会影响和趋势",
+      "status": "partial",
+      "noteIds": [
+        "merged-19",
+        "y2025q20",
+        "y2026q30",
+        "y2024q20"
+      ],
+      "assessment": "分散应用与风险已有；数字经济/智能制造/智慧城市的完整应用链仍薄弱。"
+    },
+    {
+      "syllabusItem": "十（四）",
+      "syllabusPage": 19,
+      "pdfPage": 20,
+      "scope": "新技术之间的关系",
+      "status": "partial",
+      "noteIds": [
+        "merged-19",
+        "y2026q39",
+        "y2025q40"
+      ],
+      "assessment": "现有related仅提供局部联系；感知→连接→存储计算→分析决策的技术分工缺统整案例。"
+    }
+  ],
+  "mappingCountsBeforeRevision": {
+    "partial": 29,
+    "covered": 20,
+    "gap": 4
+  },
+  "pending": [
+    {
+      "noteId": "y2026q52",
+      "year": 2026,
+      "q": 52,
+      "verified": false,
+      "reason": "Library原题PDF下载502、read pages无可读内容；公开搜索未取得该题题面。站内两组不同单位数据、航天次数等内容不能反过来当作读过原题证据。",
+      "safeUse": "航天发射次数/成功率作为教学示例；次坐标轴机制已有微软说明，原题完整题面仍待核。"
+    },
+    {
+      "noteId": "y2026q54",
+      "year": 2026,
+      "q": 54,
+      "verified": false,
+      "reason": "未实际读到该原题题干、选项或截图，不能据现笔记还原题设。",
+      "safeUse": "可依据Microsoft说明解释缩小文字溢出与调整形状大小适应文字，标教学示例；原题解析待扫描回读。"
+    },
+    {
+      "scope": "2020—2026原卷与答案逐页核对",
+      "verified": false,
+      "reason": "本次原卷扫描未能读取；16条解析已实际读取公开转录题面，并在页面注明与原卷核对状态。"
+    }
+  ],
+  "originalsRead": false,
+  "followupDecisions": [
+    {
+      "syllabusItem": "一（一）",
+      "scope": "信息、数据与信息社会",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "information-society-flow"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "一（二）",
+      "scope": "计算机发展、应用与国产计算机",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "计算机应用分类、企业发展简史及国产计算机的更具体特点"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "一（五）",
+      "scope": "多媒体概念与常用处理工具",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "media-edit-export"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "图像处理的实际裁剪/调整/导出及视频时间线剪接或转场具体步骤"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "二（二）",
+      "scope": "利用计算思维解决简单问题",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "computational-model-example"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "二（三）",
+      "scope": "算法、求解策略与复杂度优化",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "algorithm-strategy"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "三（一）",
+      "scope": "操作系统与国产系统",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "domestic-os-recognition"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "三（四）",
+      "scope": "Windows设置及实用工具",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": true,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "四（一）",
+      "scope": "文档格式、常用软件与WPS",
+      "originalStatus": "gap",
+      "previousRecommendationKeys": [
+        "office-exchange"
+      ],
+      "newRecommendationKeys": [
+        "office-task-selection"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "四（二）",
+      "scope": "Word编辑、视图与多窗口",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "word-undo-windows"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "四（五）",
+      "scope": "Word图文混排",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "word-smartart",
+        "word-screen-clipping"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "四（六）",
+      "scope": "Word保护、打印、邮件合并、引用与审阅",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "word-print-controls"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "四（七）",
+      "scope": "文档协同编辑",
+      "originalStatus": "gap",
+      "previousRecommendationKeys": [
+        "document-coauthor"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "五（一）",
+      "scope": "常用电子表格软件",
+      "originalStatus": "gap",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "office-task-selection"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "五（二）",
+      "scope": "工作簿、单元格区域与数据清单",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "excel-data-list"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "五（三）",
+      "scope": "工作表与行列单元格操作",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "worksheet-protection"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "五（六）",
+      "scope": "排序筛选、汇总、透视和模拟分析",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "excel-multikey-sort",
+        "excel-whatif-table"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "五（七）",
+      "scope": "图表和迷你图",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "sparkline"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "六（一）",
+      "scope": "常用演示文稿软件",
+      "originalStatus": "gap",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "office-task-selection"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "六（五）",
+      "scope": "PPT打印、共享、导出和选项",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "ppt-output"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "七（一）",
+      "scope": "数据库概念、模型、关系运算与DBMS",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "数据管理由人工管理、文件系统到数据库的历史框架和常见DBMS例子"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "七（三）",
+      "scope": "四种常见NoSQL模型",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "nosql-models"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "八（一）",
+      "scope": "网络组成、分类、指标与体系结构",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "网络组成与拓扑的总体框架"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "八（二）",
+      "scope": "Internet接入、IP/DNS/WWW/浏览器/邮件",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "web-static-dynamic",
+        "browser-history-cache"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "八（三）",
+      "scope": "FTP、Telnet与网络应用",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "browser-history-cache"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "即时通信的基本应用"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "八（四）",
+      "scope": "网站网页、Web服务与HTML",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [
+        "web-static-dynamic"
+      ],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "八（七）",
+      "scope": "网页及社交平台信息检索",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "社交平台内字段筛选、学术书目信息、商标专用字段检索"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "八（八）",
+      "scope": "学术、专利、商标与专用资源检索",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "社交平台内字段筛选、学术书目信息、商标专用字段检索"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "九（四）",
+      "scope": "法律法规与职业自律",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "现行法规的学习框架、职业责任和国产安全产品功能实例"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "九（五）",
+      "scope": "自主可控与国产安全产品",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [
+        "现行法规的学习框架、职业责任和国产安全产品功能实例"
+      ],
+      "interpretation": "partial-remains"
+    },
+    {
+      "syllabusItem": "十（一）",
+      "scope": "新一代信息技术的基本概念",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "quantum-basics",
+        "mobile-communication"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "十（二）",
+      "scope": "新技术代表技术的特点",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "quantum-basics",
+        "mobile-communication"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "十（三）",
+      "scope": "新技术应用、社会影响和趋势",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "technology-chain"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    },
+    {
+      "syllabusItem": "十（四）",
+      "scope": "新技术之间的关系",
+      "originalStatus": "partial",
+      "previousRecommendationKeys": [
+        "technology-chain"
+      ],
+      "newRecommendationKeys": [],
+      "alreadyResolvedByPatches": false,
+      "remainingScopes": [],
+      "interpretation": "drafts-close-listed-gap-after-integration"
+    }
+  ],
+  "residualScopes": [
+    {
+      "syllabusItems": [
+        "一（二）"
+      ],
+      "status": "partial-remains",
+      "scope": "计算机应用分类、企业发展简史及国产计算机的更具体特点",
+      "reason": "现文已有代际、方向、自主可控与北斗例子；新增国产系统仅补系统类别，不能据此标全项覆盖。无需拼造企业年份表；可后续按正式教材范围选少量典型应用。"
+    },
+    {
+      "syllabusItems": [
+        "一（五）"
+      ],
+      "status": "partial-remains",
+      "scope": "图像处理的实际裁剪/调整/导出及视频时间线剪接或转场具体步骤",
+      "reason": "本稿补音视频工程与输出链；图片尺寸/裁剪已有Word语境，但并非完整独立图像工具操作。不要把一段导出说明夸成掌握全部处理工具。"
+    },
+    {
+      "syllabusItems": [
+        "七（一）"
+      ],
+      "status": "partial-remains",
+      "scope": "数据管理由人工管理、文件系统到数据库的历史框架和常见DBMS例子",
+      "reason": "原文已有文件系统/数据库共享差异与Access；此轮未额外核验完整发展史，不附未经核对的产品年份或发明首创断言。"
+    },
+    {
+      "syllabusItems": [
+        "八（一）"
+      ],
+      "status": "partial-remains",
+      "scope": "网络组成与拓扑的总体框架",
+      "reason": "协议分层、地址、性能、设备用途已有；星型/总线型/环型等拓扑未见集中比较，适合短表后续补充，不能因协议修正就标全覆盖。"
+    },
+    {
+      "syllabusItems": [
+        "八（三）"
+      ],
+      "status": "partial-remains",
+      "scope": "即时通信的基本应用",
+      "reason": "FTP/邮件/Telnet职责已有，本稿补下载保存边界；即时通信具体功能和流程未单列。"
+    },
+    {
+      "syllabusItems": [
+        "八（七）",
+        "八（八）"
+      ],
+      "status": "partial-remains",
+      "scope": "社交平台内字段筛选、学术书目信息、商标专用字段检索",
+      "reason": "现有需求分析、检索式、全文和专利检索可复用；缺针对这些资源的一例。未读取对应平台的权威操作帮助，本稿不编造界面与字段。"
+    },
+    {
+      "syllabusItems": [
+        "九（四）",
+        "九（五）"
+      ],
+      "status": "partial-remains",
+      "scope": "现行法规的学习框架、职业责任和国产安全产品功能实例",
+      "reason": "伦理、权限、署名和自主可控原则已有；仍不能替代正式法规及具体安全产品。须据现行官方原文或厂商功能页写少量例子，本轮不猜法律条号和产品功能。"
+    }
+  ],
+  "addedSyllabusIds": [
+    "syllabus-document-coauthor",
+    "syllabus-office-exchange",
+    "syllabus-word-smartart",
+    "syllabus-word-screen-clipping",
+    "syllabus-word-print-controls",
+    "syllabus-sparkline",
+    "syllabus-worksheet-protection",
+    "syllabus-excel-multikey-sort",
+    "syllabus-excel-whatif-table",
+    "syllabus-ppt-output",
+    "syllabus-mobile-communication",
+    "syllabus-media-edit-export",
+    "syllabus-quantum-basics"
+  ]
+}

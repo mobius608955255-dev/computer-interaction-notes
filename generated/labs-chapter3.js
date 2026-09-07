@@ -18,6 +18,64 @@ function clusteredChart(labels,series){
 Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
 })();
 
+/* Independent comparisons are labelled as such; they do not imitate saved operations. */
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,table,output,esc}=ui;
+  const comparisons={
+    'syllabus-word-smartart':[
+      ['流程布局','按步骤组织内容',[['登记 → 审核 → 归档','依次进行的三步'],['增加步骤','选相邻形状，再从设计中添加形状']]],
+      ['层次布局','表示上下级关系',[['学校 → 院系 → 班级','不是按时间排列的三个动作'],['修改对象','先分清文字、形状与整幅SmartArt']]],
+      ['截图后的流程','只剩画面快照',[['图片','可以缩放、裁剪'],['结构','不能再按SmartArt节点添加形状']]]
+    ],
+    'syllabus-word-screen-clipping':[
+      ['可用视窗','插入一个完整窗口的快照',[['准备','打开目标窗口，保持未最小化'],['入口','Word → 插入 → 屏幕截图 → 选择窗口缩略图']]],
+      ['屏幕剪辑','只插入拖选的矩形区域',[['选择','拖出需要的对话框或局部内容'],['结果','插入的是图片，源窗口改变不会同步修改它']]]
+    ],
+    'syllabus-media-edit-export':[
+      ['编辑工程','保留剪辑结构供继续修改',[['保存','轨道、片段位置、效果与素材引用'],['迁移','同时核对所需素材，工程文件不一定内含全部媒体']]],
+      ['导出音频','产生可播放的声音文件',[['设置','格式、声道与编码参数'],['检查','预听起止点，多轨按需要混合']]],
+      ['导出视频','产生按时间播放的成片',[['设置','分辨率、帧率、编码与保存位置'],['检查','重新播放，核对起止画面、音画同步']]]
+    ],
+    'syllabus-document-coauthor':[
+      ['共享查看链接','同一份云端文档',[['参与者','可以阅读，不能直接改正文'],['讨论与编辑','需要相应功能及权限；查看权不等于编辑权']]],
+      ['共享编辑链接','同一份云端文档',[['参与者','具备编辑权限时可协同修改'],['收尾','核对同步状态与版本，避免相互覆盖']]],
+      ['发送附件','每位接收者得到独立副本',[['内容位置','改动保存在各自文件中'],['合并','需要另外汇总，不能自动视为共同编辑']]],
+      ['批注与修订','讨论和审阅是不同动作',[['批注','提出意见，不直接替换正文'],['修订','记录文字增删，接受或拒绝决定最终文本']]]
+    ],
+    'syllabus-office-exchange':[
+      ['DOCX','继续编辑结构化文档',[['保留','段落样式、表格、图片等文档结构'],['核对','跨软件打开后检查字体、分页和对象']]],
+      ['TXT','交换纯文本',[['保留','字符与换行'],['不保留','复杂版面、字符富格式和嵌入图片']]],
+      ['PDF','按固定页面阅读或打印',[['重点','检查导出后的页数和版面'],['编辑','PDF可有编辑工具，但不等于保留完整Word源结构']]]
+    ],
+    'syllabus-ppt-output':[
+      ['讲义打印','一张纸包含多张幻灯片',[['适合','课堂分发、并排查看'],['检查','每页张数、顺序、缩放和可读性']]],
+      ['备注页打印','幻灯片与演讲者备注同页',[['适合','演讲者准备讲稿'],['区别','大纲打印侧重标题和文本层级']]],
+      ['导出PDF','固定页面供阅读',[['保留目标','页面外观与可支持的链接'],['动态效果','不会按放映时间执行动画和切换']]],
+      ['导出视频','按时间形成连续画面',[['检查','旁白、对象动画和幻灯片计时'],['编辑源','仍保留PPTX，成片不保留可编辑幻灯片结构']]]
+    ],
+    'syllabus-quantum-basics':[
+      ['经典比特','取0或1',[['表示','以确定的二值状态编码'],['读取','读取该比特的值']]],
+      ['量子基态','计算基测量为对应结果',[['|0⟩','理想计算基测量得到0'],['|1⟩','理想计算基测量得到1']]],
+      ['等幅叠加态','一次测量仍只有一个结果',[['理想重复实验','分别有50%的概率得到0和1'],['不能推出','一次性读取所有可能答案']]],
+      ['纠缠','多个量子系统有不可独立分解的关联',[['利用','量子信息处理中的关联资源'],['边界','不能据此超光速发送可控消息']]]
+    ],
+    'syllabus-mobile-communication':[
+      ['蜂窝上网','手机通过移动通信网络接入',[['终端到网络','蜂窝无线链路'],['体验','受覆盖、终端能力与网络负载影响']]],
+      ['手机热点','笔记本到互联网分为两段',[['笔记本 → 手机','通常是Wi-Fi'],['手机 → 运营商','移动通信网络；不是5 GHz Wi-Fi']]],
+      ['5G应用方向','三个方向关注不同目标',[['增强移动宽带','高数据速率业务'],['大规模机器通信','大量设备连接'],['超可靠低时延通信','对时效与可靠性敏感的业务']]]
+    ]
+  };
+  for(const note of window.NOTES.notes){
+    const cases=comparisons[note.id];if(!cases)continue;
+    register([note.id],note.title,'选择一个独立情境，观察对象、作用与结果的对应关系。',{scenario:0},s=>
+      `<div class="lab-controls">${cases.map((entry,i)=>btn(esc(entry[0]),'scenario',i,`aria-pressed="${s.scenario===i}"`)).join('')}</div>`+
+      table(['观察对象','含义'],cases[s.scenario][2].map(row=>row.map(esc)))+output(esc(cases[s.scenario][1]))+
+      '<p class="core-caption">独立情境对照 · 切换情境用于比较概念。</p>',(s,a,v)=>{if(a==='scenario')s.scenario=Number(v);});
+  }
+})();
+
 /* Chapter 3: word. Maintained source; edit this domain directly. */
 /* Source provenance: note-labs.js:2. Preserve this closure. */
 (() => {
@@ -263,7 +321,7 @@ register(['merged-5'],'标题结构决定导航与目录，视图决定如何查
  else if(s.view==='draft'||s.view==='web')doc=`<div style="padding:${s.view==='web'?'10px':'20px'};background:#fff">${h.map((p,i)=>`${title(p,i)}<p>${esc(p.body)}</p>${s.view==='web'?illustration:''}`).join(s.view==='draft'?'<hr style="border:0;border-top:1px dotted #aaa">':'')}</div>`;
  else doc=(s.cover?paper('<h3>封面</h3><p>计算机学习文档</p>'):'')+h.map((p,i)=>paper(`<header style="font-size:12px">计算机学习文档</header>${title(p,i)}<p>${esc(p.body)}</p>${illustration}<footer>第 ${i+1+(s.cover?1:0)} 页</footer>`)).join('');
  const commands=s.tab==='view'?Object.entries(viewNames).map(([key,name])=>btn(name,'view',key)).join('')+btn(s.nav?'隐藏导航窗格':'导航窗格','nav'):s.tab==='home'?btn('标题 1','style')+btn('正文','plain'):btn('目录 → 自动目录1','tocInsert')+btn('更新目录…','tocOpen','',s.toc?'':'disabled');
- return controls(select('tab','功能区位置',s.tab,[['view','视图'],['home','开始'],['references','引用']]))+office('Word',{view:'视图',home:'开始',references:'引用'}[s.tab],commands,`${navigation}${s.tocPane?dialog('更新目录',select('tocMode','更新方式',s.tocMode,[['pages','只更新页码'],['all','更新整个目录']]),btn('确定','tocApply')+btn('取消','tocCancel')):''}${toc}${doc}`)+(s.view==='outline'?controls(btn('上移标题及正文','move','up',s.selected===0?'disabled':'')+btn('下移标题及正文','move','down',s.selected===h.length-1?'disabled':'')):'')+controls(field('title','学习编辑器：修改所选标题',h[s.selected].title,'text',s.view==='read'?'disabled':'')+btn(s.cover?'移除前置封面':'在文档前增加一页封面','cover'))+output(esc(s.message));
+ return office('Word',{view:'视图',home:'开始',references:'引用'}[s.tab],commands,`${navigation}${s.tocPane?dialog('更新目录',select('tocMode','更新方式',s.tocMode,[['pages','只更新页码'],['all','更新整个目录']]),btn('确定','tocApply')+btn('取消','tocCancel')):''}${toc}${doc}`,ui.tabs('tab',s.tab,[['view','视图'],['home','开始'],['references','引用']]))+(s.view==='outline'?controls(btn('上移标题及正文','move','up',s.selected===0?'disabled':'')+btn('下移标题及正文','move','down',s.selected===h.length-1?'disabled':'')):'')+controls(field('title','学习编辑器：修改所选标题',h[s.selected].title,'text',s.view==='read'?'disabled':'')+btn(s.cover?'移除前置封面':'在文档前增加一页封面','cover'))+output(esc(s.message));
 },(s,a,v)=>{
  if(a==='view'){s.view=v;s.message={print:'显示打印分页与页眉页脚。',outline:'按标题结构显示层级；展开/折叠不删除正文。',read:'简化界面，集中阅读文档。',draft:'草稿不显示图片、页眉页脚，侧重连续文字编辑；切回打印布局可恢复查看。',web:'Web版式仍可编辑并显示图片，适应显示区宽度，不以打印纸张分页。'}[v];}
  if(a==='nav')s.nav=!s.nav;
@@ -584,4 +642,18 @@ register(['merged-9'],'把高、宽和纵横比对应起来','原图高8.5 cm、
     s[k]=s.mode==='stretch'?number(v,.5,20):number(v,k==='height'?.5/ratio:.5,k==='width'?20*ratio:20);
     if(s.mode!=='stretch'){if(k==='width')s.height=s.width/ratio;else s.width=s.height*ratio;}
   });
+})();
+
+/* Print preview calculates a bounded teaching document; no real printer access. */
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,field,select,office,output,esc,number}=ui;
+  const pages=raw=>{const chosen=[];for(const part of raw.split(/[,，]/)){const match=part.trim().match(/^(\d+)(?:-(\d+))?$/);if(!match)return null;const from=Number(match[1]),to=Number(match[2]||from);if(from<1||to>8||from>to)return null;for(let n=from;n<=to;n++)if(!chosen.includes(n))chosen.push(n);}return chosen;};
+  register(['syllabus-word-print-controls'],'先设置打印范围，再核对每份需要几张纸','本例文档共8页；试试2,5-7、两份和双面打印，核对预览。',{
+    range:'2-4',copies:2,duplex:false,markup:true,preview:null,message:'只生成卡片内的打印预览。'
+  },s=>office('Word','文件 · 打印',field('range','页码范围',s.range,'text','maxlength="40"')+field('copies','份数',s.copies,'number','min="1" max="5"')+select('duplex','纸面',String(s.duplex),[['false','单面'],['true','双面（假定打印机支持）']])+select('markup','打印标记',String(s.markup),[['true','包含标记'],['false','不打印标记']])+btn('生成预览','preview'),
+    s.preview?`<div class="lab-mini-deck">${s.preview.pages.map(n=>`<div><b>第${n}页</b><p>正文内容</p>${s.preview.markup?'<small>审阅标记</small>':''}</div>`).join('')}</div><p>每份${s.preview.pages.length}面、${s.preview.sheets}张纸；共${s.preview.copies}份，需要${s.preview.sheets*s.preview.copies}张纸。</p>`:'<p class="lab-empty">设置后生成预览</p>')+output(esc(s.message)),
+    (s,a)=>{if(a!=='preview')return;const chosen=pages(s.range);if(!chosen?.length){s.preview=null;s.message='请输入1—8内的页码或升序范围，如2,5-7。';return;}s.preview={pages:chosen,copies:s.copies,markup:s.markup,sheets:Math.ceil(chosen.length/(s.duplex?2:1))};s.message='预览按当前设置生成。不打印标记只影响输出，并未接受或删除修订。';},
+    (s,k,v)=>{s[k]=k==='copies'?Math.round(number(v,1,5)):['duplex','markup'].includes(k)?v==='true':v;s.preview=null;s.message='设置已改变，请重新生成预览。';});
 })();

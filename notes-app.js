@@ -60,6 +60,7 @@
     const sources = note.sources.map(source => `<span>${source.year} · 第${source.q}题</span>`).join('');
     const references = (window.NOTE_REFERENCES?.[note.id] || []).map(([title,url])=>`<p><a href="${url}" target="_blank" rel="noreferrer">${title} ↗</a></p>`).join('');
     return `<article class="note-item" id="${note.id}">
+      ${note.origin==='syllabus'?'<span class="note-origin">考纲补充</span>':''}
       ${refined ? '' : `<div class="note-topic">${note.topic}</div>`}
       <h3>${note.title}</h3>
       <p class="conclusion" id="${note.id}--conclusion"><b>核心结论：</b>${note.conclusion}</p>
@@ -67,10 +68,16 @@
       ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>`<li id="${note.id}--point-${i}">${note.points[i]}</li>`).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map((point,i) => `<li id="${note.id}--point-${i}">${point}</li>`).join('')}</ul>`}
       <div id="${note.id}--comparison">${note.comparison ? renderComparison(note.comparison) : ''}</div></div>
       <p class="boundary" id="${note.id}--boundary"><b>易错边界：</b>${note.boundary}</p>
-      <details class="note-provenance" id="${note.id}--sources"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
+      ${(note.workedExamples||[]).map((example,i)=>renderWorked(note,example,i)).join('')}
+      <details class="note-provenance" id="${note.id}--sources"><summary>${note.origin==='syllabus'?'考纲与参考资料':`真题来源 · ${note.sources.length}题`}</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
       ${renderSimulation(note)}
       ${renderRelated(note)}
     </article>`;
+  }
+
+  function renderWorked(note,example,index) {
+    const esc=simulation.escapeHTML;
+    return `<section class="note-worked" id="${note.id}--worked-${index}"><h4>真题怎么判断 · ${example.year}年第${example.q}题</h4><p>${esc(example.questionSummary)}</p><ol>${example.reasoning.map(step=>`<li>${esc(step)}</li>`).join('')}</ol><p><b>易误判：</b>${esc(example.pitfall)}</p><p><b>换个条件：</b>${esc(example.transfer)}</p>${example.historicalVersionNote?`<p class="worked-source">${esc(example.historicalVersionNote)}</p>`:''}<p class="worked-source"><a href="${esc(example.sourceURL)}" target="_blank" rel="noreferrer">题面来源 ↗</a> · ${esc(example.sourceStatus)}</p></section>`;
   }
 
   function renderRelated(note) {
@@ -98,7 +105,7 @@
         <span class="simulation-open"><i>打开</i><b>›</b></span>
       </button>
       <div class="simulation-body" id="${bodyId}" hidden>
-        <header class="simulation-brief">${refined ? '' : '<span>动手理解</span>'}<p>${simulation.escapeHTML(demo.task)}</p>${refined ? '<button type="button" data-sim-reset>重置演示</button>' : ''}</header>
+        <header class="simulation-brief">${refined ? '' : '<span>动手理解</span>'}<p>${simulation.escapeHTML(demo.task)}</p>${refined ? '<div class="demo-view-actions"><button type="button" data-sim-expand>展开操作区</button><button type="button" data-sim-reset>重置演示</button></div>' : ''}</header>
         <div class="simulation-mount" data-sim-mount></div>
         ${refined ? '' : '<footer class="simulation-footer"><span>直接操作画面；不计分</span><button type="button" data-sim-reset>↻ 恢复初始状态</button></footer>'}
       </div>
@@ -110,6 +117,7 @@
     if (!card) return;
     const id = card.dataset.simId;
     const demo = simulation.demos[id];
+    const previewLink=event.target.closest('[data-preview-link]');if(previewLink){event.preventDefault();updateFeedback(card,previewLink.hasAttribute('href')?'目标是chapter1.html；本卡片只预览目标，不离开笔记。':'当前没有href，点击不会导航。','链接预览');return;}
     const toggle = event.target.closest('.simulation-toggle');
     if (toggle) {
       const body = $('.simulation-body', card);
@@ -172,7 +180,6 @@
       requestAnimationFrame(() => card.classList.add('query-ran'));
       updateFeedback(card, '查询只返回成绩大于80的姓名和成绩，并按成绩降序显示；原表行序没有改变。', '查询执行完成', 'good');
     }
-    if (event.target.closest('[data-gcd-run]')) runGcd(card);
   });
 
   $('#notes-root').addEventListener('dblclick', event => {
@@ -211,7 +218,7 @@
         $$('[data-demo-window]', card).forEach(win => win.classList.toggle('active', index !== 1 && win === currentWindow));
       }
     }
-    updateFeedback(card, item.result, item.label);
+    updateFeedback(card, item.result, item.stage || item.label);
     applyChoiceEffect(card, id, index);
   }
 
@@ -623,9 +630,6 @@
       $('[data-file-attr]', card).textContent = event.target.checked ? 'R' : '—';
       updateFeedback(card, event.target.checked ? '只读属性主要限制内容修改，不等于绝对禁止删除。' : '只读属性已取消。', '属性已更新');
     }
-    if (id === 'y2026q47' && event.target.matches('[data-cjk-toggle],[data-num-toggle]')) updateCjk(card);
-    if (id === 'y2020q56' && event.target.matches('[data-mid-text],[data-mid-start],[data-mid-count]')) updateMid(card);
-    if (id === 'y2026q42' && event.target.matches('[data-pseudo-a],[data-pseudo-b]')) updatePseudo(card);
   });
 
   function updateFeedback(card, text, label = '操作反馈', tone = '') {
@@ -647,122 +651,18 @@
     const text = (selector, value) => { const node = $(selector, card); if (node) node.textContent = value; };
     const html = (selector, value) => { const node = $(selector, card); if (node) node.innerHTML = value; };
     switch (id) {
-      case 'y2026q18': text('[data-sim-gauge]', ['62%','48%','35%','54%'][index]); break;
-      case 'y2026q8': text('[data-device-status]', [
-        '此设备无法启动（代码 10）。先核对设备状态，再检查或更新匹配的驱动程序。',
-        '设备当前被禁用。确认用途与安全后，可选择“启用设备”。',
-        '列表中没有发现设备。先检查连接，再执行“扫描检测硬件改动”。'
-      ][index]); break;
-      case 'y2026q34': {
-        const state = ['进程已结束','已定位 WINWORD.EXE','启动项已禁用','请转到“应用和功能”','没有远程地址入口'][index];
-        text('.machine-chip strong', state);
-        break;
-      }
-      case 'y2026q3':
-        if (index === 0) { html('[data-ram-bits]','······<br>内容已丢失<br>等待重新装入'); text('[data-ram-led]','○ 断电'); }
-        else { html('[data-ram-bits]','101101<br>重新装入程序<br>新的临时数据'); text('[data-ram-led]','● 通电'); }
-        break;
+      case 'merged-18': { const values=[['有','有','有'],['通常无头部跟踪','有','有'],['设备位置跟踪','可交互','有'],['无','无','预先录制']][index]; ['track','hand','live'].forEach((key,i)=>text('[data-vr-'+key+']',values[i])); break; }
+      case 'y2020q36': { const attribute=$('[data-anchor-attribute]',card);if(attribute)attribute.hidden=index===3;const link=$('[data-preview-link]',card); if(index===3)link?.removeAttribute('href');else link?.setAttribute('href','chapter1.html');text('.link-preview > span',index===3?'没有href：不执行链接导航':'目标：chapter1.html'); break; }
+      case 'y2026q18': text('[data-sim-gauge]', ['能理解与修改','权利与授权','替代与供应','维护与演进'][index]); break;
       case 'y2026q9':
         text('[data-read-policy]', index === 1 || index === 2 ? '已启用' : '未配置');
         text('[data-write-policy]', index === 0 || index === 2 ? '已启用' : '未配置');
         text('[data-usb-read]', index === 1 || index === 2 ? '读取被拒绝' : '可读取');
         text('[data-usb-write]', index === 0 || index === 2 ? '写入被拒绝' : '可写入');
         break;
-      case 'y2026q33':
-        if (index === 0) { const p=$('[data-restore-points]',card); if(p?.lastElementChild)p.lastElementChild.remove(); }
-        if (index === 1) $('[data-disk-meter]',card)?.style.setProperty('width','34%');
-        if (index === 2) { html('[data-restore-points]','<small>没有可用还原点</small>'); text('[data-protection]','关闭'); $('[data-disk-meter]',card)?.style.setProperty('width','0'); }
-        break;
-      case 'y2026q47': if (index === 0) { $$('[data-cjk-toggle],[data-num-toggle]',card).forEach(x=>x.checked=false); updateCjk(card); } break;
-      case 'y2020q8': {
-        const tabs = $('[data-sheet-tabs]', card);
-        if (!tabs) break;
-        if (index === 0) tabs.innerHTML = '<button class="active">Sheet1</button><button aria-label="新建工作表">＋</button>';
-        if (index === 1) tabs.innerHTML = '<button class="active">Sheet1</button><button aria-label="新建工作表">＋</button>';
-        if (index === 2) tabs.innerHTML = '<button>Sheet2</button><button class="active">Sheet3</button><button aria-label="新建工作表">＋</button>';
-        break;
-      }
-      case 'y2020q7': {
-        if (index !== 0) {
-          $('[data-column-grid]',card)?.style.removeProperty('grid-template-columns');
-          $('[data-column-b]',card)?.style.removeProperty('width');
-          $('[data-hash-cell]',card)?.style.removeProperty('width');
-        }
-        if(index===0) text('[data-hash-cell]','2026/9/2 10:28'); else if(index===1) text('[data-hash-cell]','2026/9/2'); else text('[data-hash-cell]','');
-        break;
-      }
-      case 'merged-9': {
-        const picture = $('[data-picture]', card), art = $('.photo-art', card);
-        if (!picture) break;
-        const sizes = [[210,148.2],[210,175],[210,175]][index];
-        picture.style.width = `${sizes[0]}px`; picture.style.height = `${sizes[1]}px`;
-        if (art) { art.style.clipPath = index === 2 ? 'inset(0 0 0 0)' : ''; art.style.transform = index === 2 ? 'scale(1.18)' : ''; }
-        const lock = $('[data-aspect-lock]', card); if (lock) lock.checked = index !== 1;
-        updatePictureReadout(card,sizes[0],sizes[1]);
-        break;
-      }
-      case 'y2020q48': if(index===2) $$('[data-fill-row]',card).forEach((cell,i)=>cell.textContent=String(20260001+i)); break;
-      case 'y2026q49':
-        if(index===1||index===2) { text('[data-sum-result]','=SUM(A1:A3) → 329'); $$('.text-cell',card).forEach(x=>x.classList.add('converted')); }
-        if(index===3) text('[data-sum-result]','=AVERAGEIF(B2:B6,"男",C2:C6) → 86');
-        break;
-      case 'y2020q56': {
-        const presets=[[3,4],[2,4],[3,2],[1,4]][index];
-        if(index<3){ $('[data-mid-start]',card).value=presets[0]; $('[data-mid-count]',card).value=presets[1]; updateMid(card); }
-        else { text('[data-mid-result]','SD20'); highlightChars(card,0,4); }
-        break;
-      }
-      case 'y2020q57': text('[data-lookup-result]', index===0 ? '356' : index===1 ? '#N/A' : '可能误匹配'); break;
-      case 'y2026q50': {
-        const matches=[[2],[0,1,2],[0,1]][index] || [];
-        $$('[data-sumif-row]',card).forEach((row,i)=>row.classList.toggle('matched',matches.includes(i)));
-        text('[data-sumif-total]',[5,25,20][index]); break;
-      }
-      case 'y2020q12': {
-        const thumb = $('.thumb-3', card);
-        const stamp = $('[data-hidden-stamp]', card);
-        if (index === 0) { thumb?.classList.add('is-hidden'); if(stamp)stamp.textContent='隐藏'; }
-        if (index === 1) { thumb?.classList.remove('is-hidden'); if(stamp)stamp.textContent='正常放映'; }
-        if (index === 2) { thumb?.remove(); if(stamp)stamp.textContent='已删除'; navigateSlide(card,'y2020q12',2); }
-        break;
-      }
-      case 'y2026q54': {
-        if (index === 2) {
-          const generated = $('[data-generated-slide]', card);
-          if (generated) generated.hidden = false;
-          navigateSlide(card,'y2026q54',2);
-        }
-        break;
-      }
-      case 'merged-11': {
-        if (index === 2) {
-          text('[data-slide-number]','08');
-          text('[data-slide-heading]','课程总结与练习');
-          text('[data-slide-subtitle]','动作按钮已导航到指定的非相邻幻灯片。');
-          text('[data-motion-page]','8 / 8');
-          $('.ppt-main-slide', card)?.classList.add('page-changing');
-        }
-        break;
-      }
-      case 'y2020q26':
-        text('[data-network-value]', ['100 Mb/s','72 Mb/s','61 Mb/s','28 ms'][index]);
-        text('[data-network-label]', ['理论管道上限','当前接口速率','有效数据吞吐','一次响应等待'][index]);
-        break;
-      case 'y2026q14': {
-        const codes = ['HTTPS 握手与加密通道','Host: example.com','GET /Python/page.html','GET /Python/page.html?q=1','浏览器本地滚动到 #top'];
-        const notes = ['决定怎样通信','决定访问哪台服务器','决定请求哪个资源','把查询参数发送给服务器','#top 通常不会随HTTP请求发送'];
-        text('.server-envelope code', codes[index]); text('.server-envelope small', notes[index]);
-        break;
-      }
-      case 'y2026q28': {
-        const values = [['95%','58%'],['48%','92%'],['38%','96%'],['66%','86%']][index];
-        text('[data-recall]', values[0]); text('[data-precision]', values[1]);
-        break;
-      }
       case 'y2026q39': if(index===0){text('[data-vcpu]','8');text('[data-vram]','16 GB');text('[data-bill]','¥1.28/h');} else if(index===4){text('[data-instance-state]','已释放');text('[data-vcpu]','—');text('[data-vram]','—');text('[data-bill]','¥0.00/h');const resize=$('[data-sim-choice="0"]',card);if(resize)resize.disabled=true;} break;
       case 'y2026q16':
-        text('[data-cia-a]',index===0?'0%':'100%'); text('[data-cia-c]',index===1?'0%':'100%'); text('[data-cia-i]',index===2?'0%':'100%'); break;
-      case 'merged-16': text('[data-firewall-log]', index===0?'ALLOW 203.0.113.27:3389 — 规则过宽':index===1?'ALLOW 10.20.8.16:3389 — 管理网段匹配':index===2?'BLOCK 203.0.113.27:3389 — 已记录':'防火墙在线，但漏洞仍未修补'); break;
+        text('[data-cia-a]',index===0?'受损':'未直接受损'); text('[data-cia-c]',index===1?'受损':'未直接受损'); text('[data-cia-i]',index===2?'受损':'未直接受损'); html('[data-service-screen]',index===0?'<b>服务不可用</b><span>授权用户无法访问</span>':index===1?'<b>发生未授权读取</b><span>机密信息已泄露</span>':'<b>记录被篡改</b><span>数据可信性受损</span>'); break;
       case 'y2026q30': {
         const done = $$('.publish-gate.active',card).length;
         if(index<3){ const gate=$(`.gate-${index} [data-gate-status]`,card); if(gate)gate.textContent='已检查'; text('[data-publication-status]',done===3?'检查完成：可以审慎发布':`发布锁定：还有 ${3-done} 项未完成`); }
@@ -773,27 +673,9 @@
         }
         break;
       }
-      case 'y2026q42': {
-        const programs = [
-          'INPUT a, b\nIF a > b THEN\n  OUTPUT a\nELSE\n  OUTPUT b\nEND IF',
-          '比较一下\n然后输出结果',
-          'if (a > b) {\n  printf(a);\n} else {\n  printf(b);\n}'
-        ];
-        text('[data-pseudo-code]', programs[index]);
-        if (index === 1) text('[data-pseudo-output]', '?'); else updatePseudo(card);
-        break;
-      }
-      case 'y2026q45': text('[data-real-tops]', ['82 TOPS','31 TOPS','24 TOPS','指标不可直接混比'][index]); break;
-      case 'merged-20': renderRelation(card,index); break;
+      case 'y2026q45': text('[data-real-tops]', ['并行任务吞吐可能提高','带宽不足：等待数据','软件适配不足：单元空闲','不同数值精度不能直接混比'][index]); break;
       case 'merged-4':
         text('[data-v26-file-name]', index === 0 ? 'report' : 'report.docx');
-        break;
-      case 'y2023q18':
-        text('[data-buffer-label]', ['缓冲 8.4 秒','缓冲 2.1 秒','缓冲 0 秒 · 卡顿','HTTPS 传输 · 缓冲 8.4 秒'][index]);
-        break;
-      case 'y2023q35':
-        text('[data-media-page]', ['当前页','切换到下一页','第 2 页继续播放','重新开始'][index]);
-        text('[data-media-playing]', index === 1 ? '视频随页面离开而停止' : '音频：持续播放');
         break;
       case 'y2023q45': {
         const states = [
@@ -808,25 +690,9 @@
       case 'y2024q41':
         text('[data-op-readout]', ['ADD → 算术加法','R1 → 寄存器操作数','2048 → 存储器地址','字段职责混淆：无法正确译码'][index]);
         break;
-      case 'y2024q10':
-        text('[data-clear-formula]', index === 0 || index === 2 ? '' : index === 3 ? '下一行上移到A2' : '128');
-        break;
-      case 'y2024q11': {
-        const values = [['2*3','2*3 · 文本'],['=2*3','6'],['=2×3','#NAME?'],["'=2*3",'=2*3 · 文本']][index];
-        text('[data-parse-input]', values[0]); text('[data-parse-result]', values[1]);
-        break;
-      }
       case 'y2024q49':
         text('[data-server-load]', ['200,000 req/s · 过载','异常流量已告警','恶意流量被清洗','等待日志证据'][index]);
         break;
-      case 'y2024q36':
-        text('[data-sql-command]', ["DELETE FROM student WHERE 班级='一班';",'DELETE FROM student;','DROP TABLE student;',"SELECT * FROM student WHERE 班级='一班';"][index]);
-        break;
-      case 'y2026q41': {
-        const values = [['10001₂','17₁₀'],['11.11₂','3.C₁₆'],['0.1₁₀','0.000110011…₂'],['F₁₆','1111₂']][index];
-        text('[data-radix-source]', values[0]); text('[data-radix-result]', values[1]);
-        break;
-      }
       default: break;
     }
   }
@@ -834,40 +700,8 @@
   function applyStepEffect(card, id, stepIndex, complete) {
     const text = (selector, value) => { const node = $(selector, card); if (node) node.textContent = value; };
     switch (id) {
-      case 'y2020q31': {
-        const answers=['· · · ·','· · · 0','· · 1 0','0 0 1 0'];
-        text('[data-binary-column]', ['数位已右对齐','最低位：1−1','中间位连续借位','十进制校验：9−7=2'][stepIndex]);
-        text('[data-binary-answer]',answers[stepIndex]); if(stepIndex===2) text('[data-borrow-row]','¹ ¹ ¹'); break;
-      }
-      case 'merged-1': {
-        const packet = $('[data-packet]', card); if (packet) packet.style.left = ['3%','42%','62%','96%'][stepIndex];
-        break;
-      }
-      case 'y2026q25': {
-        if (stepIndex === 3) {
-          const checkbox = $('[data-icon-checkbox]', card);
-          if (checkbox) checkbox.checked = true;
-        }
-        break;
-      }
-      case 'y2020q41': if(stepIndex===3)$('[data-sequence-input="4"]',card)?.focus(); break;
-      case 'y2020q61': if(stepIndex===0) text('[data-break-before]','✓ 前分节符'); if(stepIndex===1) text('[data-break-after]','✓ 后分节符'); break;
       case 'y2020q60': if(complete) $('[data-border-table]',card)?.classList.add('all-borders-applied'); break;
       case 'y2020q62': if(complete) $('[data-repeated-header]',card)?.classList.add('visible'); break;
-      case 'y2026q36': if(stepIndex===0) $('.photo-object small',card).textContent='四周型环绕'; if(complete)$('[data-group-boundary]',card)?.classList.add('visible'); break;
-      case 'merged-6': if(stepIndex===1) text('[data-caption]','图 1 模型准确率'); if(stepIndex===3) text('[data-cross-ref]','图 1'); break;
-      case 'y2020q52': if(complete) $$('[data-score]',card).forEach(x=>x.classList.toggle('low',Number(x.textContent)<60)); break;
-      case 'y2020q49': if(stepIndex===2){const box=$('[data-dialog-stage="duplicates"] input[data-sim-step]',card);if(box)box.checked=true;} if(complete) $('.duplicate-row',card)?.remove(); break;
-      case 'y2020q58': if(stepIndex===0)$('[data-subtotal-table]',card)?.classList.add('sorted'); if(stepIndex===2){const box=$('[data-dialog-stage="subtotal"] input[data-sim-step]',card);if(box)box.checked=true;} if(complete)$('[data-subtotal-table]',card)?.classList.add('subtotaled'); break;
-      case 'y2026q52': if(stepIndex===3)$('[data-secondary-axis]',card)?.classList.add('active'); break;
-      case 'y2020q54': if(stepIndex===2)$('[data-background-slide]',card)?.classList.add('image-filled'); break;
-      case 'merged-12': if(complete)$('[data-ppt-chart]',card)?.classList.add('play-series'); break;
-      case 'y2026q55':
-        if (complete) {
-          $('[data-sim-step="2"]',card)?.remove();
-          text('[data-scheme-count]','3 张幻灯片');
-        }
-        break;
       case 'y2026q15': if(stepIndex===0)text('[data-device-count]','0 · 热点已开'); if(stepIndex===1)text('[data-device-count]','1'); break;
       case 'merged-19': if(complete)$('[data-alert-screen]',card)?.classList.add('alerting'); break;
       default: break;
@@ -889,33 +723,7 @@
     });
   }
 
-  function initialiseSpecialScene(card, id) { if(card.querySelector('[data-lab]')){window.NOTE_LABS?.mount(card);return;} if (id === 'y2020q56') updateMid(card); if (id === 'y2026q42') updatePseudo(card); window.NOTE_LABS?.mount(card); }
-  function updateCjk(card) {
-    const compact = !$$('[data-cjk-toggle],[data-num-toggle]',card).some(x=>x.checked);
-    card.classList.toggle('cjk-compact',compact); $('[data-line-count]',card).textContent=compact?'2':'3';
-    updateFeedback(card,compact?'自动间距已取消；同一段文字现在占2行。':'自动间距开启；中文与西文/数字之间保留排版间距。','实时排版');
-  }
-  function updateMid(card) {
-    const source=$('[data-mid-text]',card)?.value||'',start=Math.max(1,Number($('[data-mid-start]',card)?.value)||1),count=Math.max(0,Number($('[data-mid-count]',card)?.value)||0);
-    $('[data-mid-result]',card).textContent=source.substr(start-1,count); highlightChars(card,start-1,count);
-  }
-  function highlightChars(card,start,count) { $$('[data-char-index]',card).forEach((char,index)=>char.classList.toggle('picked',index>=start&&index<start+count)); }
-  function updatePseudo(card) { const a=Number($('[data-pseudo-a]',card)?.value)||0,b=Number($('[data-pseudo-b]',card)?.value)||0; $('[data-pseudo-output]',card).textContent=Math.max(a,b); }
-  function runGcd(card) {
-    let a=Math.abs(parseInt($('[data-gcd-a]',card)?.value,10)||0),b=Math.abs(parseInt($('[data-gcd-b]',card)?.value,10)||0),rows=[];
-    if(!a&&!b)return; while(b){const r=a%b;rows.push(`${a} ÷ ${b} → 余 ${r}`);a=b;b=r;}
-    $('[data-division-tape]',card).innerHTML=rows.map(row=>`<span>${row}</span>`).join(''); $('[data-gcd-result]',card).textContent=a;
-    updateFeedback(card,`每一步可执行，并在${rows.length}步后余数变为0。`,`最大公约数 = ${a}`);
-  }
-  function renderRelation(card,index) {
-    const results=[
-      '<table><tr><th>学号</th><th>姓名</th><th>性别</th></tr><tr><td>01</td><td>王宁</td><td>女</td></tr><tr><td>03</td><td>张琳</td><td>女</td></tr></table>',
-      '<table><tr><th>姓名</th></tr><tr><td>王宁</td></tr><tr><td>李悦</td></tr><tr><td>张琳</td></tr></table>',
-      '<table><tr><th>学号</th><th>姓名</th><th>成绩</th></tr><tr><td>01</td><td>王宁</td><td>92</td></tr><tr><td>02</td><td>李悦</td><td>86</td></tr><tr><td>03</td><td>张琳</td><td>88</td></tr></table>',
-      '<table><tr><th>姓名</th><th>成绩</th></tr><tr><td>王宁</td><td>92</td></tr><tr><td>张琳</td><td>88</td></tr></table>'
-    ];
-    $('[data-relation-result]',card).innerHTML=`<b>结果关系</b>${results[index]}`;
-  }
+  function initialiseSpecialScene(card) { window.NOTE_LABS?.mount(card); }
 
   function revealNote(hash, focus=false){
     let id;try{id=decodeURIComponent(hash.slice(1));}catch{return;}

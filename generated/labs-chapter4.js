@@ -18,6 +18,64 @@ function clusteredChart(labels,series){
 Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
 })();
 
+/* Independent comparisons are labelled as such; they do not imitate saved operations. */
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,table,output,esc}=ui;
+  const comparisons={
+    'syllabus-word-smartart':[
+      ['流程布局','按步骤组织内容',[['登记 → 审核 → 归档','依次进行的三步'],['增加步骤','选相邻形状，再从设计中添加形状']]],
+      ['层次布局','表示上下级关系',[['学校 → 院系 → 班级','不是按时间排列的三个动作'],['修改对象','先分清文字、形状与整幅SmartArt']]],
+      ['截图后的流程','只剩画面快照',[['图片','可以缩放、裁剪'],['结构','不能再按SmartArt节点添加形状']]]
+    ],
+    'syllabus-word-screen-clipping':[
+      ['可用视窗','插入一个完整窗口的快照',[['准备','打开目标窗口，保持未最小化'],['入口','Word → 插入 → 屏幕截图 → 选择窗口缩略图']]],
+      ['屏幕剪辑','只插入拖选的矩形区域',[['选择','拖出需要的对话框或局部内容'],['结果','插入的是图片，源窗口改变不会同步修改它']]]
+    ],
+    'syllabus-media-edit-export':[
+      ['编辑工程','保留剪辑结构供继续修改',[['保存','轨道、片段位置、效果与素材引用'],['迁移','同时核对所需素材，工程文件不一定内含全部媒体']]],
+      ['导出音频','产生可播放的声音文件',[['设置','格式、声道与编码参数'],['检查','预听起止点，多轨按需要混合']]],
+      ['导出视频','产生按时间播放的成片',[['设置','分辨率、帧率、编码与保存位置'],['检查','重新播放，核对起止画面、音画同步']]]
+    ],
+    'syllabus-document-coauthor':[
+      ['共享查看链接','同一份云端文档',[['参与者','可以阅读，不能直接改正文'],['讨论与编辑','需要相应功能及权限；查看权不等于编辑权']]],
+      ['共享编辑链接','同一份云端文档',[['参与者','具备编辑权限时可协同修改'],['收尾','核对同步状态与版本，避免相互覆盖']]],
+      ['发送附件','每位接收者得到独立副本',[['内容位置','改动保存在各自文件中'],['合并','需要另外汇总，不能自动视为共同编辑']]],
+      ['批注与修订','讨论和审阅是不同动作',[['批注','提出意见，不直接替换正文'],['修订','记录文字增删，接受或拒绝决定最终文本']]]
+    ],
+    'syllabus-office-exchange':[
+      ['DOCX','继续编辑结构化文档',[['保留','段落样式、表格、图片等文档结构'],['核对','跨软件打开后检查字体、分页和对象']]],
+      ['TXT','交换纯文本',[['保留','字符与换行'],['不保留','复杂版面、字符富格式和嵌入图片']]],
+      ['PDF','按固定页面阅读或打印',[['重点','检查导出后的页数和版面'],['编辑','PDF可有编辑工具，但不等于保留完整Word源结构']]]
+    ],
+    'syllabus-ppt-output':[
+      ['讲义打印','一张纸包含多张幻灯片',[['适合','课堂分发、并排查看'],['检查','每页张数、顺序、缩放和可读性']]],
+      ['备注页打印','幻灯片与演讲者备注同页',[['适合','演讲者准备讲稿'],['区别','大纲打印侧重标题和文本层级']]],
+      ['导出PDF','固定页面供阅读',[['保留目标','页面外观与可支持的链接'],['动态效果','不会按放映时间执行动画和切换']]],
+      ['导出视频','按时间形成连续画面',[['检查','旁白、对象动画和幻灯片计时'],['编辑源','仍保留PPTX，成片不保留可编辑幻灯片结构']]]
+    ],
+    'syllabus-quantum-basics':[
+      ['经典比特','取0或1',[['表示','以确定的二值状态编码'],['读取','读取该比特的值']]],
+      ['量子基态','计算基测量为对应结果',[['|0⟩','理想计算基测量得到0'],['|1⟩','理想计算基测量得到1']]],
+      ['等幅叠加态','一次测量仍只有一个结果',[['理想重复实验','分别有50%的概率得到0和1'],['不能推出','一次性读取所有可能答案']]],
+      ['纠缠','多个量子系统有不可独立分解的关联',[['利用','量子信息处理中的关联资源'],['边界','不能据此超光速发送可控消息']]]
+    ],
+    'syllabus-mobile-communication':[
+      ['蜂窝上网','手机通过移动通信网络接入',[['终端到网络','蜂窝无线链路'],['体验','受覆盖、终端能力与网络负载影响']]],
+      ['手机热点','笔记本到互联网分为两段',[['笔记本 → 手机','通常是Wi-Fi'],['手机 → 运营商','移动通信网络；不是5 GHz Wi-Fi']]],
+      ['5G应用方向','三个方向关注不同目标',[['增强移动宽带','高数据速率业务'],['大规模机器通信','大量设备连接'],['超可靠低时延通信','对时效与可靠性敏感的业务']]]
+    ]
+  };
+  for(const note of window.NOTES.notes){
+    const cases=comparisons[note.id];if(!cases)continue;
+    register([note.id],note.title,'选择一个独立情境，观察对象、作用与结果的对应关系。',{scenario:0},s=>
+      `<div class="lab-controls">${cases.map((entry,i)=>btn(esc(entry[0]),'scenario',i,`aria-pressed="${s.scenario===i}"`)).join('')}</div>`+
+      table(['观察对象','含义'],cases[s.scenario][2].map(row=>row.map(esc)))+output(esc(cases[s.scenario][1]))+
+      '<p class="core-caption">独立情境对照 · 切换情境用于比较概念。</p>',(s,a,v)=>{if(a==='scenario')s.scenario=Number(v);});
+  }
+})();
+
 /* Chapter 4: excel. Maintained source; edit this domain directly. */
 /* Source provenance: note-labs.js:2. Preserve this closure. */
 (() => {
@@ -54,7 +112,7 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
     const rnames=s.zones.row.length?[...new Set(rows.map(r=>groupKey(r,'row')))]:['总计'];
     const cnames=s.zones.column.length?[...new Set(rows.map(r=>groupKey(r,'column')))]:['总计'];
     const valueColumns=cnames.flatMap(name=>s.zones.value.map(metric=>({name,metric})));
-    const aggregate=(set,metric)=>!set.length?'—':s.aggregate==='count'?set.length:money(set.reduce((sum,r)=>sum+Number(r[index(metric)]),0)/(s.aggregate==='average'?set.length:1));
+    const aggregate=(set,metric)=>{const values=set.map(r=>r[index(metric)]),nums=values.filter(v=>typeof v==='number'&&Number.isFinite(v));if(!set.length)return '—';if(s.aggregate==='count')return values.filter(v=>v!==''&&v!=null).length;const sum=nums.reduce((a,b)=>a+b,0);return s.aggregate==='average'?(nums.length?money(sum/nums.length):'#DIV/0!'):money(sum);};
     const columnsFor=set=>valueColumns.map(({name,metric})=>aggregate(set.filter(r=>!s.zones.column.length||groupKey(r,'column')===name),metric));
     const resultRows=[];
     if(s.zones.row.length>1){
@@ -65,12 +123,12 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
       }
       resultRows.push(['<b>总计</b>',...columnsFor(rows)]);
     }else for(const rn of rnames)resultRows.push([esc(rn),...columnsFor(rows.filter(r=>!s.zones.row.length||groupKey(r,'row')===rn))]);
-    const result=s.zones.value.length?table(['行标签',...valueColumns.map(({name,metric})=>esc(name)+(s.zones.value.length>1?' · '+pivotLabel(metric):''))],resultRows):'<p class="lab-empty">把数值字段放入值区域。</p>';
+    const result=s.zones.value.length?table(['行标签',...valueColumns.map(({name,metric})=>esc(name)+(s.zones.value.length>1?' · '+pivotLabel(metric):''))],resultRows):'<p class="lab-empty">把字段放入值区域；数值可求和，文字可计数。</p>';
     const filter=s.zones.filter.includes(fields[1])?select('filter',esc(s.filterLabel||fields[1]+'筛选'),s.filter,[['全部','全部'],...[...new Set(data.map(r=>r[1]))].map(v=>[v,v])])+field('filterLabel','筛选字段显示名称',s.filterLabel||fields[1]+'筛选'):'';
     return `<div class="lab-controls">${select('scenario','源数据场景',s.scenario,[['sales','产品销量'],['grades','班级成绩：多个值字段']])}</div>`+
       office('Excel','数据透视表分析',select('aggregate','值汇总方式',s.aggregate,[['sum','求和'],['average','平均值'],['count','计数']])+(grades?btn(s.monthly?'取消日期组合':'日期 → 按年、月组合','group'):''),
         `<div class="lab-pivot-layout"><div>${filter}${result}</div><aside class="lab-fields"><b>数据透视表字段</b><div class="lab-field-bank">${fields.map(f=>`<button data-lab-drag="field" data-key="${f}" data-lab-act="pick" data-value="${f}" aria-pressed="${s.picked===f}">${pivotLabel(f)} <span>⠿</span></button>`).join('')}</div><div class="lab-drop-zones">${zones.map(([key,label])=>`<section data-lab-drop="${key}"><b>${label}</b>${s.zones[key].map(f=>btn(`${pivotLabel(f)} ×`,'remove',key+':'+f)).join('')||'<small>拖到这里</small>'}</section>`).join('')}</div></aside></div>`)+
-      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个数值字段可并排汇总；本例统一切换汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),data)}</details>`+output(s.message);
+      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个字段可并排汇总；文字字段默认计数。本例统一切换全部值字段的汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),data)}</details>`+output(s.message);
   },(s,a,v)=>{
     if(a==='pick')s.picked=v;
     if(a==='remove'){const [zone,f]=v.split(':');s.zones[zone]=s.zones[zone].filter(x=>x!==f);if(zone==='filter')s.filter='全部';}
@@ -83,7 +141,7 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
 function placeField(s,field,zone){
     const fields=pivotFields(s),metrics=fields.slice(3),filter=fields[1];
     if(!fields.includes(field)||!Object.hasOwn(s.zones,zone))return;
-    if(zone==='value'&&!metrics.includes(field)){s.message='值区域需要数值字段；文字字段用于分类或筛选。';return;}
+    if(zone==='value'&&!metrics.includes(field))s.aggregate='count';
     for(const key of Object.keys(s.zones))s.zones[key]=s.zones[key].filter(f=>f!==field);
     s.zones[zone].push(field);if(!s.zones.filter.includes(filter))s.filter='全部';
     s.message=`${pivotLabel(field)}已放入${{row:'行',column:'列',value:'值',filter:'筛选器'}[zone]}区域，报表已重新计算。`;
@@ -908,4 +966,108 @@ register(['y2020q47'],'居中的标题下面，到底还有几个单元格','对
         s.mode='merge';s.active=0;s.range=false;s.message='A1:D1 已合成一个单元格。原 B1、C1、D1 不能再单独选中。';
       }
     },(s,k,v)=>{if(k==='title'&&!s.pane)s.title=String(v);if(k==='draft')s.draft=v;});
+})();
+
+/* A small continuous workbook, and a bounded expression parser without eval. */
+(() => {
+  'use strict';
+  const {register,registry,ui}=window.NOTE_LABS;
+  const {btn,field,office,dialog,table,output,coach,esc}=ui;
+  const visible=s=>s.sheets.filter(sheet=>sheet.visible);
+  function removeSheet(s,id){s.sheets=s.sheets.filter(x=>x.id!==id);s.selected=visible(s)[0].id;s.pending=null;s.message='工作表已删除，其他工作表保留。本例的学习重置可重新载入初始工作簿。';}
+  register(['y2020q8'],'在同一个工作簿里新建、隐藏和删除','直接点工作表标签与新建按钮；连续操作，观察最后一张可见工作表的限制。',{
+    sheets:[{id:1,name:'Sheet1',visible:true},{id:2,name:'Sheet2',visible:true}],selected:1,next:3,pending:null,message:'两张工作表均可见。删除前先确认当前选中的标签。'
+  },s=>{
+    const selected=s.sheets.find(x=>x.id===s.selected),busy=!!s.pending;
+    return office('Excel','开始',`<fieldset class="lab-command-group" ${busy?'disabled':''}>${btn('删除工作表','delete')}${btn('隐藏工作表','hide')}${s.sheets.filter(x=>!x.visible).map(x=>btn('取消隐藏 '+esc(x.name),'unhide',x.id)).join('')}</fieldset>`,
+      `<p>当前工作表：<b>${esc(selected.name)}</b>；共${s.sheets.length}张，其中${visible(s).length}张可见。</p>${table(['A','B'],[['教学示例',esc(selected.name)],['数据','保留在各自工作表中']])}<fieldset class="lab-sheet-tabs" aria-label="工作表标签" ${busy?'disabled':''}>${visible(s).map(x=>btn(esc(x.name),'sheet',x.id,`aria-pressed="${x.id===s.selected}"`)).join('')}${btn('＋ 新建工作表','new')}</fieldset>${s.pending?dialog('删除工作表',`<p>将删除${esc(s.pending.name)}及其数据。请确认目标工作表。</p>`,btn('确认删除','confirm')+btn('取消','cancel')):''}`)+output(esc(s.message))+coach('隐藏仍保留工作表和数据；删除移除整张工作表。工作簿须保留至少一张可见工作表，隐藏的工作表不能代替这个条件。');
+  },(s,a,v)=>{
+    if(s.pending){if(a==='cancel'){s.pending=null;s.message='已取消删除，当前工作簿未改变。';}else if(a==='confirm')removeSheet(s,s.pending.id);return;}
+    const current=s.sheets.find(x=>x.id===s.selected);
+    if(a==='sheet'&&s.sheets.some(x=>x.id===Number(v)&&x.visible)){s.selected=Number(v);s.message=`已选中${s.sheets.find(x=>x.id===s.selected).name}。`;}
+    if(a==='new'){const id=s.next++;s.sheets.push({id,name:'Sheet'+id,visible:true});s.selected=id;s.message=`已新建Sheet${id}，原有工作表仍在。`;}
+    if(a==='delete'||a==='hide'){
+      if(visible(s).length===1){s.message=`不能${a==='delete'?'删除':'隐藏'}最后一张可见工作表；可先新建或取消隐藏其他工作表。`;return;}
+      if(a==='delete')s.pending={id:current.id,name:current.name};
+      else{current.visible=false;s.selected=visible(s)[0].id;s.message=`${current.name}已隐藏，内容仍保留；可用“取消隐藏”恢复。`;}
+    }
+    if(a==='unhide'){const sheet=s.sheets.find(x=>x.id===Number(v));if(sheet){sheet.visible=true;s.selected=sheet.id;s.message=`${sheet.name}重新可见，原有数据保留。`;}}
+  });
+
+  function parseInput(raw){
+    const text=String(raw);
+    if(text.length>100)return {type:'输入过长',value:'请控制在100个字符内',detail:'本例只解析短算术表达式。'};
+    if(text.startsWith("'"))return {type:'文本',value:text.slice(1),detail:'开头的单引号用于标记文本，不作为显示内容的一部分。'};
+    if(!text.startsWith('=')){
+      const trimmed=text.trim();return trimmed&&/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(trimmed)?{type:'数值',value:String(Number(trimmed)),detail:'输入为可识别的数值。'}:{type:'文本',value:text||'（空白）',detail:'没有公式前导等号，这段输入不按算术公式执行。'};
+    }
+    let pos=1;const fail=(message,code='公式未完成')=>{throw {message,code,position:pos+1};};
+    const skip=()=>{while(/\s/.test(text[pos]||'')&&pos<text.length)pos++;};
+    function primary(){skip();if(text[pos]==='('){pos++;const value=expression();skip();if(text[pos]!==')')fail('缺少右括号');pos++;return value;}const match=text.slice(pos).match(/^(?:\d+(?:\.\d*)?|\.\d+)/);if(!match)fail(pos>=text.length?'这里还需要一个数值':`无法识别“${text[pos]}”`,/[A-Za-z×]/.test(text[pos]||'')?'#NAME?':'公式未完成');pos+=match[0].length;return Number(match[0]);}
+    function unary(){skip();if(text[pos]==='+'||text[pos]==='-'){const sign=text[pos++];return (sign==='-'?-1:1)*unary();}return primary();}
+    function product(){let value=unary();skip();while(text[pos]==='*'||text[pos]==='/'){const op=text[pos++],right=unary();if(op==='/'&&right===0)fail('除数为0','#DIV/0!');value=op==='*'?value*right:value/right;skip();}return value;}
+    function expression(){let value=product();skip();while(text[pos]==='+'||text[pos]==='-'){const op=text[pos++],right=product();value=op==='+'?value+right:value-right;skip();}return value;}
+    try{const value=expression();skip();if(pos!==text.length)fail(`这里的“${text[pos]}”不是本例支持的运算符`,/[A-Za-z×]/.test(text[pos])?'#NAME?':'不支持的表达式');if(!Number.isFinite(value))fail('结果超出本例可表示范围','#NUM!');return {type:'公式',value:String(Number(value.toPrecision(15))),detail:'先计算括号，再乘除，最后加减；同级运算从左到右。'};}catch(error){return {type:'公式',value:error.code||'无法计算',detail:`第${error.position||pos+1}个字符附近：${error.message||'请检查表达式'}。${text.includes('×')?'Excel乘法使用星号 *。':''}`};}
+  }
+  register(['y2024q11'],'自己输入，再看文本、数值和公式的区别','改变数字或运算符，比较输入内容、保存类型与显示结果。',{raw:'=2*3',applied:null},s=>{
+    const value=s.applied===null?null:parseInput(s.applied);
+    return office('Excel','开始',field('raw','编辑A1内容',s.raw,'text','maxlength="100"')+btn('确认输入','apply'),
+      `<p>示例：${['2*3','=2*3','=2×3',"'=2*3"].map(x=>btn(esc(x),'example',x)).join('')}</p>${value?table(['公式栏输入','内容类型','单元格显示'],[[esc(s.applied),value.type,esc(value.value)]]):'<p class="lab-empty">编辑后确认，结果显示在这里。</p>'}`)+(value?output(esc(value.detail)):output('可以先比较示例，再把2改成8或给表达式加上括号。'))+coach('本例开放数值、文本、前导单引号，以及 + − * / 和括号。日期、单元格引用和函数有各自解析规则，使用对应笔记演示；此处不模拟它们。');
+  },(s,a,v)=>{if(a==='apply')s.applied=s.raw;if(a==='example'){s.raw=v;s.applied=v;}},(s,k,v)=>{if(k==='raw')s.raw=v;});
+  registry.y2024q11.parseInput=parseInput;
+})();
+
+/* Small data-driven additions for two explicit syllabus gaps. */
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,field,select,table,office,output,esc}=ui;
+  register(['syllabus-sparkline'],'改一行数，观察单元格里的迷你图','输入4个以逗号分隔的数，再比较折线、柱形和盈亏类型。',{
+    raw:'4,8,5,10',type:'line'
+  },s=>{
+    const parts=s.raw.split(/[,，]/).map(v=>v.trim()),values=parts.map(Number),valid=parts.length===4&&parts.every(v=>v!=='')&&values.every(v=>Number.isFinite(v)&&Math.abs(v)<=1000);
+    let chart='请输入4个−1000至1000之间的数';
+    if(valid){const lo=Math.min(0,...values),hi=Math.max(0,...values),range=hi-lo||1,y=n=>65-(n-lo)/range*55,zero=y(0);let shapes='';
+      if(s.type==='line')shapes=`<polyline points="${values.map((v,i)=>`${15+i*50},${y(v)}`).join(' ')}" fill="none" stroke="#9670ae" stroke-width="3"/>`;
+      else shapes=values.map((v,i)=>{const end=s.type==='win'?(v>0?12:v<0?65:38):y(v),base=s.type==='win'?38:zero;return `<rect x="${i*50+5}" y="${Math.min(base,end)}" width="24" height="${Math.abs(base-end)}" fill="${v<0?'#bb688b':'#9e7bbb'}"/>`;}).join('');
+      chart=`<svg viewBox="0 0 180 80" role="img" aria-label="${esc({line:'折线',column:'柱形',win:'盈亏'}[s.type])}迷你图：${values.join('、')}" style="width:180px;height:80px"><path d="M0 ${s.type==='win'?38:zero}H180" stroke="#ded1e6"/>${shapes}</svg>`;
+    }
+    return office('Excel','迷你图工具 · 设计',select('type','迷你图类型',s.type,[['line','折线'],['column','柱形'],['win','盈亏']]),
+      table(['B2:E2 · 四个月数据','F2 · 位置单元格'],[[field('raw','源数据',s.raw,'text','maxlength="60"'),chart]]))+
+      output(valid?(s.type==='win'?'盈亏标记只比较正负；把4改成40，正向柱仍等高。':'迷你图读取这行数值；数据改变后图形同步变化。此处按当前行自动缩放。'):'源数据无效，图形暂不绘制。');
+  },()=>{});
+
+  register(['syllabus-worksheet-protection'],'锁定属性与保护开关一起决定能否编辑','先只勾锁定，再启用保护；比较A1与解除锁定的B1。',{
+    protected:false,locked:true,a:'公式区',b:'请填写',message:'工作表尚未保护，两个单元格均可编辑。'
+  },s=>office('Excel','审阅',btn(s.protected?'撤销工作表保护':'保护工作表','protect')+
+    `<label><input type="checkbox" data-field="locked" ${s.locked?'checked':''} ${s.protected?'disabled':''}>A1锁定属性</label>`,
+    table(['单元格','内容','当前权限'],[['A1',field('a','A1内容',s.a,'text',s.protected&&s.locked?'disabled':''),s.protected&&s.locked?'不可编辑':'可编辑'],['B1（已解除锁定）',field('b','B1内容',s.b),'可编辑']]))+
+    output(esc(s.message))+'<p class="core-caption">工作表保护用于限制误操作，不提供文件内容加密。本例不设置密码。</p>',
+    (s,a)=>{if(a==='protect'){s.protected=!s.protected;s.message=s.protected?(s.locked?'保护已启用：A1锁定，B1仍可填写。':'保护已启用，但A1已解除锁定，因此仍可编辑。'):'保护已撤销；内容保留，锁定属性不再阻止输入。';}},
+    (s,k,v)=>{if(k==='locked'&&!s.protected)s.locked=v;else if(k==='a'&&!(s.protected&&s.locked))s.a=v;else if(k==='b')s.b=v;});
+})();
+
+/* Multilevel sorting and one/two-input tables compute from source records. */
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,field,select,table,office,output,esc,number}=ui;
+  const sortRows=[{id:'03',group:'二班',score:88},{id:'02',group:'一班',score:92},{id:'01',group:'一班',score:92},{id:'04',group:'一班',score:75}];
+  register(['syllabus-excel-multikey-sort'],'交换排序优先级，检查整条记录的去向','先按班级再按成绩，与先按成绩再按班级，得到的主顺序不同。',{
+    first:'group',descending:true,rows:sortRows,message:'源记录还未排序。'
+  },s=>office('Excel','数据 · 排序',select('first','主要关键字',s.first,[['group','班级优先'],['score','成绩优先']])+select('descending','成绩次序',String(s.descending),[['true','降序'],['false','升序']])+btn('确定排序','sort'),
+    table(['学号','班级','成绩'],s.rows.map(row=>[row.id,row.group,row.score])))+output(esc(s.message))+
+    '<p class="core-caption">班级按一班、二班排列；主次条件均相同后，按学号升序打破同分。</p>',
+    (s,a)=>{if(a!=='sort')return;const compare={group:(a,b)=>a.group===b.group?0:a.group==='一班'?-1:1,score:(a,b)=>(a.score-b.score)*(s.descending?-1:1)};const order=s.first==='group'?['group','score']:['score','group'];s.rows.sort((a,b)=>compare[order[0]](a,b)||compare[order[1]](a,b)||Number(a.id)-Number(b.id));s.message='已按'+(s.first==='group'?'班级→成绩':'成绩→班级')+'→学号排序，整条记录一起移动。';},(s,k,v)=>{s[k]=k==='descending'?v==='true':v;});
+
+  register(['syllabus-excel-whatif-table'],'试代销量与单价，计算一组结果','B4=B2×B3；单变量只改变销量，双变量同时比较单价和销量。',{
+    price:50,quantity:100,mode:'one',quantities:'80,100,120',prices:'40,50,60'
+  },s=>{
+    const parse=raw=>{const tokens=raw.split(/[,，]/).map(x=>x.trim()),values=tokens.map(Number);return tokens.length===3&&tokens.every(Boolean)&&values.every(v=>Number.isFinite(v)&&v>=0&&v<=10000)?values:null;};
+    const quantities=parse(s.quantities),prices=s.mode==='two'?parse(s.prices):[s.price];
+    return office('Excel','数据 · 模拟分析 · 模拟运算表',select('mode','试代方式',s.mode,[['one','单变量：销量'],['two','双变量：单价和销量']]),
+      `<div class="lab-controls">${field('price','B2 单价',s.price,'number','min="0" max="10000"')}${field('quantity','B3 销量',s.quantity,'number','min="0" max="10000"')}${field('quantities','列方向的3个销量',s.quantities)}${s.mode==='two'?field('prices','行方向的3个单价',s.prices):''}</div><p>B4 = B2 × B3 = ${s.price*s.quantity}</p>`+
+      (quantities&&prices?table([s.mode==='two'?'H1 = B4 · 销量↓ / 单价→':'D1空白 / E1 = B4',...prices.map(p=>s.mode==='two'?String(p):'试代结果')],quantities.map(q=>[q,...prices.map(p=>p*q)])):'<p class="lab-empty">候选输入各需3个0—10000内的数，以逗号分隔。</p>'))+
+      output(s.mode==='one'?'D2:D4为候选销量，E1放=B4。列输入单元格设B3，行输入留空；单价保持B2当前值。':'H1放=B4。行输入设B2、列输入设B3；交点是该单价与销量的乘积，不覆盖原模型的输入。');
+  },()=>{},(s,k,v)=>{s[k]=['price','quantity'].includes(k)?number(v,0,10000):v;});
 })();

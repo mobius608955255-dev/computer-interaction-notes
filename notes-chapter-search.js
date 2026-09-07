@@ -8,7 +8,7 @@
       const article=document.getElementById(note.id),demo=simulation.demos[note.id];
       return {id:note.id,title:note.title,chapter:note.chapter,
         aliases:[...(note.searchAliases||[]),...(note.pointGroups||[]).map(g=>g.title),demo?.title||'',demo?.task||''],
-        fields:[...article.querySelectorAll('.conclusion,.points li,.boundary,.note-comparison,.note-provenance')].map(el=>({anchor:el.id||el.parentElement.id,text:el.textContent}))};
+        fields:[...article.querySelectorAll('.conclusion,.points li,.boundary,.note-comparison,.note-worked,.note-provenance')].map(el=>({anchor:el.id||el.parentElement.id,text:el.textContent}))};
     });
     function restoreDisclosures(){
       for(const detail of autoOpened)detail.open=false;

@@ -23,12 +23,16 @@
       "https://www.ibm.com/docs/en/aix/7.2.0?topic=sets-euccn"
     ],
     [
-      "Unicode：编码形式FAQ",
+      "Unicode：UTF编码形式与BOM",
       "https://unicode.org/faq/utf_bom.html"
     ],
     [
       "Unicode：技术介绍",
       "https://www.unicode.org/standard/principles.html"
+    ],
+    [
+      "Microsoft：字体选择与字体回退",
+      "https://learn.microsoft.com/en-us/globalization/fonts-layout/fonts"
     ]
   ],
   "y2026q41": [
@@ -133,7 +137,7 @@
   ],
   "y2020q24": [
     [
-      "Microsoft：Windows 键盘快捷方式",
+      "Microsoft：Windows键盘快捷方式",
       "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
     ],
     [
@@ -149,25 +153,25 @@
       "https://learn.microsoft.com/en-us/windows/win32/shell/datascenarios"
     ],
     [
-      "Microsoft：DeleteFile",
+      "Microsoft：DeleteFile的只读、权限与共享删除条件",
       "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile"
     ]
   ],
   "merged-4": [
     [
-      "Microsoft：Naming Files, Paths, and Namespaces",
+      "Microsoft：文件名、路径与保留名称",
       "https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file"
     ],
     [
-      "Microsoft：Common file name extensions in Windows",
+      "Microsoft：常见文件扩展名",
       "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/common-file-name-extensions-in-windows"
     ],
     [
-      "Microsoft：File Attribute Constants",
+      "Microsoft：文件属性常量与目录只读属性",
       "https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants"
     ],
     [
-      "Microsoft：DeleteFile",
+      "Microsoft：DeleteFile删除条件",
       "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile"
     ]
   ],
@@ -199,6 +203,14 @@
     [
       "format or customize a table of contents in word",
       "https://support.microsoft.com/en-us/word/format-or-customize-a-table-of-contents-in-word"
+    ],
+    [
+      "Microsoft：撤消、恢复或重复操作",
+      "https://support.microsoft.com/en-us/office/foundations-experiences/undo-redo-or-repeat-an-action"
+    ],
+    [
+      "Microsoft：并排查看和比较文档",
+      "https://support.microsoft.com/en-us/word/view-and-compare-documents-side-by-side"
     ]
   ],
   "y2023q55": [
@@ -319,7 +331,7 @@
   ],
   "y2026q36": [
     [
-      "group shapes pictures or other objects in word",
+      "Microsoft：Word组合要求每个对象都为非嵌入型",
       "https://support.microsoft.com/en-us/word/group-shapes-pictures-or-other-objects-in-word"
     ],
     [
@@ -353,7 +365,7 @@
   ],
   "y2022q58": [
     [
-      "Microsoft：选择性粘贴的运算选项",
+      "Microsoft：选择性粘贴的内容与运算选项",
       "https://support.microsoft.com/en-us/excel/paste-options"
     ]
   ],
@@ -397,8 +409,12 @@
   ],
   "y2020q57": [
     [
-      "Microsoft：VLOOKUP参数与精确匹配",
+      "Microsoft：VLOOKUP参数与错误原因",
       "https://support.microsoft.com/en-us/excel/functions/vlookup-function"
+    ],
+    [
+      "Microsoft：近似匹配返回不大于查找值的最大分档",
+      "https://support.microsoft.com/en-us/excel/look-up-values-with-vlookup-index-or-match"
     ]
   ],
   "y2021q49": [
@@ -409,14 +425,26 @@
   ],
   "y2021q51": [
     [
-      "AVERAGEIF function",
+      "Microsoft：AVERAGEIF的条件与平均区域",
       "https://support.microsoft.com/en-us/excel/functions/averageif-function"
+    ],
+    [
+      "Microsoft：平均值忽略空白但计入数值0",
+      "https://support.microsoft.com/en-us/excel/functions/average-function"
+    ],
+    [
+      "Microsoft：COUNTA计入空字符串与错误值",
+      "https://support.microsoft.com/en-us/excel/functions/counta-function"
     ]
   ],
   "y2026q50": [
     [
-      "SUMIF function",
+      "Microsoft：SUMIF条件与求和区域",
       "https://support.microsoft.com/en-us/excel/functions/sumif-function"
+    ],
+    [
+      "Microsoft：SUMIFS多条件同时成立",
+      "https://support.microsoft.com/en-us/excel/functions/sumifs-function"
     ]
   ],
   "y2026q49": [
@@ -447,8 +475,12 @@
   ],
   "y2022q61": [
     [
-      "Microsoft：选择性粘贴的内容类型",
+      "Microsoft：选择性粘贴只复制批注",
       "https://support.microsoft.com/en-us/excel/paste-options"
+    ],
+    [
+      "Microsoft：批注标记与复制操作",
+      "https://support.microsoft.com/en-us/excel/insert-comments-and-notes-in-excel"
     ]
   ],
   "y2025q52": [
@@ -475,7 +507,7 @@
   ],
   "y2021q58": [
     [
-      "Goal Seek",
+      "Microsoft：单变量求解须先建立依赖公式",
       "https://support.microsoft.com/en-us/excel/use-goal-seek-to-find-the-result-you-want-by-adjusting-an-input-value"
     ]
   ],
@@ -491,7 +523,7 @@
       "https://support.microsoft.com/en-us/excel/get-started/group-or-ungroup-data-in-a-pivottable"
     ],
     [
-      "Create PivotTable",
+      "Microsoft：透视表值区域、默认计数与同字段重复汇总",
       "https://support.microsoft.com/en-us/excel/get-started/create-a-pivottable-to-analyze-worksheet-data"
     ]
   ],
@@ -505,7 +537,7 @@
       "https://support.microsoft.com/en-us/excel/filter-by-using-advanced-criteria"
     ],
     [
-      "SUBTOTAL",
+      "Microsoft：SUBTOTAL的9、109及隐藏行规则",
       "https://support.microsoft.com/en-us/excel/functions/subtotal-function"
     ]
   ],
@@ -517,8 +549,12 @@
   ],
   "y2020q10": [
     [
-      "Microsoft：备注页的编辑范围",
+      "Microsoft：备注页的编辑、打印与删除缩略图范围",
       "https://support.microsoft.com/en-us/powerpoint/create-and-print-notes-pages"
+    ],
+    [
+      "Microsoft：按任务选择PowerPoint视图",
+      "https://support.microsoft.com/en-us/powerpoint/training/choose-the-right-view-for-the-task-in-powerpoint"
     ]
   ],
   "y2020q12": [
@@ -669,6 +705,10 @@
     [
       "MDN：URL构造函数与基准地址解析",
       "https://developer.mozilla.org/en-US/docs/Web/API/URL/URL"
+    ],
+    [
+      "Microsoft：查看和删除Edge历史记录",
+      "https://support.microsoft.com/en-us/edge/view-and-delete-browser-history-in-microsoft-edge"
     ]
   ],
   "y2026q28": [
@@ -739,6 +779,10 @@
     [
       "MIDI Association：MIDI 1.0 消息摘要",
       "https://midi.org/summary-of-midi-1-0-messages"
+    ],
+    [
+      "Microsoft：PCM样值、声道数与存储块大小",
+      "https://learn.microsoft.com/en-us/windows/win32/api/mmreg/ns-mmreg-waveformatex"
     ]
   ],
   "merged-15": [
@@ -781,6 +825,10 @@
     [
       "NIST：私有云定义",
       "https://csrc.nist.gov/glossary/term/private_cloud"
+    ],
+    [
+      "NIST SP 800-145：五项特征与三种服务模型",
+      "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-145.pdf"
     ]
   ],
   "merged-20": [
@@ -865,6 +913,608 @@
     [
       "北斗系统官方介绍",
       "https://www.beidou.gov.cn/xt/"
+    ]
+  ],
+  "y2020q31": [
+    [
+      "UCR：位置记数法与二进制位权",
+      "https://www.cs.ucr.edu/~ehwang/courses/cs120a/00winter/binary.pdf"
+    ]
+  ],
+  "y2020q23": [
+    [
+      "Microsoft：编写、编译并运行C程序",
+      "https://learn.microsoft.com/en-us/cpp/build/walkthrough-compile-a-c-program-on-the-command-line?view=msvc-170"
+    ]
+  ],
+  "y2022q44": [
+    [
+      "Microsoft：进程、线程与运行资源",
+      "https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads"
+    ]
+  ],
+  "y2026q7": [
+    [
+      "Microsoft：多任务与进程线程机制",
+      "https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads"
+    ]
+  ],
+  "y2022q75": [
+    [
+      "Microsoft：压缩与解压缩文件",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/zip-and-unzip-files"
+    ]
+  ],
+  "y2026q25": [
+    [
+      "Microsoft：自定义Windows桌面图标",
+      "https://support.microsoft.com/en-us/windows/experience/personalization/customize-the-desktop-icons-in-windows"
+    ],
+    [
+      "Microsoft：桌面图标隐藏时的排查",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/find-the-recycle-bin-in-windows"
+    ]
+  ],
+  "y2025q26": [
+    [
+      "Microsoft：用户账户控制UAC怎样工作",
+      "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/user-account-control/how-it-works"
+    ]
+  ],
+  "y2026q34": [
+    [
+      "Microsoft：Windows键盘快捷方式",
+      "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
+    ],
+    [
+      "Microsoft：配置Windows启动应用",
+      "https://support.microsoft.com/en-us/windows/experience/startup-boot/configure-startup-applications-in-windows"
+    ],
+    [
+      "Microsoft：Windows系统配置工具的功能分工",
+      "https://support.microsoft.com/en-us/windows/experience/system-configuration-tools-in-windows"
+    ]
+  ],
+  "y2026q8": [
+    [
+      "Microsoft：设备管理器代码28",
+      "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/cm-prob-failed-install"
+    ]
+  ],
+  "y2024q5": [
+    [
+      "Microsoft：Windows磁盘清理步骤与回退文件",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/free-up-drive-space-in-windows"
+    ],
+    [
+      "Microsoft：cleanmgr文件分类说明",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cleanmgr"
+    ],
+    [
+      "Microsoft：机械硬盘碎片整理与SSD优化",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/defragment-optimize-your-data-drives-in-windows"
+    ]
+  ],
+  "y2026q33": [
+    [
+      "Microsoft：系统保护、还原点与空间配额",
+      "https://support.microsoft.com/en-us/windows/experience/backup-recovery/system-protection"
+    ],
+    [
+      "Microsoft：系统还原",
+      "https://support.microsoft.com/en-us/windows/experience/backup-recovery/system-restore"
+    ]
+  ],
+  "y2025q34": [
+    [
+      "Microsoft：记事本整篇字体与字体回退",
+      "https://learn.microsoft.com/en-us/globalization/fonts-layout/fonts"
+    ],
+    [
+      "Microsoft：Windows字体对话框的字体、字形和字号",
+      "https://learn.microsoft.com/en-us/windows/win32/dlgbox/font-dialog-box"
+    ],
+    [
+      "Microsoft：粘贴格式控制与记事本纯文本",
+      "https://support.microsoft.com/en-us/word/control-the-formatting-when-you-paste-text"
+    ],
+    [
+      "Microsoft：Windows截图工具（采用Windows10分支）",
+      "https://support.microsoft.com/en-us/windows/apps/use-snipping-tool-to-capture-screenshots"
+    ],
+    [
+      "Microsoft：计算器日期差与日期加减",
+      "https://support.microsoft.com/en-us/windows/apps/calculate-days-between-dates-or-calculate-a-future-or-past-date"
+    ]
+  ],
+  "y2026q54": [
+    [
+      "Microsoft：正文占位符自动调整与两种分页方式",
+      "https://support.microsoft.com/en-us/powerpoint/split-body-text-between-two-slides"
+    ],
+    [
+      "Microsoft：PowerPoint文本框自动调整的三种模式",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/format-object-text-box-pane"
+    ],
+    [
+      "Microsoft Learn：NormalAutoFit的字号比例与行距压缩定义",
+      "https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.drawing.normalautofit?view=openxml-3.0.1"
+    ]
+  ],
+  "y2022q72": [
+    [
+      "Microsoft：Word大纲映射为PowerPoint幻灯片及关闭源文件要求",
+      "https://support.microsoft.com/en-us/powerpoint/import-a-word-document-into-a-powerpoint-presentation"
+    ],
+    [
+      "Microsoft：从Word大纲创建演示文稿",
+      "https://support.microsoft.com/en-us/powerpoint/training/create-a-powerpoint-presentation-from-an-outline"
+    ]
+  ],
+  "y2020q60": [
+    [
+      "Microsoft：表格网格线不打印，边框可打印",
+      "https://support.microsoft.com/en-us/word/show-or-hide-gridlines-for-all-tables-in-a-document"
+    ],
+    [
+      "Microsoft：Word、PowerPoint网格线只作显示参考",
+      "https://support.microsoft.com/en-us/powerpoint/show-or-hide-gridlines-in-word-powerpoint-or-excel"
+    ]
+  ],
+  "y2022q70": [
+    [
+      "Microsoft：插入图片水印",
+      "https://support.microsoft.com/en-us/word/training/insert-a-watermark"
+    ],
+    [
+      "Microsoft：页面颜色的图片填充",
+      "https://support.microsoft.com/en-us/word/add-change-or-delete-the-background-color-in-word"
+    ],
+    [
+      "Microsoft：打印背景颜色和图像",
+      "https://support.microsoft.com/en-us/word/print-background-color-or-image"
+    ],
+    [
+      "Microsoft：选择页眉中的背景图片",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/replace-or-delete-a-picture-in-microsoft-office"
+    ]
+  ],
+  "y2023q7": [
+    [
+      "Microsoft：Word2016与旧格式的公式兼容变化",
+      "https://support.microsoft.com/en-us/word/compatibility-changes-between-versions"
+    ]
+  ],
+  "y2024q55": [
+    [
+      "Microsoft：Word插入空域、更新域与切换域结果的快捷键",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ]
+  ],
+  "y2024q26": [
+    [
+      "Microsoft：旋转文本框、形状、艺术字或图片",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/rotate-or-flip-a-text-box-shape-wordart-or-picture"
+    ]
+  ],
+  "y2024q46": [
+    [
+      "Microsoft：更改PowerPoint默认打开视图（含2016）",
+      "https://support.microsoft.com/zh-cn/powerpoint/change-the-default-view"
+    ]
+  ],
+  "y2025q10": [
+    [
+      "Microsoft：用节组织幻灯片",
+      "https://support.microsoft.com/en-us/powerpoint/training/organize-your-powerpoint-slides-into-sections"
+    ],
+    [
+      "Microsoft：PowerPoint放映时跳到指定页",
+      "https://support.microsoft.com/en-us/accessibility/powerpoint/use-keyboard-shortcuts-to-deliver-powerpoint-presentations"
+    ]
+  ],
+  "y2023q35": [
+    [
+      "Microsoft：裁剪视频和音频的入口与本地来源要求",
+      "https://support.microsoft.com/en-us/powerpoint/trim-a-video-music-clip-or-sound-clip-in-powerpoint"
+    ],
+    [
+      "Microsoft：在线插入视频不支持PowerPoint裁剪",
+      "https://support.microsoft.com/en-us/powerpoint/training/insert-a-video-from-youtube-or-another-site"
+    ]
+  ],
+  "merged-8": [
+    [
+      "Microsoft：用内置标题样式和多级列表为标题编号",
+      "https://support.microsoft.com/en-us/word/number-your-headings"
+    ]
+  ],
+  "y2026q53": [
+    [
+      "Microsoft：更改图片的标准入口",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/replace-or-delete-a-picture-in-microsoft-office"
+    ],
+    [
+      "Microsoft：图片动画与动画顺序",
+      "https://support.microsoft.com/en-us/powerpoint/animate-a-picture-on-your-slide"
+    ]
+  ],
+  "y2021q15": [
+    [
+      "IETF RFC 826：下一跳选择与以太网地址解析",
+      "https://www.rfc-editor.org/rfc/rfc826.html"
+    ]
+  ],
+  "y2025q13": [
+    [
+      "IETF RFC 1122：IP网络由网关或路由器互联",
+      "https://www.rfc-editor.org/rfc/rfc1122.html"
+    ],
+    [
+      "Cisco：三层交换与路由转发",
+      "https://www.cisco.com/c/en/us/tech/lan-switching/layer-three-switching-forwarding/index.html"
+    ]
+  ],
+  "y2021q28": [
+    [
+      "IETF RFC 1034：域名解析、缓存与TTL",
+      "https://www.rfc-editor.org/rfc/rfc1034.html"
+    ]
+  ],
+  "y2023q16": [
+    [
+      "IETF RFC 8446：TLS握手、认证与数据保护",
+      "https://www.rfc-editor.org/rfc/rfc8446.html"
+    ]
+  ],
+  "y2020q38": [
+    [
+      "MDN：数字视频的帧与像素表示",
+      "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Video_concepts"
+    ]
+  ],
+  "y2020q17": [
+    [
+      "Adobe：RGB、CMYK与灰度颜色模式",
+      "https://helpx.adobe.com/photoshop/using/color-modes.html"
+    ]
+  ],
+  "y2026q16": [
+    [
+      "NIST：机密性定义",
+      "https://csrc.nist.gov/glossary/term/confidentiality"
+    ],
+    [
+      "NIST：完整性定义",
+      "https://csrc.nist.gov/glossary/term/integrity"
+    ],
+    [
+      "NIST：可用性定义",
+      "https://csrc.nist.gov/glossary/term/availability"
+    ]
+  ],
+  "merged-19": [
+    [
+      "NIST：IoT设备的传感器/执行器与网络接口",
+      "https://csrc.nist.gov/glossary/term/iot_device"
+    ]
+  ],
+  "y2025q20": [
+    [
+      "NIST：生成式人工智能的内容生成定义",
+      "https://csrc.nist.gov/glossary/term/generative_artificial_intelligence"
+    ]
+  ],
+  "y2020q14": [
+    [
+      "PostgreSQL：用外键及关联表实现多对多",
+      "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    ]
+  ],
+  "y2025q11": [
+    [
+      "AWS：概念、逻辑与物理数据模型的职责",
+      "https://aws.amazon.com/compare/the-difference-between-logical-and-physical-data-model/"
+    ]
+  ],
+  "y2023q15": [
+    [
+      "PostgreSQL：UPDATE的条件、旧值表达式与保留列",
+      "https://www.postgresql.org/docs/current/sql-update.html"
+    ]
+  ],
+  "y2022q33": [
+    [
+      "Princeton：前缀和预处理与常数时间区间查询",
+      "https://competitive-programming.cs.princeton.edu/ps_s24"
+    ]
+  ],
+  "y2026q6": [
+    [
+      "NIST：辗转相除法的余数递推",
+      "https://xlinux.nist.gov/dads/HTML/euclidalgo.html"
+    ]
+  ],
+  "y2022q43": [
+    [
+      "Python官方教程：循环和赋值控制流程",
+      "https://docs.python.org/3/tutorial/controlflow.html"
+    ]
+  ],
+  "y2023q69": [
+    [
+      "OpenStax：while先检查条件、计数器初始化与推进",
+      "https://openstax.org/books/introduction-python-programming/pages/5-1-while-loop"
+    ]
+  ],
+  "y2025q24": [
+    [
+      "Oracle：对象的状态行为、类与封装",
+      "https://docs.oracle.com/javase/tutorial/java/concepts/index.html"
+    ],
+    [
+      "Oracle：多态与不同类型的方法实现",
+      "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html"
+    ]
+  ],
+  "y2020q8": [
+    [
+      "Microsoft：新建工作簿的默认工作表数",
+      "https://support.microsoft.com/en-us/office/foundations-experiences/office-options-the-general-tab"
+    ],
+    [
+      "Microsoft：隐藏工作表仍可被引用",
+      "https://support.microsoft.com/en-us/excel/hide-or-unhide-worksheets"
+    ]
+  ],
+  "y2021q9": [
+    [
+      "Microsoft：三维引用随插入、复制和移动工作表变化",
+      "https://support.microsoft.com/en-us/excel/create-a-3-d-reference-to-the-same-cell-range-on-multiple-worksheets"
+    ]
+  ],
+  "y2024q11": [
+    [
+      "Microsoft：文本格式、显示公式和自动计算排查",
+      "https://support.microsoft.com/en-us/excel/how-to-avoid-broken-formulas-in-excel"
+    ],
+    [
+      "Microsoft：前置单引号使内容成为文本",
+      "https://support.microsoft.com/en-us/excel/detect-formula-errors-in-excel"
+    ],
+    [
+      "Microsoft：日期文本受系统日期设置影响",
+      "https://support.microsoft.com/en-us/excel/functions/datevalue-function"
+    ]
+  ],
+  "y2020q49": [
+    [
+      "Microsoft：删除重复项保留首条且只影响选区",
+      "https://support.microsoft.com/en-us/excel/get-started/filter-for-unique-values-or-remove-duplicate-values"
+    ]
+  ],
+  "y2020q59": [
+    [
+      "Microsoft：切换图表中行列的绘制方式",
+      "https://support.microsoft.com/en-us/excel/change-how-rows-and-columns-of-data-are-plotted-in-a-chart"
+    ],
+    [
+      "Microsoft：转置会重排工作表数据",
+      "https://support.microsoft.com/en-us/excel/transpose-rotate-data-from-rows-to-columns-or-vice-versa"
+    ]
+  ],
+  "y2023q10": [
+    [
+      "Microsoft：按一页宽和自动页高缩放",
+      "https://support.microsoft.com/en-us/excel/scale-a-worksheet"
+    ],
+    [
+      "Microsoft：打印标题设置与命令不可用的原因",
+      "https://support.microsoft.com/en-us/excel/print-rows-with-column-headers-on-top-of-every-page"
+    ]
+  ],
+  "y2024q68": [
+    [
+      "Microsoft：添加趋势线及设置向前预测",
+      "https://support.microsoft.com/en-us/office/excelexp/add-a-trend-or-moving-average-line-to-a-chart"
+    ],
+    [
+      "Microsoft：线性拟合、R²和移动平均的含义",
+      "https://support.microsoft.com/en-us/office/trendline-options-in-office"
+    ]
+  ],
+  "y2026q52": [
+    [
+      "Microsoft：组合图和次坐标轴",
+      "https://support.microsoft.com/en-us/office/excelexp/add-or-remove-a-secondary-axis-in-a-chart-in-excel"
+    ],
+    [
+      "Microsoft：设置坐标轴与单位",
+      "https://support.microsoft.com/en-us/office/change-the-display-of-chart-axes"
+    ],
+    [
+      "Microsoft：已有数值应用百分比格式的结果",
+      "https://support.microsoft.com/en-us/excel/format-numbers-as-percentages-in-excel"
+    ]
+  ],
+  "syllabus-document-coauthor": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Word real-time co-authoring—a closer look",
+      "https://www.microsoft.com/en-us/microsoft-365/blog/2015/10/30/word-real-time-co-authoring-a-closer-look/"
+    ],
+    [
+      "Collaborate on Word documents with real-time co-authoring",
+      "https://support.microsoft.com/en-us/word/training/collaborate-on-word-documents-with-real-time-co-authoring"
+    ]
+  ],
+  "syllabus-sparkline": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Use sparklines to show data trends",
+      "https://support.microsoft.com/en-us/excel/get-started/use-sparklines-to-show-data-trends"
+    ]
+  ],
+  "syllabus-quantum-basics": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "IBM Quantum: Quantum computing fundamentals",
+      "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations/quantum-computing-fundamentals"
+    ],
+    [
+      "IBM Quantum: Superposition with Qiskit",
+      "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/superposition-with-qiskit"
+    ]
+  ],
+  "syllabus-mobile-communication": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "ITU-T Y.3101 Requirements of the IMT-2020 network",
+      "https://www.itu.int/epublications/publication/itu-t-y-3101-2018-01-requirements-of-the-imt-2020-network"
+    ]
+  ],
+  "syllabus-office-exchange": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "WPS：如何新建文字、表格、演示",
+      "https://www.wps.cn/learning/question/detail/id/1932.html"
+    ],
+    [
+      "Microsoft：Excel基本任务",
+      "https://support.microsoft.com/en-us/excel/basic-tasks-in-excel"
+    ]
+  ],
+  "syllabus-ppt-output": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Print your PowerPoint slides, handouts, or notes",
+      "https://support.microsoft.com/en-us/powerpoint/training/print-your-powerpoint-slides-handouts-or-notes"
+    ],
+    [
+      "Turn your presentation into a video",
+      "https://support.microsoft.com/en-us/powerpoint/export-a-presentation"
+    ]
+  ],
+  "syllabus-worksheet-protection": [
+    [
+      "山东省2026年专升本公共基础课考试要求",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Protect a worksheet",
+      "https://support.microsoft.com/en-us/excel/lock-cells-to-protect-them-in-excel"
+    ]
+  ],
+  "syllabus-word-smartart": [
+    [
+      "Microsoft：用SmartArt创建流程图",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/create-a-flow-chart-with-smartart"
+    ]
+  ],
+  "syllabus-word-screen-clipping": [
+    [
+      "Microsoft：插入截图或屏幕剪辑",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/insert-a-screenshot-or-screen-clipping"
+    ]
+  ],
+  "syllabus-word-print-controls": [
+    [
+      "Microsoft：打印Word文档",
+      "https://support.microsoft.com/en-us/word/print-a-document-in-word"
+    ],
+    [
+      "Microsoft：Word双面打印",
+      "https://support.microsoft.com/en-us/word/print-on-both-sides-of-the-paper-duplex-printing-in-word"
+    ]
+  ],
+  "y2024q59": [
+    [
+      "Microsoft：组织工作表数据的准则",
+      "https://support.microsoft.com/en-us/excel/guidelines-for-organizing-and-formatting-data-on-a-worksheet"
+    ],
+    [
+      "Microsoft：创建数据透视表",
+      "https://support.microsoft.com/en-us/excel/get-started/create-a-pivottable-to-analyze-worksheet-data"
+    ],
+    [
+      "Microsoft：Excel表格概述",
+      "https://support.microsoft.com/en-us/excel/overview-of-excel-tables"
+    ]
+  ],
+  "syllabus-excel-multikey-sort": [
+    [
+      "Microsoft：对区域或表格中的数据排序",
+      "https://support.microsoft.com/en-us/excel/sort-data-in-a-range-or-table-in-excel"
+    ]
+  ],
+  "syllabus-excel-whatif-table": [
+    [
+      "Microsoft：用模拟运算表计算多个结果",
+      "https://support.microsoft.com/en-us/excel/calculate-multiple-results-by-using-a-data-table"
+    ]
+  ],
+  "syllabus-media-edit-export": [
+    [
+      "Audacity：导出音频",
+      "https://manual.audacityteam.org/man/file_export_dialog.html"
+    ],
+    [
+      "Adobe：视频导出",
+      "https://helpx.adobe.com/premiere/desktop/render-and-export/export-files/export-video.html"
+    ],
+    [
+      "Adobe：导出选项",
+      "https://helpx.adobe.com/premiere/desktop/render-and-export/export-files/export-options-in-premiere.html"
+    ]
+  ],
+  "y2024q6": [
+    [
+      "统信：桌面操作系统专业版",
+      "https://www.uniontech.com/m/OS-Professional-edition.html"
+    ],
+    [
+      "研华：银河麒麟操作系统适配产品",
+      "https://www.advantech.com.cn/zh-cn/products/yinhe-kylin-linux-os/sub_7c82f900-5bfb-495e-baab-470c99653bdf"
+    ],
+    [
+      "华为：HarmonyOS多设备开发实践",
+      "https://developer.huawei.com/consumer/cn/best-practices/multidevice/"
+    ]
+  ],
+  "y2020q16": [
+    [
+      "MDN：服务端编程入门",
+      "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Introduction"
+    ]
+  ],
+  "y2025q4": [
+    [
+      "Wing：Computational Thinking",
+      "https://www.cs.cmu.edu/~wing/publications/Wing06.pdf"
+    ]
+  ],
+  "y2025q23": [
+    [
+      "ITU/WSIS：信息社会原则宣言",
+      "https://www.itu.int/net/wsis/docs/geneva/official/dop.html"
     ]
   ]
 }

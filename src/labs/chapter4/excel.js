@@ -34,7 +34,7 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
     const rnames=s.zones.row.length?[...new Set(rows.map(r=>groupKey(r,'row')))]:['总计'];
     const cnames=s.zones.column.length?[...new Set(rows.map(r=>groupKey(r,'column')))]:['总计'];
     const valueColumns=cnames.flatMap(name=>s.zones.value.map(metric=>({name,metric})));
-    const aggregate=(set,metric)=>!set.length?'—':s.aggregate==='count'?set.length:money(set.reduce((sum,r)=>sum+Number(r[index(metric)]),0)/(s.aggregate==='average'?set.length:1));
+    const aggregate=(set,metric)=>{const values=set.map(r=>r[index(metric)]),nums=values.filter(v=>typeof v==='number'&&Number.isFinite(v));if(!set.length)return '—';if(s.aggregate==='count')return values.filter(v=>v!==''&&v!=null).length;const sum=nums.reduce((a,b)=>a+b,0);return s.aggregate==='average'?(nums.length?money(sum/nums.length):'#DIV/0!'):money(sum);};
     const columnsFor=set=>valueColumns.map(({name,metric})=>aggregate(set.filter(r=>!s.zones.column.length||groupKey(r,'column')===name),metric));
     const resultRows=[];
     if(s.zones.row.length>1){
@@ -45,12 +45,12 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
       }
       resultRows.push(['<b>总计</b>',...columnsFor(rows)]);
     }else for(const rn of rnames)resultRows.push([esc(rn),...columnsFor(rows.filter(r=>!s.zones.row.length||groupKey(r,'row')===rn))]);
-    const result=s.zones.value.length?table(['行标签',...valueColumns.map(({name,metric})=>esc(name)+(s.zones.value.length>1?' · '+pivotLabel(metric):''))],resultRows):'<p class="lab-empty">把数值字段放入值区域。</p>';
+    const result=s.zones.value.length?table(['行标签',...valueColumns.map(({name,metric})=>esc(name)+(s.zones.value.length>1?' · '+pivotLabel(metric):''))],resultRows):'<p class="lab-empty">把字段放入值区域；数值可求和，文字可计数。</p>';
     const filter=s.zones.filter.includes(fields[1])?select('filter',esc(s.filterLabel||fields[1]+'筛选'),s.filter,[['全部','全部'],...[...new Set(data.map(r=>r[1]))].map(v=>[v,v])])+field('filterLabel','筛选字段显示名称',s.filterLabel||fields[1]+'筛选'):'';
     return `<div class="lab-controls">${select('scenario','源数据场景',s.scenario,[['sales','产品销量'],['grades','班级成绩：多个值字段']])}</div>`+
       office('Excel','数据透视表分析',select('aggregate','值汇总方式',s.aggregate,[['sum','求和'],['average','平均值'],['count','计数']])+(grades?btn(s.monthly?'取消日期组合':'日期 → 按年、月组合','group'):''),
         `<div class="lab-pivot-layout"><div>${filter}${result}</div><aside class="lab-fields"><b>数据透视表字段</b><div class="lab-field-bank">${fields.map(f=>`<button data-lab-drag="field" data-key="${f}" data-lab-act="pick" data-value="${f}" aria-pressed="${s.picked===f}">${pivotLabel(f)} <span>⠿</span></button>`).join('')}</div><div class="lab-drop-zones">${zones.map(([key,label])=>`<section data-lab-drop="${key}"><b>${label}</b>${s.zones[key].map(f=>btn(`${pivotLabel(f)} ×`,'remove',key+':'+f)).join('')||'<small>拖到这里</small>'}</section>`).join('')}</div></aside></div>`)+
-      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个数值字段可并排汇总；本例统一切换汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),data)}</details>`+output(s.message);
+      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个字段可并排汇总；文字字段默认计数。本例统一切换全部值字段的汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),data)}</details>`+output(s.message);
   },(s,a,v)=>{
     if(a==='pick')s.picked=v;
     if(a==='remove'){const [zone,f]=v.split(':');s.zones[zone]=s.zones[zone].filter(x=>x!==f);if(zone==='filter')s.filter='全部';}
@@ -63,7 +63,7 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
 function placeField(s,field,zone){
     const fields=pivotFields(s),metrics=fields.slice(3),filter=fields[1];
     if(!fields.includes(field)||!Object.hasOwn(s.zones,zone))return;
-    if(zone==='value'&&!metrics.includes(field)){s.message='值区域需要数值字段；文字字段用于分类或筛选。';return;}
+    if(zone==='value'&&!metrics.includes(field))s.aggregate='count';
     for(const key of Object.keys(s.zones))s.zones[key]=s.zones[key].filter(f=>f!==field);
     s.zones[zone].push(field);if(!s.zones.filter.includes(filter))s.filter='全部';
     s.message=`${pivotLabel(field)}已放入${{row:'行',column:'列',value:'值',filter:'筛选器'}[zone]}区域，报表已重新计算。`;

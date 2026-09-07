@@ -27,6 +27,7 @@ module.exports = function discovery(notes, chapters, topics) {
     {anchor:`${note.id}--conclusion`,text:text(note.conclusion)},
     ...note.points.map((p,i)=>({anchor:`${note.id}--point-${i}`,text:text(p)})),
     {anchor:`${note.id}--boundary`,text:text(note.boundary)},
+    ...(note.workedExamples||[]).map((example,i)=>({anchor:`${note.id}--worked-${i}`,text:[`${example.year} 第${example.q}题`,example.questionSummary,...example.reasoning,example.pitfall,example.transfer].map(text).join(' ')})),
     ...(note.comparison?[{anchor:`${note.id}--comparison`,text:[note.comparison.caption,...note.comparison.headers,...note.comparison.rows.flat()].map(text).join(' ')}]:[]),
     {anchor:`${note.id}--sources`,text:text(note.trigger)+' '+note.sources.map(s=>`${s.year} 第${s.q}题`).join(' ')}
   ]}));
