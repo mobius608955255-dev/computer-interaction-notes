@@ -6,13 +6,21 @@
 const frame=document.getElementById('preview'),width=document.getElementById('width'),chapter=document.getElementById('chapter'),note=document.getElementById('note');
 chapter.innerHTML='<option value="0">首页</option>'+Array.from({length:11},(_,i)=>`<option value="${i+1}">第${i+1}章</option>`).join('');
 chapter.value='4';
-function load(){frame.src=chapter.value==='0'?`../index.html?preview=${Date.now()}`:`../chapter${chapter.value}.html?preview=${Date.now()}`;}
+let frameLoaded=false;
+function load(){frameLoaded=false;frame.src=chapter.value==='0'?`../index.html?preview=${Date.now()}`:`../chapter${chapter.value}.html?preview=${Date.now()}`;}
 chapter.onchange=load;width.onchange=()=>frame.width=width.value;
-frame.onload=()=>{note.innerHTML=[...frame.contentDocument.querySelectorAll('.note-item')].map(n=>`<option value="${n.id}">${n.querySelector('h3').textContent}</option>`).join('');};
-document.getElementById('open').onclick=()=>{const c=frame.contentDocument.getElementById(note.value);if(!c)return;const b=c.querySelector('.simulation-toggle');if(b.getAttribute('aria-expanded')==='false')b.click();b.scrollIntoView({block:'start'});};
-document.getElementById('measure').onclick=()=>{const d=frame.contentDocument;const c=d.getElementById(note.value);const r=c.querySelector('.reality-demo').getBoundingClientRect();document.getElementById('result').textContent=`视口 ${d.documentElement.clientWidth}px / 文档 ${d.documentElement.scrollWidth}px / 卡片 ${Math.round(r.width)}px；正文横向溢出 ${Math.max(0,d.documentElement.scrollWidth-d.documentElement.clientWidth)}px`;};
+frame.onload=()=>{frameLoaded=true;note.innerHTML=[...frame.contentDocument.querySelectorAll('.note-item')].map(n=>`<option value="${n.id}">${n.querySelector('h3').textContent}</option>`).join('');};
+function chapterDocument(){
+ const d=frame.contentDocument;
+ if(chapter.value==='0')throw new Error('首页没有演示卡片，请选择章节。');
+ if(!frameLoaded||d?.body?.dataset.chapter!==chapter.value||!d.querySelector('.note-item'))throw new Error('章节尚未加载完成，请稍后重试；本次不计为通过。');
+ return d;
+}
+const checked=action=>async()=>{try{await action();}catch(error){document.getElementById('result').textContent='检查中断：'+error.message;}};
+document.getElementById('open').onclick=checked(()=>{const c=chapterDocument().getElementById(note.value);if(!c)return;const b=c.querySelector('.simulation-toggle');if(b.getAttribute('aria-expanded')==='false')b.click();b.scrollIntoView({block:'start'});});
+document.getElementById('measure').onclick=checked(()=>{const d=chapterDocument();const c=d.getElementById(note.value);const r=c.querySelector('.reality-demo').getBoundingClientRect();document.getElementById('result').textContent=`视口 ${d.documentElement.clientWidth}px / 文档 ${d.documentElement.scrollWidth}px / 卡片 ${Math.round(r.width)}px；正文横向溢出 ${Math.max(0,d.documentElement.scrollWidth-d.documentElement.clientWidth)}px`;});
 async function auditChapter(){
- const d=frame.contentDocument,w=frame.contentWindow,cards=[...d.querySelectorAll('.note-item')],issues=[];
+ const d=chapterDocument(),w=frame.contentWindow,cards=[...d.querySelectorAll('.note-item')],issues=[];
  for(const c of cards){
   const toggle=c.querySelector('.simulation-toggle'),wasOpen=toggle.getAttribute('aria-expanded')==='true';if(!wasOpen)toggle.click();
   // getBoundingClientRect below flushes layout; a background-frame RAF can be throttled.
@@ -27,7 +35,7 @@ async function auditChapter(){
  }
  return {chapter:chapter.value,frameWidth:Number(width.value),width:d.documentElement.clientWidth,cards:cards.length,overflow:Math.max(0,d.documentElement.scrollWidth-d.documentElement.clientWidth),issues};
 }
-document.getElementById('audit').onclick=async()=>{document.getElementById('result').textContent=JSON.stringify(await auditChapter(),null,2);};
+document.getElementById('audit').onclick=checked(async()=>{document.getElementById('result').textContent=JSON.stringify(await auditChapter(),null,2);});
 document.getElementById('audit-all').onclick=async()=>{
  const buttons=[...document.querySelectorAll('header button,header select')],results=[],result=document.getElementById('result');buttons.forEach(b=>b.disabled=true);
  try{

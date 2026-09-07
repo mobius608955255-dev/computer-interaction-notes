@@ -1,6 +1,6 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=47)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=48)
 
 根据2020—2026年山东专升本计算机真题整理，保留教材11章结构。460道题归并为220条知识笔记，另补13条考纲知识，共233条，每题可追溯年份、题号与所属知识点。Windows和Office操作按Windows 10 / Office 2016口径解释；发现扫描答案错误时，以可靠标准纠正并说明边界。
 
@@ -54,6 +54,6 @@ npm run check
 
 计时模型用`frameKey`描述布局边界，通过`patchFrame`和`ui.patchRegions`更新明确指定的动态区域；跨页、结束或布局改变仍执行完整渲染。不能把输入区交给局部更新，也不能省略模型自己的事件钩子。新增模型后须同步manifest章节归属和回归。
 
-本轮内容审校、13条考纲补充与卡片改造见[AUDIT-v47.md](AUDIT-v47.md)。目录、阅读简化与连续操作修复见[AUDIT-v46.md](AUDIT-v46.md)。整体内容和模型结构改版见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
+断线恢复检查与局部修复见[AUDIT-v48.md](AUDIT-v48.md)。内容审校、13条考纲补充与卡片改造见[AUDIT-v47.md](AUDIT-v47.md)。目录、阅读简化与连续操作修复见[AUDIT-v46.md](AUDIT-v46.md)。整体内容和模型结构改版见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
 
 演示仍是围绕考点的局部教学模型；来源齐全不等于覆盖完整考纲，也不等同于完整Office软件。

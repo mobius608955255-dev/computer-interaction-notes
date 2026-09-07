@@ -1,0 +1,288 @@
+{
+  "desktopAfterFix": [
+    {
+      "cards": 25,
+      "chapter": "2",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 25,
+      "chapter": "2",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    }
+  ],
+  "desktopBeforeFix": [
+    {
+      "cards": 19,
+      "chapter": "1",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 25,
+      "chapter": "2",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 40,
+      "chapter": "3",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 46,
+      "chapter": "4",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 22,
+      "chapter": "5",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 26,
+      "chapter": "6",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 10,
+      "chapter": "7",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 11,
+      "chapter": "8",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 11,
+      "chapter": "9",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 12,
+      "chapter": "10",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    },
+    {
+      "cards": 11,
+      "chapter": "11",
+      "frameWidth": 1200,
+      "issues": [],
+      "overflow": 0,
+      "width": 1185
+    }
+  ],
+  "mobile": [
+    {
+      "cards": 19,
+      "chapter": "1",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 25,
+      "chapter": "2",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 40,
+      "chapter": "3",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 46,
+      "chapter": "4",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 22,
+      "chapter": "5",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 26,
+      "chapter": "6",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 10,
+      "chapter": "7",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 11,
+      "chapter": "8",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 11,
+      "chapter": "9",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 12,
+      "chapter": "10",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 11,
+      "chapter": "11",
+      "frameWidth": 360,
+      "issues": [],
+      "overflow": 0,
+      "width": 345
+    },
+    {
+      "cards": 19,
+      "chapter": "1",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 25,
+      "chapter": "2",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 40,
+      "chapter": "3",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 46,
+      "chapter": "4",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 22,
+      "chapter": "5",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 26,
+      "chapter": "6",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 10,
+      "chapter": "7",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 11,
+      "chapter": "8",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 11,
+      "chapter": "9",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 12,
+      "chapter": "10",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    },
+    {
+      "cards": 11,
+      "chapter": "11",
+      "frameWidth": 390,
+      "issues": [],
+      "overflow": 0,
+      "width": 375
+    }
+  ]
+}
