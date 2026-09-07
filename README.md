@@ -1,6 +1,6 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=45)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=46)
 
 根据2020—2026年山东专升本计算机真题整理，保留教材11章结构。460道题归并为220条知识笔记，每题可追溯年份、题号与所属知识点。Windows和Office操作按Windows 10 / Office 2016口径解释；发现扫描答案错误时，以可靠标准纠正并说明边界。
 
@@ -27,9 +27,10 @@ npm run check
 | `templates/`、`scripts/build.cjs` | 页面模板与确定性构建；按章生成数据和演示包 |
 | `generated/`、`chapter*.html`、`index.html` | 生成物，不直接修改 |
 | `site.config.json` | 全站资源及内链共用的版本号；构建另为资源生成内容摘要以避免旧缓存 |
-| `notes-app.js` | 正文渲染、本章搜索、目录、卡片挂载和保留的旧场景事件 |
-| `notes-reading.js` | 详读/快速复习与段落展开；保留同一正文和演示DOM |
-| `notes-search.js`、`notes-home.js` | 全站搜索与首页对照；搜索索引在首次查询时载入 |
+| `notes-app.js` | 正文渲染、段落跳转、卡片挂载和保留的旧场景事件 |
+| `notes-directory.js` | 单一目录入口、章节切换、分组知识点导航与焦点管理 |
+| `notes-chapter-search.js` | 本章搜索、命中段落提示、临时展开来源和查询恢复 |
+| `notes-search.js`、`notes-home.js` | 共享搜索规则与缓存、首页结果分页和对照恢复；全站索引在首次查询时载入 |
 | `scripts/discovery.cjs` | 从正文生成段落索引、双向导航，验证关联与分组完整性 |
 | `notes-choices.js` | 页面内单选控件、键盘与焦点行为 |
 | `note-labs-runtime.js` | 演示注册、输入分发、重绘、局部画面更新、指针与计时器生命周期，以及纯文本转义 |
@@ -48,10 +49,10 @@ npm run check
 5. 增加或修正行为时，测试实际可观察结果和重要边界。测试从章节HTML读取脚本顺序，避免另维护一套与生产不同的入口。
 6. 修改`site.config.json`版本号，运行构建与回归，提交源码和生成物。GitHub Pages继续从原仓库发布。
 
-每章当前加载6—7个脚本，未压缩JS总量约200—405KB，较v44减少19%—38%；包含本轮新增的关联信息。这是静态资源体积，不是实测网络耗时。搜索索引仅在首页首次查询时下载，章节页无需加载全站正文。
+每章只加载本章正文和演示模型；首页的全站搜索索引在首次查询时下载。正文统一完整展示，不保存阅读模式。章节切换与本章知识点共用一个目录面板，章节链接可直接打开或在新标签页打开。
 
 计时模型用`frameKey`描述布局边界，通过`patchFrame`和`ui.patchRegions`更新明确指定的动态区域；跨页、结束或布局改变仍执行完整渲染。不能把输入区交给局部更新，也不能省略模型自己的事件钩子。新增模型后须同步manifest章节归属和回归。
 
-本轮整体改版与验证见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
+本轮目录、阅读简化与连续操作修复见[AUDIT-v46.md](AUDIT-v46.md)。整体内容和模型结构改版见[AUDIT-v45.md](AUDIT-v45.md)。前轮手机交互复核见[AUDIT-v44.md](AUDIT-v44.md)，更早记录见[docs/HISTORY.md](docs/HISTORY.md)；旧文件名及测试数量仅反映当时状态。
 
 演示仍是围绕考点的局部教学模型；来源齐全不等于覆盖完整考纲，也不等同于完整Office软件。

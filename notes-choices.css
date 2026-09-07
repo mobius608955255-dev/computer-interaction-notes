@@ -26,11 +26,6 @@
 .note-lab .core-modifier-keys button { min-width:0; min-height:48px; width:100%; margin:0; padding:10px 8px; border:1px solid #e1c9d5; border-bottom-width:3px; border-radius:10px; background:#fff; color:#513d48; font:600 1rem/1.5 system-ui,sans-serif; overflow-wrap:anywhere; touch-action:manipulation; }
 .note-lab .core-modifier-keys button[aria-pressed="true"] { background:#fce8f1; border-color:#b8467c; color:#872754; box-shadow:inset 0 0 0 1px #b8467c; }
 .note-lab .core-modifier-keys button:focus-visible { outline:3px solid #ba3e79; outline-offset:3px; }
-.notes-picker.is-chapter { width:min(310px,45vw); flex:1; position:static; }
-.notes-picker.is-chapter>.choice-label { display:none; }
-.notes-picker.is-chapter .choice-trigger { min-height:44px; padding:7px 10px; font-size:.875rem; }
-.notes-picker.is-chapter .choice-options { position:absolute; top:100%; right:max(12px,calc((100vw - var(--reading))/2)); z-index:55; width:min(350px,calc(100vw - 24px)); max-height:min(65dvh,440px); box-shadow:0 12px 30px #65374924; }
-.notes-picker.is-chapter .choice-option { font-size:.9375rem; min-height:48px; }
 @media(hover:hover) {
   .notes-picker .choice-option:not(:disabled):hover,.notes-picker .choice-trigger:not(:disabled):hover { background:#fff0f6; border-color:#c47a9d; }
   .notes-picker .choice-option[aria-checked="true"]:hover { background:#f8dce9; }
@@ -40,7 +35,6 @@
 }
 @media(max-width:400px) {
   .notes-picker :is(.choice-option,.choice-trigger) { padding:9px; gap:6px; }
-  .notes-picker.is-chapter { width:min(47vw,205px); }
 }
 @media print {
   .notes-picker .choice-options { max-height:none!important; overflow:visible!important; }

@@ -153,8 +153,26 @@ const excelDigits=v=>{const digits=v.replace(/^0+/,'')||'0';return digits.length
 const csvText='职工号,姓名,档案编号\n0012,"王,宁",001234567890123456\n0013,李明,002345678901234567';
 register(['y2021q47'],'导入向导：先分列，再把长编号设为文本','原样显示CSV，再逐页检查分隔符与列类型。',{step:0,delimiter:',',textColumns:true,imported:false,message:'示例编号是虚构文本，不对应真实身份。'},s=>{
     const rows=parseCSV(csvText,s.delimiter);const type=s.textColumns?'文本':'常规';
-    return office('Excel','数据',btn('自文本','start'),s.imported?table(rows[0],rows.slice(1).map(r=>r.map((v,i)=>i!==1&&!s.textColumns?(i===0?String(Number(v)):excelDigits(v)):esc(v)))):s.step?dialog(`文本导入向导 · 第${s.step}步`,s.step===1?'<p>选择分隔符号；文件为UTF-8示例文本。</p><pre class="lab-code">'+esc(csvText)+'</pre>':s.step===2?select('delimiter','分隔符',s.delimiter,[[',','逗号'],[';','分号'],['\t','制表符']])+table(rows[0],rows.slice(1)):select('textColumns','职工号与档案编号列',String(s.textColumns),[['true','文本'],['false','常规']])+`<p>当前类型：${type}。文本可保留前导0和长编号。</p>`,(s.step>1?btn('上一步','back'):'')+btn(s.step===3?'完成':'下一步',s.step===3?'finish':'next')+btn('取消','cancel')):'<p class="lab-empty">工作表尚未导入数据。</p>')+output(s.message);
-  },(s,a)=>{if(a==='start'){s.previousImport={imported:s.imported,delimiter:s.delimiter,textColumns:s.textColumns};s.step=1;s.imported=false;}if(a==='next')s.step=Math.min(3,s.step+1);if(a==='back')s.step=Math.max(1,s.step-1);if(a==='cancel'){s.step=0;if(s.previousImport)Object.assign(s,s.previousImport);s.message=s.imported?'已取消本次导入，原表数据保留。':'已取消导入。';}if(a==='finish'){if(s.delimiter!==','){s.message='预览仍是一列：应先选择与源文件一致的逗号分隔符。';return;}s.imported=true;s.step=0;s.message=s.textColumns?'文本列保留了前导0和全部字符；带引号的“王,宁”仍是一格。':'常规数值推断丢掉前导0，超过15位的数字不可靠；应从源文件重新以文本导入。';}},(s,k,v)=>{s[k]=k==='textColumns'?v==='true':v;});
+    return office('Excel','数据',btn('自文本','start','',s.step?'disabled':''),s.imported?table(rows[0],rows.slice(1).map(r=>r.map((v,i)=>i!==1&&!s.textColumns?(i===0?String(Number(v)):excelDigits(v)):esc(v)))):s.step?dialog(`文本导入向导 · 第${s.step}步`,s.step===1?'<p>选择分隔符号；文件为UTF-8示例文本。</p><pre class="lab-code">'+esc(csvText)+'</pre>':s.step===2?select('delimiter','分隔符',s.delimiter,[[',','逗号'],[';','分号'],['\t','制表符']])+table(rows[0],rows.slice(1)):select('textColumns','职工号与档案编号列',String(s.textColumns),[['true','文本'],['false','常规']])+`<p>当前类型：${type}。文本可保留前导0和长编号。</p>`,(s.step>1?btn('上一步','back'):'')+btn(s.step===3?'完成':'下一步',s.step===3?'finish':'next')+btn('取消','cancel')):'<p class="lab-empty">工作表尚未导入数据。</p>')+output(s.message);
+  },(s,a)=>{
+    if(a==='start'){
+      if(s.step)return;
+      s.previousImport={imported:s.imported,delimiter:s.delimiter,textColumns:s.textColumns};
+      s.step=1;s.imported=false;return;
+    }
+    if(!s.step)return;
+    if(a==='next'&&s.step<3)s.step++;
+    if(a==='back'&&s.step>1)s.step--;
+    if(a==='cancel'){
+      Object.assign(s,s.previousImport);s.previousImport=null;s.step=0;
+      s.message=s.imported?'已取消本次导入，原表数据保留。':'已取消导入。';return;
+    }
+    if(a==='finish'&&s.step===3){
+      if(s.delimiter!==','){s.message='预览仍是一列：应先选择与源文件一致的逗号分隔符。';return;}
+      s.imported=true;s.step=0;s.previousImport=null;
+      s.message=s.textColumns?'文本列保留了前导0和全部字符；带引号的“王,宁”仍是一格。':'常规数值推断丢掉前导0，超过15位的数字不可靠；应从源文件重新以文本导入。';
+    }
+  },(s,k,v)=>{s[k]=k==='textColumns'?v==='true':v;});
 const phoneData=['13000000001','13000000002','13000000003'];
 register(['y2021q49'],'辅助列脱敏，粘贴值后切断公式依赖','创建公式、向下填充、复制结果，再选择性粘贴为值。',{values:phoneData,names:['王宁','李明','赵敏'],pastedFormulas:false,formula:false,filled:0,copied:null,pane:false,kind:'values',message:'D列为虚构号码，F列尚无公式。'},s=>{
     const masks=s.values.map(v=>v.slice(0,7)+'****');return office('Excel','开始',btn('复制辅助列','copy')+btn('选择性粘贴…','paste'),`${table(['行','B 姓名','D 联系电话','F 辅助列'],s.values.map((v,i)=>[i+2,esc(s.names[i]),esc(v)+(s.pastedFormulas?`<small>=LEFT(B${i+2},7)&amp;"****"</small>`:''),`<div class="lab-lookup-cell" data-fill-index="${i}">${s.formula&&i<=s.filled?esc(masks[i]):''}${s.formula&&i===0?'<button data-lab-drag="fill" class="lab-fill-handle" aria-label="向下拖动填充柄"></button>':''}</div>`]))}${s.pane?dialog('粘贴到D2:D4',select('kind','粘贴',s.kind,[['values','值'],['formulas','公式']]),btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('在F2输入 =LEFT(D2,7)&"****"','formula')}${btn('键盘辅助：填充辅助列','fill')}${btn('尝试直接在D2输入引用D2的公式','circular')}</div>${output(s.message)}`;

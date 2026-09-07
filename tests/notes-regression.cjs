@@ -8,9 +8,10 @@ const root=path.resolve(__dirname,'..');
 const scriptsFor=chapter=>[...fs.readFileSync(path.join(root,`chapter${chapter}.html`),'utf8').matchAll(/<script src="\.\/([^"?]+)/g)].map(m=>m[1]);
 const allNotes=()=>Array.from({length:11},(_,i)=>JSON.parse(fs.readFileSync(path.join(root,`content/chapter${i+1}.json`),'utf8'))).flat();
 const releaseVersion=JSON.parse(fs.readFileSync(path.join(root,'site.config.json'),'utf8')).version;
-function env(chapter=4){
-  const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
+function env(chapter=4,{url,oldReadingMode}={}){
+  const dom=new JSDOM(`<body data-chapter="${chapter}"></body>`,{url:url||'https://notes.example/chapter'+chapter+'.html',runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;w.structuredClone=structuredClone;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;Object.defineProperty(w.crypto,'subtle',{value:require('node:crypto').webcrypto.subtle});w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLElement.prototype.setPointerCapture=()=>{};
+  if(oldReadingMode)w.localStorage.setItem('notes-reading-mode',oldReadingMode);
   for(const f of scriptsFor(chapter))w.eval(fs.readFileSync(path.join(root,f),'utf8'));
   return {dom,w,d:w.document};
 }
@@ -60,8 +61,18 @@ test('legacy option updates, disabled groups, and list-box exceptions are preser
  host.querySelector('fieldset').disabled=false;e.w.NOTE_CHOICES.enhance(host);assert.equal(host.querySelector('.choice-option').disabled,false);
  const source=host.querySelector('select');source.innerHTML='<option>新条目</option><option selected>当前条目</option>';await new Promise(r=>e.w.setTimeout(r,0));assert.equal(host.querySelector('[aria-checked="true"]').textContent,'当前条目✓');e.dom.window.close();
 });
-test('chapter selection has complete names and an accessible local menu',()=>{
- const e=env(2),source=e.d.querySelector('#chapter-select'),box=source.closest('.notes-picker');assert.ok(source.hidden);assert.equal(box.querySelectorAll('.choice-option').length,11);assert.match(box.querySelector('.choice-current').textContent,/第2章/);box.querySelector('.choice-trigger').click();assert.equal(box.querySelector('.choice-options').hidden,false);e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key:'Escape'}));assert.equal(e.d.activeElement,box.querySelector('.choice-trigger'));e.dom.window.close();
+test('one directory contains chapter links and grouped notes with a working focus boundary',()=>{
+ const e=env(2),d=e.d,drawer=d.getElementById('drawer'),trigger=d.getElementById('open-drawer');
+ assert.equal(d.querySelectorAll('.header-actions button').length,1);assert.equal(d.querySelector('#chapter-select'),null);
+ trigger.click();assert.equal(trigger.getAttribute('aria-expanded'),'true');
+ const menu=drawer.querySelector('.directory-chapters');assert.equal(menu.open,false);menu.querySelector('summary').click();assert.equal(menu.open,true);
+ const links=[...menu.querySelectorAll('a')];assert.equal(links.length,11);assert.match(links[1].textContent,/Windows 10/);assert.equal(links[1].getAttribute('aria-current'),'page');
+ assert.equal(new URL(links[3].href).pathname,'/chapter4.html');let prevented;
+ d.addEventListener('click',event=>{if(event.target===links[3]){prevented=event.defaultPrevented;event.preventDefault();}});links[3].click();assert.equal(prevented,false,'chapter links retain normal browser navigation');
+ menu.querySelector('summary').click();const last=drawer.querySelector('.directory-section:last-child .note-list li:last-child a');last.focus();last.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));assert.equal(d.activeElement.id,'close-drawer');
+ d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true}));assert.equal(d.activeElement,last);
+ last.click();assert.equal(trigger.getAttribute('aria-expanded'),'false');assert.equal(drawer.hidden,true);assert.equal(e.w.location.hash,last.hash);assert.equal(d.activeElement.id,last.hash.slice(1));assert.equal(last.getAttribute('aria-current'),'location');
+ trigger.click();d.getElementById('scrim').click();assert.equal(d.activeElement,trigger);e.dom.window.close();
 });
 test('460 unique sources; all seven years mapped; canonical notes have valid sections',()=>{
   const e=env();const notes=allNotes();assert.equal(notes.length,220);assert.equal(e.w.NOTES.sourceCount,460);
@@ -74,7 +85,9 @@ test('all chapters mount, open, reset and collapse every card without exceptions
   for(let chapter=1;chapter<=11;chapter++){
     const e=env(chapter),errors=[];e.w.addEventListener('error',x=>errors.push(x.error?.stack||x.message));
     assert.deepEqual(JSON.parse(JSON.stringify(e.w.NOTES.notes)),allNotes().filter(n=>n.chapter===chapter),'generated content matches canonical chapter');
-    assert.equal(e.d.querySelector('#chapter-select').options.length,11);
+    assert.equal(e.d.querySelectorAll('.directory-chapters a').length,11);
+    assert.equal(e.d.querySelectorAll('[data-reading-mode],details.note-explanation').length,0);
+    assert.equal(e.d.querySelectorAll('.directory-section .note-list a').length,e.w.NOTES.notes.length);
     assert.equal(e.d.querySelectorAll('[data-sim-mount]>*').length,0,'scenes are lazy mounted');
     for(const b of e.d.querySelectorAll('.simulation-toggle')){b.click();assert.equal(b.getAttribute('aria-expanded'),'true');const c=b.closest('[data-sim-id]');assert.ok(c.querySelector('[data-sim-mount]').children.length);c.querySelector('[data-sim-reset]').click();b.click();assert.equal(b.getAttribute('aria-expanded'),'false');}
     assert.deepEqual(errors,[],'chapter '+chapter);e.dom.window.close();
@@ -624,11 +637,12 @@ test('full-site search normalizes aliases and resolves every note paragraph and 
   e.dom.window.close();
  }
 });
-test('quick review preserves live state and deep links expand exact hidden paragraphs',()=>{
- const e=env(2),c=open(e,'y2020q24');click(c,'modifier','ctrl');const lab=c.querySelector('[data-lab]'),key=()=>c.querySelector('[data-lab-act="modifier"][data-value="ctrl"]');
- e.d.querySelector('[data-reading-mode="quick"]').click();assert.equal(e.d.querySelectorAll('.note-explanation[open]').length,0);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(key().getAttribute('aria-pressed'),'true');assert.equal(e.w.localStorage.getItem('notes-reading-mode'),'quick');
- const target=e.d.getElementById('y2020q24--point-1');e.w.location.hash='#'+target.id;e.w.dispatchEvent(new e.w.HashChangeEvent('hashchange'));assert.equal(target.closest('details').open,true);assert.equal(target.classList.contains('note-search-target'),true);
- e.d.querySelector('[data-reading-mode="detail"]').click();assert.equal(e.d.querySelectorAll('.note-explanation[open]').length,25);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(key().getAttribute('aria-pressed'),'true');e.dom.window.close();
+test('full prose ignores the removed preference and paragraph jumps preserve the live demonstration',()=>{
+ const e=env(2,{oldReadingMode:'quick'}),c=open(e,'y2020q24');click(c,'modifier','ctrl');const lab=c.querySelector('[data-lab]');
+ assert.equal(e.d.querySelectorAll('[data-reading-mode],details.note-explanation').length,0);assert.equal(e.w.localStorage.getItem('notes-reading-mode'),null);
+ const target=e.d.getElementById('y2020q24--point-1');assert.equal(target.closest('details'),null);
+ e.w.location.hash='#'+target.id;e.w.dispatchEvent(new e.w.HashChangeEvent('hashchange'));assert.equal(target.classList.contains('note-search-target'),true);
+ assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-lab-act="modifier"][data-value="ctrl"]').getAttribute('aria-pressed'),'true');e.dom.window.close();
 });
 test('PPT rename fixes its target and leaving slideshow synchronizes page, section and transition',()=>{
  const e=env(5),c=open(e,'y2025q10');click(c,'rename');const name=c.querySelector('[data-field="name"]');name.value='改名后的第一节';name.dispatchEvent(new e.w.Event('input',{bubbles:true}));
@@ -655,6 +669,47 @@ function homeEnv(url='https://notes.example/index.html',fetchIndex){
  return {dom,w,d:w.document};
 }
 const typeGlobal=(e,value)=>{const field=e.d.getElementById('global-search');field.value=value;field.dispatchEvent(new e.w.Event('input',{bubbles:true}));};
+test('more search results append in place, focus the next item and restore through the URL',async()=>{
+ const e=homeEnv();typeGlobal(e,'数据');await new Promise(setImmediate);
+ const list=e.d.getElementById('global-results'),first=list.firstElementChild;assert.equal(list.children.length,30);
+ e.d.getElementById('search-more').click();assert.equal(list.children.length,60);assert.equal(list.firstElementChild,first);assert.equal(e.d.activeElement,list.children[30].querySelector('a'));
+ const url=e.w.location.href;assert.equal(new URL(url).searchParams.get('shown'),'60');
+ const next=homeEnv(url);await new Promise(setImmediate);assert.equal(next.d.getElementById('global-results').children.length,60);
+ typeGlobal(next,'SUMIF');await new Promise(setImmediate);assert.equal(new URL(next.w.location.href).searchParams.has('shown'),false);
+ next.w.history.pushState(null,'',url);next.w.dispatchEvent(new next.w.PopStateEvent('popstate'));await new Promise(setImmediate);assert.equal(next.d.getElementById('global-results').children.length,60);
+ e.dom.window.close();next.dom.window.close();
+});
+test('manually opened comparisons retain their place when following a source and restoring',async()=>{
+ const e=homeEnv(),topic=e.d.getElementById('compare-cmp-delete-context');topic.querySelector('summary').click();await new Promise(r=>setTimeout(r,0));assert.equal(e.w.location.hash,'#'+topic.id);
+ const source=topic.querySelector('a');source.addEventListener('click',event=>event.preventDefault());source.click();const next=homeEnv(e.w.location.href);assert.equal(next.d.getElementById(topic.id).open,true);
+ next.d.getElementById(topic.id).querySelector('summary').click();await new Promise(r=>setTimeout(r,0));assert.equal(next.w.location.hash,'#browse-comparisons');e.dom.window.close();next.dom.window.close();
+});
+test('chapter queries restore, highlight paragraphs and temporarily open source matches',()=>{
+ const e=env(2,{url:'https://notes.example/chapter2.html?q=Ctrl%20Shift'}),input=e.d.getElementById('search-input'),c=open(e,'y2020q24');click(c,'modifier','ctrl');const lab=c.querySelector('[data-lab]');
+ assert.equal(input.value,'Ctrl Shift');assert.equal(c.classList.contains('hidden'),false);assert.ok(c.querySelectorAll('.note-search-match').length);
+ const search=query=>{input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));};
+ search('2020');const source=e.d.querySelector('.note-provenance.note-search-match');assert.equal(source.open,true);search('');assert.equal(source.open,false);
+ search('2020');source.querySelector('summary').click();source.querySelector('summary').click();search('');assert.equal(source.open,true,'manual opening survives clearing');
+ search('找不到的知识点xyz');e.d.getElementById('open-drawer').click();e.d.querySelector('#drawer a[href="#y2020q24"]').click();assert.equal(input.value,'');assert.equal(new URL(e.w.location.href).searchParams.has('q'),false);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-value="ctrl"]').getAttribute('aria-pressed'),'true');
+ e.dom.window.close();
+});
+test('Chinese composition waits for the committed query on both search pages',async()=>{
+ const e=env(2),input=e.d.getElementById('search-input');input.value='未提交拼音xyz';input.dispatchEvent(new e.w.InputEvent('input',{bubbles:true,isComposing:true}));assert.equal(e.d.querySelectorAll('.note-item.hidden').length,0);
+ input.value='Ctrl';input.dispatchEvent(new e.w.CompositionEvent('compositionend',{bubbles:true}));assert.equal(new URL(e.w.location.href).searchParams.get('q'),'Ctrl');assert.ok(e.d.querySelectorAll('.note-item.hidden').length);
+ const h=homeEnv(),global=h.d.getElementById('global-search');global.dispatchEvent(new h.w.CompositionEvent('compositionstart',{bubbles:true}));global.value='未提交拼音xyz';global.dispatchEvent(new h.w.InputEvent('input',{bubbles:true,isComposing:true}));assert.equal(h.d.getElementById('global-search-results').hidden,true);
+ global.value='数据';global.dispatchEvent(new h.w.CompositionEvent('compositionend',{bubbles:true}));await new Promise(setImmediate);assert.equal(h.d.getElementById('global-results').children.length,30);e.dom.window.close();h.dom.window.close();
+});
+test('Word titles remain literal in navigation, status and updated tables of contents',()=>{
+ const e=env(3),c=open(e,'merged-5'),value='标题<i data-v46-probe>原文</i>&lt;';change(e,c,'title',value);change(e,c,'tab','home');click(c,'style');click(c,'select','0');
+ assert.ok(c.querySelector('.lab-output').textContent.includes(value));assert.equal(c.querySelector('[data-v46-probe]'),null);
+ change(e,c,'tab','references');click(c,'tocInsert');assert.ok(c.querySelector('.lab-auto-toc').textContent.includes(value));change(e,c,'title',value+'新');click(c,'tocOpen');click(c,'tocApply');assert.ok(c.querySelector('.lab-auto-toc').textContent.includes(value+'新'));assert.equal(c.querySelector('[data-v46-probe]'),null);e.dom.window.close();
+});
+test('restarting an active text import cannot replace the cancellation snapshot',()=>{
+ const e=env(4),c=open(e,'y2021q47');for(const action of ['start','next','next','finish'])click(c,action);
+ const original=c.querySelector('table').textContent;click(c,'start');assert.equal(c.querySelector('[data-lab-act="start"]').disabled,true);click(c,'start');click(c,'cancel');assert.equal(c.querySelector('table').textContent,original);assert.match(c.querySelector('.lab-output').textContent,/原表数据保留/);
+ const m=e.w.NOTE_LABS.registry.y2021q47,s=structuredClone(m.initial);for(const action of ['start','next','next','finish','start','start','cancel'])m.action(s,action);assert.equal(s.imported,true);assert.equal(s.step,0);m.action(s,'cancel');assert.equal(s.imported,true);
+ m.action(s,'start');m.action(s,'finish');assert.equal(s.step,1,'finish requires the last wizard page');m.action(s,'cancel');assert.equal(s.imported,true);e.dom.window.close();
+});
 test('search begun from a comparison survives refresh and shared URL restoration',async()=>{
  const e=homeEnv('https://notes.example/index.html#compare-cmp-delete-context');assert.equal(e.d.querySelector('.comparison-topic[open]').id,'compare-cmp-delete-context');typeGlobal(e,'Delete');await new Promise(setImmediate);
  const url=e.w.location.href;assert.equal(new URL(url).hash,'');assert.equal(new URL(url).searchParams.get('q'),'Delete');assert.ok(e.d.querySelectorAll('#global-results li').length);

@@ -21,10 +21,9 @@
       const labelCopy = label?.cloneNode(true);
       labelCopy?.querySelectorAll('select').forEach(el => el.remove());
       const title = source.getAttribute('aria-label') || labelCopy?.textContent.trim() || source.title || '选择';
-      const chapter = source.id === 'chapter-select';
       const options = [...source.options];
-      const inline = !chapter && options.length <= 4 && options.every(o => o.textContent.trim().length <= 18) && !source.closest('.lab-office');
-      const box = element('div', 'notes-picker' + (inline ? ' is-inline' : ' is-collapsible') + (chapter ? ' is-chapter' : ''));
+      const inline = options.length <= 4 && options.every(o => o.textContent.trim().length <= 18) && !source.closest('.lab-office');
+      const box = element('div', 'notes-picker' + (inline ? ' is-inline' : ' is-collapsible'));
       const heading = element('span', 'choice-label', title);
       heading.id = 'choice-label-' + (++serial);
       const list = element('div', 'choice-options');

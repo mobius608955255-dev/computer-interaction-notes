@@ -18,15 +18,11 @@
     <header class="site-header">
       <a class="brand" href="${homeUrl}"><span class="brand-mark">11</span><span class="brand-copy"><strong>计算机系统笔记</strong><small id="brand-chapter"></small></span></a>
       <div class="header-actions">
-        <label class="chapter-select-wrap"><span class="sr-only">切换章节</span><select id="chapter-select" aria-label="切换章节"></select></label>
-        <button id="open-drawer" type="button">本章目录</button>
+        <button id="open-drawer" type="button" aria-controls="drawer" aria-expanded="false" aria-haspopup="dialog"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>目录</span><small>第${chapterNumber}章</small></button>
       </div>
     </header>
     <div class="progress" aria-hidden="true"><i id="progress-bar"></i></div>
-    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="本章知识点目录" aria-hidden="true" inert hidden>
-      <div class="drawer-head"><div><small id="drawer-chapter"></small><strong>本章目录</strong></div><button id="close-drawer" type="button" aria-label="关闭目录">×</button></div>
-      <ol class="note-list" id="note-list"></ol>
-    </aside>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="目录" aria-hidden="true" inert hidden></aside>
     <button class="scrim" id="scrim" type="button" aria-label="关闭目录" tabindex="-1" aria-hidden="true"></button>
     <main id="main-content">
       <section class="chapter-intro" id="chapter-top">
@@ -35,7 +31,7 @@
       </section>
       <section class="chapter-tools" aria-label="搜索本章笔记"><div class="search"><span aria-hidden="true">⌕</span><label class="sr-only" for="search-input">搜索本章</label><input id="search-input" type="search" placeholder="搜索本章知识点" title="多个关键词用空格分隔" autocomplete="off"><button id="clear-search" type="button" aria-label="清空搜索" hidden>×</button></div><span class="count" id="result-count" role="status" aria-live="polite" aria-atomic="true"></span></section>
       <section id="search-empty" class="search-empty" hidden><p>本章没有找到相关笔记。</p><p>试试更短的关键词，或从顶部切换到相关章节。</p><button id="restore-notes" type="button">清空搜索，显示本章全部笔记</button></section>
-      <div class="learning-toolbar"><div class="reading-switch" role="group" aria-label="阅读视图"><button type="button" data-reading-mode="detail" aria-pressed="true">详读</button><button type="button" data-reading-mode="quick" aria-pressed="false">快速复习</button></div><nav class="learning-links" aria-label="继续查找"><a id="search-all" href="${homeUrl}">搜索全部11章</a><a href="${homeUrl}#browse-comparisons">易混知识对照</a></nav></div><p id="reading-hint"></p>
+      <nav class="learning-links learning-toolbar" aria-label="继续查找"><a id="search-all" href="${homeUrl}">搜索全部11章</a><a href="${homeUrl}#browse-comparisons">易混知识对照</a></nav>
       <div id="notes-root"></div>
     </main>
     <footer class="site-footer"><a href="${homeUrl}">全部章节</a><a href="https://www.sdzk.cn/NewsInfo.aspx?BCID=1195&amp;CID=1133&amp;NewsID=7081" target="_blank" rel="noreferrer">现行考试要求</a></footer>`);
@@ -52,7 +48,6 @@
   $('#chapter-count').textContent = `${notes.length}条知识笔记`;
   $('#source-count').textContent = `${sourceCount}道真题来源`;
   $('#result-count').textContent = `${notes.length}条笔记`;
-  $('#drawer-chapter').textContent = `第${chapter.number}章 · ${chapter.title}`;
 
   const grouped = chapter.sections.map(section => ({...section, notes: notes.filter(note => note.section === section.id)})).filter(section => section.notes.length);
   $('#notes-root').innerHTML = grouped.map(section => `
@@ -61,11 +56,6 @@
       ${section.notes.map(renderNote).join('')}
     </section>`).join('');
 
-  $('#chapter-select').innerHTML = data.chapters.map(item => `<option value="${item.number}" ${item.number === chapterNumber ? 'selected' : ''}>第${item.number}章　${item.title}</option>`).join('');
-  window.NOTE_CHOICES?.enhance(document.querySelector('.header-actions'));
-  $('#chapter-select').addEventListener('change', event => { location.href = chapterUrl(event.target.value); });
-  $('#note-list').innerHTML = notes.map(note => `<li><a href="#${note.id}"><span>${note.section}</span><b>${note.title}</b></a></li>`).join('');
-
   function renderNote(note) {
     const sources = note.sources.map(source => `<span>${source.year} · 第${source.q}题</span>`).join('');
     const references = (window.NOTE_REFERENCES?.[note.id] || []).map(([title,url])=>`<p><a href="${url}" target="_blank" rel="noreferrer">${title} ↗</a></p>`).join('');
@@ -73,9 +63,9 @@
       ${refined ? '' : `<div class="note-topic">${note.topic}</div>`}
       <h3>${note.title}</h3>
       <p class="conclusion" id="${note.id}--conclusion"><b>核心结论：</b>${note.conclusion}</p>
-      <details class="note-explanation" open><summary>推理与细节 · ${note.points.length}个要点</summary>
+      <div class="note-explanation">
       ${note.pointGroups ? note.pointGroups.map(group=>`<section class="note-point-group"><h4>${simulation.escapeHTML(group.title)}</h4><ul class="points">${group.indices.map(i=>`<li id="${note.id}--point-${i}">${note.points[i]}</li>`).join('')}</ul></section>`).join('') : `<ul class="points">${note.points.map((point,i) => `<li id="${note.id}--point-${i}">${point}</li>`).join('')}</ul>`}
-      <div id="${note.id}--comparison">${note.comparison ? renderComparison(note.comparison) : ''}</div></details>
+      <div id="${note.id}--comparison">${note.comparison ? renderComparison(note.comparison) : ''}</div></div>
       <p class="boundary" id="${note.id}--boundary"><b>易错边界：</b>${note.boundary}</p>
       <details class="note-provenance" id="${note.id}--sources"><summary>真题来源 · ${note.sources.length}题</summary><div class="note-source">${sources}</div><p>${note.trigger}</p>${references}</details>
       ${renderSimulation(note)}
@@ -927,46 +917,14 @@
     $('[data-relation-result]',card).innerHTML=`<b>结果关系</b>${results[index]}`;
   }
 
-  const drawerBackground = $$('.site-header, #main-content, .site-footer, .skip-link');
-  const openDrawer = () => { $('#drawer').hidden=false; $('#drawer').inert=false; $('#drawer').setAttribute('aria-hidden','false'); $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); drawerBackground.forEach(el=>el.inert=true); document.body.style.overflow = 'hidden'; $('#close-drawer').focus(); };
-  const closeDrawer = (restoreFocus=true) => { if(!$('#drawer').classList.contains('open'))return; $('#drawer').classList.remove('open'); $('#drawer').hidden=true; $('#drawer').inert=true; $('#drawer').setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); drawerBackground.forEach(el=>el.inert=false); document.body.style.overflow = ''; if(restoreFocus)$('#open-drawer').focus(); };
-  $('#open-drawer').addEventListener('click', openDrawer); $('#close-drawer').addEventListener('click', closeDrawer); $('#scrim').addEventListener('click', closeDrawer);
-  $('#drawer').addEventListener('click', event => { const link=event.target.closest('a'); if(link){event.preventDefault();closeDrawer(false);if(location.hash!==link.hash)history.pushState(null,'',link.hash);revealNote(link.hash,true);} });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); if (event.key === '/' && !event.isComposing && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest('input,textarea,select,[contenteditable]') && !$('#drawer').classList.contains('open')) { event.preventDefault(); $('#search-input').focus(); } });
-  $('#drawer').addEventListener('keydown',event=>{
-    if(event.key!=='Tab')return;
-    const items=$$('button,a', $('#drawer'));const first=items[0],last=items.at(-1);
-    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
-  });
-  const normalizeSearch = text => text.normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
-  // Index the notes once. Learner input and changing demonstration output must not change matches.
-  const aliasesById=new Map(notes.map(note=>[note.id,(note.searchAliases||[]).join(' ')]));
-  const searchIndex = $$('.note-item').map(item=>{
-    const copy=item.cloneNode(true);copy.querySelectorAll('.reality-demo,.note-related').forEach(el=>el.remove());
-    const demo=simulation.demos[item.id];
-    return {item,text:normalizeSearch(copy.textContent+' '+(demo?.title||'')+' '+(demo?.task||'')+' '+(aliasesById.get(item.id)||''))};
-  });
-  const applySearch = () => {
-    const query = normalizeSearch($('#search-input').value), terms=query?query.split(' '):[]; let shown = 0;
-    searchIndex.forEach(({item,text}) => { const visible = terms.every(term=>text.includes(term)); item.classList.toggle('hidden', !visible); if (visible) shown++; });
-    $$('.section-block').forEach(section => section.classList.toggle('hidden', !$$('.note-item:not(.hidden)', section).length));
-    $('#result-count').textContent = query ? `${shown} / ${notes.length}条` : `${shown}条笔记`;
-    $('#clear-search').hidden=!$('#search-input').value;
-    $('#search-empty').hidden=shown!==0;
-    $('#search-all').href=homeUrl+($('#search-input').value.trim()?'&q='+encodeURIComponent($('#search-input').value.trim()):'');
-    requestAnimationFrame(updateProgress);
-  };
-  const clearSearch = () => { $('#search-input').value='';applySearch();$('#search-input').focus(); };
-  $('#search-input').addEventListener('input', applySearch);
-  $('#search-input').addEventListener('search', applySearch);
-  $('#clear-search').addEventListener('click', clearSearch);
-  $('#restore-notes').addEventListener('click', clearSearch);
   function revealNote(hash, focus=false){
     let id;try{id=decodeURIComponent(hash.slice(1));}catch{return;}
     const target=document.getElementById(id);if(!target)return;
-    if(target.closest('.hidden')||target.classList.contains('hidden')){$('#search-input').value='';applySearch();}
-    window.NOTE_READING?.reveal(target);
+    if(target.closest('.hidden')||target.classList.contains('hidden')){chapterSearch.clear(false);}
+    chapterSearch.claim(target);
+    for(let parent=target.parentElement;parent;parent=parent.parentElement)if(parent.matches('details'))parent.open=true;
+    $$('.note-search-target').forEach(el=>el.classList.remove('note-search-target'));
+    if(target.closest('.note-item')&&!target.matches('.note-item'))target.classList.add('note-search-target');
     if(target.matches('details'))target.open=true;
     target.scrollIntoView({block:'start'});
     if(focus){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}
@@ -975,7 +933,9 @@
   const updateProgress = () => { const root = document.documentElement; const max = root.scrollHeight - innerHeight; $('#progress-bar').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; };
   addEventListener('scroll', updateProgress, {passive:true});
   addEventListener('resize', updateProgress);
-  window.NOTE_READING?.init();
+  try { localStorage.removeItem('notes-reading-mode'); } catch {}
+  const chapterSearch=window.NOTE_CHAPTER_SEARCH.init({notes,simulation,homeUrl,onLayout:updateProgress});
+  window.NOTE_DIRECTORY.init({chapter,chapters:data.chapters,notes,chapterUrl,revealNote});
   if(location.hash)revealNote(location.hash);
   updateProgress();
 })();
