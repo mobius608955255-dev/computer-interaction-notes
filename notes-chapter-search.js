@@ -16,15 +16,29 @@
     }
     function apply(syncURL=true){
       restoreDisclosures();
+      document.querySelectorAll('.note-search-jumps').forEach(el=>el.remove());
       document.querySelectorAll('.note-search-match').forEach(el=>el.classList.remove('note-search-match'));
       const query=input.value.trim(),results=window.NOTE_SEARCH.search(entries,query),matches=new Map(results.map(r=>[r.id,r]));
       for(const article of articles){
         article.classList.toggle('hidden',!!query&&!matches.has(article.id));
+        const targets=[];
         for(const field of matches.get(article.id)?.matches||[]){
           const target=document.getElementById(field.anchor);if(!target)continue;
           target.classList.add('note-search-match');
+          if(!targets.includes(target))targets.push(target);
           const detail=target.matches('details')?target:target.closest('details');
           if(detail&&!detail.open){detail.open=true;autoOpened.add(detail);}
+        }
+        if(query&&targets.length){
+          const nav=document.createElement('nav');nav.className='note-search-jumps';nav.setAttribute('aria-label','跳到命中段落');
+          const label=document.createElement('span');label.textContent='跳到命中段落';nav.append(label);
+          targets.slice(0,3).forEach((target,i)=>{
+            const link=document.createElement('a');link.href='#'+target.id;
+            const group=target.closest('.note-point-group')?.querySelector('h4')?.textContent;
+            link.textContent=`${i+1}. ${group|| (target.matches('details')?'来源与核验记录':target.matches('.boundary')?'易错边界':target.matches('.conclusion')?'核心结论':target.querySelector('h4')?.textContent||'相关内容')}`;
+            nav.append(link);
+          });
+          article.querySelector('h3').after(nav);
         }
       }
       sections.forEach(section=>section.classList.toggle('hidden',!section.querySelector('.note-item:not(.hidden)')));

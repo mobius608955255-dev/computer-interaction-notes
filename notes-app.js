@@ -674,9 +674,6 @@
         break;
       }
       case 'y2026q45': text('[data-real-tops]', ['并行任务吞吐可能提高','带宽不足：等待数据','软件适配不足：单元空闲','不同数值精度不能直接混比'][index]); break;
-      case 'merged-4':
-        text('[data-v26-file-name]', index === 0 ? 'report' : 'report.docx');
-        break;
       case 'y2023q45': {
         const states = [
           ['.pptx','进入编辑界面','编辑模式'],

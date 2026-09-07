@@ -9,7 +9,8 @@ const scriptsFor=chapter=>[...fs.readFileSync(path.join(root,`chapter${chapter}.
 const allNotes=()=>Array.from({length:11},(_,i)=>JSON.parse(fs.readFileSync(path.join(root,`content/chapter${i+1}.json`),'utf8'))).flat();
 const releaseVersion=JSON.parse(fs.readFileSync(path.join(root,'site.config.json'),'utf8')).version;
 test('v47 supplements and worked examples preserve the 460 original source identities',()=>{
- const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.equal(supplements.length,13);
+ const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.equal(supplements.length,16);
+ assert.deepEqual(supplements.filter(n=>n.chapter===2).map(n=>n.id),['syllabus-windows-paths','syllabus-windows-selection','syllabus-windows-search']);
  assert.ok(supplements.every(n=>n.sources.length===0));assert.equal(notes.flatMap(n=>n.workedExamples||[]).length,16);
  for(const n of notes)for(const example of n.workedExamples||[])assert.ok(n.sources.some(s=>s.year===example.year&&s.q===example.q));
 });
@@ -21,7 +22,7 @@ function env(chapter=4,{url,oldReadingMode}={}){
   return {dom,w,d:w.document};
 }
 function open(e,id){const c=e.d.getElementById(id);assert.ok(c,`note ${id}`);c.querySelector('.simulation-toggle').click();return c;}
-function click(c,action,value){const s=`[data-lab-act="${action}"]${value!==undefined?`[data-value="${value}"]`:''}`;const b=c.querySelector(s);assert.ok(b,s);b.click();}
+function click(c,action,value){const buttons=[...c.querySelectorAll(`[data-lab-act="${action}"]`)];const b=buttons.find(el=>value===undefined||el.dataset.value===String(value));assert.ok(b,`${action}: ${value??''}`);b.click();}
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
 function choice(c,name,value){const source=c.querySelector(`select[data-field="${name}"]`);assert.ok(source?.hidden,'native popup is removed');const i=[...source.options].findIndex(o=>o.value===value);return source.closest('.notes-picker').querySelector(`[data-choice-index="${i}"]`);}
 function tap(e,button){button.dispatchEvent(new e.w.MouseEvent('pointerdown',{bubbles:true,button:0}));button.focus();button.dispatchEvent(new e.w.MouseEvent('pointerup',{bubbles:true,button:0}));button.click();}
@@ -797,4 +798,43 @@ test('v47 syllabus models recalculate trends, protection, print sheets and input
 });
 test('v47 multikey sort honors secondary ties and both score directions',()=>{
  const e=env(4),m=e.w.NOTE_LABS.registry['syllabus-excel-multikey-sort'],s=structuredClone(m.initial);m.action(s,'sort');assert.deepEqual(Array.from(s.rows,x=>x.id),['01','02','04','03']);m.change(s,'first','score');m.change(s,'descending','false');m.action(s,'sort');assert.deepEqual(Array.from(s.rows,x=>x.id),['04','03','01','02']);e.dom.window.close();
+});
+test('file selection supports real Ctrl/Shift ranges and rejects duplicate or invalid names',()=>{
+ const e=env(2),c=open(e,'syllabus-windows-selection');
+ const select=(id,keys={})=>c.querySelector(`[data-lab-act="choose"][data-value="${id}"]`).dispatchEvent(new e.w.MouseEvent('click',{bubbles:true,...keys}));
+ const selected=()=>[...c.querySelectorAll('[data-lab-act="choose"][aria-pressed="true"]')].map(b=>Number(b.dataset.value));
+ select(2);select(4,{shiftKey:true});assert.deepEqual(selected(),[2,3,4]);select(3,{ctrlKey:true});assert.deepEqual(selected(),[2,4]);
+ select(5,{ctrlKey:true,shiftKey:true});assert.deepEqual(selected(),[2,3,4,5]);
+ click(c,'clear');click(c,'modifier','ctrl');select(1);select(5);assert.deepEqual(selected(),[1,5]);click(c,'modifier','ctrl');
+ select(1);change(e,c,'name','02 练习.txt');click(c,'rename');assert.match(c.querySelector('.lab-output').textContent,/已有同名/);assert.match(c.querySelector('[data-value="1"]').textContent,/01 笔记.txt/);
+ change(e,c,'name','NUL.txt');click(c,'rename');assert.match(c.querySelector('.lab-output').textContent,/名称无效/);
+ change(e,c,'name','<img>.txt');click(c,'new');assert.equal(c.querySelector('img'),null);assert.equal(c.querySelectorAll('[data-lab-act="choose"]').length,5);
+ change(e,c,'name','新目录');click(c,'new');assert.equal(c.querySelectorAll('[data-lab-act="choose"]').length,6);assert.match(c.querySelector('.lab-output').textContent,/未创建文档/);
+ c.querySelector('[data-lab-act="choose"][data-value="6"]').focus();e.d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{bubbles:true,key:'F2'}));assert.equal(e.d.activeElement.dataset.field,'name');
+ e.dom.window.close();
+});
+test('path navigation distinguishes parent from history; filename matches respect scope',()=>{
+ const e=env(2),c=open(e,'syllabus-windows-paths');click(c,'go','C:\\课程');click(c,'up');assert.equal(c.querySelector('[data-current-path]').textContent,'C:\\');
+ click(c,'back');assert.equal(c.querySelector('[data-current-path]').textContent,'C:\\课程');click(c,'back');assert.equal(c.querySelector('[data-current-path]').textContent,'D:\\资料');
+ change(e,c,'address','Z:\\缺失');click(c,'address');assert.equal(c.querySelector('[data-current-path]').textContent,'D:\\资料');
+ const search=open(e,'syllabus-windows-search');assert.match(search.querySelector('.lab-output').textContent,/匹配 1 项/);change(e,search,'scope','all');assert.match(search.querySelector('.lab-output').textContent,/匹配 2 项/);
+ change(e,search,'pattern','笔记*.txt');assert.match(search.querySelector('.lab-output').textContent,/匹配 4 项/);change(e,search,'pattern','*复习*.txt');change(e,search,'scope','current');assert.match(search.querySelector('.lab-output').textContent,/匹配 0 项/);change(e,search,'scope','tree');assert.match(search.querySelector('.lab-output').textContent,/匹配 1 项/);
+ change(e,search,'pattern','[.*');assert.match(search.querySelector('.lab-output').textContent,/匹配 0 项/);e.dom.window.close();
+});
+test('ZIP sequential actions preserve names, reject conflicts and show independent extraction',()=>{
+ const e=env(2),c=open(e,'y2022q75');click(c,'menu');click(c,'rename');click(c,'menu');click(c,'zip');assert.match(c.querySelector('[data-lab-drag="hold"]').textContent,/年度总结.zip/);assert.match(c.querySelector('[data-lab-act="open"]').textContent,/年度总结.zip.zip/);
+ click(c,'open');click(c,'extract');assert.match(c.querySelector('[data-extracted]').textContent,/年度总结.zip/);
+ c.querySelector('[data-sim-reset]').click();click(c,'menu');click(c,'zip');click(c,'menu');click(c,'rename');assert.match(c.querySelector('.lab-output').textContent,/已有.*不能/);assert.doesNotMatch(c.querySelector('[data-lab-drag="hold"]').textContent,/年度总结.zip/);e.dom.window.close();
+});
+test('file attributes retain independent display, association and folder permission state',()=>{
+ const e=env(2),c=open(e,'merged-4');click(c,'extension');assert.doesNotMatch(c.querySelector('[data-property-file] b').textContent,/docx/);click(c,'extension');assert.equal(c.querySelector('[data-property-file] b').textContent,'report.docx');
+ click(c,'readonly');click(c,'save');assert.match(c.querySelector('.lab-output').textContent,/拒绝覆盖/);click(c,'new');assert.match(c.querySelector('.lab-output').textContent,/已在文件夹中新建/);
+ click(c,'permission');click(c,'new');assert.match(c.querySelector('.lab-output').textContent,/拒绝访问/);change(e,c,'app','WordPad');assert.match(c.querySelector('[data-property-file]').textContent,/写字板|WordPad/);assert.match(c.querySelector('[data-property-file]').textContent,/只读/);
+ click(c,'hidden');assert.match(c.querySelector('[data-property-file]').textContent,/不显示/);click(c,'showHidden');assert.equal(c.querySelector('[data-property-file] b').textContent,'report.docx');assert.match(c.querySelector('[data-property-file]').textContent,/隐藏/);e.dom.window.close();
+});
+test('long notes expose real search paragraph anchors and clear transient jump links',async()=>{
+ const e=env(2),input=e.d.getElementById('search-input');input.value='EFS';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));
+ const c=e.d.getElementById('merged-4'),links=[...c.querySelectorAll('.note-search-jumps a')];assert.ok(links.length>=2);assert.ok(links.some(a=>a.hash==='#merged-4--point-11'));assert.ok(links.every(a=>e.d.querySelector(a.hash)?.classList.contains('note-search-match')));
+ links[0].click();await new Promise(resolve=>e.w.setTimeout(resolve,0));assert.equal(e.w.location.hash,links[0].hash);
+ e.d.getElementById('clear-search').click();assert.equal(e.d.querySelector('.note-search-jumps'),null);assert.equal(e.d.querySelector('.note-search-match'),null);assert.equal(e.d.querySelectorAll('.note-item:not(.hidden)').length,28);e.dom.window.close();
 });

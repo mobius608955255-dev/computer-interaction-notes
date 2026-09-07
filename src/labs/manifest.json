@@ -25,9 +25,10 @@
       "files": [
         "src/labs/chapter2/windows.js",
         "src/labs/chapter2/maintenance.js",
-        "src/labs/chapter2/settings.js"
+        "src/labs/chapter2/settings.js",
+        "src/labs/chapter2/file-management.js"
       ],
-      "models": 16,
+      "models": 20,
       "ids": [
         "y2022q34",
         "y2022q44",
@@ -44,7 +45,11 @@
         "y2026q33",
         "y2026q35",
         "y2026q8",
-        "y2026q25"
+        "y2026q25",
+        "syllabus-windows-paths",
+        "syllabus-windows-selection",
+        "syllabus-windows-search",
+        "merged-4"
       ]
     },
     "3": {

@@ -119,7 +119,7 @@
   ],
   "y2020q3": [
     [
-      "Microsoft：Free up drive space in Windows",
+      "Free up drive space in Windows",
       "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/free-up-drive-space-in-windows"
     ],
     [
@@ -133,11 +133,19 @@
     [
       "Microsoft：Delete a file",
       "https://support.microsoft.com/en-us/office/collab-files/delete-a-file"
+    ],
+    [
+      "IFileOperation::SetOperationFlags",
+      "https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifileoperation-setoperationflags"
+    ],
+    [
+      "Keyboard shortcuts in Windows",
+      "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
     ]
   ],
   "y2020q24": [
     [
-      "Microsoft：Windows键盘快捷方式",
+      "Keyboard shortcuts in Windows",
       "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
     ],
     [
@@ -145,40 +153,76 @@
       "https://learn.microsoft.com/en-us/windows/win32/shell/clipboard"
     ],
     [
-      "Microsoft：IDropTarget::DragOver",
+      "IDropTarget::DragOver",
       "https://learn.microsoft.com/en-us/windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover"
     ],
     [
-      "Microsoft：Handling Shell Data Transfer Scenarios",
+      "Handling Shell Data Transfer Scenarios",
       "https://learn.microsoft.com/en-us/windows/win32/shell/datascenarios"
     ],
     [
       "Microsoft：DeleteFile的只读、权限与共享删除条件",
       "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile"
+    ],
+    [
+      "Will dragging a file result in a move or a copy?",
+      "https://devblogs.microsoft.com/oldnewthing/20041112-00/?p=37323"
     ]
   ],
   "merged-4": [
     [
-      "Microsoft：文件名、路径与保留名称",
+      "Naming Files, Paths, and Namespaces",
       "https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file"
     ],
     [
-      "Microsoft：常见文件扩展名",
+      "Common file name extensions in Windows",
       "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/common-file-name-extensions-in-windows"
     ],
     [
-      "Microsoft：文件属性常量与目录只读属性",
+      "File Attribute Constants",
       "https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants"
     ],
     [
-      "Microsoft：DeleteFile删除条件",
+      "DeleteFile function",
       "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile"
+    ],
+    [
+      "How to encrypt a file or folder",
+      "https://support.microsoft.com/en-us/windows/security/encryption/how-to-encrypt-a-file-or-folder"
+    ],
+    [
+      "File encryption",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/file-encryption"
+    ],
+    [
+      "[MS-EFSR] 1.3 Overview",
+      "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-efsr/4892c610-4595-4fba-a67f-a2d26b9b6dcd"
+    ],
+    [
+      "cipher",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cipher"
+    ],
+    [
+      "File sharing over a network in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/connectivity-networking/file-sharing-over-a-network-in-windows"
+    ],
+    [
+      "Managing IIS Log File Storage / Enable Folder Compression",
+      "https://learn.microsoft.com/en-us/iis/manage/provisioning-and-managing-iis/managing-iis-log-file-storage"
     ]
   ],
   "y2026q35": [
     [
-      "Microsoft：File Explorer in Windows",
+      "File Explorer in Windows",
       "https://support.microsoft.com/en-us/windows/experience/fileexplorer/file-explorer-in-windows"
+    ],
+    [
+      "Windows libraries",
+      "https://learn.microsoft.com/en-us/windows/client-management/client-tools/windows-libraries"
+    ],
+    [
+      "Opening a Library in Windows Explorer gives error that it is no longer working / KB 2895090",
+      "https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/no-longer-working-error-library-windows-explorer"
     ]
   ],
   "y2025q33": [
@@ -193,6 +237,10 @@
     [
       "Microsoft：Shell Clipboard Formats",
       "https://learn.microsoft.com/en-us/windows/win32/shell/clipboard"
+    ],
+    [
+      "Microsoft：2018年10月更新引入剪贴板历史",
+      "https://blogs.windows.com/windowsexperience/2018/10/02/find-out-whats-new-in-windows-and-office-in-october/"
     ]
   ],
   "merged-5": [
@@ -941,18 +989,34 @@
   ],
   "y2022q75": [
     [
-      "Microsoft：压缩与解压缩文件",
+      "Zip and unzip files",
       "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/zip-and-unzip-files"
+    ],
+    [
+      "File Compression and Decompression",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/file-compression-and-decompression"
+    ],
+    [
+      "Compression Attribute",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/compression-attribute"
+    ],
+    [
+      "Managing IIS Log File Storage / Enable Folder Compression",
+      "https://learn.microsoft.com/en-us/iis/manage/provisioning-and-managing-iis/managing-iis-log-file-storage"
     ]
   ],
   "y2026q25": [
     [
-      "Microsoft：自定义Windows桌面图标",
+      "Customize the Desktop Icons in Windows",
       "https://support.microsoft.com/en-us/windows/experience/personalization/customize-the-desktop-icons-in-windows"
     ],
     [
       "Microsoft：桌面图标隐藏时的排查",
       "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/find-the-recycle-bin-in-windows"
+    ],
+    [
+      "Shell Links",
+      "https://learn.microsoft.com/en-us/windows/win32/shell/links"
     ]
   ],
   "y2025q26": [
@@ -1515,6 +1579,76 @@
     [
       "ITU/WSIS：信息社会原则宣言",
       "https://www.itu.int/net/wsis/docs/geneva/official/dop.html"
+    ]
+  ],
+  "syllabus-windows-paths": [
+    [
+      "山东省2026年考试要求：计算机部分，第15—19页",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Naming Files, Paths, and Namespaces",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file"
+    ],
+    [
+      "Maximum Path Length Limitation",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation"
+    ],
+    [
+      "Keyboard shortcuts in Windows",
+      "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
+    ],
+    [
+      "File Explorer in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/fileexplorer/file-explorer-in-windows"
+    ],
+    [
+      "Windows libraries",
+      "https://learn.microsoft.com/en-us/windows/client-management/client-tools/windows-libraries"
+    ],
+    [
+      "Opening a Library in Windows Explorer gives error that it is no longer working / KB 2895090",
+      "https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/no-longer-working-error-library-windows-explorer"
+    ],
+    [
+      "IShellLibrary::RemoveFolder",
+      "https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ishelllibrary-removefolder"
+    ]
+  ],
+  "syllabus-windows-selection": [
+    [
+      "山东省2026年考试要求：计算机部分，第15—19页",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Delete a file",
+      "https://support.microsoft.com/en-us/office/collab-files/delete-a-file"
+    ],
+    [
+      "Keyboard shortcuts in Windows",
+      "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
+    ],
+    [
+      "Naming Files, Paths, and Namespaces",
+      "https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file"
+    ]
+  ],
+  "syllabus-windows-search": [
+    [
+      "山东省2026年考试要求：计算机部分，第15—19页",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "Find your files and apps in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/find-your-files-and-apps-in-windows"
+    ],
+    [
+      "Using Advanced Query Syntax programmatically",
+      "https://learn.microsoft.com/en-us/windows/win32/search/-search-3x-advancedquerysyntax"
+    ],
+    [
+      "Search indexing in Windows",
+      "https://support.microsoft.com/en-us/windows/experience/performance-optimization/search-indexing-in-windows"
     ]
   ]
 }

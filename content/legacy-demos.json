@@ -500,44 +500,6 @@
       }
     ]
   },
-  "merged-4": {
-    "kind": "explore",
-    "title": "在资源管理器里检查名称、类型、属性和权限",
-    "task": "逐项操作文件与文件夹，观察每一层到底改变了什么。",
-    "initial": "扩展名、关联、属性和权限不是一回事。",
-    "actions": [
-      {
-        "label": "显示/隐藏.docx",
-        "stage": "只改显示",
-        "result": "文件内容和真实扩展名都没有改变。",
-        "tone": "warn"
-      },
-      {
-        "label": "更改默认打开程序",
-        "stage": "只改关联",
-        "result": "双击时换应用，不发生格式转换。",
-        "tone": "good"
-      },
-      {
-        "label": "给文件设只读",
-        "stage": "限制写入",
-        "result": "仍不必然禁止删除。",
-        "tone": "warn"
-      },
-      {
-        "label": "输入report?.docx",
-        "stage": "名称被拒绝",
-        "result": "问号是Windows文件名保留字符。",
-        "tone": "bad"
-      },
-      {
-        "label": "给文件夹勾只读后新建子文件夹",
-        "stage": "仍可创建",
-        "result": "文件夹能否写入主要由访问控制权限决定。",
-        "tone": "good"
-      }
-    ]
-  },
   "y2026q9": {
     "kind": "explore",
     "title": "分别拨动读取与写入策略",

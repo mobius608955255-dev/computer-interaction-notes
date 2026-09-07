@@ -159,3 +159,17 @@
 .lab-smartart{display:grid;gap:12px;padding:16px;background:#fff}.lab-smartart h4{margin:0 0 8px;padding:12px;background:#315f8e;color:#fff;text-align:center}.note-lab .lab-smart-node{display:block;width:auto;max-width:100%;background:#e0ebf5;border:1px solid #6687a8;min-height:52px}
 
 .lab-draw-slide[data-lab-drag],.lab-ink-slide[data-lab-drag]{touch-action:none}
+/* File-management pilot: labels and paths remain readable at narrow widths. */
+.lab-file-management { min-width: 0; }
+.lab-file-management .lab-file-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,200px),1fr)); gap: 10px; padding: 12px; }
+.lab-file-management .lab-file-list button { min-height: 48px; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.lab-file-management .lab-file-list small { display: block; margin-top: 5px; }
+.lab-file-management .lab-selection-list button[aria-pressed="true"] { background: #f7d6e6; border-color: #a63b70; color: #54213b; box-shadow: inset 3px 0 #a63b70; }
+.lab-file-management .lab-controls { align-items: end; }
+.lab-file-management .lab-controls > label { min-width: 0; flex: 1 1 200px; }
+.lab-file-management .lab-controls [role="group"] { display: flex; flex-wrap: wrap; gap: 8px; }
+.lab-file-management .lab-controls button { min-height: 44px; white-space: normal; overflow-wrap: anywhere; }
+.lab-file-management p,.lab-file-management header,.lab-file-management td { overflow-wrap: anywhere; }
+.lab-file-management .lab-path { padding: 12px; background: #f9edf3; color: #54213b; }
+.lab-file-management .lab-hidden-file { border: 1px dashed #835168; padding: 10px; }
+.lab-file-management details > summary { min-height: 44px; padding: 10px; cursor: pointer; }

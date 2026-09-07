@@ -10,9 +10,19 @@ register(['y2022q34'],'对话框开着，父窗口还能编辑吗','分别打开
 register(['y2022q44'],'启动同一程序，观察多个运行实例','打开记事本并结束其中一个进程；磁盘上的程序不会被卸载。',{processes:[],pid:1200},s=>
     `<div class="lab-program-file"><b>磁盘文件：notepad.exe</b>${btn('启动记事本','launch')}</div><div class="lab-task-manager"><header>任务管理器 · 进程（${s.processes.length}）</header>${table(['名称','PID','内存（示意）','操作'],s.processes.map(p=>['记事本',p,'12 MB',btn('结束任务','end',p)]))}</div>${output(s.processes.length?`一个程序文件，${s.processes.length}个独立运行实例。`:'没有正在运行的记事本进程；程序文件仍存在。')}`,
     (s,a,v)=>{if(a==='launch'&&s.processes.length<6)s.processes.push(s.pid++);if(a==='end')s.processes=s.processes.filter(p=>p!==Number(v));});
-register(['y2022q75'],'创建ZIP副本，不是改一个扩展名','在资源管理器菜单中创建压缩文件夹，再查看包内目录。',{zip:false,renamed:false,open:false,menu:false},s=>
-    `<div class="lab-explorer"><header>文件资源管理器 · 文稿资料</header><div class="lab-ribbon">${btn('右键菜单 / 长按','menu')}</div><div class="lab-file-list"><button data-lab-drag="hold" data-lab-act="folder">📁 年度总结 ${s.renamed?'.zip':''}<small>类型：文件夹</small></button>${s.zip?btn('▣ 年度总结.zip<br><small>类型：ZIP压缩文件</small>','open'):''}</div>${s.menu?`<div class="lab-context-menu">${btn('发送到 → 压缩(zipped)文件夹','zip')}${btn('重命名为 年度总结.zip','rename')}</div>`:''}${s.open?table(['包内文件','内容'],[['年度报告.docx','文档'],['销售汇总.xlsx','工作簿'],['汇报.pptx','演示文稿']]):''}</div>${output(s.renamed?'名称变了，类型仍是文件夹，没有执行压缩。':s.zip?'已创建包含3个文件的ZIP副本，原文件夹仍保留。':'长按文件夹约0.6秒打开菜单；轻点不会触发长按。')}`,
-    (s,a)=>{if(a==='menu')s.menu=!s.menu;if(a==='zip'){s.zip=true;s.menu=false;s.renamed=false;}if(a==='rename'){s.renamed=true;s.menu=false;}if(a==='open')s.open=!s.open;});
+register(['y2022q75'],'创建ZIP副本，不是改一个扩展名','先改文件夹名再压缩，或先压缩再改名，比较名称冲突和独立副本。',{
+    folder:'年度总结',zipName:null,packedFolder:null,open:false,menu:false,extracted:false,message:'长按文件夹约0.6秒打开菜单；轻点不会触发长按。'
+  },s=>`<div class="lab-explorer lab-file-management"><header>文件资源管理器 · 文稿资料</header><div class="lab-ribbon">${btn('右键菜单 / 长按','menu')}</div><div class="lab-file-list"><button type="button" data-lab-drag="hold" data-lab-act="folder">📁 ${esc(s.folder)}<small>类型：文件夹</small></button>${s.zipName?btn('▣ '+esc(s.zipName)+'<br><small>类型：ZIP压缩文件</small>','open'):''}</div>${s.menu?`<div class="lab-context-menu">${btn('发送到 → 压缩(zipped)文件夹','zip')}${btn('重命名为 年度总结.zip','rename')}${btn('取消','cancel')}</div>`:''}${s.open?table(['包内路径','内容'],[['年度报告.docx','文档'],['销售汇总.xlsx','工作簿'],['汇报.pptx','演示文稿']].map(([name,type])=>[esc(s.packedFolder+'/'+name),type]))+btn('全部提取到独立目录','extract'):''}${s.extracted?`<p data-extracted>解压结果：提取目录\\${esc(s.packedFolder)}\\（3 个文件）。原文件夹和 ZIP 仍保留。</p>`:''}</div>${output(esc(s.message))}${coach('本卡用文件夹当前完整名称加 .zip 为教学包命名；真实系统的默认命名及同名提示需现场核对。“全部提取”展示解压后的目录关系，不读取或生成真实压缩文件。')}`,
+    (s,a)=>{
+      if(a==='menu')s.menu=!s.menu;if(a==='cancel')s.menu=false;
+      if(a==='zip'){
+        s.menu=false;if(s.zipName){s.message='已有 ZIP 副本，本卡不覆盖它；可重置后比较另一操作顺序。';return;}
+        s.packedFolder=s.folder;s.zipName=s.folder+'.zip';s.message='已创建 '+s.zipName+'；原文件夹仍名为 '+s.folder+'，没有自动改回原名。';
+      }
+      if(a==='rename'){s.menu=false;if(s.zipName==='年度总结.zip'){s.message='当前目录已有 年度总结.zip，不能给文件夹使用相同完整名称；原名称保留。';return;}s.folder='年度总结.zip';s.message='名称变了，类型仍是文件夹，没有执行压缩。';}
+      if(a==='open'&&s.zipName)s.open=!s.open;
+      if(a==='extract'&&s.zipName){s.extracted=true;s.message='已展示独立解压副本；原文件夹、ZIP 与解压结果不会自动同步。';}
+    });
 })();
 
 /* Source provenance: note-labs-audit.js:2. Preserve this closure. */

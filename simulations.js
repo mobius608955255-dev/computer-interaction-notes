@@ -114,9 +114,7 @@
         <aside class="device-chassis"><span>实体电源键</span><button type="button" class="physical-power" data-long-press-choice="1" data-short-press-choice="2" aria-label="短按或长按实体电源键"><i></i><b>⏻</b></button><strong data-press-label>轻触＝短按 · 持续按住＝强制断电</strong></aside>
       </div>${feedback('规范关机会先通知程序、写回缓存并卸载文件系统；强制断电跳过这些步骤。')}`;
     },
-    "merged-4": function (demo) {
-      return win('文件资源管理器', `<div class="v26-file-layers"><div class="v26-explorer-list"><header><span>名称</span><span>类型</span><span>属性</span></header><article><i>W</i><b data-v26-file-name>report.docx</b><span>Word 文档</span><small>—</small></article><article class="folder-row"><i>▰</i><b>课程资料</b><span>文件夹</span><small>只读 ◼</small></article></div><aside><b>检查层级</b>${getItems(demo).map((item,i)=>`<button data-sim-choice="${i}"><span>${escapeHTML(item.label)}</span><small>${escapeHTML(item.stage)}</small></button>`).join('')}</aside><div class="v26-child-folder">▰ 新建文件夹 <b>已创建</b></div></div>`)+feedback('扩展名负责类型标识，关联负责打开程序，属性和访问权限又是另外两层。');
-    },
+
     "y2026q9": function (demo) {
       return win('本地组策略编辑器', `<div class="policy-editor"><aside><b>计算机配置</b><span>管理模板</span><span>系统</span><strong>可移动存储访问</strong></aside><main><header>策略设置</header><div class="policy-row"><b>可移动磁盘：拒绝读取权限</b><span data-read-policy>未配置</span></div><div class="policy-row"><b>可移动磁盘：拒绝写入权限</b><span data-write-policy>未配置</span></div><div class="policy-actions">${getItems(demo).map((item,i)=>`<button type="button" data-sim-choice="${i}">${escapeHTML(item.label)}</button>`).join('')}</div><div class="usb-test"><i>USB</i><span data-usb-read>可读取</span><span data-usb-write>可写入</span></div></main></div>`)+feedback('读权限和写权限是两条独立策略，可以形成三种不同限制组合。');
     },
