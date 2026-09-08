@@ -202,11 +202,14 @@ register(['y2026q36'],'先把图片变为浮动对象，再多选、组合和拖
  const canGroup=s.selected.length>=2&&(!s.selected.includes('photo')||s.wrap!=='inline')&&!s.group.length;
  const group=s.group.length?groupBounds(s):null;
  const groupHTML=group?`<div data-lab-drag="object" class="lab-object-group ${s.groupSelected?'lab-selected':''}" style="position:absolute;left:${group.x}%;top:${group.y}%;width:${group.right-group.x}%;height:${group.bottom-group.y}%;border:2px dashed #a46499;touch-action:none" tabindex="0" aria-label="已组合对象，可拖动">${s.objects.filter(o=>s.group.includes(o.id)).map(o=>objectHTML(s,o,group,{w:group.right-group.x,h:group.bottom-group.y})).join('')}</div>`:'';
- return controls(`<label><input type="checkbox" data-field="assist" ${s.assist?'checked':''}>辅助多选（触屏使用，作用等同按住Ctrl）</label>`)+office('Word','绘图工具 · 格式',btn('环绕文字 → 四周型','wrap','',s.selected.includes('photo')&&!s.group.length?'':'disabled')+btn('组合','group','',canGroup?'':'disabled')+btn('取消组合','ungroup','',s.group.length?'':'disabled'),`<div class="lab-group-canvas" style="position:relative;min-height:330px;background:#fff;border:1px solid #dfd3e0;overflow:hidden">${s.objects.filter(o=>!s.group.includes(o.id)).map(o=>objectHTML(s,o)).join('')}${groupHTML}</div>`)+output(s.message);
+ return controls(`<label><input type="checkbox" data-field="assist" ${s.assist?'checked':''}>辅助多选（触屏使用，作用等同按住Ctrl）</label>`)+office('Word','绘图工具 · 格式',btn('环绕文字 → 四周型','wrap','',s.selected.includes('photo')&&!s.group.length?'':'disabled')+btn('组合','group','',canGroup?'':'disabled')+btn('取消组合','ungroup','',s.group.length?'':'disabled'),`<div class="lab-group-canvas" style="position:relative;min-height:330px;background:#fff;border:1px solid #dfd3e0;overflow:hidden">${s.objects.filter(o=>!s.group.includes(o.id)).map(o=>objectHTML(s,o)).join('')}${groupHTML}</div>`)+output(s.message)+ui.coach('本例用预置图片、形状和艺术字练习选择及组合，不模拟绘制、文字流、缩放或旋转。嵌入型可单选，先改环绕再多选；组合画布只示意成员位置，正文绕排请看环绕卡片。只支持一层组合，拖外框整体移动；真实Word可继续选组内成员编辑，本例不模拟该分支。Word2016及实体手机未实测。','本演示的范围与限制');
 },(s,a,v)=>{
  if(a==='select'){
   if(s.group.includes(v)){s.groupSelected=true;s.selected=[...s.group];s.message='已选中组合外框。拖动外框时，组合内对象一起移动。';return;}
-  s.groupSelected=false;s.selected=s._ctrl||s.assist?(s.selected.includes(v)?s.selected.filter(id=>id!==v):[...s.selected,v]):[v];s.message='当前选中：'+(s.selected.map(id=>objectLabels[id]).join('、')||'无')+'。';
+  s.groupSelected=false;
+  const multi=s._ctrl||s.assist;
+  if(multi&&s.wrap==='inline'&&(v==='photo'||s.selected.includes('photo'))){s.selected=[v];s.message='嵌入型图片可以单选；先改为非嵌入环绕，才能与浮动对象共同选择。本例保留所点对象的单选。';return;}
+  s.selected=multi?(s.selected.includes(v)?s.selected.filter(id=>id!==v):[...s.selected,v]):[v];s.message='当前选中：'+(s.selected.map(id=>objectLabels[id]).join('、')||'无')+'。';
  }
  if(a==='wrap'&&s.selected.includes('photo')){s.wrap='square';s.message='图片改为四周型，具备与浮动形状组合的条件。';}
  if(a==='group'){
@@ -240,9 +243,9 @@ register(['merged-8'],'改变列表级别，观察编号与文本起点分别变
 register(['y2025q47'],'让文字真正围绕图片重排','同一张透明圆形图，用四周型和紧密型比较包围矩形与轮廓边界。',{wrap:'inline',selected:false,menu:false,message:'嵌入型图片作为行内对象参加排版。'},s=>{
  const image=`<button data-lab-act="select" class="lab-wrap-object" style="width:112px;height:112px;padding:0;border:${s.selected?'2px solid #905b9b':'0'};border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6cadf 0%,#cfb7e9 65%,#9876b7 100%);${s.wrap==='topbottom'?'display:block;float:none;margin:14px 0;':s.wrap==='inline'?'display:inline-block;vertical-align:baseline;':`float:left;margin:0 14px 12px 0;${s.wrap==='tight'?'shape-outside:circle(50%);':''}`}" aria-label="选择圆形图片">学习图</button>`;
  const text='图片和文字共同构成文档内容。嵌入型把图片作为一枚大字符；四周型按图片外接矩形留出区域；紧密型允许文字贴近透明图片的可见轮廓。改变环绕方式会重新计算文字行的位置，文字本身保持不变。这里使用圆形图片，便于观察矩形边界与曲线边界的区别。';
- return office('Word',s.selected?'图片工具 · 格式':'开始',btn('环绕文字 ▾','menu','',s.selected?'':'disabled'),`${s.menu?dialog('环绕文字',btn('嵌入型','wrap','inline')+btn('四周型','wrap','square')+btn('紧密型','wrap','tight')+btn('上下型','wrap','topbottom'),btn('关闭','close')):''}${paper(`<div style="display:flow-root;font-size:16px;line-height:1.85"><p style="margin:0">${s.wrap==='topbottom'?text.slice(0,27)+image+text.slice(27):image+text}</p></div>`)}`)+output(s.message);
+ return office('Word',s.selected?'图片工具 · 格式':'开始',btn('环绕文字 ▾','menu','',s.selected?'':'disabled'),`${s.menu?dialog('环绕文字',btn('嵌入型','wrap','inline')+btn('四周型','wrap','square')+btn('紧密型','wrap','tight')+btn('上下型','wrap','topbottom'),btn('关闭','close')):''}${paper(`<div style="display:flow-root;font-size:16px;line-height:1.85"><p style="margin:0">${s.wrap==='topbottom'?text.slice(0,27)+image+text.slice(27):image+text}</p></div>`)}`)+output(s.message)+ui.coach('本例初始为嵌入型，只模拟嵌入、四周、紧密和上下四种关系。图片始终可以单独选择；页面中的文字会实际重排。未模拟穿越的内孔、对象锚点、跨页定位及完整Word界面。Word2016和实体手机未实测。','本演示的范围与限制');
 },(s,a,v)=>{if(a==='select')s.selected=true;if(a==='menu'&&s.selected)s.menu=true;if(a==='close')s.menu=false;if(a==='wrap'){s.wrap=v;s.menu=false;s.message={topbottom:'文字只排在图片上方和下方，图片左右不排文字。',inline:'图片已回到文字行内。',square:'文字绕开图片的外接矩形，四角仍留白。',tight:'文字按圆形轮廓重排，可进入外接矩形四角的空白。'}[v];}});
-register(['y2024q8'],'先改变选择范围，再比较删除内容与删除表格','点击表格移动控点选择整表；点击单元格只把插入位置放在该格。',{values:[['姓名','日期'],['王宁','9月4日'],['李悦','9月5日']],selection:'all',cell:[1,0],removed:false,message:'初始已选中整表，包括标题行。'},s=>
+register(['y2024q8'],'建表、结构、转换与公式：选择一个过程练习','切换上方独立场景，练习建表和合并拆分、清内容与删结构、双向转换、公式更新及排序。',{values:[['姓名','日期'],['王宁','9月4日'],['李悦','9月5日']],selection:'all',cell:[1,0],removed:false,message:'初始已选中整表，包括标题行。'},s=>
  office('Word','表格工具 · 布局',btn('删除 → 删除表格','remove','',s.removed?'disabled':''),paper(s.removed?'<p>表格结构已删除；后续正文回流到这里。</p>':`${btn('✥','all','',`aria-label="选择整张表格"`)}<table style="width:100%;border-collapse:collapse">${s.values.map((r,i)=>`<tr>${r.map((v,j)=>`<${i===0?'th':'td'} style="border:1px solid #9778a1;padding:9px;background:${s.selection==='all'||s.cell[0]===i&&s.cell[1]===j?'#f4e6f3':'#fff'}">${btn(esc(v)||'　','cell',i+','+j,`style="border:0;background:transparent;min-width:30px;min-height:34px"`)}</${i===0?'th':'td'}>`).join('')}</tr>`).join('')}</table>`))+controls(btn('模拟键盘：Delete','delete','',s.removed?'disabled':'')+btn('模拟键盘：Backspace','backspace','',s.removed?'disabled':''))+output(s.message),
  (s,a,v)=>{if(a==='all')s.selection='all';if(a==='cell'){s.selection='cell';s.cell=v.split(',').map(Number);s.message='插入位置在当前单元格文字末尾，未选中整表。';}if(a==='remove'||a==='backspace'&&s.selection==='all'){s.removed=true;s.message='表格及其内容已删除。';}if(a==='delete'){if(s.selection==='all'){s.values=s.values.map(r=>r.map(()=>''));s.message='包括标题行在内的全部内容清空，表格网格保留。';}else s.message='当前插入位置在格内文字末尾，Delete不会删除表格结构。';}if(a==='backspace'&&s.selection==='cell'){const [i,j]=s.cell;s.values[i][j]=[...s.values[i][j]].slice(0,-1).join('');s.message='只删除插入点前的一个字符，表格结构保留。';}});
 })();
@@ -255,31 +258,166 @@ const {btn,field,select,office,paper,dialog,output,table,esc,number}=ui;
 const controls=s=>`<div class="lab-controls">${s}</div>`;
 const old=registry.y2024q8;
 const original={render:old.render,action:old.action,change:old.change};
-Object.assign(old.initial,{scenario:'delete',raw:'姓名\t成绩\n王宁\t80\n李明\t95',separator:'tab',converted:null,convertPane:false,sortRows:[['王宁',9],['李明',80],['张宁',100]],sortPane:false,sortType:'number',sortOrder:'asc',draftType:'number',draftOrder:'asc',formulaValues:[80,95],formula:'=SUM(ABOVE)',draftFormula:'=SUM(ABOVE)',formulaPane:false,formulaInserted:false,formulaResult:null,fieldSelected:true,extraMessage:''});
-function parseText(s){const splitter=s.separator==='tab'?'\t':s.separator==='comma'?',':' ';return s.raw.split(/\r?\n/).map(line=>line.split(splitter));}
-function sumFormula(s){const m=/^=(SUM|AVERAGE|MAX|MIN)\(ABOVE\)$/i.exec(s.formula.trim());if(!m)return null;const nums=s.formulaValues.map(Number);if(nums.some(x=>!Number.isFinite(x)))return null;return{SUM:()=>nums.reduce((a,b)=>a+b,0),AVERAGE:()=>nums.reduce((a,b)=>a+b,0)/nums.length,MAX:()=>Math.max(...nums),MIN:()=>Math.min(...nums)}[m[1].toUpperCase()]();}
+Object.assign(old.initial,{scenario:'delete',raw:'姓名\t成绩\n王宁\t80\n李明\t95',separator:'tab',converted:null,convertPane:false,toTextPane:false,textSeparator:'tab',sortRows:[['王宁',9],['李明',80],['张宁',100]],sortPane:false,sortType:'number',sortOrder:'asc',draftType:'number',draftOrder:'asc',formulaValues:[80,95],formula:'=SUM(ABOVE)',draftFormula:'=SUM(ABOVE)',formulaPane:false,formulaInserted:false,formulaResult:null,fieldSelected:true,extraMessage:''});
+// Keep structural editing inside the existing table model and its runtime.
+const structureInitial={structure:null,structureCell:[0,0],structurePair:false,structurePane:false,structureDraftRows:3,structureDraftCols:2,structureHistory:[],structureEditing:false,structureMessage:'先插入一张空表，再选中单元格编辑内容、改变结构。'};
+function structureClone(value){return JSON.parse(JSON.stringify(value));}
+function structureSnapshot(s){return structureClone({table:s.structure,cell:s.structureCell,pair:s.structurePair});}
+function structureRemember(s){s.structureHistory.push(structureSnapshot(s));if(s.structureHistory.length>20)s.structureHistory.shift();}
+function structureSelected(s){return s.structure?.rows[s.structureCell[0]]?.[s.structureCell[1]];}
+function structureHasMerge(s){return !!s.structure?.rows.some(row=>row.some(cell=>cell.span>1));}
+function structureCanPair(s){const row=s.structure?.rows[s.structureCell[0]],i=s.structureCell[1];return !!row&&row[i]?.span===1&&row[i+1]?.span===1;}
+function structureColumn(row,index){return row.slice(0,index).reduce((sum,cell)=>sum+cell.span,0);}
+function structureRender(s){
+ const t=s.structure,selected=structureSelected(s),locked=s.structurePane?'disabled':'',hasMerge=structureHasMerge(s);
+ const block=disabled=>s.structurePane||disabled?'disabled':'';
+ const pane=s.structurePane?dialog('插入表格',field('structureDraftRows','行数（本例2—5行）',s.structureDraftRows,'number','min="2" max="5" step="1"')+field('structureDraftCols','列数（本例2—5列）',s.structureDraftCols,'number','min="2" max="5" step="1"')+'<p>确定后建立空白表格；取消不会改变文档。2—5是本网页的演示范围，不是Word限制。</p>',btn('确定','structureApply')+btn('取消','structureCancel')):'';
+ const grid=t?`<p data-structure-size>当前 ${t.rows.length} 行、${t.cols} 个逻辑列；${t.rows.reduce((n,row)=>n+row.length,0)} 个实际单元格。</p><div class="lab-table-scroll" data-structure-scroll tabindex="0" aria-label="结构表格，可在此横向滚动" style="min-width:0;width:100%;max-width:100%;overflow-x:auto"><table data-structure-table style="border-collapse:collapse;table-layout:fixed;width:${t.cols*100}px;min-width:${t.cols*100}px"><colgroup>${Array.from({length:t.cols},()=>'<col style="width:100px">').join('')}</colgroup><tbody>${t.rows.map((row,r)=>`<tr>${row.map((cell,c)=>{
+  const start=structureColumn(row,c),chosen=s.structureCell[0]===r&&(s.structureCell[1]===c||s.structurePair&&s.structureCell[1]+1===c);
+  const text=cell.text.split('\n').map(line=>`<span style="display:block;min-height:1.6em">${esc(line)||'&#160;'}</span>`).join('');
+  return `<td data-structure-cell="${r},${c}" data-structure-column="${start}" colspan="${cell.span}" style="border:1px solid #9778a1;padding:0;background:${chosen?'#f4e6f3':'#fff'}"><button type="button" data-lab-act="structureSelect" data-value="${r},${c}" aria-label="选择第${r+1}行第${start+1}${cell.span>1?'至'+(start+cell.span):''}列单元格" aria-pressed="${chosen}" ${locked} style="width:100%;min-width:0;min-height:62px;margin:0;padding:8px;border:0;border-radius:0;background:transparent;text-align:left;white-space:normal;overflow-wrap:anywhere">${text}<small style="display:block;color:#6b5875">${r+1}行 · ${start+1}${cell.span>1?'—'+(start+cell.span):''}列</small></button></td>`;
+ }).join('')}</tr>`).join('')}</tbody></table></div>`:'<p>正文中尚未插入表格。</p>';
+ const editor=t?`<label style="display:block;margin-top:12px">所选单元格内容<textarea data-field="structureText" rows="3" ${block(s.structurePair)} style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical">${esc(selected.text)}</textarea></label>${s.structurePair?'<p>已同时选中右邻格。先合并，或单击一格恢复单格编辑。</p>':''}`:'';
+ const commands=btn('插入表格…','structureOpen','',block(!!t))+btn('在下方插入行','structureRowAdd','',block(!t||t.rows.length>=5))+btn('在右侧插入列','structureColAdd','',block(!t||t.cols>=5||hasMerge))+btn('删除所选行','structureRowDelete','',block(!t||t.rows.length<=1))+btn('删除所选列','structureColDelete','',block(!t||t.cols<=1||hasMerge));
+ const merges=t?controls(btn(s.structurePair?'取消右邻格选择':'再选右邻单元格','structurePair','',block(!structureCanPair(s)))+btn('合并所选两格','structureMerge','',block(!s.structurePair||!structureCanPair(s)))+btn('拆分为两列','structureSplit','',block(selected.span!==2))+btn('撤销上一步','structureUndo','',block(!s.structureHistory.length))):s.structureHistory.length?controls(btn('撤销上一步','structureUndo','',locked)):'';
+ return office('Word',t?'表格工具 · 布局':'插入',commands,pane+paper(grid+editor))+merges+output(esc(s.structureMessage))+
+  ui.coach('本例最多5行、5列，只演示同一行两个相邻单元格的合并与拆分；合并时文字按原顺序分段保留。本例拆分后文字留首格，不还原合并前分布；真实Word结果需核对。含合并格时本例暂不开放整列插入和删除，请先拆分；这是模型范围，不是Word限制。插入表格不会覆盖已有表；需要另一张空表可重置。本例不模拟拆分整张表、跨页和自动调整。','本演示的范围与限制');
+}
+function structureAction(s,a,v){
+ if(!a.startsWith('structure'))return false;
+ if(s.structurePane&&!['structureApply','structureCancel'].includes(a))return true;
+ s.structureEditing=false;
+ if(a==='structureOpen'){
+  if(s.structure)return true;
+  s.structurePane=true;s.structureDraftRows=3;s.structureDraftCols=2;
+  s.structureMessage='正在设置新表格草稿，正文尚未改变。';return true;
+ }
+ if(a==='structureCancel'){
+  if(!s.structurePane)return true;
+  s.structurePane=false;s.structureMessage='已取消插入，正文与表格保持原状。';return true;
+ }
+ if(a==='structureApply'){
+  if(!s.structurePane||s.structure)return true;
+  const rows=Number(s.structureDraftRows),cols=Number(s.structureDraftCols);
+  if(!Number.isInteger(rows)||!Number.isInteger(cols)||rows<2||rows>5||cols<2||cols>5){s.structureMessage='请输入2到5之间的整数行数和列数；草稿尚未应用。';return true;}
+  structureRemember(s);s.structure={cols,rows:Array.from({length:rows},()=>Array.from({length:cols},()=>({text:'',span:1})))};
+  s.structureCell=[0,0];s.structurePair=false;s.structurePane=false;s.structureMessage=`已插入${rows}行${cols}列的空表。选择一格，在下方输入它的内容。`;return true;
+ }
+ if(a==='structureUndo'){
+  const previous=s.structureHistory.pop();if(!previous)return true;
+  s.structure=previous.table;s.structureCell=previous.cell;s.structurePair=previous.pair;s.structureMessage='已撤销上一步输入或结构操作。';return true;
+ }
+ const t=s.structure;if(!t)return true;
+ if(a==='structureSelect'){
+  const parts=String(v).split(',');if(parts.length!==2)return true;
+  const [r,c]=parts.map(Number);if(!Number.isInteger(r)||!Number.isInteger(c)||!t.rows[r]?.[c])return true;
+  s.structureCell=[r,c];s.structurePair=false;s.structureMessage='已选中一个单元格；输入只改它的内容，行列操作改变表格结构。';return true;
+ }
+ if(a==='structurePair'){
+  if(!structureCanPair(s))return true;s.structurePair=!s.structurePair;
+  s.structureMessage=s.structurePair?'已选择同一行的两个相邻单元格，准备合并。':'恢复单格选择。';return true;
+ }
+ const [r,c]=s.structureCell,row=t.rows[r],cell=row[c];
+ if(a==='structureRowAdd'&&t.rows.length<5){
+  structureRemember(s);t.rows.splice(r+1,0,Array.from({length:t.cols},()=>({text:'',span:1})));s.structureCell=[r+1,Math.min(structureColumn(row,c),t.cols-1)];s.structurePair=false;
+  s.structureMessage='已在所选行下方插入空行。原内容随所在行保留。';return true;
+ }
+ if(a==='structureRowDelete'&&t.rows.length>1){
+  structureRemember(s);t.rows.splice(r,1);s.structureCell=[Math.min(r,t.rows.length-1),0];s.structurePair=false;
+  s.structureMessage='所选行及其中内容已删除，其他行保留。';return true;
+ }
+ if(a==='structureColAdd'&&t.cols<5&&!structureHasMerge(s)){
+  structureRemember(s);t.rows.forEach(x=>x.splice(c+1,0,{text:'',span:1}));t.cols++;s.structureCell=[r,c+1];s.structurePair=false;
+  s.structureMessage='已在所选列右侧插入空列；原有内容保留。';return true;
+ }
+ if(a==='structureColDelete'&&t.cols>1&&!structureHasMerge(s)){
+  structureRemember(s);t.rows.forEach(x=>x.splice(c,1));t.cols--;s.structureCell=[r,Math.min(c,t.cols-1)];s.structurePair=false;
+  s.structureMessage='所选列及其中内容已删除；这与只清除文字不同。';return true;
+ }
+ if(a==='structureMerge'&&s.structurePair&&structureCanPair(s)){
+  structureRemember(s);row.splice(c,2,{text:cell.text+'\n'+row[c+1].text,span:2});s.structurePair=false;
+  s.structureMessage='两格已成为一个跨两列的单元格；原文字按从左到右顺序分段保留，其他行未合并。';return true;
+ }
+ if(a==='structureSplit'&&cell.span===2){
+  structureRemember(s);row.splice(c,1,{text:cell.text,span:1},{text:'',span:1});s.structurePair=false;
+  s.structureMessage='本例已拆成两列，合并格文字保留在左格，右格为空；拆分不等于撤销合并。';return true;
+ }
+ return true;
+}
+function structureChange(s,k,v){
+ if(!k.startsWith('structure'))return false;
+ if(s.structurePane){if(k==='structureDraftRows'||k==='structureDraftCols')s[k]=v;return true;}
+ if(k!=='structureText'||!s.structure||s.structurePair)return true;
+ const cell=structureSelected(s),text=String(v);
+ if(cell.text!==text){if(!s.structureEditing)structureRemember(s);s.structureEditing=true;cell.text=text;s.structureMessage='已修改所选单元格的文字；表格结构未变。';}
+ return true;
+}
+
+Object.assign(old.initial,structureInitial);
+const tablePane=s=>s.structurePane||s.convertPane||s.toTextPane||s.formulaPane||s.sortPane;
+const separatorChar=key=>({tab:'\t',comma:',',space:' '})[key];
+function parseText(s){return s.raw.split(/\r?\n/).map(line=>line.split(separatorChar(s.separator)));}
+function sumFormula(s){
+ const m=/^=(SUM|AVERAGE|MAX|MIN)\(ABOVE\)$/i.exec(s.formula.trim());if(!m)return null;
+ const nums=s.formulaValues.map(Number);
+ if(s.formulaValues.some(x=>String(x).trim()==='')||nums.some(x=>!Number.isFinite(x)))return null;
+ const result={SUM:()=>nums.reduce((a,b)=>a+b,0),AVERAGE:()=>nums.reduce((a,b)=>a+b,0)/nums.length,MAX:()=>Math.max(...nums),MIN:()=>Math.min(...nums)}[m[1].toUpperCase()]();
+ return Number.isFinite(result)?result:null;
+}
 old.render=s=>{
- const picker=controls(select('scenario','同一知识点的操作',s.scenario,[['delete','选择范围与删除'],['convert','文本转换为表格'],['formula','表格公式与F9更新'],['sort','按数值排序']]));
- if(s.scenario==='delete')return picker+original.render(s);
- if(s.scenario==='convert')return picker+office('Word','插入',btn('表格 → 将文本转换成表格…','convertOpen'),`${s.convertPane?dialog('将文本转换成表格',select('separator','文字分隔位置',s.separator,[['tab','制表符'],['comma','逗号'],['space','空格']])+`<p>按所选分隔符预览：${parseText(s).length}行，最多${Math.max(...parseText(s).map(r=>r.length))}列。</p>`,btn('确定','convertApply')+btn('取消','convertCancel')):''}${paper(s.converted?table(s.converted[0].map(esc),s.converted.slice(1).map(r=>r.map(esc))):`<label>待转换文本（当前整段已选中）<textarea data-field="raw" rows="5">${esc(s.raw)}</textarea></label>`)}`)+output(s.extraMessage||'每个段落形成一行；段内分隔符决定拆成几列。当前文本用Tab分隔姓名和成绩。');
- if(s.scenario==='formula')return picker+office('Word','表格工具 · 布局',btn('公式…','formulaOpen'),`${s.formulaPane?dialog('公式',field('draftFormula','公式',s.draftFormula)+'<p>ABOVE表示同列上方单元格。本演示支持SUM、AVERAGE、MAX、MIN。</p>',btn('确定','formulaApply')+btn('取消','formulaCancel')):''}${paper(table(['姓名','成绩'],[['王宁',field('score0','王宁成绩',s.formulaValues[0],'number')],['李明',field('score1','李明成绩',s.formulaValues[1],'number')],['汇总',btn(s.formulaInserted?String(s.formulaResult):'单击选中汇总格','fieldSelect','',`class="${s.fieldSelected?'lab-selected':''}"`)]]))}`)+controls(btn('模拟键盘：F9 更新所选域','formulaUpdate'))+output(s.extraMessage||'汇总格已预留在数据下方。插入公式后改动成绩，显示的域结果不会实时重算；选中域再按F9。');
- return picker+office('Word','表格工具 · 布局',btn('排序…','sortOpen'),`${s.sortPane?dialog('排序','<p>主要关键字：成绩；有标题行。</p>'+select('draftType','类型',s.draftType,[['number','数字'],['text','文本']])+select('draftOrder','次序',s.draftOrder,[['asc','升序'],['desc','降序']]),btn('确定','sortApply')+btn('取消','sortCancel')):''}${paper(table(['姓名','成绩'],s.sortRows.map(([name,score])=>[esc(name),score])))}`)+output(s.extraMessage||'成绩排序要用数字类型。将同一列当文本排序时，比较的是字符顺序。');
+ const locked=tablePane(s)?'disabled':'';
+ const picker=controls(select('scenario','同一知识点的操作',s.scenario,[['structure','建表与合并拆分'],['delete','选择范围与删除'],['convert','文本与表格双向转换'],['formula','表格公式与F9更新'],['sort','按数值排序']],locked));
+ if(s.scenario==='structure')return picker+structureRender(s);
+ if(s.scenario==='delete')return picker+original.render(s)+ui.coach('本例只比较整表选区和格内文字末尾插入点；行列、合并拆分请切换“建表与合并拆分”。Delete与Backspace由当前选择对象决定。Word2016与实体手机未实测。','本演示的范围与限制');
+ if(s.scenario==='convert'){
+  const separators=[['tab','制表符'],['comma','逗号'],['space','空格']];
+  const pane=s.convertPane?dialog('将文本转换成表格',select('separator','文字分隔位置',s.separator,separators)+`<p>按所选分隔符预览：${parseText(s).length}行，最多${Math.max(...parseText(s).map(r=>r.length))}列。请核对每行字段数。</p>`,btn('确定','convertApply')+btn('取消','convertCancel')):s.toTextPane?dialog('表格转换为文本',select('textSeparator','单元格间的分隔符',s.textSeparator,separators)+'<p>每行内的单元格用所选字符连接，行之间用段落分开；取消保留表格。</p>',btn('确定','toTextApply')+btn('取消','toTextCancel')):'';
+  return picker+office('Word',s.converted?'表格工具 · 布局':'插入',btn('表格 → 将文本转换成表格…','convertOpen','',locked||s.converted?'disabled':'')+btn('数据 → 转换为文本…','toTextOpen','',locked||!s.converted?'disabled':''),pane+paper(s.converted?table(s.converted[0].map(esc),s.converted.slice(1).map(r=>r.map(esc))):`<label>待转换文本（当前整段已选中）<textarea data-field="raw" rows="5" ${locked}>${esc(s.raw)}</textarea></label>`))+output(esc(s.extraMessage||'每个段落形成一行；段内分隔符决定拆成几列。当前文本用Tab分隔姓名和成绩。'))+ui.coach('本例支持12行以内、6列以内的规则文本往返；每行字段数须一致，不模拟合并格、嵌套表或格内多段落。这里把换行当作段落，实际Word需核对编辑标记；这些是模型范围，不是Word限制。选择的分隔符若也存在于字段文字中，应重新整理再转换。','本演示的范围与限制');
+ }
+ if(s.scenario==='formula')return picker+office('Word','表格工具 · 布局',btn('公式…','formulaOpen','',locked),`${s.formulaPane?dialog('公式',field('draftFormula','公式',s.draftFormula)+'<p>ABOVE表示同列上方单元格。本演示支持SUM、AVERAGE、MAX、MIN。</p>',btn('确定','formulaApply')+btn('取消','formulaCancel')):''}${paper(table(['姓名','成绩'],[['王宁',field('score0','王宁成绩',s.formulaValues[0],'number',locked)],['李明',field('score1','李明成绩',s.formulaValues[1],'number',locked)],['汇总',btn(s.formulaInserted?String(s.formulaResult):'单击选中汇总格','fieldSelect','',`class="${s.fieldSelected?'lab-selected':''}" ${locked}`)]]))}`)+controls(btn('模拟键盘：F9 更新所选域','formulaUpdate','',locked))+output(esc(s.extraMessage||'汇总格已预留在数据下方。插入公式后改动成绩，显示的域结果不会实时重算；选中域再按F9。'))+ui.coach('本例只计算同列上方两条数值记录，演示插入、结果缓存与F9更新；未模拟打开真实文件时的计算、其他方向、合并格或完整域语法。空格需补数值，缺少数值时保留旧结果并提示检查。Word2016与实体手机未实测。','本演示的范围与限制');
+ return picker+office('Word','表格工具 · 布局',btn('排序…','sortOpen','',locked),`${s.sortPane?dialog('排序','<p>主要关键字：成绩；有标题行。</p>'+select('draftType','类型',s.draftType,[['number','数字'],['text','文本']])+select('draftOrder','次序',s.draftOrder,[['asc','升序'],['desc','降序']]),btn('确定','sortApply')+btn('取消','sortCancel')):''}${paper(table(['姓名','成绩'],s.sortRows.map(([name,score])=>[esc(name),score])))}`)+output(esc(s.extraMessage||'成绩排序要用数字类型。将同一列当文本排序时，比较的是字符顺序。'))+ui.coach('本例固定有标题行，只按成绩一个关键字比较数字与文本次序；整条记录一起移动。三级关键字、日期识别和中文排序规则在正文说明，不在本模型中模拟。','本演示的范围与限制');
 };
 old.action=(s,a,v)=>{
+ if(s.scenario==='structure')return structureAction(s,a,v);
+ if(s.convertPane&&!['convertApply','convertCancel'].includes(a))return;
+ if(s.toTextPane&&!['toTextApply','toTextCancel'].includes(a))return;
+ if(s.formulaPane&&!['formulaApply','formulaCancel'].includes(a))return;
+ if(s.sortPane&&!['sortApply','sortCancel'].includes(a))return;
  if(s.scenario==='delete')return original.action(s,a,v);
- if(a==='convertOpen')s.convertPane=true;
- if(a==='convertCancel')s.convertPane=false;
- if(a==='convertApply'){s.converted=parseText(s);s.convertPane=false;s.extraMessage=`已按${{tab:'制表符',comma:'逗号',space:'空格'}[s.separator]}转换，实际得到${s.converted.length}行、最多${Math.max(...s.converted.map(r=>r.length))}列。`;}
+ if(a==='convertOpen'&&!s.converted)s.convertPane=true;
+ if(a==='convertCancel'){s.convertPane=false;s.extraMessage='已取消，原文本保持不变。';}
+ if(a==='convertApply'&&s.convertPane){
+  const rows=parseText(s),cols=rows[0].length;
+  if(!s.raw.trim()||rows.length>12||cols>6||rows.some(row=>row.length!==cols)){s.extraMessage='本模型需非空文本、每行字段数一致，最多12行6列。请先取消并整理文本，或检查分隔符；尚未转换。';return;}
+  s.converted=rows;s.convertPane=false;s.extraMessage=`已按${{tab:'制表符',comma:'逗号',space:'空格'}[s.separator]}转换，实际得到${rows.length}行、${cols}列。`;
+ }
+ if(a==='toTextOpen'&&s.converted){s.toTextPane=true;s.textSeparator=s.separator;}
+ if(a==='toTextCancel'){s.toTextPane=false;s.extraMessage='已取消，原表格及文字保持不变。';}
+ if(a==='toTextApply'&&s.toTextPane&&s.converted){s.raw=s.converted.map(row=>row.join(separatorChar(s.textSeparator))).join('\n');s.separator=s.textSeparator;s.converted=null;s.toTextPane=false;s.extraMessage='表格结构已转换为文本；核对每行文字与所选分隔符。';}
  if(a==='formulaOpen'){s.formulaPane=true;s.draftFormula=s.formula;}
  if(a==='formulaCancel')s.formulaPane=false;
- if(a==='formulaApply'){const before=s.formula;s.formula=s.draftFormula;const result=sumFormula(s);if(result===null){s.formula=before;s.extraMessage='本演示支持 =SUM(ABOVE)、=AVERAGE(ABOVE)、=MAX(ABOVE)、=MIN(ABOVE)。';return;}s.formulaResult=result;s.formulaInserted=true;s.fieldSelected=true;s.formulaPane=false;s.extraMessage='已插入公式域并显示计算结果。试着修改上方成绩。';}
+ if(a==='formulaApply'&&s.formulaPane){const before=s.formula;s.formula=s.draftFormula;const result=sumFormula(s);if(result===null){s.formula=before;s.extraMessage='请检查两条数值是否完整，以及公式是否为 =SUM(ABOVE)、=AVERAGE(ABOVE)、=MAX(ABOVE)、=MIN(ABOVE)。原结果保持，草稿未应用。';return;}s.formulaResult=result;s.formulaInserted=true;s.fieldSelected=true;s.formulaPane=false;s.extraMessage='已插入公式域并显示计算结果。试着修改上方成绩。';}
  if(a==='fieldSelect')s.fieldSelected=true;
- if(a==='formulaUpdate'){if(!s.formulaInserted||!s.fieldSelected){s.extraMessage='先插入公式，然后选择汇总格里的公式域。';return;}s.formulaResult=sumFormula(s);s.extraMessage='F9已更新所选公式域：'+s.formula+' → '+s.formulaResult+'。';}
+ if(a==='formulaUpdate'){
+  if(!s.formulaInserted||!s.fieldSelected){s.extraMessage='先插入公式，然后选择汇总格里的公式域。';return;}
+  const result=sumFormula(s);if(result===null){s.extraMessage='参与计算的数据含空白、无效值，或结果超出本模型数值范围。请核对数值，本例保留旧结果。';return;}
+  s.formulaResult=result;s.extraMessage='F9已更新所选公式域：'+s.formula+' → '+s.formulaResult+'。';
+ }
  if(a==='sortOpen'){s.sortPane=true;s.draftType=s.sortType;s.draftOrder=s.sortOrder;}
  if(a==='sortCancel')s.sortPane=false;
- if(a==='sortApply'){s.sortType=s.draftType;s.sortOrder=s.draftOrder;s.sortRows.sort((a,b)=>(s.sortType==='number'?Number(a[1])-Number(b[1]):String(a[1])<String(b[1])?-1:String(a[1])>String(b[1])?1:0)*(s.sortOrder==='asc'?1:-1));s.sortPane=false;s.extraMessage=`已按${s.sortType==='number'?'数字大小':'文本字符顺序'}${s.sortOrder==='asc'?'升序':'降序'}排序，姓名随其成绩整行移动。`;}
+ if(a==='sortApply'&&s.sortPane){s.sortType=s.draftType;s.sortOrder=s.draftOrder;s.sortRows.sort((a,b)=>(s.sortType==='number'?Number(a[1])-Number(b[1]):String(a[1])<String(b[1])?-1:String(a[1])>String(b[1])?1:0)*(s.sortOrder==='asc'?1:-1));s.sortPane=false;s.extraMessage=`已按${s.sortType==='number'?'数字大小':'文本字符顺序'}${s.sortOrder==='asc'?'升序':'降序'}排序，姓名随其成绩整行移动。`;}
 };
-old.change=(s,k,v)=>{if(k==='scenario'){s.scenario=v;s.extraMessage='';}else if(k.startsWith('score')){s.formulaValues[Number(k.slice(5))]=v;s.fieldSelected=false;s.extraMessage='成绩已修改。旧公式结果暂时保留；选中公式域再按F9更新。';}else if(k==='raw'){s.raw=v;s.converted=null;}else if(original.change)original.change(s,k,v);else s[k]=v;};
+old.change=(s,k,v)=>{
+ if(k==='scenario'){if(!tablePane(s)&&['structure','delete','convert','formula','sort'].includes(v)){s.structureEditing=false;s.scenario=v;s.extraMessage='';}return;}
+ if(s.scenario==='structure')return structureChange(s,k,v);
+ if(s.convertPane){if(k==='separator'&&separatorChar(v))s.separator=v;return;}
+ if(s.toTextPane){if(k==='textSeparator'&&separatorChar(v))s.textSeparator=v;return;}
+ if(s.formulaPane){if(k==='draftFormula')s.draftFormula=v;return;}
+ if(s.sortPane){if(k==='draftType'||k==='draftOrder')s[k]=v;return;}
+ if(/^score[01]$/.test(k)){s.formulaValues[Number(k.slice(5))]=v;s.fieldSelected=false;s.extraMessage='成绩已修改。旧公式结果暂时保留；选中公式域再按F9更新。';}
+ else if(k==='raw'){s.raw=v;s.converted=null;}
+ else if(original.change)original.change(s,k,v);else s[k]=v;
+};
 register(['merged-5'],'标题结构决定导航与目录，视图决定如何查看','切换五种视图；应用标题样式后插入自动目录，再比较更新页码和更新整个目录。',{view:'print',tab:'view',nav:true,headings:[{id:0,level:1,title:'第一章 信息技术',body:'数据是信息的符号化表示。',styled:false},{id:1,level:1,title:'第二章 操作系统',body:'操作系统管理硬件和软件资源。',styled:false}],selected:0,collapsed:[],cover:false,toc:null,tocPane:false,tocMode:'all',message:'标题只有大号粗体外观。先选标题，再在开始中应用标题1。'},s=>{
  const h=s.headings,viewNames={print:'打印布局',outline:'大纲',read:'阅读模式',draft:'草稿',web:'Web版式'};
  const navigation=s.nav?`<aside style="padding:12px;background:#f5edf7"><b>导航 · 标题</b>${h.some(x=>x.styled)?h.map((p,i)=>p.styled?btn(esc(p.title),'select',i):'').join(''):'<p>此文档不包含标题。</p>'}</aside>`:'';
@@ -629,15 +767,18 @@ registry.y2025q56.keydown=(s,e)=>{if(e.altKey&&e.key==='F10'){e.preventDefault()
 const {register,ui}=window.NOTE_LABS;
 const {field,select,office,paper,output,number,table}=ui;
 register(['merged-9'],'把高、宽和纵横比对应起来','原图高8.5 cm、宽6 cm；比较锁定比例、强制高宽与先裁剪三种结果。',{
-    mode:'lock',width:6,height:8.5
+    mode:'lock',width:6,height:8.5,cropTop:65
   },s=>{
     const ratio=s.mode==='crop'?5/6:6/8.5;
     return office('Word','图片工具 · 格式',select('mode','尺寸方案',s.mode,[['lock','锁定原图纵横比'],['stretch','取消锁定，分别设置'],['crop','先裁剪为宽5∶高6']])+field('height','高度（cm）',s.height,'number','min="0.5" max="20" step="0.01"')+field('width','宽度（cm）',s.width,'number','min="0.5" max="20" step="0.01"'),paper(
-      `<figure class="lab-image-size" style="margin:0;max-width:100%"><svg viewBox="${s.mode==='crop'?'0 65 600 720':'0 0 600 850'}" preserveAspectRatio="none" role="img" aria-label="尺寸预览：圆形被拉长表示失真" style="display:block;width:${s.width*25}px;height:${s.height*25}px;max-width:none;background:#e8e1f2"><rect x="0" y="0" width="600" height="850" fill="#e7f0ec"/><path d="M0 750 L190 400 L340 580 L470 300 L600 680 V850 H0" fill="#80a691"/><circle cx="230" cy="230" r="105" fill="#edc76a"/><rect x="8" y="8" width="584" height="834" fill="none" stroke="#927ca6" stroke-width="16"/></svg><figcaption>高 ${s.height.toFixed(2)} cm × 宽 ${s.width.toFixed(2)} cm</figcaption></figure>`))+
+      `<figure class="lab-image-size" style="margin:0;max-width:100%;overflow-x:auto" tabindex="0" aria-label="图片尺寸预览，可在此横向滚动"><svg viewBox="${s.mode==='crop'?'0 '+s.cropTop+' 600 720':'0 0 600 850'}" preserveAspectRatio="none" role="img" aria-label="尺寸预览：圆形被拉长表示失真" style="display:block;width:${s.width*25}px;height:${s.height*25}px;max-width:none;background:#e8e1f2"><rect x="0" y="0" width="600" height="850" fill="#e7f0ec"/><path d="M0 750 L190 400 L340 580 L470 300 L600 680 V850 H0" fill="#80a691"/><circle cx="230" cy="230" r="105" fill="#edc76a"/><rect x="8" y="8" width="584" height="834" fill="none" stroke="#927ca6" stroke-width="16"/></svg><figcaption>高 ${s.height.toFixed(2)} cm × 宽 ${s.width.toFixed(2)} cm</figcaption></figure>`))+
+      (s.mode==='crop'?field('cropTop','学习调节：裁剪窗口上下位置',s.cropTop,'range','min="0" max="130" step="1"'):'')+
       table(['操作','联动结果'],[['锁定原比例，高改为6 cm','宽 = 6 × 6 ÷ 8.5 ≈ 4.24 cm'],['锁定原比例，宽改为5 cm','高 = 8.5 × 5 ÷ 6 ≈ 7.08 cm'],['目标高6 cm、宽5 cm','原比例不匹配；强制尺寸会变形，裁剪会舍弃部分画面']])+
-      output(s.mode==='crop'?'已裁去原图上、下各一部分，再按5∶6缩放；圆形保持圆形，可见内容减少。':Math.abs(s.width/s.height-ratio)>.001?'当前宽高比与原图不同，圆形已被拉伸。':'宽高按原图比例联动，圆形保持圆形。');
+      ui.coach('三种方案分别比较比例与尺寸，不模拟完整文件保存。裁剪方案可移动取景框，观察保留的画面；窗口位置是网页学习调节器，真实Word通过裁剪控点/移动图片调整。只改变可见区域，未删除源画面；不模拟删除裁剪区域和撤销历史。大图在预览内横向滚动，屏幕比例不代表实际厘米。Word2016及实体手机未实测。','本演示的范围与限制')+
+      output(s.mode==='crop'?'已按5∶6取景并缩放；改变取景位置只改可见内容，不改目标宽高。':Math.abs(s.width/s.height-ratio)>.001?'当前宽高比与原图不同，圆形已被拉伸。':'宽高按原图比例联动，圆形保持圆形。');
   },()=>{},(s,k,v)=>{
-    if(k==='mode'){s.mode=v;if(v==='crop'){s.width=5;s.height=6;}else if(v==='lock'){s.width=6;s.height=8.5;}else{s.width=5;s.height=6;}return;}
+    if(k==='cropTop'){if(s.mode==='crop')s.cropTop=number(v,0,130);return;}
+    if(k==='mode'){s.mode=v;if(v==='crop'){s.width=5;s.height=6;s.cropTop=65;}else if(v==='lock'){s.width=6;s.height=8.5;}else{s.width=5;s.height=6;}return;}
     const ratio=s.mode==='crop'?5/6:6/8.5;
     s[k]=s.mode==='stretch'?number(v,.5,20):number(v,k==='height'?.5/ratio:.5,k==='width'?20*ratio:20);
     if(s.mode!=='stretch'){if(k==='width')s.height=s.width/ratio;else s.width=s.height*ratio;}

@@ -503,6 +503,18 @@
     [
       "repeat table header on subsequent pages",
       "https://support.microsoft.com/en-us/word/repeat-table-header-on-subsequent-pages"
+    ],
+    [
+      "Microsoft：Set or change table properties",
+      "https://support.microsoft.com/en-us/office/security-privacy/set-or-change-table-properties"
+    ],
+    [
+      "Microsoft：Set table cells to expand with contents in Word",
+      "https://support.microsoft.com/en-us/word/set-table-cells-to-expand-with-contents-in-word"
+    ],
+    [
+      "Microsoft：Split a table in Word",
+      "https://support.microsoft.com/en-us/word/split-a-table-in-word"
     ]
   ],
   "y2020q63": [
@@ -513,6 +525,22 @@
     [
       "align text left or right center text or justify text on a page",
       "https://support.microsoft.com/en-us/word/align-text-left-or-right-center-text-or-justify-text-on-a-page"
+    ],
+    [
+      "Microsoft：Rows.Alignment property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.rows.alignment"
+    ],
+    [
+      "Microsoft：Resize a table, column, or row",
+      "https://support.microsoft.com/en-us/word/resize-a-table-column-or-row"
+    ],
+    [
+      "Microsoft：Convert text to a table or a table to text",
+      "https://support.microsoft.com/en-us/word/convert-text-to-a-table-or-a-table-to-text"
+    ],
+    [
+      "Microsoft：Set table cells to expand with contents in Word",
+      "https://support.microsoft.com/en-us/word/set-table-cells-to-expand-with-contents-in-word"
     ]
   ],
   "y2022q69": [
@@ -529,6 +557,82 @@
     [
       "use a formula in a word table",
       "https://support.microsoft.com/en-us/word/use-a-formula-in-a-word-table"
+    ],
+    [
+      "Microsoft：Resize a table, column, or row",
+      "https://support.microsoft.com/en-us/word/resize-a-table-column-or-row"
+    ],
+    [
+      "Microsoft：Delete a table",
+      "https://support.microsoft.com/en-us/word/delete-a-table"
+    ],
+    [
+      "Microsoft：Delete a row, column, or cell from a table",
+      "https://support.microsoft.com/en-us/word/delete-a-row-column-or-cell-from-a-table"
+    ],
+    [
+      "Microsoft：Convert text to a table or a table to text",
+      "https://support.microsoft.com/en-us/word/convert-text-to-a-table-or-a-table-to-text"
+    ],
+    [
+      "Microsoft：Sort the contents of a table",
+      "https://support.microsoft.com/en-us/word/sort-the-contents-of-a-table"
+    ],
+    [
+      "Microsoft：Insert a table",
+      "https://support.microsoft.com/en-us/word/training/insert-a-table"
+    ],
+    [
+      "Microsoft：Use a screen reader to insert a table in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/use-a-screen-reader-to-insert-a-table-in-word"
+    ],
+    [
+      "Microsoft：Move or copy a table",
+      "https://support.microsoft.com/en-us/word/move-or-copy-a-table"
+    ],
+    [
+      "Microsoft：Set or change table properties",
+      "https://support.microsoft.com/en-us/office/security-privacy/set-or-change-table-properties"
+    ],
+    [
+      "Microsoft：Rows.Alignment property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.rows.alignment"
+    ],
+    [
+      "Microsoft：Add a cell, row, or column to a table in Word",
+      "https://support.microsoft.com/en-us/word/add-a-cell-row-or-column-to-a-table-in-word"
+    ],
+    [
+      "Microsoft：Keyboard shortcuts in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：Merge or split cells in a table",
+      "https://support.microsoft.com/en-us/word/merge-or-split-cells-in-a-table"
+    ],
+    [
+      "Microsoft：Cells.Merge method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cells.merge"
+    ],
+    [
+      "Microsoft：Cell.Split method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cell.split"
+    ],
+    [
+      "Microsoft：Cells.Split method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cells.split"
+    ],
+    [
+      "Microsoft：Split a table in Word",
+      "https://support.microsoft.com/en-us/word/split-a-table-in-word"
+    ],
+    [
+      "Microsoft：Cell.Delete method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cell.delete"
+    ],
+    [
+      "Microsoft：WdDeleteCells enumeration (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.wddeletecells"
     ]
   ],
   "y2025q47": [
@@ -539,6 +643,46 @@
     [
       "wrap text and move pictures in word",
       "https://support.microsoft.com/en-us/word/wrap-text-and-move-pictures-in-word"
+    ],
+    [
+      "Microsoft：InlineShape object (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.inlineshape"
+    ],
+    [
+      "Microsoft：Move WordArt, a text box, or shape in Word",
+      "https://support.microsoft.com/en-us/word/move-wordart-a-text-box-or-shape-in-word"
+    ],
+    [
+      "Microsoft：Shape.LockAnchor property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.shape.lockanchor"
+    ],
+    [
+      "Microsoft：Group shapes, pictures, or other objects in Word",
+      "https://support.microsoft.com/en-us/word/group-shapes-pictures-or-other-objects-in-word"
+    ],
+    [
+      "Microsoft：InlineShape.Select method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.inlineshape.select"
+    ],
+    [
+      "Microsoft：Change the size of a picture, shape, text box, or WordArt in Word",
+      "https://support.microsoft.com/en-us/word/change-the-size-of-a-picture-shape-text-box-or-wordart-in-word"
+    ],
+    [
+      "Microsoft：Replace or delete a picture in Microsoft Office",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/replace-or-delete-a-picture-in-microsoft-office"
+    ],
+    [
+      "Microsoft：Use a screen reader to insert a picture or image in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/use-a-screen-reader-to-insert-a-picture-or-image-in-word"
+    ],
+    [
+      "Microsoft：Change default text wrap setting for images",
+      "https://support.microsoft.com/en-us/word/change-default-text-wrap-setting-for-images"
+    ],
+    [
+      "Microsoft：Options.PictureWrapType property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.options.picturewraptype"
     ]
   ],
   "y2026q36": [
@@ -549,6 +693,54 @@
     [
       "move wordart a text box or shape in word",
       "https://support.microsoft.com/en-us/word/move-wordart-a-text-box-or-shape-in-word"
+    ],
+    [
+      "Microsoft：Add shapes",
+      "https://support.microsoft.com/en-us/powerpoint/add-shapes"
+    ],
+    [
+      "Microsoft：Rotate or flip a text box, shape, WordArt, or picture in Word",
+      "https://support.microsoft.com/en-us/word/rotate-or-flip-a-text-box-shape-wordart-or-picture-in-word"
+    ],
+    [
+      "Microsoft：Change the colors in a text box or shape",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/change-the-colors-in-a-text-box-or-shape"
+    ],
+    [
+      "Microsoft：Add, copy, or remove a text box in Word",
+      "https://support.microsoft.com/en-us/word/add-copy-or-remove-a-text-box-in-word"
+    ],
+    [
+      "Microsoft：TextFrame object (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.textframe"
+    ],
+    [
+      "Microsoft：Set text direction and position in a shape or text box in Word",
+      "https://support.microsoft.com/en-us/word/set-text-direction-and-position-in-a-shape-or-text-box-in-word"
+    ],
+    [
+      "Microsoft：TextFrame.ValidLinkTarget method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.textframe.validlinktarget"
+    ],
+    [
+      "Microsoft：TextFrame.BreakForwardLink method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.textframe.breakforwardlink"
+    ],
+    [
+      "Microsoft：InlineShape.Select method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.inlineshape.select"
+    ],
+    [
+      "Microsoft：Change the size of a picture, shape, text box, or WordArt in Word",
+      "https://support.microsoft.com/en-us/word/change-the-size-of-a-picture-shape-text-box-or-wordart-in-word"
+    ],
+    [
+      "Microsoft：Replace or delete a picture in Microsoft Office",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/replace-or-delete-a-picture-in-microsoft-office"
+    ],
+    [
+      "Microsoft：Use a screen reader to insert a picture or image in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/use-a-screen-reader-to-insert-a-picture-or-image-in-word"
     ]
   ],
   "y2022q71": [
@@ -1287,6 +1479,38 @@
     [
       "Microsoft：Word、PowerPoint网格线只作显示参考",
       "https://support.microsoft.com/en-us/powerpoint/show-or-hide-gridlines-in-word-powerpoint-or-excel"
+    ],
+    [
+      "Microsoft：Set or change table properties",
+      "https://support.microsoft.com/en-us/office/security-privacy/set-or-change-table-properties"
+    ],
+    [
+      "Microsoft：Insert a table",
+      "https://support.microsoft.com/en-us/word/training/insert-a-table"
+    ],
+    [
+      "Microsoft：Add a cell, row, or column to a table in Word",
+      "https://support.microsoft.com/en-us/word/add-a-cell-row-or-column-to-a-table-in-word"
+    ],
+    [
+      "Microsoft：Merge or split cells in a table",
+      "https://support.microsoft.com/en-us/word/merge-or-split-cells-in-a-table"
+    ],
+    [
+      "Microsoft：Cells.Merge method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cells.merge"
+    ],
+    [
+      "Microsoft：Cell.Split method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cell.split"
+    ],
+    [
+      "Microsoft：Cells.Split method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.cells.split"
+    ],
+    [
+      "Microsoft：Repeat table header on subsequent pages",
+      "https://support.microsoft.com/en-us/word/repeat-table-header-on-subsequent-pages"
     ]
   ],
   "y2022q70": [
@@ -1311,6 +1535,10 @@
     [
       "Microsoft：Word2016与旧格式的公式兼容变化",
       "https://support.microsoft.com/en-us/word/compatibility-changes-between-versions"
+    ],
+    [
+      "Microsoft：Use a formula in a Word table",
+      "https://support.microsoft.com/en-us/word/use-a-formula-in-a-word-table"
     ]
   ],
   "y2024q55": [
@@ -1663,6 +1891,14 @@
     [
       "Microsoft：用SmartArt创建流程图",
       "https://support.microsoft.com/en-us/office/graphics-visuals/create-a-flow-chart-with-smartart"
+    ],
+    [
+      "Microsoft：Learn more about SmartArt Graphics",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/learn-more-about-smartart-graphics"
+    ],
+    [
+      "Microsoft：Create a SmartArt graphic from scratch",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/create-a-smartart-graphic-from-scratch"
     ]
   ],
   "syllabus-word-screen-clipping": [
@@ -1917,6 +2153,104 @@
     [
       "Microsoft：Application.OrganizerDelete method (Word)",
       "https://learn.microsoft.com/en-us/office/vba/api/word.application.organizerdelete"
+    ]
+  ],
+  "merged-9": [
+    [
+      "Microsoft：Change the size of a picture, shape, text box, or WordArt in Word",
+      "https://support.microsoft.com/en-us/word/change-the-size-of-a-picture-shape-text-box-or-wordart-in-word"
+    ],
+    [
+      "Microsoft：Crop a picture in Office",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/crop-a-picture-in-office"
+    ],
+    [
+      "Microsoft：Crop a picture to fit in a shape",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/crop-a-picture-to-fit-in-a-shape"
+    ],
+    [
+      "Microsoft：Change default text wrap setting for images",
+      "https://support.microsoft.com/en-us/word/change-default-text-wrap-setting-for-images"
+    ],
+    [
+      "Microsoft：Options.PictureWrapType property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.options.picturewraptype"
+    ],
+    [
+      "Microsoft：InlineShape.Select method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.inlineshape.select"
+    ],
+    [
+      "Microsoft：Insert pictures",
+      "https://support.microsoft.com/en-us/word/training/insert-pictures"
+    ],
+    [
+      "Microsoft：Replace or delete a picture in Microsoft Office",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/replace-or-delete-a-picture-in-microsoft-office"
+    ],
+    [
+      "Microsoft：Use a screen reader to insert a picture or image in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/use-a-screen-reader-to-insert-a-picture-or-image-in-word"
+    ],
+    [
+      "Microsoft：Change the color of a picture",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/change-the-color-of-a-picture"
+    ],
+    [
+      "Microsoft：Change the brightness, contrast, or sharpness of a picture",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/change-the-brightness-contrast-or-sharpness-of-a-picture"
+    ],
+    [
+      "Microsoft：Add or change an effect for a picture",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/add-or-change-an-effect-for-a-picture"
+    ]
+  ],
+  "y2022q54": [
+    [
+      "Microsoft：Insert WordArt",
+      "https://support.microsoft.com/en-us/word/training/insert-wordart"
+    ],
+    [
+      "Microsoft：Find WordArt Tools in Word",
+      "https://support.microsoft.com/en-us/word/find-wordart-tools-in-word"
+    ],
+    [
+      "Microsoft：Move WordArt, a text box, or shape in Word",
+      "https://support.microsoft.com/en-us/word/move-wordart-a-text-box-or-shape-in-word"
+    ],
+    [
+      "Microsoft：Add shapes",
+      "https://support.microsoft.com/en-us/powerpoint/add-shapes"
+    ]
+  ],
+  "y2025q56": [
+    [
+      "Microsoft：Use the Selection pane to manage objects in documents",
+      "https://support.microsoft.com/en-us/powerpoint/use-the-selection-pane-to-manage-objects-in-documents"
+    ],
+    [
+      "Microsoft：Move WordArt, a text box, or shape in Word",
+      "https://support.microsoft.com/en-us/word/move-wordart-a-text-box-or-shape-in-word"
+    ],
+    [
+      "Microsoft：Group shapes, pictures, or other objects in Word",
+      "https://support.microsoft.com/en-us/word/group-shapes-pictures-or-other-objects-in-word"
+    ],
+    [
+      "Microsoft：Wrap text around a picture in Word",
+      "https://support.microsoft.com/en-us/word/training/wrap-text-around-a-picture-in-word"
+    ],
+    [
+      "Microsoft：InlineShape object (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.inlineshape"
+    ],
+    [
+      "Microsoft：Wrap text and move pictures in Word",
+      "https://support.microsoft.com/en-us/word/wrap-text-and-move-pictures-in-word"
+    ],
+    [
+      "Microsoft：Shape.LockAnchor property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.shape.lockanchor"
     ]
   ]
 }
