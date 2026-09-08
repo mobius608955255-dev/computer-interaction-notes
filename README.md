@@ -72,4 +72,4 @@ npm run check
 
 已完成试点：[CONTENT-ROUND1.md](CONTENT-ROUND1.md)。当前批次与恢复点：[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
 
-v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。v52及此前成果保留，v52已发布。2C“样式与模板”（v53）本地完成，尚未发布；本批范围、验收与恢复入口见[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
+v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。v53、v54已由Work2发布；v55“Word3.6文档保护与打印 + 3.7高级应用”本地完成，尚未发布。完整回归218项通过，浏览器发现的局部修订输入问题修正后5项受影响检查通过；本批范围、验收与恢复入口见[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。历史开发状态保留在各批记录中。

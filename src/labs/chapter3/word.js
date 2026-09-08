@@ -17,16 +17,116 @@ register(['y2022q69'],'源表改了，Word会不会跟着变','切换链接与�
     (s,a)=>{if(a==='path')s.path=!s.path;if(a==='refresh'&&s.path&&s.mode==='link')s.word=s.source;},(s,k,v)=>{s[k]=k==='source'?number(v,0,99999):v;if(k==='mode')s.word=s.source;});
 register(['y2022q70'],'给报告加淡化Logo背景','比较图片水印、普通衬底图片和页面边框的实际范围。',{mode:'none',page:1},s=>
     `<div class="lab-controls">${select('mode','比较不同设置',s.mode,[['none','无'],['watermark','图片水印'],['behind','普通图片：衬于文字下方'],['border','页面边框']])}</div>`+office('Word',s.mode==='behind'?'图片工具 · 格式':'设计',`<span>${s.mode==='behind'?'环绕文字 → 衬于文字下方':s.mode==='watermark'?'水印 → 自定义水印 → 图片水印':s.mode==='border'?'页面边框':'页面背景'}</span>`,paper(`<div class="lab-bg-page ${s.mode==='border'?'bordered':''}">${s.mode==='watermark'||s.mode==='behind'&&s.page===1?'<div class="lab-watermark" aria-label="背景Logo">M<br><small>研究中心</small></div>':''}<h4>年度报告 · 第${s.page}页</h4><p>背景应辅助辨认，不妨碍阅读。</p><p>正文与数据保持清晰。</p></div>`))+`<div class="lab-controls">${btn('上一页','page',1)}${btn('下一页','page',2)}</div>${output(s.mode==='behind'?'本例普通图片只放在第1页；切到第2页不会自动复制。':s.mode==='watermark'?'图片水印通过页眉层重复显示。':s.mode==='border'?'边框只改变页面边缘，不添加Logo。':'尚未设置背景。')}`,(s,a,v)=>{s.page=Number(v);});
-register(['y2022q71'],'保护表格，仍允许改正文','给正文设置编辑例外，再启动强制保护，并分别尝试输入。',{protected:false,exception:false,body:'本年度销售情况如下。',cell:'898',message:''},s=>
-    office('Word','审阅',btn('限制编辑','pane'),`<div class="lab-protect-layout">${paper(`<label>正文<textarea data-field="body" ${s.protected&&!s.exception?'readonly':''}>${esc(s.body)}</textarea></label>${field('cell','表格：总销量',s.cell,'text',s.protected?'readonly':'')}`)}${s.pane?dialog('限制编辑',`<p>编辑限制：不允许任何更改（只读）</p><label><input type="checkbox" data-field="exception" ${s.exception?'checked':''} ${s.protected?'disabled':''}>正文允许“每个人”编辑</label>`,btn(s.protected?'停止保护':'是，启动强制保护','protect')):''}</div>`)+output(s.protected?`表格已只读；正文${s.exception?'作为例外仍可编辑':'也被锁定'}。`:'尚未保护，正文和表格都可输入。')+coach('这里省略真实密码输入；实际文档启动保护时按需要设置密码。学习按钮不放在文档正文里。'),
-    (s,a)=>{if(a==='pane')s.pane=!s.pane;if(a==='protect')s.protected=!s.protected;});
-register(['y2025q36'],'为不同收件人生成不同称谓','连接Excel名单，插入姓名域，再设置IF规则并切换预览记录。',{connected:false,name:false,rule:false,preview:false,record:0,pane:false,ifValue:'女',then:'女士',otherwise:'先生'},s=>{
-    const people=[['王宁','女'],['李明','男'],['赵敏','女']];const person=people[s.record];const salutation=s.preview&&s.rule?(person[1]===s.ifValue?s.then:s.otherwise):s.rule?'«IF 称谓»':'';
-    return office('Word','邮件',btn('选择收件人','connect')+btn('插入合并域：姓名','name','',s.connected?'':'disabled')+btn('规则 → 如果…那么…否则','rule','',s.connected?'':'disabled')+btn('预览结果','preview','',s.connected?'':'disabled'),`${s.pane?dialog('插入Word域：IF',`<p>域名：性别　比较：等于</p>${select('ifValue','比较值',s.ifValue,[['女','女'],['男','男']])}${field('then','则插入此文字',s.then)}${field('otherwise','否则插入此文字',s.otherwise)}`,btn('确定','apply')):''}${paper(`<h4>邀请函</h4><p>尊敬的${s.name?(s.preview?person[0]:'«姓名»'):'＿＿'}${esc(salutation)}：</p><p>诚邀您参加计算机基础教学交流。</p>`)}${s.preview?`<div class="lab-record-nav">${btn('上一条','previous')}<b>记录 ${s.record+1}/3</b>${btn('下一条','next')}</div>`:''}`)+output(s.connected?'已连接专家名单.xlsx。字段取自当前记录，条件规则只改变输出文字。':'先选择收件人，加载Excel名单。')+`<details class="lab-assist"><summary>收件人名单</summary>${table(['姓名','性别'],people)}</details>`;
-  },(s,a)=>{if(a==='connect')s.connected=true;if(a==='name'&&s.connected)s.name=true;if(a==='rule'&&s.connected)s.pane=true;if(a==='apply'){s.rule=true;s.pane=false;}if(a==='preview'&&s.connected)s.preview=!s.preview;if(a==='next')s.record=Math.min(2,s.record+1);if(a==='previous')s.record=Math.max(0,s.record-1);});
-register(['y2023q56'],'修改文稿，再接受或拒绝修订','编辑文字产生修订；接受和拒绝真正改变最终文稿。',{tracking:false,old:'可能产生改善',draft:'可能产生改善',decided:false},s=>
-    office('Word','审阅',btn(s.tracking?'修订：开':'修订：关','track')+btn('接受修订','accept')+btn('拒绝修订','reject'),paper(`<h4>研究结果</h4><p>该方法${s.pending&&s.draft!==s.old?`<del>${esc(s.old)}</del><ins>${esc(s.draft)}</ins>`:esc(s.draft)}。</p>`))+`<div class="lab-keyboard">${field('draft','模拟键盘输入：替换选中的短语',s.draft)}</div>${output(s.tracking?'修订已开启，旧文字显示删除线，新文字带下划线。':s.pending?'修订已关闭，已有修订仍待接受或拒绝。':'未开启修订；编辑直接改变当前文稿。')}`,
-    (s,a)=>{if(a==='track')s.tracking=!s.tracking;if(a==='accept'){s.old=s.draft;s.pending=false;}if(a==='reject'&&s.pending){s.draft=s.old;s.pending=false;}},(s,k,v)=>{if(s.tracking&&v!==s.draft)s.pending=true;s.draft=v;if(!s.tracking&&!s.pending)s.old=v;});
+const protectionCanEdit=(s,key)=>s.opened&&(s.writeAccess||s.mode==='modify')&&!s.auth&&(!s.protected||(key==='body'&&s.exception));
+register(['y2022q71'],'比较不能打开、只读打开与部分可编辑','设置学习条件，模拟关闭再打开；再比较正文和表格的实际输入权限。',{
+  mode:'restrict',protected:false,exception:false,stopPassword:false,pane:false,paneSnapshot:null,
+  opened:true,writeAccess:true,configured:false,auth:'',attempt:'0000',
+  body:'本年度销售情况如下。',cell:'898',savedBody:'本年度销售情况如下。',savedCell:'898',copy:null,copyCount:0,message:''
+},s=>{
+  const modeNames={restrict:'限制编辑与正文例外',open:'打开密码',modify:'修改密码与只读打开'};
+  const blocked=Boolean(s.auth),status=!s.opened?'文档未打开，正文和表格均不显示。':!s.writeAccess?'已只读打开：可改当前草稿，但没有保存回原文件的权限；可另存独立副本。':s.protected?`限制编辑已生效：表格只读；正文${s.exception?'作为例外仍可编辑':'也只读'}。`:'正文和表格均可编辑。';
+  let controls=s.opened?btn(s.mode==='modify'?'模拟关闭（舍弃未保存草稿）':'模拟关闭','close','',blocked||s.pane?'disabled':''):btn('模拟打开','open','',blocked?'disabled':'');
+  if(s.mode==='restrict')controls+=btn('限制编辑','pane','',!s.opened||!s.writeAccess||blocked?'disabled':'');
+  else controls+=btn('设置固定学习口令并模拟关闭','configure','',!s.opened||!s.writeAccess||blocked?'disabled':'');
+  if(s.mode==='modify')controls+=btn('保存回原文件（模拟）','saveOriginal','',!s.opened||blocked?'disabled':'')+btn('另存独立副本（模拟）','saveCopy','',!s.opened||blocked?'disabled':'');
+  let content=s.opened?paper(`<h4>${esc(modeNames[s.mode])} · 学习示例</h4><div data-protection-document><label>正文<textarea data-field="body" ${protectionCanEdit(s,'body')?'':'readonly'} ${blocked?'disabled':''}>${esc(s.body)}</textarea></label>${field('cell','表格：总销量',s.cell,'text',`${protectionCanEdit(s,'cell')?'':'readonly'} ${blocked?'disabled':''}`)}</div>`):paper('<p data-protection-closed>示例文档已关闭。先模拟打开，再观察验证结果。</p>');
+  if(s.mode==='modify'&&s.opened)content+=`<section data-protection-original><h4>原文件中已保存的内容</h4><p>${esc(s.savedBody)}</p><p>总销量：${esc(s.savedCell)}</p></section>${s.copy?`<section data-protection-copy><h4>最近另存的独立副本 ${s.copyCount}</h4><p>${esc(s.copy.body)}</p><p>总销量：${esc(s.copy.cell)}</p></section>`:''}`;
+  if(s.pane)content+=dialog('限制编辑',`<p>编辑限制：不允许任何更改（只读）</p><label><input type="checkbox" data-field="exception" ${s.exception?'checked':''} ${s.protected||blocked?'disabled':''}>正文允许“每个人”编辑</label><label><input type="checkbox" data-field="stopPassword" ${s.stopPassword?'checked':''} ${s.protected||blocked?'disabled':''}>停止保护时验证固定学习口令 1234</label><p>不勾选口令时，本例可以直接停止保护。</p>`,btn(s.protected?'停止保护':'是，启动强制保护','protect','',blocked?'disabled':'')+btn(s.protected?'关闭面板':'取消设置','cancelPane','',blocked?'disabled':''));
+  if(s.auth){
+    const title=s.auth==='open'?'验证打开口令':s.auth==='modify'?'选择编辑或只读打开':'验证停止保护口令';
+    content+=dialog(title,`<p>固定学习口令为 1234；0000 用来观察失败结果。</p>${select('attempt','选择学习口令',s.attempt,[['0000','错误示例：0000'],['1234','正确示例：1234']])}`,btn('验证口令','verify')+(s.auth==='modify'?btn('以只读方式打开','readOnly'):'')+btn('取消验证','cancelAuth'));
+  }
+  return `<div class="lab-controls">${select('mode','学习情境（切换会重置示例）',s.mode,Object.entries(modeNames),blocked||s.pane?'disabled':'')}</div>`+office('Word','保护条件比较',controls,`<div class="lab-protect-layout">${content}</div>`)+output(`${status}${s.message?'<br>'+esc(s.message):''}`)+coach('切换情境会重载独立示例，不是解除当前文件的保护。这里仅比较三种保护效果；网页不加密、不保存真实文件，学习按钮不代表已在Word中设置。修改密码情境只展示原文件与最近副本的内容快照；固定口令只供演示，不接收真实密码。未模拟权限服务、文件管理或组合保护。','本演示的范围与限制');
+},(s,a)=>{
+  if(a==='cancelAuth'&&s.auth){s.auth='';s.attempt='0000';s.message=s.opened?'已取消验证，现有保护仍然有效。':'已取消打开，文档仍关闭。';return;}
+  if(a==='verify'&&s.auth){
+    if(s.attempt!=='1234'){s.message='口令不正确，访问或编辑权限没有改变。';return;}
+    if(s.auth==='stop'){s.protected=false;s.message='验证通过，已停止限制编辑。';}
+    else{s.opened=true;s.writeAccess=true;s.message='验证通过，示例文档已打开并允许编辑。';}
+    s.auth='';s.attempt='0000';return;
+  }
+  if(a==='readOnly'&&s.auth==='modify'){s.opened=true;s.writeAccess=false;s.auth='';s.attempt='0000';s.message='没有取得保存回原文件的权限；本次以只读方式打开。';return;}
+  if(s.auth)return;
+  if(a==='pane'&&s.mode==='restrict'&&s.opened&&s.writeAccess){
+    if(s.pane){if(!s.protected&&s.paneSnapshot)Object.assign(s,s.paneSnapshot);s.pane=false;}
+    else{s.pane=true;s.paneSnapshot={exception:s.exception,stopPassword:s.stopPassword};}
+  }
+  if(a==='cancelPane'&&s.pane){if(!s.protected&&s.paneSnapshot)Object.assign(s,s.paneSnapshot);s.pane=false;s.message='面板已关闭，未启动新的保护。';}
+  if(a==='protect'&&s.mode==='restrict'&&s.opened&&s.writeAccess&&s.pane){
+    if(s.protected&&s.stopPassword){s.auth='stop';s.attempt='0000';s.message='停止保护前需要验证学习口令。';}
+    else{s.protected=!s.protected;s.paneSnapshot={exception:s.exception,stopPassword:s.stopPassword};s.message=s.protected?'已按面板中的例外条件启动保护。':'已停止限制编辑，正文和表格恢复可编辑。';}
+  }
+  if(a==='saveOriginal'&&s.mode==='modify'&&s.opened){
+    if(s.writeAccess){s.savedBody=s.body;s.savedCell=s.cell;s.message='当前草稿已保存回原文件快照。';}
+    else s.message='拒绝保存回原文件：未验证修改口令。草稿仍保留，可另存独立副本。';
+  }
+  if(a==='saveCopy'&&s.mode==='modify'&&s.opened){s.copy={body:s.body,cell:s.cell};s.copyCount++;s.message='已生成独立副本快照；原文件内容没有改变。';}
+  if(a==='close'&&s.opened&&!s.pane){s.opened=false;s.writeAccess=false;if(s.mode==='modify'){s.body=s.savedBody;s.cell=s.savedCell;}s.message='示例文档已关闭；现有保护条件保留。';}
+  if(a==='configure'&&s.mode!=='restrict'&&s.opened&&s.writeAccess&&!s.pane){s.savedBody=s.body;s.savedCell=s.cell;s.configured=true;s.opened=false;s.writeAccess=false;s.message='本示例已保存当前内容、设置固定学习口令 1234，并模拟关闭。请再模拟打开。';}
+  if(a==='open'&&!s.opened){
+    if(s.configured&&s.mode!=='restrict'){s.auth=s.mode;s.attempt='0000';s.message=s.mode==='open'?'打开前必须验证口令。':'可验证口令取得修改权限，也可选择只读打开。';}
+    else{s.opened=true;s.writeAccess=true;s.message='示例文档已打开，现有编辑限制继续适用。';}
+  }
+},(s,k,v)=>{
+  if(k==='attempt'&&s.auth){s.attempt=v==='1234'?'1234':'0000';return;}
+  if(k==='mode'&&!s.auth&&!s.pane&&['restrict','open','modify'].includes(v)){
+    Object.assign(s,{mode:v,protected:false,exception:false,stopPassword:false,pane:false,paneSnapshot:null,opened:true,writeAccess:true,configured:false,auth:'',attempt:'0000',body:'本年度销售情况如下。',cell:'898',savedBody:'本年度销售情况如下。',savedCell:'898',copy:null,copyCount:0,message:'已载入另一份独立学习示例。'});return;
+  }
+  if((k==='exception'||k==='stopPassword')&&s.mode==='restrict'&&s.pane&&!s.protected&&!s.auth){s[k]=Boolean(v);return;}
+  if((k==='body'||k==='cell')&&protectionCanEdit(s,k)){s[k]=String(v);s.message=k==='body'?'正文内容已改变。':'表格数值已改变。';}
+});
+const mergeSelected=s=>s.people.map((p,i)=>p.included?i:null).filter(i=>i!==null);
+const mergeLine=(s,p)=>`尊敬的${s.name?p.name:'＿＿'}${s.rule?(p.gender===s.ifValue?s.then:s.otherwise):''}：`;
+const mergeBody=(s,p)=>`邀请函\n${mergeLine(s,p)}\n${s.common}`;
+register(['y2025q36'],'从收件人名单生成结果，再比较三个对象','筛选记录、预览条件称谓，生成新文档中的多份内容；分别修改名单与结果。',{
+  connected:false,name:false,rule:false,preview:false,record:0,pane:false,ifValue:'女',then:'女士',otherwise:'先生',ruleDraft:null,
+  people:[{name:'王宁',gender:'女',included:true},{name:'李明',gender:'男',included:true},{name:'赵敏',gender:'女',included:true}],
+  common:'诚邀您参加计算机基础教学交流。',finishScope:'all',results:null,generation:0,message:'先连接教学名单。主文档、数据源与合并结果分别显示。'
+},s=>{
+  const selected=mergeSelected(s),p=s.people[s.record],blocked=Boolean(s.pane),salutation=s.rule?(s.preview?(p.gender===s.ifValue?s.then:s.otherwise):'«IF 称谓»'):'';
+  const disabled=blocked?'disabled':'';
+  let panel='';
+  if(s.pane==='rule')panel=dialog('插入Word域：IF','<p>域名：性别　比较：等于</p>'+select('ifValue','比较值',s.ruleDraft.ifValue,[['女','女'],['男','男']])+field('then','则插入此文字',s.ruleDraft.then,'text','maxlength="24"')+field('otherwise','否则插入此文字',s.ruleDraft.otherwise,'text','maxlength="24"'),btn('确定','apply')+btn('取消','cancel'));
+  if(s.pane==='finish')panel=dialog('合并到新文档',select('finishScope','合并记录',s.finishScope,[['all','所有已选收件人'],['current','当前预览记录']])+'<p>本例把所选记录的多份内容放入同一个新文档；生成后仍需另行保存真实文件。</p>',btn('确定生成','finishApply')+btn('取消','cancel'));
+  const draft=paper(`<h4>主文档 · 邀请函</h4><p>${s.name?'尊敬的'+esc(s.preview?p.name:'«姓名»'): '尊敬的＿＿'}${esc(salutation)}：</p><p>${esc(s.common)}</p>`);
+  const source=s.connected?`<section><h4>数据源 · 教学名单</h4><div class="lab-table-scroll">${table(['参加合并','姓名','性别'],s.people.map((person,i)=>[`<input type="checkbox" data-field="recipient${i}" aria-label="参加合并：${esc(person.name)}" ${person.included?'checked':''} ${disabled}>`,esc(person.name),esc(person.gender||'（空值）')]))}</div><div class="lab-record-nav">${btn('上一条','previous','',blocked||!selected.length||selected.indexOf(s.record)<=0?'disabled':'')}<b>记录 ${selected.indexOf(s.record)+1}/${selected.length}（已选）</b>${btn('下一条','next','',blocked||!selected.length||selected.indexOf(s.record)>=selected.length-1?'disabled':'')}</div><div class="lab-controls">${field('sourceName','教学数据源：当前姓名',p.name,'text',`maxlength="32" ${disabled}`)}${select('sourceGender','教学数据源：当前性别',p.gender,[['女','女'],['男','男'],['','空值']],disabled)}</div><p>这里的姓名和性别输入直接改教学数据源；勾选只改变参加合并的范围。</p></section>`:'';
+  const results=s.results?`<section data-merge-results><h4>合并结果 ${s.generation} · 同一新文档中的${s.results.length}份内容</h4>${s.results.map((r,i)=>`<label>结果${i+1}正文<textarea data-field="result${i}" ${disabled} maxlength="500">${esc(r)}</textarea></label>`).join('')}<p>修改这里的普通文字，不会改写上面的主文档或教学名单。</p></section>`:'<p data-merge-empty>尚未生成合并结果；预览只用于检查。</p>';
+  return office('Word','邮件',btn('选择收件人','connect','',disabled)+btn('插入合并域：姓名','name','',!s.connected||blocked?'disabled':'')+btn('规则 → 如果…那么…否则','rule','',!s.connected||blocked?'disabled':'')+btn(s.preview?'返回合并域显示':'预览结果','preview','',!s.connected||blocked||!selected.length?'disabled':'')+btn('完成并合并 → 编辑单个文档','finish','',!s.connected||blocked?'disabled':''),panel+draft)+`<div class="lab-controls">${field('common','主文档共同正文',s.common,'text',`maxlength="160" ${disabled}`)}</div>`+source+results+output(esc(s.message))+coach('固定三条教学记录，按当前名单和规则生成普通文字快照；修改来源后再次合并才生成新结果。未连接真实文件，未生成可下载Word文件，也未发送或打印。未模拟所有记录推进规则、外部数据刷新、结果中的其他链接域或格式；真实Word2016未实测。');
+},(s,a)=>{
+  if(a==='cancel'&&s.pane){s.pane=false;s.ruleDraft=null;s.message='已取消，已应用规则和已生成结果保持。';return;}
+  if(a==='apply'&&s.pane==='rule'){Object.assign(s,s.ruleDraft);s.rule=true;s.pane=false;s.ruleDraft=null;s.message='IF规则已应用到主文档；切换预览记录检查两个分支。';return;}
+  if(a==='finishApply'&&s.pane==='finish'){
+    const selected=mergeSelected(s),records=s.finishScope==='current'?selected.filter(i=>i===s.record):selected;
+    if(!records.length){s.message='没有可合并记录，请取消后勾选收件人。';return;}
+    s.results=records.map(i=>mergeBody(s,s.people[i]));s.generation++;s.pane=false;s.message='已生成新的普通文字快照，替换本卡上一批结果预览；主文档与数据源保留。';return;
+  }
+  if(s.pane)return;
+  if(a==='connect'){s.connected=true;s.message='已连接教学名单，尚未生成结果。';}
+  if(!s.connected)return;
+  if(a==='name')s.name=true;
+  if(a==='rule'){s.ruleDraft={ifValue:s.ifValue,then:s.then,otherwise:s.otherwise};s.pane='rule';}
+  if(a==='preview'&&mergeSelected(s).length)s.preview=!s.preview;
+  if(a==='next'||a==='previous'){const selected=mergeSelected(s),i=selected.indexOf(s.record),next=i+(a==='next'?1:-1);if(selected[next]!==undefined)s.record=selected[next];}
+  if(a==='finish'){
+    if(!mergeSelected(s).length){s.message='没有已选收件人；取消勾选没有删除名单记录，请重新勾选。';return;}
+    if(!s.name){s.message='本例邀请函尚未插入姓名合并域，请先插入并检查。';return;}
+    s.finishScope='all';s.pane='finish';
+  }
+},(s,k,v)=>{
+  if(s.pane==='rule'&&['ifValue','then','otherwise'].includes(k)){s.ruleDraft[k]=String(v).slice(0,24);return;}
+  if(s.pane==='finish'&&k==='finishScope'){s.finishScope=v==='current'?'current':'all';return;}
+  if(s.pane)return;
+  if(k==='common'){s.common=String(v).slice(0,160);s.message='共同正文已改变；旧合并结果仍保留生成时的文字。';}
+  if(!s.connected)return;
+  if(/^recipient[0-2]$/.test(k)){
+    s.people[Number(k.slice(9))].included=Boolean(v);const selected=mergeSelected(s);if(selected.length&&!selected.includes(s.record))s.record=selected[0];if(!selected.length)s.preview=false;s.message='已改变参与范围，名单记录和旧结果没有删除。';
+  }
+  if(k==='sourceName'||k==='sourceGender'){s.people[s.record][k==='sourceName'?'name':'gender']=String(v).slice(0,32);s.message='教学数据源已改；旧结果保持原快照，需要核对后重新合并。';}
+  if(/^result[0-2]$/.test(k)&&s.results?.[Number(k.slice(6))]!==undefined){s.results[Number(k.slice(6))]=String(v).slice(0,500);s.message='只改了结果文字；主文档和名单仍保留。';}
+});
+register(['y2023q56'],'隐藏修订后，再判断是否已经处理','替换一处文字，切换显示方式，再接受或拒绝，观察实际文本。',{tracking:false,old:'可能产生改善',draft:'可能产生改善',pending:false,view:'all'},s=>
+    office('Word','审阅',btn(s.tracking?'修订：开':'修订：关','track')+select('view','修订显示',s.view,[['simple','简单标记'],['all','所有标记'],['none','无标记'],['original','原始状态']])+btn('接受修订','accept')+btn('拒绝修订','reject'),paper(`<h4>研究结果</h4><p ${s.pending&&s.view==='simple'?'style="border-left:3px solid #b95729;padding-left:8px"':''}>该方法${s.pending&&s.draft!==s.old?(s.view==='all'?`<del>${esc(s.old)}</del><ins>${esc(s.draft)}</ins>`:esc(s.view==='original'?s.old:s.draft)):esc(s.draft)}。</p>`))+`<div class="lab-keyboard">${field('draft','模拟键盘输入：替换选中的短语',s.draft,'text',`maxlength="80" ${s.pending&&!s.tracking?'readonly':''}`)}</div>${output(`修订记录：${s.tracking?'开启':'关闭'}；${s.pending?'仍有1处待接受或拒绝。切换显示没有删除记录。':'没有待处理修订。'}`)}`+coach('本例只记录同一处短语替换；停止跟踪后若还有待处理修订，暂停该输入框，先接受或拒绝再继续编辑。未模拟多作者、格式修订、批注和多处筛选；这不是Word只能记录一处的限制。网页验收不代替原生Word2016验证。'),
+    (s,a)=>{if(a==='track')s.tracking=!s.tracking;if(a==='accept'&&s.pending){s.old=s.draft;s.pending=false;}if(a==='reject'&&s.pending){s.draft=s.old;s.pending=false;}},(s,k,v)=>{if(k==='view'){s.view=v;return;}if(k!=='draft'||(s.pending&&!s.tracking))return;const value=String(v).slice(0,80);if(s.tracking&&value!==s.draft)s.pending=true;s.draft=value;if(!s.tracking)s.old=value;});
 register(['y2023q55'],'校对提示与真正的下划线，打印时有何不同','进入打印预览，观察波浪线消失而格式下划线保留。',{printing:false,corrected:false},s=>
     office('Word',s.printing?'文件 · 打印':'审阅',btn(s.printing?'返回编辑':'打印预览','print')+btn('更正 ChatGTP → ChatGPT','correct'),paper(`<h4>${s.printing?'打印预览':'编辑页面'}</h4><p>本研究使用<span class="${!s.printing&&!s.corrected?'lab-spell':''}">${s.corrected?'ChatGPT':'ChatGTP'}</span>辅助整理。</p><p>这一段带有<span style="text-decoration:underline">真实下划线格式</span>。</p>`))+output(s.printing?'打印内容不包含校对波浪提示，字体下划线保留。':'红色波浪线是校对提示，不是字符下划线。'),
     (s,a)=>{if(a==='print')s.printing=!s.printing;if(a==='correct')s.corrected=true;});

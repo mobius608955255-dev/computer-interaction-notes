@@ -1104,3 +1104,78 @@ test('v54 related search hits navigate to separate source paragraphs without rem
  for(const [q,i] of [['合并单元格',12],['拆分单元格',13],['拆分表格',14],['表格转换为文本',16]]){const hash=`#y2024q8--point-${i}`,input=e.d.getElementById('search-input');input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok(e.w.NOTE_SEARCH.search(index,q).find(n=>n.id==='y2024q8').matches.some(m=>m.anchor===hash.slice(1)));const link=c.querySelector(`.note-subtopics a[href="${hash}"]`);assert.ok(link);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="${hash}"]`).click();assert.equal(e.w.location.hash,hash);assert.equal(c.querySelector('[data-lab]'),lab);}
  e.dom.window.close();
 });
+test('v55 restricted editing preserves exceptions, rejects readonly writes and cancels unapplied settings',()=>{
+ const e=env(3),c=open(e,'y2022q71');
+ click(c,'pane');change(e,c,'exception',true);click(c,'cancelPane');click(c,'pane');assert.equal(c.querySelector('[data-field="exception"]').checked,false);
+ change(e,c,'exception',true);click(c,'protect');assert.equal(c.querySelector('[data-field="cell"]').readOnly,true);assert.equal(c.querySelector('[data-field="body"]').readOnly,false);
+ change(e,c,'cell','不应改写');assert.equal(c.querySelector('[data-field="cell"]').value,'898');change(e,c,'body','例外正文 <测试>');assert.equal(c.querySelector('[data-field="body"]').value,'例外正文 <测试>');
+ change(e,c,'exception',false);assert.equal(c.querySelector('[data-field="exception"]').checked,true);click(c,'protect');change(e,c,'cell','1200');assert.equal(c.querySelector('[data-field="cell"]').value,'1200');
+ c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-field="cell"]').value,'898');assert.equal(c.querySelector('[data-field="body"]').value,'本年度销售情况如下。');e.dom.window.close();
+});
+test('v55 open-password failures and cancellation keep document content unavailable until authentication',()=>{
+ const e=env(3),c=open(e,'y2022q71');change(e,c,'mode','open');change(e,c,'body','受保护的示例正文');click(c,'configure');assert.equal(c.querySelector('[data-protection-document]'),null);
+ click(c,'open');click(c,'verify');assert.equal(c.querySelector('[data-protection-document]'),null);assert.match(c.querySelector('.lab-output').textContent,/口令不正确/);assert.equal(c.querySelector('[data-field="mode"]').disabled,true);
+ click(c,'cancelAuth');assert.equal(c.querySelector('[data-protection-document]'),null);click(c,'open');change(e,c,'attempt','1234');click(c,'verify');assert.equal(c.querySelector('[data-field="body"]').value,'受保护的示例正文');assert.equal(c.querySelector('[data-field="body"]').readOnly,false);
+ click(c,'close');click(c,'open');assert.equal(c.querySelector('[data-protection-document]'),null);e.dom.window.close();
+});
+test('v55 modification-password readonly opening permits a draft and independent copy but refuses original overwrite',()=>{
+ const e=env(3),c=open(e,'y2022q71');change(e,c,'mode','modify');click(c,'configure');click(c,'open');click(c,'verify');assert.equal(c.querySelector('[data-protection-document]'),null);
+ click(c,'readOnly');assert.equal(c.querySelector('[data-field="body"]').readOnly,false);assert.equal(c.querySelector('[data-field="cell"]').readOnly,false);
+ change(e,c,'body','只改副本 <草稿>');change(e,c,'cell','1200');click(c,'saveOriginal');assert.match(c.querySelector('.lab-output').textContent,/拒绝保存回原文件/);assert.match(c.querySelector('[data-protection-original]').textContent,/本年度销售情况如下。/);assert.doesNotMatch(c.querySelector('[data-protection-original]').textContent,/1200/);assert.equal(c.querySelector('[data-lab-act="configure"]').disabled,true);
+ click(c,'saveCopy');assert.match(c.querySelector('[data-protection-copy]').textContent,/只改副本 <草稿>/);assert.match(c.querySelector('[data-protection-copy]').textContent,/1200/);change(e,c,'cell','1300');assert.doesNotMatch(c.querySelector('[data-protection-copy]').textContent,/1300/);
+ click(c,'close');click(c,'open');change(e,c,'attempt','1234');click(c,'verify');assert.equal(c.querySelector('[data-field="cell"]').value,'898');change(e,c,'body','通过验证后的改动');click(c,'saveOriginal');assert.match(c.querySelector('[data-protection-original]').textContent,/通过验证后的改动/);assert.doesNotMatch(c.querySelector('[data-protection-copy]').textContent,/通过验证后的改动/);e.dom.window.close();
+});
+test('v55 stopping restricted editing with a password keeps restrictions after failure or cancellation',()=>{
+ const e=env(3),c=open(e,'y2022q71');click(c,'pane');change(e,c,'exception',true);change(e,c,'stopPassword',true);click(c,'protect');click(c,'protect');click(c,'verify');assert.equal(c.querySelector('[data-field="cell"]').readOnly,true);
+ click(c,'cancelAuth');assert.equal(c.querySelector('[data-field="cell"]').readOnly,true);assert.equal(c.querySelector('[data-field="body"]').readOnly,false);click(c,'protect');change(e,c,'attempt','1234');click(c,'verify');assert.equal(c.querySelector('[data-field="cell"]').readOnly,false);change(e,c,'cell','2026');assert.equal(c.querySelector('[data-field="cell"]').value,'2026');e.dom.window.close();
+});
+test('v55 printing current page and selection target different content and invalidate old previews',()=>{
+ const e=env(3),c=open(e,'syllabus-word-print-controls');change(e,c,'scope','current');click(c,'next');click(c,'preview');assert.match(c.querySelector('.lab-mini-deck').textContent,/第5页/);assert.equal(c.querySelectorAll('.lab-mini-deck > div').length,1);
+ change(e,c,'scope','selection');click(c,'preview');assert.equal(c.querySelector('.lab-mini-deck'),null);assert.match(c.querySelector('output').textContent,/没有正文选区/);click(c,'selectText');click(c,'preview');assert.match(c.querySelector('.lab-mini-deck').textContent,/第二段项目说明/);assert.doesNotMatch(c.querySelector('.lab-mini-deck').textContent,/第3页/);
+ click(c,'selectText');assert.equal(c.querySelector('.lab-mini-deck'),null);change(e,c,'scope','all');click(c,'preview');assert.equal(c.querySelectorAll('.lab-mini-deck > div').length,8);e.dom.window.close();
+});
+test('v55 printing collates complete copies and keeps duplex arithmetic within stated limits',()=>{
+ const e=env(3),c=open(e,'syllabus-word-print-controls');change(e,c,'range','1-3');click(c,'preview');assert.match(c.querySelector('[data-print-order]').textContent,/1 → 2 → 3 → 1 → 2 → 3/);
+ change(e,c,'collate','false');assert.equal(c.querySelector('.lab-mini-deck'),null);click(c,'preview');assert.match(c.querySelector('[data-print-order]').textContent,/1 → 1 → 2 → 2 → 3 → 3/);
+ change(e,c,'duplex','true');click(c,'preview');assert.equal(c.querySelector('.lab-mini-deck'),null);assert.match(c.querySelector('output').textContent,/未覆盖/);change(e,c,'collate','true');change(e,c,'markup','false');click(c,'preview');assert.match(c.querySelector('.lab-workspace').textContent,/需要4张纸/);assert.equal(c.querySelector('.lab-mini-deck small'),null);e.dom.window.close();
+});
+test('v55 printing rejects invalid custom ranges and reset removes prepared selection and output',()=>{
+ const e=env(3),c=open(e,'syllabus-word-print-controls');for(const raw of ['','4-2','0','8-9','2,x']){change(e,c,'range',raw);click(c,'preview');assert.equal(c.querySelector('.lab-mini-deck'),null);}
+ change(e,c,'range','2,5-7');click(c,'preview');assert.deepEqual([...c.querySelectorAll('.lab-mini-deck b')].map(x=>x.textContent),['第2页','第5页','第6页','第7页']);click(c,'selectText');c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('mark'),null);assert.equal(c.querySelector('.lab-mini-deck'),null);assert.equal(c.querySelector('[data-field="scope"]').value,'custom');e.dom.window.close();
+});
+test('v55 mail merge rule drafts cancel cleanly and empty data follows the literal else branch',()=>{
+ const e=env(3),c=open(e,'y2025q36');click(c,'connect');click(c,'name');click(c,'rule');change(e,c,'then','应取消');change(e,c,'common','不能混入');click(c,'cancel');click(c,'preview');assert.doesNotMatch(c.querySelector('.lab-paper').textContent,/应取消|不能混入|女士/);
+ click(c,'rule');change(e,c,'then','<女士>');click(c,'apply');assert.match(c.querySelector('.lab-paper').textContent,/王宁<女士>/);assert.equal(c.querySelector('女士'),null);change(e,c,'sourceGender','');assert.match(c.querySelector('.lab-paper').textContent,/王宁先生/);assert.equal(c.querySelector('[data-merge-results]'),null);e.dom.window.close();
+});
+test('v55 mail merge output snapshots preserve source and main document through independent edits',()=>{
+ const e=env(3),c=open(e,'y2025q36');click(c,'connect');click(c,'name');click(c,'rule');click(c,'apply');change(e,c,'recipient1',false);click(c,'preview');click(c,'finish');click(c,'finishApply');assert.equal(c.querySelectorAll('[data-merge-results] textarea').length,2);assert.match(c.querySelector('[data-field="result0"]').value,/王宁女士/);assert.match(c.querySelector('[data-field="result1"]').value,/赵敏女士/);
+ change(e,c,'sourceName','王 <新>');assert.match(c.querySelector('.lab-paper').textContent,/王 <新>女士/);assert.match(c.querySelector('[data-field="result0"]').value,/王宁女士/);change(e,c,'result0','仅结果 <草稿>');assert.equal(c.querySelector('[data-field="sourceName"]').value,'王 <新>');assert.equal(c.querySelector('[data-field="common"]').value,'诚邀您参加计算机基础教学交流。');
+ click(c,'finish');click(c,'cancel');assert.equal(c.querySelector('[data-field="result0"]').value,'仅结果 <草稿>');click(c,'next');click(c,'finish');change(e,c,'finishScope','current');click(c,'finishApply');assert.equal(c.querySelectorAll('[data-merge-results] textarea').length,1);assert.match(c.querySelector('[data-field="result0"]').value,/赵敏女士/);assert.equal(c.querySelector('[data-field="recipient1"]').checked,false);e.dom.window.close();
+});
+test('v55 mail merge requires a selected record and example name field without deleting source rows',()=>{
+ const e=env(3),c=open(e,'y2025q36');click(c,'connect');click(c,'finish');assert.equal(c.querySelector('.lab-dialog'),null);assert.match(c.querySelector('output').textContent,/尚未插入姓名/);click(c,'name');for(let i=0;i<3;i++)change(e,c,'recipient'+i,false);click(c,'finish');assert.equal(c.querySelector('.lab-dialog'),null);assert.match(c.querySelector('output').textContent,/没有已选收件人/);assert.equal(c.querySelectorAll('input[type="checkbox"]').length,3);
+ change(e,c,'recipient2',true);click(c,'finish');click(c,'finishApply');assert.match(c.querySelector('[data-field="result0"]').value,/赵敏/);c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-merge-results]'),null);assert.equal(c.querySelector('[data-field="sourceName"]'),null);e.dom.window.close();
+});
+test('v55 revision display never accepts or rejects a pending replacement',()=>{
+ const e=env(3),c=open(e,'y2023q56');click(c,'track');change(e,c,'draft','明显改善');change(e,c,'view','none');assert.match(c.querySelector('.lab-paper').textContent,/明显改善/);assert.equal(c.querySelector('del'),null);assert.match(c.querySelector('output').textContent,/仍有1处/);
+ change(e,c,'view','original');assert.match(c.querySelector('.lab-paper').textContent,/可能产生改善/);click(c,'track');change(e,c,'view','all');assert.match(c.querySelector('ins').textContent,/明显改善/);click(c,'reject');assert.equal(c.querySelector('ins'),null);assert.match(c.querySelector('.lab-paper').textContent,/可能产生改善/);
+ click(c,'track');change(e,c,'draft','最终改善');change(e,c,'view','none');click(c,'accept');change(e,c,'view','original');assert.match(c.querySelector('.lab-paper').textContent,/最终改善/);assert.match(c.querySelector('output').textContent,/没有待处理/);e.dom.window.close();
+});
+test('v55 protects v54 semantic links and all other Word cards while fully rendering new prose',()=>{
+ const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/word-v54-protection.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex'),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter3.json'),'utf8')),e=env(3);
+ for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.equal(hash([n.id,n.points.slice(0,row.count),n.sources,n.keys]),row.prefix,row.id);if(row.unchanged)assert.equal(hash(n),row.unchanged,row.id);else for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}}
+ for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
+});
+test('v55 protection and print search hits reach distinct canonical paragraphs without losing an open model',()=>{
+ const e=env(3),c=open(e,'y2022q71'),lab=c.querySelector('[data-lab]'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
+ for(const [q,id,i] of [['解除打开密码','y2022q71',4],['修改密码限制保存','y2022q71',5],['全部、当前页与所选内容','syllabus-word-print-controls',4],['份数、逐份','syllabus-word-print-controls',6]]){
+  const hash=`#${id}--point-${i}`,input=e.d.getElementById('search-input');input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok(e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id)?.matches.some(m=>m.anchor===hash.slice(1)),q);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="${hash}"]`).click();assert.equal(e.w.location.hash,hash);assert.equal(c.querySelector('[data-lab]'),lab);
+ }
+ e.dom.window.close();
+});
+test('v55 revision toolbar commits a complete typed phrase before deciding without requiring blur',()=>{
+ const e=env(3),c=open(e,'y2023q56');click(c,'track');const input=c.querySelector('[data-field="draft"]');
+ for(const v of ['明','明显','明显改善']){input.value=v;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));}
+ assert.equal(c.querySelector('[data-lab-act="accept"]').disabled,false);click(c,'accept');assert.match(c.querySelector('.lab-paper').textContent,/明显改善/);assert.match(c.querySelector('output').textContent,/没有待处理/);
+ const again=c.querySelector('[data-field="draft"]');again.value='另一处替换';again.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'track');assert.equal(c.querySelector('[data-field="draft"]').readOnly,true);change(e,c,'draft','不应混入');click(c,'reject');assert.match(c.querySelector('.lab-paper').textContent,/明显改善/);assert.doesNotMatch(c.querySelector('.lab-paper').textContent,/不应混入/);e.dom.window.close();
+});

@@ -747,18 +747,78 @@
     [
       "Microsoft：保护部分文档并设置编辑例外",
       "https://support.microsoft.com/en-us/word/allow-changes-to-parts-of-a-protected-word-document"
+    ],
+    [
+      "Microsoft：Protect a Word document with a password",
+      "https://support.microsoft.com/en-us/word/protect-a-word-document-with-a-password"
+    ],
+    [
+      "Microsoft：Document.SaveAs2 method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.saveas2"
+    ],
+    [
+      "Microsoft：Remove a password from a document",
+      "https://support.microsoft.com/en-us/word/remove-a-password-from-a-document"
+    ],
+    [
+      "Microsoft：Make a document read only in Word",
+      "https://support.microsoft.com/en-us/word/make-a-document-read-only-in-word"
+    ],
+    [
+      "Microsoft：Word keyboard shortcuts",
+      "https://support.microsoft.com/zh-cn/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：Document.ReadOnlyRecommended property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.document.readonlyrecommended"
+    ],
+    [
+      "Microsoft：Help prevent changes to a final version of a file",
+      "https://support.microsoft.com/en-us/office/collab-files/help-prevent-changes-to-a-final-version-of-a-file"
+    ],
+    [
+      "Microsoft：Restrict access to documents with Information Rights Management in Word",
+      "https://support.microsoft.com/en-us/word/restrict-access-to-documents-with-information-rights-management-in-word"
     ]
   ],
   "y2023q56": [
     [
       "track changes in word",
       "https://support.microsoft.com/en-us/word/training/track-changes-in-word"
+    ],
+    [
+      "Microsoft：Compare document differences using the legal blackline option",
+      "https://support.microsoft.com/en-us/word/compare-document-differences-using-the-legal-blackline-option"
+    ],
+    [
+      "Microsoft：Combine document revisions",
+      "https://support.microsoft.com/en-us/word/combine-document-revisions"
     ]
   ],
   "y2025q36": [
     [
       "Microsoft：邮件合并规则",
       "https://support.microsoft.com/en-us/word/set-the-rules-for-a-mail-merge"
+    ],
+    [
+      "Microsoft：Use mail merge for bulk email, letters, labels, and envelopes",
+      "https://support.microsoft.com/en-us/word/use-mail-merge-for-bulk-email-letters-labels-and-envelopes"
+    ],
+    [
+      "Microsoft：Use mail merge to personalize letters",
+      "https://support.microsoft.com/en-us/word/use-mail-merge-to-personalize-letters"
+    ],
+    [
+      "Microsoft：Data sources you can use for a mail merge",
+      "https://support.microsoft.com/en-us/word/data-sources-you-can-use-for-a-mail-merge"
+    ],
+    [
+      "Microsoft：Mail merge using an Excel spreadsheet",
+      "https://support.microsoft.com/en-us/word/mail-merge-using-an-excel-spreadsheet"
+    ],
+    [
+      "Microsoft：MailMerge.CreateDataSource method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.mailmerge.createdatasource"
     ]
   ],
   "y2020q48": [
@@ -1915,6 +1975,18 @@
     [
       "Microsoft：Word双面打印",
       "https://support.microsoft.com/en-us/word/print-on-both-sides-of-the-paper-duplex-printing-in-word"
+    ],
+    [
+      "Microsoft：Word2016 Windows print settings menu screenshot",
+      "https://support.microsoft.com/en-us/word/media/wd2016-pc-print-settings.png"
+    ],
+    [
+      "Microsoft：Document.PrintOut method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.document.printout"
+    ],
+    [
+      "Microsoft：Word Options (Display)",
+      "https://support.microsoft.com/en-us/word/word-options-display"
     ]
   ],
   "y2024q59": [
@@ -2251,6 +2323,46 @@
     [
       "Microsoft：Shape.LockAnchor property (Word)",
       "https://learn.microsoft.com/en-us/office/vba/api/word.shape.lockanchor"
+    ]
+  ],
+  "merged-6": [
+    [
+      "Microsoft：Create a cross-reference",
+      "https://support.microsoft.com/en-us/word/create-a-cross-reference"
+    ],
+    [
+      "Microsoft：Add, format, or delete captions in Word",
+      "https://support.microsoft.com/en-us/word/add-format-or-delete-captions-in-word"
+    ],
+    [
+      "Microsoft：Insert a table of figures",
+      "https://support.microsoft.com/en-us/word/insert-a-table-of-figures"
+    ],
+    [
+      "Microsoft：Insert a table of contents",
+      "https://support.microsoft.com/en-us/word/training/insert-a-table-of-contents"
+    ],
+    [
+      "Microsoft：Update fields",
+      "https://support.microsoft.com/en-us/word/update-fields"
+    ],
+    [
+      "Microsoft：Keyboard shortcuts in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：Add or delete bookmarks in a Word document or Outlook message",
+      "https://support.microsoft.com/en-us/word/add-or-delete-bookmarks-in-a-word-document-or-outlook-message"
+    ]
+  ],
+  "y2022q55": [
+    [
+      "Microsoft：Insert footnotes and endnotes in Word",
+      "https://support.microsoft.com/en-us/word/training/insert-footnotes-and-endnotes-in-word"
+    ],
+    [
+      "Microsoft：Use a screen reader to read and edit footnotes and endnotes in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/use-a-screen-reader-to-read-and-edit-footnotes-and-endnotes-in-word"
     ]
   ]
 }

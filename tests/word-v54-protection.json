@@ -1,0 +1,263 @@
+{
+  "baseline": "b97b7f274003945c1b3db21be368456bd928cd7d",
+  "notes": [
+    {
+      "id": "merged-5",
+      "count": 8,
+      "prefix": "e160db01967cd98f71fe397930a3fa2106f672181f1fe91dedd6d03f0bd79fed",
+      "unchanged": "c64433afc2b75b9f66585c58b7124fc1716e3f6c69d0b99f8e76a7d2e5bc5ae8"
+    },
+    {
+      "id": "syllabus-word-text-editing",
+      "count": 9,
+      "prefix": "e35299ac0d1e0ade90c5e5fdacf96642e6b245873f9059ced49ea0d329b204ce",
+      "unchanged": "c946254b89b3b23f58799dbf52cb01cb958e31cc918caeb8d16d1da5833dbbdd"
+    },
+    {
+      "id": "y2022q10",
+      "count": 6,
+      "prefix": "d85b5a7e09a75f3e38e5f0b4901cd00f1c5e54a9abb69083611e3a738fb31874",
+      "unchanged": "91f9539eace0586905e32357f9842b35be7e1f48a743434b640c9365087db9e2"
+    },
+    {
+      "id": "y2023q55",
+      "count": 5,
+      "prefix": "f51afdf89f4ed9e75855dbd63f0cb02eff0b549455959249b3859b7be804884a",
+      "unchanged": "2782be6aef909d3e07620802f8ff498cbbada2e1de4cd68c1e6a8e3f72cbb3d2"
+    },
+    {
+      "id": "y2024q7",
+      "count": 7,
+      "prefix": "5474a094bbd27acd7d140530c8336fdaa75b58ddaafd8b69a7e53f9b210e7bc6",
+      "unchanged": "cb7ea79d18f3e13e416929732b5f44515b895ab67e0b46f3cdf1261b306a632d"
+    },
+    {
+      "id": "y2025q48",
+      "count": 11,
+      "prefix": "e174fcf4814efc0ff4b1af08961facba48ed5b160bbc3f6ffb321ae4454eac9c",
+      "unchanged": "c3738ca0980462d6f1f9a24613e2897ac50d9e58818723861be661566a7dc859"
+    },
+    {
+      "id": "merged-8",
+      "count": 7,
+      "prefix": "8f99995555275d3a93fbe3c21848c018982103cad9fceb92146bcea0abd6d368",
+      "unchanged": "37816f0474fabe8444893785c5aa4375541ab3a96dac13aa7d860144feb15d55"
+    },
+    {
+      "id": "y2020q41",
+      "count": 12,
+      "prefix": "f2413db50871ae9d66b10b1a5c2bfc6e274a45983354a7651c605719598f1a95",
+      "unchanged": "f229734c34e51bb2ef781ba42d2cdac61bc74a58612a63e6f89253e6c28f9ab8"
+    },
+    {
+      "id": "merged-7",
+      "count": 14,
+      "prefix": "b5e7f35501b0fdc619382dddfce89f859ed273356019592ef408edfba0046536",
+      "unchanged": "e29a8e7f5e0790493203a9be0d255736206bbba7cf0e68e6a241cea558b9f58a"
+    },
+    {
+      "id": "y2020q43",
+      "count": 6,
+      "prefix": "d45e59e6423a0bcda7076c6830586b3f0707de2b171db40973bd9764696a7995",
+      "unchanged": "c22b4e747ad575b07f2f33f8646bc9a88c77c8ad1e68d4ccf96bdf5b82749137"
+    },
+    {
+      "id": "y2020q44",
+      "count": 8,
+      "prefix": "0c9a251cbecb279a786a65fb46ac09dd961d4603597efcccd29dbb23a492d3f8",
+      "unchanged": "493e5dc94f83ddc5f9685c8f86ab2cac7e2f187bbd83469bc6569ed09ad9d5e1"
+    },
+    {
+      "id": "y2020q61",
+      "count": 12,
+      "prefix": "0da377a573e39e80935d82b6444598f6c408f20d37d218c066a970ee3c9d1436",
+      "unchanged": "3f51a946f8b0760b6f4db3accdad96c9c5ced70b3e4a1d84183428dc416119a9"
+    },
+    {
+      "id": "y2021q56",
+      "count": 12,
+      "prefix": "dc965afa7f1034a5369f7f1a433f2b4f1fd517b9a8fedebeac7e4c2da3271193",
+      "unchanged": "0a29271763796a82ed256a07ccede5c373ae0506da07f0a71a2ff4275e084e4a"
+    },
+    {
+      "id": "y2022q24",
+      "count": 5,
+      "prefix": "b1016fbbe07c53b1d9e1e6f24f0127eed404284eef1a1547049d633853e70a49",
+      "unchanged": "ed992fba0959f0e9d1553bceec3e80627873efec33d0d6df390a103f69e779a4"
+    },
+    {
+      "id": "y2022q70",
+      "count": 3,
+      "prefix": "53ee2b80afbe052c4d1ef149c6d6d53a71c7e396bc8df5f90f16cdee9e223b33",
+      "unchanged": "743b783e2df4964cb61c227c2ebf013f01a1b87715dcc3568ce8a68ebf57acf4"
+    },
+    {
+      "id": "y2023q52",
+      "count": 13,
+      "prefix": "f826e8285153c23866c8371239305cbddbc067055e3850320e73197e20d9d044",
+      "unchanged": "b8c29e94a1f038723a3e26512a26bee674b106da53dac01867638cfaf891fa4a"
+    },
+    {
+      "id": "y2024q54",
+      "count": 5,
+      "prefix": "ab383495412bc2b7c0fb628fa76652d908bb7441aa3061c607416aa9f90da055",
+      "unchanged": "d365aa11aa48d154f452434dfd88f225219b1018ffe4c7d82de2a18e652381f8"
+    },
+    {
+      "id": "syllabus-word-paragraph-spacing",
+      "count": 6,
+      "prefix": "3d7e70b860398af48128086ec66c43089147d93fa26850cfaacb21852119f637",
+      "unchanged": "d0cef525e8eeeda71d723f00e452358b29d5cff5bad76f124b949c144f1d1110"
+    },
+    {
+      "id": "y2024q66",
+      "count": 3,
+      "prefix": "96b035a8a8d262ce9782ed67497e8fd447badd9c2fcb5d5f8ad62eabbf101a7e",
+      "unchanged": "028f451010e86038d6faadf82669434789e1010f78aa47a855fdedadcf8af524"
+    },
+    {
+      "id": "y2026q47",
+      "count": 5,
+      "prefix": "e0fb26ebf2b8d344e4ecf34b0e6ac8ffc9cf8aa052766b2c8b548b60367bccdc",
+      "unchanged": "5efc0d14ca838dd50de3c51bc1c1854f923bf5b692ddf740c25c3a083b5c7b5c"
+    },
+    {
+      "id": "y2020q60",
+      "count": 6,
+      "prefix": "d1275c3ba179a59bdfab45d8db5b06b950f7d5e251129ff867d29dde19aeae1d",
+      "unchanged": "8917a1015bd1d41c690569128c8e4cf6c798d0b9c10903902637208ad07eb2a8"
+    },
+    {
+      "id": "y2020q62",
+      "count": 6,
+      "prefix": "21e869f17f01e7805d145afd2c02813c61fb9efc24342621c47237ba5be3c43f",
+      "unchanged": "4149ea1c16cad471a5c4d3eed8e3d4addcdea26ae88375e1c2c18c0caf8d8a46"
+    },
+    {
+      "id": "y2020q63",
+      "count": 9,
+      "prefix": "4d0587af35d713757918e94939c19abaeef46436d4496a48d3f6ea72f0279baa",
+      "unchanged": "b7bfb2802cf48110879fb21128e86c7b7679acad67b1d4110f91f58a70971235"
+    },
+    {
+      "id": "y2022q69",
+      "count": 5,
+      "prefix": "3bebcec334010f156e3bd8a22cd5238b16f733be012444e45c49b3a0e8ae8d39",
+      "unchanged": "b950c3a008ae26b73286dda58b42ece3491def278e31039cba6752c912a9c6bb"
+    },
+    {
+      "id": "y2024q8",
+      "count": 21,
+      "prefix": "b1a52933785df95c6153e0a3f73a961af3148ccc7b836417397186fb174e367f",
+      "unchanged": "839a2713a641e3e3769e8ec8b3dc51c98a44ebe16055cf84e98022efe6180d1c"
+    },
+    {
+      "id": "merged-9",
+      "count": 10,
+      "prefix": "153933e6119ed81aa2845f6511c6eca78679a9f5384e046c08f680d9ddacc810",
+      "unchanged": "e2b28cf39b727ac8afa1a4ebc995c7c60d1312583b39a1c48c6162bd1024081b"
+    },
+    {
+      "id": "y2022q54",
+      "count": 5,
+      "prefix": "b8b390db44ab2edd125e1c7125d5967a04860958c7343477affe7f672f430e84",
+      "unchanged": "6d15b35cccb76efbda2e26369f3eea1df77e9f4e1e80c810e08ef405b0b81c32"
+    },
+    {
+      "id": "y2023q7",
+      "count": 5,
+      "prefix": "e3e5772f007f2c4671e8f3f547e4f0594c17957256761998b169772284e8cf44",
+      "unchanged": "43e6eae4556702df42b2460e9c2e559f94f3bacf2bf1f178d28f651766b36e3e"
+    },
+    {
+      "id": "y2025q47",
+      "count": 9,
+      "prefix": "3da92032f6f4a38fec63130c32beffe360df51212ba36e02f25558edf404e2e4",
+      "unchanged": "37778d98437b70eaa76059b0e5fd5921458e9003c3499124fb0b17a7d37c6949"
+    },
+    {
+      "id": "y2025q56",
+      "count": 6,
+      "prefix": "b4e34dda81f187dda3509424499b4b2c708bd658146c4ac14a60c34a0f2d6ea2",
+      "unchanged": "4b007f626f82aa363b3b1ab54db4b2981a0cae623f2b39cfd5f56389f689d5c3"
+    },
+    {
+      "id": "y2026q36",
+      "count": 12,
+      "prefix": "bd9ac0cb4fd2989b2715c376b06514c0d1b0a85d89da3e2dfda02d2d29816eec",
+      "unchanged": "db6ef0b36f8587cf0b669755fe7cde0e2ea53551b8dae02f0b33d74c03b96fec"
+    },
+    {
+      "id": "y2022q71",
+      "count": 3,
+      "prefix": "ce9a6092d07cced15675ed941f21199c0c6f986fb1e29af60aee2548ff3fc4dc"
+    },
+    {
+      "id": "merged-6",
+      "count": 4,
+      "prefix": "108442d5f7b4bc34b021e2b305e49e62e879a987ff203df2efef8b4b2ce6720e"
+    },
+    {
+      "id": "y2022q55",
+      "count": 3,
+      "prefix": "7aeec1c979ba0738ccb4a79ac39b201a15f01148eedd99e209143956d9051493"
+    },
+    {
+      "id": "y2023q56",
+      "count": 5,
+      "prefix": "a11619c909c095b7a3716e09c97184c523c4e7037e6b915d6299c1cfc1653a05"
+    },
+    {
+      "id": "y2024q55",
+      "count": 5,
+      "prefix": "f08fdf01047e3f2138ae342f9cadb2f0aead79a925a7f96206ef08d9f7d53068",
+      "unchanged": "f3799b657d898f41a41fffc9373939711fce3076960c3b59d0b5ee65c3c1b865"
+    },
+    {
+      "id": "y2025q36",
+      "count": 5,
+      "prefix": "0b825f113e25119723e5435833ca0503105cc5e2c55d5d01d2e180739a03fe7b"
+    },
+    {
+      "id": "syllabus-document-coauthor",
+      "count": 3,
+      "prefix": "0618998000c0b7ac850c11c5bcd0ff21b23817ac3e0e641789d8cd88f80cbf85",
+      "unchanged": "90e5a07373441b09c4df3c3bcf3e32bcdc9fd79a5ab4ceada0e628dc776313cd"
+    },
+    {
+      "id": "syllabus-office-exchange",
+      "count": 5,
+      "prefix": "27080e2aa2e85b327b1cb412e958224bda325ab24c5e15d65ab8b59890a4ff5a",
+      "unchanged": "261a982a260d2c92bcd01b2db434af92a513cb149a700587e8b4b81528b322d0"
+    },
+    {
+      "id": "syllabus-word-smartart",
+      "count": 2,
+      "prefix": "1e20447e199555ff11b63528352828efd771456bda5a87b2287a99adefbd271a",
+      "unchanged": "3f1b2f604cdfe37eebff7644bc3748390c637b7cc945fe10d00005f04fe50e2c"
+    },
+    {
+      "id": "syllabus-word-screen-clipping",
+      "count": 2,
+      "prefix": "05340ed4df6b878691f447e46b31c51040d2dd59902c61ce752b74462101af06",
+      "unchanged": "82c9829dd86eeeb53f323f3e4824e72cf76ecc2b5b43a8b46aa539f5602fef90"
+    },
+    {
+      "id": "syllabus-word-print-controls",
+      "count": 3,
+      "prefix": "1df1e07f4016122844afe9413b2971c72fa102748d18b4dcc7b7ad684b247b23"
+    }
+  ],
+  "otherChapters": {
+    "content/chapter1.json": "1a910386ded8c0385c7e38f485a7e57051016f653781a8423a033915075004b3",
+    "content/chapter2.json": "5f15a42f5f851858bf8be329388603806d10dde458d8c3557897e623297cadd6",
+    "content/chapter4.json": "2bf256c9d037294a4bc6a328abd51dafe59fb41400ac1b99309505beb2563b62",
+    "content/chapter5.json": "048753ea9543298b1c01a61fb09041ed6602c9d617cbf3d8403666d408c5ee04",
+    "content/chapter6.json": "cdcad05f55a91fce865749dc15a3f188bc9e4a1c767217fd5c5a324574c4076f",
+    "content/chapter7.json": "5d5e86d1def2bf54a7afa36c1b366f72a06c52caa2acb36adf5dd66ac43ad3f0",
+    "content/chapter8.json": "5f0b6cf2afba45c9362508b5b339235ce051343abf5008b8df849760e9372d8a",
+    "content/chapter9.json": "5198ff23bd2cb57e026baa3c66595897ac83fa5d45855a699b5bc4ae207e5298",
+    "content/chapter10.json": "ad4a74a92f9efb689499ce694652f8cf77393a450d0d2c5d888d773d88f4a27d",
+    "content/chapter11.json": "64ff8b4093f0a10711f89b14cc2a1917da65b5450a75742127c38e2688a21751"
+  }
+}
