@@ -417,6 +417,30 @@
     [
       "file formats for saving documents",
       "https://support.microsoft.com/en-us/word/file-formats-for-saving-documents"
+    ],
+    [
+      "Microsoft：Create a template",
+      "https://support.microsoft.com/en-us/word/create-a-template"
+    ],
+    [
+      "Microsoft：Open XML Formats and file name extensions",
+      "https://support.microsoft.com/en-us/office/vba/open-xml-formats-and-file-name-extensions"
+    ],
+    [
+      "Microsoft：Customize or create new styles",
+      "https://support.microsoft.com/en-us/word/customize-or-create-new-styles"
+    ],
+    [
+      "Microsoft：Document.UpdateStylesOnOpen property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.document.updatestylesonopen"
+    ],
+    [
+      "Microsoft：Document.UpdateStyles method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.document.updatestyles"
+    ],
+    [
+      "Microsoft：Change a theme and make it the default in Word or Excel",
+      "https://support.microsoft.com/en-us/office/foundations-experiences/change-a-theme-and-make-it-the-default-in-word-or-excel"
     ]
   ],
   "y2022q24": [
@@ -433,6 +457,46 @@
     [
       "add a heading in a word document",
       "https://support.microsoft.com/en-us/word/add-a-heading-in-a-word-document"
+    ],
+    [
+      "Microsoft：Customize or create new styles",
+      "https://support.microsoft.com/en-us/word/customize-or-create-new-styles"
+    ],
+    [
+      "Microsoft：WdStyleType enumeration (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.wdstyletype"
+    ],
+    [
+      "Microsoft：Style.LinkStyle property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.style.linkstyle"
+    ],
+    [
+      "Microsoft：Style.BaseStyle property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.style.basestyle"
+    ],
+    [
+      "Microsoft：Style.NextParagraphStyle property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.style.nextparagraphstyle"
+    ],
+    [
+      "Microsoft：RunProperties Class",
+      "https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.runproperties?view=openxml-3.0.1"
+    ],
+    [
+      "Microsoft：Font.Reset method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.font.reset"
+    ],
+    [
+      "Microsoft：ParagraphFormat.Reset method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.paragraphformat.reset"
+    ],
+    [
+      "Microsoft：Keyboard shortcuts in Word",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
+    ],
+    [
+      "Microsoft：Style.AutomaticallyUpdate property (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.style.automaticallyupdate"
     ]
   ],
   "y2020q62": [
@@ -1835,6 +1899,24 @@
     [
       "Microsoft：Use Line and Page Breaks settings in Word",
       "https://support.microsoft.com/en-us/word/line-and-page-breaks"
+    ]
+  ],
+  "y2022q10": [
+    [
+      "Microsoft：Add and remove styles from the Quick Styles gallery",
+      "https://support.microsoft.com/en-us/word/add-and-remove-styles-from-the-quick-styles-gallery"
+    ],
+    [
+      "Microsoft：Clear all text formatting",
+      "https://support.microsoft.com/en-us/powerpoint/clear-all-text-formatting"
+    ],
+    [
+      "Microsoft：Style.Delete method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.style.delete"
+    ],
+    [
+      "Microsoft：Application.OrganizerDelete method (Word)",
+      "https://learn.microsoft.com/en-us/office/vba/api/word.application.organizerdelete"
     ]
   ]
 }

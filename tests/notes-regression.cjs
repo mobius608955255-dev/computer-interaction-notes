@@ -26,6 +26,63 @@ function click(c,action,value){const buttons=[...c.querySelectorAll(`[data-lab-a
 function change(e,c,name,value){const el=c.querySelector(`[data-field="${name}"]`);assert.ok(el,name);if(el.type==='checkbox')el.checked=value;else el.value=value;el.dispatchEvent(new e.w.Event('change',{bubbles:true}));}
 function choice(c,name,value){const source=c.querySelector(`select[data-field="${name}"]`);assert.ok(source?.hidden,'native popup is removed');const i=[...source.options].findIndex(o=>o.value===value);return source.closest('.notes-picker').querySelector(`[data-choice-index="${i}"]`);}
 
+test('2C preserves old semantic anchors and source identities while expanding only the target notes',()=>{
+ const expected=[['merged-5',8,'e160db01967cd98f71fe397930a3fa2106f672181f1fe91dedd6d03f0bd79fed'],['y2022q10',3,'c5136b0ff6b8b4fa04f20d265323bfe3fe474887432a7d4e162cb9be98508f24'],['y2021q56',4,'24e8dc73bd8a930504b7ddabe269c402d65448cdef7b3c6053f101212281db20'],['y2023q52',4,'e79764baa4566e5b4bdf2ce963d23a3f7fe28dec7dd7bf89519c8dce1c9d4143']];
+ const e=env(3);
+ for(const [id,count,digest] of expected){
+  const n=e.w.NOTES.notes.find(n=>n.id===id);
+  assert.equal(require('node:crypto').createHash('sha256').update(JSON.stringify([n.id,n.points.slice(0,count),n.sources,n.keys])).digest('hex'),digest);
+  for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);const pieces=[...p.querySelectorAll(`[data-source-field="point-${i}"]`)];assert.equal(pieces.map(x=>x.textContent).join(''),n.points[i]);}
+ }
+ assert.match(e.d.getElementById('y2023q52').textContent,/不是在原值上增加20磅/);e.dom.window.close();
+});
+test('2C style changes follow identity and each attribute while direct size remains an exception',()=>{
+ const e=env(3),c=open(e,'y2023q52');
+ const formats=()=>[...c.querySelectorAll('[data-style-preview]')].map(p=>[p.style.fontSize,p.style.marginTop]);
+ assert.deepEqual(formats(),[['20pt','0pt'],['20pt','0pt'],['20pt','0pt'],['24pt','0pt']]);
+ click(c,'modify');change(e,c,'draftSize','22');change(e,c,'draftBefore','20');click(c,'cancel');assert.equal(formats()[0][0],'20pt');
+ click(c,'modify');change(e,c,'draftSize','22');change(e,c,'draftBefore','20');click(c,'apply');
+ assert.deepEqual(formats(),[['22pt','20pt'],['22pt','20pt'],['20pt','0pt'],['24pt','20pt']]);
+ click(c,'select',3);click(c,'clearDirect');assert.deepEqual(formats()[3],['22pt','20pt']);assert.equal(c.querySelector('[data-style-paragraph="3"]').dataset.styleId,'heading1');
+ change(e,c,'directSize','26');click(c,'direct');assert.deepEqual(formats().map(x=>x[0]),['22pt','22pt','20pt','26pt']);
+ c.querySelector('[data-sim-reset]').click();assert.deepEqual(formats(),[['20pt','0pt'],['20pt','0pt'],['20pt','0pt'],['24pt','0pt']]);e.dom.window.close();
+});
+test('2C creating and applying a named style preserves other identities and keeps explicit exceptions visible',()=>{
+ const e=env(3),c=open(e,'y2023q52');click(c,'create');change(e,c,'draftName','');click(c,'apply');assert.ok(c.querySelector('.lab-dialog'));assert.match(c.querySelector('.lab-output').textContent,/非空/);click(c,'cancel');
+ click(c,'create');change(e,c,'draftName','专题 <标题>');change(e,c,'draftSize','28');change(e,c,'draftBefore','16');click(c,'apply');
+ assert.equal(c.querySelector('[data-style-paragraph="0"]').dataset.styleId,'custom1');assert.match(c.querySelector('[data-style-paragraph="0"]').textContent,/专题 <标题>/);assert.equal(c.querySelector('[data-style-preview="0"]').style.fontSize,'28pt');assert.equal(c.querySelector('[data-style-preview="1"]').style.fontSize,'20pt');
+ click(c,'select',2);change(e,c,'targetStyle','custom1');click(c,'useStyle');assert.equal(c.querySelector('[data-style-paragraph="2"]').dataset.styleId,'custom1');assert.equal(c.querySelector('[data-style-preview="2"]').style.fontSize,'20pt');assert.equal(c.querySelector('[data-style-preview="2"]').style.marginTop,'16pt');
+ click(c,'clearDirect');assert.equal(c.querySelector('[data-style-preview="2"]').style.fontSize,'28pt');
+ click(c,'modify');change(e,c,'draftSize','30');click(c,'apply');assert.equal(c.querySelector('[data-style-preview="0"]').style.fontSize,'30pt');assert.equal(c.querySelector('[data-style-preview="2"]').style.fontSize,'30pt');assert.equal(c.querySelector('[data-style-preview="1"]').style.fontSize,'20pt');e.dom.window.close();
+});
+test('2C template copies keep independent bodies and old style snapshots after the template changes',()=>{
+ const e=env(3),c=open(e,'y2021q56');change(e,c,'fixed','原模板提示');click(c,'save');click(c,'new');
+ const content=c.querySelector('[data-field="content"]');content.value='甲 <正文> & 独立';content.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'new');
+ assert.equal(c.querySelector('[data-field="content"]').value,'原模板提示');change(e,c,'content','乙的正文');change(e,c,'docSize','22');
+ click(c,'switch',0);assert.equal(c.querySelector('[data-field="content"]').value,'甲 <正文> & 独立');assert.equal(c.querySelector('[data-document-title]').style.fontSize,'20pt');
+ click(c,'editTemplate');change(e,c,'draftSize','24');change(e,c,'draftFixed','新版提示');click(c,'saveTemplate');
+ assert.equal(c.querySelector('[data-field="content"]').value,'甲 <正文> & 独立');assert.equal(c.querySelector('[data-document-title]').style.fontSize,'20pt');
+ click(c,'switch',1);assert.equal(c.querySelector('[data-field="content"]').value,'乙的正文');assert.equal(c.querySelector('[data-document-title]').style.fontSize,'22pt');
+ click(c,'new');assert.equal(c.querySelector('[data-field="content"]').value,'新版提示');assert.equal(c.querySelector('[data-document-title]').style.fontSize,'24pt');change(e,c,'content','丙自己的正文');assert.match(c.querySelector('[data-template-summary]').textContent,/新版提示/);assert.doesNotMatch(c.querySelector('[data-template-summary]').textContent,/丙自己的正文/);e.dom.window.close();
+});
+test('2C template cancellation prevents draft leakage and reset clears the demonstration only',()=>{
+ const e=env(3),c=open(e,'y2021q56');click(c,'save');click(c,'new');click(c,'new');click(c,'editTemplate');change(e,c,'draftSize','32');change(e,c,'draftFixed','不应保存');
+ assert.ok(c.querySelector('[data-lab-act="new"]').disabled);assert.ok(c.querySelector('[data-field="content"]').disabled);assert.ok(c.querySelector('[data-lab-act="switch"]').disabled);
+ click(c,'cancelTemplate');click(c,'new');assert.equal(c.querySelector('[data-document-title]').style.fontSize,'20pt');assert.doesNotMatch(c.querySelector('[data-field="content"]').value,/不应保存/);
+ c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-template-summary]'),null);assert.equal(c.querySelectorAll('[data-lab-act="switch"]').length,0);assert.ok(c.querySelector('[data-lab-act="new"]').disabled);e.dom.window.close();
+});
+test('2C subtopics and searches reach distinct source paragraphs without replacing active models',()=>{
+ const e=env(3),input=e.d.getElementById('search-input'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
+ for(const [id,i,q] of [['y2023q52',7,'后续段落样式'],['y2021q56',7,'打开并修改模板'],['y2021q56',9,'自动更新文档样式'],['y2022q10',4,'删除自定义样式']]){
+  const c=e.d.getElementById(id);if(c.querySelector('.simulation-toggle').getAttribute('aria-expanded')==='false')c.querySelector('.simulation-toggle').click();
+  const lab=c.querySelector('[data-lab]'),hash=`#${id}--point-${i}`,link=c.querySelector(`.note-subtopics a[href="${hash}"]`);assert.ok(link);
+  input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok([...c.querySelectorAll('.note-search-jumps a')].some(a=>a.hash===hash));
+  const found=e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id);assert.ok(found.matches.some(f=>f.anchor===hash.slice(1)));
+  e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="${hash}"]`).click();assert.equal(e.w.location.hash,hash);assert.equal(e.d.activeElement.id,hash.slice(1));assert.equal(c.querySelector('[data-lab]'),lab);
+ }
+ e.dom.window.close();
+});
+
 test('2B appended knowledge preserves every old paragraph, source and key in affected notes',()=>{
  const baseline=[['y2020q41',5,'cd9be7787177b42484540a1143ead60338f4f840fc410379c7d631366a661d15'],['y2020q44',4,'d6aedf090d8747c6d897d0b3bb2716b7ab15cb9fe9dac8bee332a014ba4ac296'],['y2020q61',4,'42537236f3198d3af007158408b4fc0124e8a38783163532035ed1dbc8f122d8'],['y2024q55',4,'ca41e72265fe6993049c1e967a9526dfce8e8d703cdd752b3c5c282b6407e648']];
  const e=env(3);

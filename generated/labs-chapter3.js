@@ -83,7 +83,7 @@ Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
 const {register,registry,ui}=window.NOTE_LABS;
 const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
 register(['y2022q10'],'选中样式实例，再删除文字','区别“选择所有实例”“清除格式”和“删除内容”。',{selected:false,deleted:false,plain:false},s=>
-    office('Word','开始',btn('标题 1 ▾','menu')+(s.menu?btn('选择所有 3 个实例','select')+btn('清除格式','clear'):''),paper([1,2,3].map((n)=>`${s.deleted?'':`<h4 class="${s.selected?'lab-selected':''} ${s.plain?'lab-plain':''}">第${n}章　${['信息技术','操作系统','文字处理'][n-1]}</h4>`}<p>这一章的正文内容仍然保留。</p>`).join('')))+`<div class="lab-keyboard" aria-label="模拟键盘">${btn('Delete','delete')}</div>${coach('样式菜单属于Word功能区；下方是独立模拟键盘。先选择实例，再按Delete。')}${output(s.deleted?'3个标题文字已删除，正文没有被删除。':s.plain?'文字仍在，只移除了标题格式。':s.selected?'已选中3个标题段落。':'当前没有批量选择。')}`,
+    office('Word','开始',btn('标题 1 ▾','menu')+(s.menu?btn('选择所有 3 个实例','select'):'')+btn('字体：清除所有格式','clear','',s.selected?'':'disabled'),paper([1,2,3].map((n)=>`${s.deleted?'':`<h4 class="${s.selected?'lab-selected':''} ${s.plain?'lab-plain':''}">第${n}章　${['信息技术','操作系统','文字处理'][n-1]}</h4>`}<p>这一章的正文内容仍然保留。</p>`).join('')))+`<div class="lab-keyboard" aria-label="模拟键盘">${btn('Delete','delete')}</div>${coach('样式菜单用于选择实例；清除所有格式在开始→字体组。下方是独立模拟键盘。先选择实例，再按Delete。清除后再次按样式选择的细节未模拟，请重置后比较。')}${output(s.deleted?'3个标题文字已删除，正文没有被删除。':s.plain?'文字仍在，只移除了标题格式。':s.selected?'已选中3个标题段落。':'当前没有批量选择。')}`,
     (s,a)=>{if(a==='menu')s.menu=!s.menu;if(a==='select')s.selected=true;if(a==='clear'&&s.selected){s.plain=true;s.selected=false;}if(a==='delete'&&s.selected){s.deleted=true;s.selected=false;}});
 register(['y2022q54'],'把邀请语变成弧形艺术字','修改文字、弯曲程度和填充，查看路径上的实时文字。',{text:'诚挚邀请，敬候光临！',curve:40,color:'#b95729'},s=>
     office('Word','绘图工具 · 格式',select('color','文字填充',s.color,[['#b95729','赭橙'],['#2563a0','蓝色'],['#21443d','墨绿']]),paper(`<svg class="lab-art" viewBox="0 0 400 150" role="img" aria-label="弧形艺术字预览"><defs><path id="${s.uid}-arc" d="M20 100 Q200 ${100-s.curve*2} 380 100"/></defs><text fill="${s.color}" font-size="24"><textPath href="#${s.uid}-arc" startOffset="50%" text-anchor="middle">${esc(s.text)}</textPath></text></svg>`))+`<div class="lab-controls">${field('text','艺术字内容',s.text)}${field('curve','学习调节器：路径弧度',s.curve,'range','min="0" max="80"')}</div>${coach('弧度控件是学习调节器；Word实际从“文字效果→转换”选择路径样式。')}`,()=>{},(s,k,v)=>{s[k]=k==='curve'?number(v,0,80):v;});
@@ -108,9 +108,42 @@ register(['y2023q56'],'修改文稿，再接受或拒绝修订','编辑文字产
 register(['y2023q55'],'校对提示与真正的下划线，打印时有何不同','进入打印预览，观察波浪线消失而格式下划线保留。',{printing:false,corrected:false},s=>
     office('Word',s.printing?'文件 · 打印':'审阅',btn(s.printing?'返回编辑':'打印预览','print')+btn('更正 ChatGTP → ChatGPT','correct'),paper(`<h4>${s.printing?'打印预览':'编辑页面'}</h4><p>本研究使用<span class="${!s.printing&&!s.corrected?'lab-spell':''}">${s.corrected?'ChatGPT':'ChatGTP'}</span>辅助整理。</p><p>这一段带有<span style="text-decoration:underline">真实下划线格式</span>。</p>`))+output(s.printing?'打印内容不包含校对波浪提示，字体下划线保留。':'红色波浪线是校对提示，不是字符下划线。'),
     (s,a)=>{if(a==='print')s.printing=!s.printing;if(a==='correct')s.corrected=true;});
-register(['y2023q52'],'修改一次样式，三个标题同步更新','在修改样式窗口设置段前间距，确定后全部同级标题继承。',{before:0,pending:20,pane:false,menu:false},s=>
-    office('Word','开始 · 样式',btn('标题 1 ▾','menu')+(s.menu?btn('修改…','modify'):''),`${s.pane?dialog('修改样式：标题1 → 格式 → 段落',field('pending','段前（磅）',s.pending,'number','min="0" max="48"')+'<p>设置作用于所有使用标题1的段落。</p>',btn('确定','apply')+btn('取消','cancel')):''}${paper([1,2,3].map(n=>`<h4 style="margin-top:${s.before}pt">第${n}章　学习主题</h4><p>正文格式不随标题样式改变。</p>`).join(''))}`)+output(`当前标题1段前 ${s.before} 磅；三个实例保持同步。`),
-    (s,a)=>{if(a==='menu')s.menu=!s.menu;if(a==='modify'){s.pane=true;s.menu=false;s.pending=s.before;}if(a==='apply'){s.before=number(s.pending,0,48);s.pane=false;}if(a==='cancel')s.pane=false;},(s,k,v)=>{s.pending=number(v,0,48);});
+const styleFormat=(s,p)=>({...s.styles[p.style],...p.direct});
+register(['y2023q52'],'同样式、同外观和局部例外，分别怎样变化','先选段落核对样式，再应用或修改规则；比较段前间距与字号两个属性。',{
+ styles:{heading1:{name:'标题1',size:20,before:0},normal:{name:'正文',size:12,before:0}},
+ paragraphs:[{text:'甲 · 示例标题一',style:'heading1',direct:{}},{text:'乙 · 示例标题二',style:'heading1',direct:{}},{text:'丙 · 示例标题三',style:'normal',direct:{size:20}},{text:'丁 · 示例标题四',style:'heading1',direct:{size:24}}],
+ selected:0,targetStyle:'heading1',directSize:20,pane:null,draftName:'专题标题',draftSize:20,draftBefore:0,nextStyle:1,message:'甲、乙共享标题1；丙是正文加直接字号；丁仍是标题1，但字号直接设为24磅。'
+},s=>{
+ const selected=s.paragraphs[s.selected],locked=s.pane?'disabled':'',options=Object.entries(s.styles).map(([id,x])=>[id,x.name]);
+ const pane=s.pane?dialog(s.pane==='create'?'新建段落样式':'修改样式：'+esc(s.styles[s.targetStyle].name),
+ (s.pane==='create'?field('draftName','样式名称',s.draftName):'')+field('draftSize','样式字号（磅）',s.draftSize,'number','min="12" max="32"')+field('draftBefore','样式段前（磅）',s.draftBefore,'number','min="0" max="48"')+'<p>本例只在当前文档保存规则；未启用样式“自动更新”。段前对应真实Word的“格式→段落”。</p>',btn('确定','apply')+btn('取消','cancel')):'';
+ const paragraphs=s.paragraphs.map((p,i)=>{const f=styleFormat(s,p);return `<section data-style-paragraph="${i}" data-style-id="${p.style}" style="padding:10px 0;border-bottom:1px solid #e7dde9"><small>样式：${esc(s.styles[p.style].name)}；${p.direct.size==null?'字号继承样式':'直接字号 '+p.direct.size+' 磅'}</small><p data-style-preview="${i}" style="margin:${f.before}pt 0 0;font-size:${f.size}pt;line-height:1.55">${btn(esc(p.text),'select',i,`aria-pressed="${s.selected===i}" ${locked} style="font:inherit;text-align:left;white-space:normal;overflow-wrap:anywhere;width:100%;background:${s.selected===i?'#f4e6f2':'transparent'};padding:6px;border:1px ${s.selected===i?'solid #b18bac':'solid transparent'}"`)}</p><small>实际：字号 ${f.size} 磅，段前 ${f.before} 磅。</small></section>`;}).join('');
+ return office('Word','开始 · 样式',select('targetStyle','操作的样式',s.targetStyle,options,locked)+btn('应用到所选段落','useStyle','',locked)+btn('修改样式…','modify','',locked)+btn('新建段落样式…','create','',locked),pane+paper(paragraphs))+
+ `<div class="lab-controls"><fieldset ${locked} style="display:contents">${field('directSize','所选段落直接字号（磅）',s.directSize,'number','min="12" max="32"')}${btn('只改这段字号','direct')}${btn('清除这段直接字号','clearDirect','',selected.direct.size==null?'disabled':'')}</fieldset></div>`+output(s.message)+
+ coach('本例只模拟整段应用、段前与字号，应用样式时保留已有直接字号；真实Word重应用结果还与选区和样式类型有关，这些分支未模拟。样式基准固定，“清除这段直接字号”不等于清除全部格式。未模拟删除样式。取消丢弃草稿，重置恢复四段；原生Word2016与实体手机未实测。');
+},(s,a,v)=>{
+ if(s.pane&&!['apply','cancel'].includes(a))return;
+ const p=s.paragraphs[s.selected];
+ if(a==='select'){s.selected=Number(v);s.targetStyle=s.paragraphs[s.selected].style;s.directSize=styleFormat(s,s.paragraphs[s.selected]).size;s.message='已选择'+s.paragraphs[s.selected].text+'；核对该段的样式身份和实际格式。';}
+ if(a==='modify'){s.pane='modify';s.draftSize=s.styles[s.targetStyle].size;s.draftBefore=s.styles[s.targetStyle].before;}
+ if(a==='create'){const f=styleFormat(s,p);s.pane='create';s.draftName='专题标题';s.draftSize=f.size;s.draftBefore=f.before;}
+ if(a==='cancel'){s.pane=null;s.message='已取消，样式定义和段落保持原状。';}
+ if(a==='apply'&&s.pane){
+  if(s.pane==='create'){
+   const name=s.draftName.trim();if(!name||Object.values(s.styles).some(x=>x.name===name)){s.message='请输入非空且未使用的样式名称；草稿尚未保存。';return;}
+   const id='custom'+s.nextStyle++;s.styles[id]={name,size:number(s.draftSize,12,32),before:number(s.draftBefore,0,48)};s.targetStyle=id;p.style=id;p.direct={};s.message='已建立并应用“'+name+'”；其他段落保持原样，可选中后再应用。';
+  }else{s.styles[s.targetStyle].size=number(s.draftSize,12,32);s.styles[s.targetStyle].before=number(s.draftBefore,0,48);s.message='已修改“'+s.styles[s.targetStyle].name+'”规则。同一样式按属性继承；直接字号例外仍保留，其他样式不变。';}
+  s.pane=null;s.directSize=styleFormat(s,p).size;
+ }
+ if(a==='useStyle'){p.style=s.targetStyle;s.directSize=styleFormat(s,p).size;s.message='已应用“'+s.styles[p.style].name+'”。本例保留显式直接字号；要观察完全继承，再清除该字号例外。';}
+ if(a==='direct'){p.direct.size=number(s.directSize,12,32);s.message='只改变当前段落的直接字号；样式名称、样式定义和其他段落都没变。';}
+ if(a==='clearDirect'){delete p.direct.size;s.directSize=styleFormat(s,p).size;s.message='当前段落恢复继承其样式字号，文字与样式身份保留；其他段落不变。';}
+},(s,k,v)=>{
+ if(s.pane&&!['draftName','draftSize','draftBefore'].includes(k))return;
+ if(['draftName','targetStyle'].includes(k))s[k]=v;
+ if(['directSize','draftSize'].includes(k))s[k]=number(v,12,32);
+ if(k==='draftBefore')s[k]=number(v,0,48);
+});
 })();
 
 /* Source provenance: note-labs-2021.js:2. Preserve this closure. */
@@ -119,9 +152,32 @@ register(['y2023q52'],'修改一次样式，三个标题同步更新','在修改
 const {register,registry,ui} = window.NOTE_LABS;
 const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money} = ui;
 const area=(name,label,value,extra='')=>`<label>${label}<textarea data-field="${name}" ${extra}>${esc(value)}</textarea></label>`;
-register(['y2021q56'],'保存一套规范，再新建两份独立论文','先设置样式并保存模板，再切换两份文档编辑正文。',{size:20,saved:null,docs:[],active:0,content:'',message:'尚未保存模板。'},s=>
-    `<div class="lab-controls">${field('size','模板中标题字号（磅）',s.size,'number','min="12" max="32"')}${btn('保存为论文规范.dotx','save')}${btn('基于模板新建文档','new','',s.saved?'':'disabled')}</div><div class="lab-tabs">${s.docs.map((d,i)=>btn(`论文${i+1}.docx`,'switch',i,`aria-pressed="${s.active===i}"`)).join('')}</div>`+office('Word','开始 · 样式',s.docs.length?`<span>当前文档标题样式 ${s.docs[s.active].size} 磅</span>`:'',s.docs.length?paper(`<h4 style="font-size:${s.docs[s.active].size}pt">论文${s.active+1}</h4>${area('content','正文',s.docs[s.active].content)}`):'<p class="lab-empty">从模板新建后显示文档。</p>')+output(s.message),
-    (s,a,v)=>{if(a==='save'){s.saved={size:Number(s.size)};s.message='模板已保存。已创建文档不会因此自动覆盖。';}if(a==='new'&&s.saved&&s.docs.length<4){s.docs.push({size:s.saved.size,content:'在此撰写这份论文的正文。'});s.active=s.docs.length-1;s.content=s.docs[s.active].content;s.message='新文档复制模板样式，正文独立保存。';}if(a==='switch'){s.active=Number(v);s.content=s.docs[s.active].content;s.message='已切换到另一份文档，其他文档正文未改变。';}},(s,k,v)=>{if(k==='content'){s.content=v;if(s.docs[s.active])s.docs[s.active].content=v;}else s.size=number(v,12,32);});
+register(['y2021q56'],'保存模板后，对照新旧文档与模板本身','新建两份文档分别编辑，再打开模板修改；第三份文档从新模板开始。',{
+ size:20,fixed:'请填写这份论文的摘要。',saved:null,docs:[],active:0,pane:false,draftSize:20,draftFixed:'',message:'先设置起始文档的标题样式和固定正文，再在网页中模拟保存模板。'
+},s=>{
+ const locked=s.pane?'disabled':'',d=s.docs[s.active];
+ const setup=!s.saved?`<div class="lab-controls">${field('size','起始标题样式字号（磅）',s.size,'number','min="12" max="32"')}${area('fixed','起始固定正文',s.fixed)}</div>`:`<aside data-template-summary><b>论文规范.dotx · 模板第${s.saved.revision}版</b><p>标题样式：${s.saved.size} 磅</p><p style="white-space:pre-wrap;overflow-wrap:anywhere">固定正文：${esc(s.saved.fixed)}</p></aside>`;
+ const pane=s.pane?dialog('打开编辑：论文规范.dotx',field('draftSize','模板标题样式字号（磅）',s.draftSize,'number','min="12" max="32"')+area('draftFixed','模板固定正文',s.draftFixed)+'<p>这里只编辑模板草稿。保存后用于后续新建文档；取消则保留原模板。</p>',btn('保存模板修改','saveTemplate')+btn('取消','cancelTemplate')):'';
+ return setup+`<div class="lab-controls">${btn('保存为论文规范.dotx','save','',s.saved||s.pane?'disabled':'')}${btn('基于模板新建文档','new','',!s.saved||s.docs.length>=4||s.pane?'disabled':'')}${btn('打开模板编辑…','editTemplate','',!s.saved||s.pane?'disabled':'')}</div>`+
+ pane+`<div class="lab-tabs">${s.docs.map((doc,i)=>btn(`论文${i+1}.docx`,'switch',i,`aria-pressed="${s.active===i}" ${locked}`)).join('')}</div>`+
+ office('Word','当前文档',d?field('docSize','当前文档标题样式字号（磅）',d.size,'number','min="12" max="32" '+locked):'<span>尚未新建文档</span>',d?paper(`<h4 data-document-title style="font-size:${d.size}pt">论文${s.active+1}</h4><p>来自模板第${d.revision}版；当前文档有自己的样式和正文。</p>${area('content','当前文档正文',d.content,locked)}`):'<p class="lab-empty">基于模板新建后，文档内容显示在这里。</p>')+
+ (s.docs.length?`<ul data-document-comparison>${s.docs.map((doc,i)=>`<li>论文${i+1}：字号 ${doc.size} 磅，创建自模板第${doc.revision}版。</li>`).join('')}</ul>`:'')+output(s.message)+
+ coach('本例固定为未勾选“自动更新文档样式”、没有手动导入样式。只模拟标题字号与固定正文，最多新建4份；按钮不会在真实Word或设备上保存文件。模板关联更新、宏和完整文件对话框未模拟，原生Word2016与实体手机未实测。');
+},(s,a,v)=>{
+ if(s.pane&&!['saveTemplate','cancelTemplate'].includes(a))return;
+ if(a==='save'&&!s.saved){s.saved={size:number(s.size,12,32),fixed:s.fixed,revision:1};s.message='已在网页模型中保存模板第1版；现在可基于它新建两份独立文档。';}
+ if(a==='new'&&s.saved&&s.docs.length<4){s.docs.push({size:s.saved.size,content:s.saved.fixed,revision:s.saved.revision});s.active=s.docs.length-1;s.message='新文档采用当前模板的样式和固定正文。已有文档与模板本身都没被改写。';}
+ if(a==='switch'&&s.docs[Number(v)]){s.active=Number(v);s.message='已切换文档，请比较正文与字号；其他文档没有被改写。';}
+ if(a==='editTemplate'&&s.saved){s.pane=true;s.draftSize=s.saved.size;s.draftFixed=s.saved.fixed;}
+ if(a==='cancelTemplate'){s.pane=false;s.message='已取消模板草稿；模板和所有已建文档保持原状。';}
+ if(a==='saveTemplate'&&s.pane){s.saved={size:number(s.draftSize,12,32),fixed:s.draftFixed,revision:s.saved.revision+1};s.pane=false;s.message='模板已修改。按本例未启用样式更新的条件，旧文档保持原有内容和样式；再新建一份观察新规则。';}
+},(s,k,v)=>{
+ if(s.pane){if(k==='draftSize')s.draftSize=number(v,12,32);if(k==='draftFixed')s.draftFixed=v;return;}
+ if(k==='size'&&!s.saved)s.size=number(v,12,32);
+ if(k==='fixed'&&!s.saved)s.fixed=v;
+ if(k==='content'&&s.docs[s.active])s.docs[s.active].content=v;
+ if(k==='docSize'&&s.docs[s.active])s.docs[s.active].size=number(v,12,32);
+});
 })();
 
 /* Source provenance: note-labs-audit.js:2. Preserve this closure. */
