@@ -1163,8 +1163,9 @@ test('v55 revision display never accepts or rejects a pending replacement',()=>{
 });
 test('v55 protects v54 semantic links and all other Word cards while fully rendering new prose',()=>{
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/word-v54-protection.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex'),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter3.json'),'utf8')),e=env(3);
- for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.equal(hash([n.id,n.points.slice(0,row.count),n.sources,n.keys]),row.prefix,row.id);if(row.unchanged)assert.equal(hash(n),row.unchanged,row.id);else for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}}
- for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
+ for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.equal(hash([n.id,n.points.slice(0,row.count),n.sources,n.keys]),row.prefix,row.id);if(row.unchanged){const historical=structuredClone(n);if(n.id==='syllabus-office-exchange'){assert.equal(n.pointGroups[0].title,'文件格式与跨软件交换');historical.pointGroups[0].title='已有知识';}assert.equal(hash(historical),row.unchanged,row.id);}else for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}}
+ // v56 audits Chapter1 under the explicit v55 paragraph/identity fixture below; all other historical guards remain.
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(file!=='content/chapter1.json')assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
 });
 test('v55 protection and print search hits reach distinct canonical paragraphs without losing an open model',()=>{
  const e=env(3),c=open(e,'y2022q71'),lab=c.querySelector('[data-lab]'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
@@ -1178,4 +1179,20 @@ test('v55 revision toolbar commits a complete typed phrase before deciding witho
  for(const v of ['明','明显','明显改善']){input.value=v;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));}
  assert.equal(c.querySelector('[data-lab-act="accept"]').disabled,false);click(c,'accept');assert.match(c.querySelector('.lab-paper').textContent,/明显改善/);assert.match(c.querySelector('output').textContent,/没有待处理/);
  const again=c.querySelector('[data-field="draft"]');again.value='另一处替换';again.dispatchEvent(new e.w.Event('input',{bubbles:true}));click(c,'track');assert.equal(c.querySelector('[data-field="draft"]').readOnly,true);change(e,c,'draft','不应混入');click(c,'reject');assert.match(c.querySelector('.lab-paper').textContent,/明显改善/);assert.doesNotMatch(c.querySelector('.lab-paper').textContent,/不应混入/);e.dom.window.close();
+});
+
+
+test('v56 preserves every v55 chapter1 semantic paragraph and the entire Word body while applying one named display change',()=>{
+ const baseline=JSON.parse(fs.readFileSync(path.join(root,'tests/chapter1-word-v55-protection.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex'),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter1.json'),'utf8')),e=env(1);
+ assert.deepEqual(notes.map(n=>n.id),baseline.chapter1.map(n=>n.id));
+ for(const row of baseline.chapter1){const n=notes.find(n=>n.id===row.id);assert.equal(hash([n.id,n.points.slice(0,row.count),n.sources,n.keys]),row.prefix,row.id);for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(el=>el.textContent).join(''),n.points[i]);}}
+ const word=JSON.parse(fs.readFileSync(path.join(root,'content/chapter3.json'),'utf8')),n=word.find(n=>n.id===baseline.wordDisplayOnlyChange.id);assert.equal(n.pointGroups[0].title,baseline.wordDisplayOnlyChange.after);n.pointGroups[0].title=baseline.wordDisplayOnlyChange.before;assert.equal(hash(word),baseline.word);e.dom.window.close();
+});
+test('v56 chapter1 search and directory resolve separate canonical explanations without losing the active character model',()=>{
+ const e=env(1),c=open(e,'y2025q2'),lab=c.querySelector('[data-lab]'),input=e.d.getElementById('search-input'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
+ change(e,c,'char','中');
+ for(const [q,id,i] of [['ASCII范围','y2025q2',0],['大小写码值','y2025q2',1],['输入码解决','y2025q2',7],['哪些编码能够','y2025q2',8],['整数除基取余','y2026q41',1],['小数乘基取整','y2026q41',2],['地址宽度与寻址','y2022q4',3]]){
+  const anchor=`${id}--point-${i}`;input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const found=e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id);assert.ok(found?.matches.some(m=>m.anchor===anchor),q);const card=e.d.getElementById(id);assert.ok([...card.querySelectorAll('.note-search-jumps a')].some(a=>a.hash==='#'+anchor));e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.w.location.hash,'#'+anchor);assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-field="char"]').value,'中');
+ }
+ e.d.getElementById('clear-search').click();assert.equal(e.d.querySelector('.note-search-jumps'),null);assert.match(lab.querySelector('tbody').textContent,/E4 B8 AD/);e.dom.window.close();
 });

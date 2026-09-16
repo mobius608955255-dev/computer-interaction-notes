@@ -1,10 +1,10 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=53)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=55)
 
 保留教材11章结构与原题源关联，逐步建设能用于日常学习和做题的详细笔记。现有数据含460个题源标识、220条归并笔记与18条知识补充，共238条；这些是代码记录数量，不表示全站已经逐题核查或完整覆盖考纲。Windows和Office操作按Windows 10 / Office 2016解释；答案是否官方需有发布依据，出现冲突时记录版本、前提和核验来源。
 
-当前本地版本为v54：Word 3.4表格制作与3.5图文混排已完成本地验收，尚未发布；线上已发布基线为v53。恢复和验收入口见[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
+已发布基线为v55；Work1已完成v56“第一章1.1—1.5专项终审 + Word章节终审”的本地修正与验收，尚未发布。恢复和验收入口见[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
 
 ## 开发
 
@@ -72,4 +72,4 @@ npm run check
 
 已完成试点：[CONTENT-ROUND1.md](CONTENT-ROUND1.md)。当前批次与恢复点：[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
 
-v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。v53、v54已由Work2发布；v55“Word3.6文档保护与打印 + 3.7高级应用”本地完成，尚未发布。完整回归218项通过，浏览器发现的局部修订输入问题修正后5项受影响检查通过；本批范围、验收与恢复入口见[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。历史开发状态保留在各批记录中。
+v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。v55已由Work2发布；v56已完成本地终审与验收，尚未发布。此前各版本的测试数量与“尚未发布”保留在对应历史记录中，不代表当前发布状态。

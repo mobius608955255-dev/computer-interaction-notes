@@ -33,6 +33,10 @@
     [
       "Microsoft：字体选择与字体回退",
       "https://learn.microsoft.com/en-us/globalization/fonts-layout/fonts"
+    ],
+    [
+      "Unicode：GB18030支持的编码范围（2001年资料，仅用于基础编码区别）",
+      "https://www.unicode.org/L2/L2001/01314-FAQ-GB18030.htm"
     ]
   ],
   "y2026q41": [
@@ -61,6 +65,14 @@
     [
       "Intel：RAM工作方式",
       "https://www.intel.com/content/www/us/en/tech-tips-and-tricks/computer-ram.html"
+    ],
+    [
+      "图灵1936年论文：计算机器与通用机器模型",
+      "https://www.cs.virginia.edu/~robins/Turing_Paper_1936.pdf"
+    ],
+    [
+      "计算机历史博物馆：1945年EDVAC报告",
+      "https://www.computerhistory.org/timeline/1945/"
     ]
   ],
   "y2024q41": [
@@ -2363,6 +2375,16 @@
     [
       "Microsoft：Use a screen reader to read and edit footnotes and endnotes in Word",
       "https://support.microsoft.com/en-us/accessibility/word/use-a-screen-reader-to-read-and-edit-footnotes-and-endnotes-in-word"
+    ]
+  ],
+  "y2025q21": [
+    [
+      "宾夕法尼亚大学：ENIAC及最初编程方式",
+      "https://www.engineering.upenn.edu/about/history-heritage/eniac/"
+    ],
+    [
+      "计算机历史博物馆：ENIAC后续改造与历史条件",
+      "https://computerhistory.org/blog/programming-the-eniac-an-example-of-why-computer-history-is-hard/"
     ]
   ]
 }

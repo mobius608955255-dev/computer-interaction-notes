@@ -1,0 +1,108 @@
+{
+  "base": "ade3c4fdb84ddf5102693602acb7b28aa8b80df9",
+  "baseTree": "f786eaccb178cbe4b9e9630d337709080173affa",
+  "chapter1": [
+    {
+      "id": "y2025q23",
+      "count": 6,
+      "prefix": "7bca4fb1d1bddaf93d4c79b27b389167b4b5b302b8191b3ee54d285f2ef0dbe3"
+    },
+    {
+      "id": "y2026q18",
+      "count": 4,
+      "prefix": "4d327d24f56e3b39a5453ea5684ad19621227ae06e4fe2e3f47b9d4ad1663ab7"
+    },
+    {
+      "id": "y2025q21",
+      "count": 4,
+      "prefix": "19f8f321d34ecffb1f5b3619f70aacc4efbb18fdca3f706717785d568c130e3f"
+    },
+    {
+      "id": "y2026q1",
+      "count": 4,
+      "prefix": "dd0b13a2d317e2f7011686539559b50d7bc924c8997266968e6fc76d966bb52b"
+    },
+    {
+      "id": "y2020q31",
+      "count": 3,
+      "prefix": "0e64eebda0038a3b61e69c4aefe77b4bb6074a31a2a34d8a6bf2144eee47b36c"
+    },
+    {
+      "id": "merged-3",
+      "count": 5,
+      "prefix": "718bc86fa66795f95d51b24d47209911d1f6cfb72754228c299c7547e174676a"
+    },
+    {
+      "id": "y2025q2",
+      "count": 7,
+      "prefix": "828668667c2eb37d30651f816c216d554f3e9846facbe8db16187db849752b99"
+    },
+    {
+      "id": "y2026q41",
+      "count": 5,
+      "prefix": "ac67a5ff4b84ff63d42351a69189ff2592fe6a369625c570a6225074c133d55e"
+    },
+    {
+      "id": "merged-1",
+      "count": 5,
+      "prefix": "9e20efe62500b34389763dd14b0689d3912a555a55b0c5478f68a92329280cf2"
+    },
+    {
+      "id": "y2020q23",
+      "count": 4,
+      "prefix": "60e975cdfa192920f548adb9588bd9259d0071df31f3be3f7e2c6674b2571505"
+    },
+    {
+      "id": "merged-2",
+      "count": 4,
+      "prefix": "8c8a952ceb763083130e06aeb41b435bf4400476996f1ebeb08c73a3334808b5"
+    },
+    {
+      "id": "y2024q41",
+      "count": 5,
+      "prefix": "e7820f942b9fbb51337f46814d5d1d9f19e2ce4eba5595f1be51a41f0c5c6566"
+    },
+    {
+      "id": "y2026q3",
+      "count": 6,
+      "prefix": "2910b792acb535eb23a1471dd8ab4d691fdb47ace82f82a4a2700634c8d5b4e8"
+    },
+    {
+      "id": "y2026q31",
+      "count": 3,
+      "prefix": "9a2c2d508067282ccb0eca0672e3ebce6cb20b73a09675d8d18026e8768f9760"
+    },
+    {
+      "id": "y2020q1",
+      "count": 3,
+      "prefix": "e8ab16010e936f6a35f4385c9a9019bee736bbb5395584a4112c95bb1c83a727"
+    },
+    {
+      "id": "y2020q22",
+      "count": 4,
+      "prefix": "a518727361c9271bc74abec68edc63e8fc3b659f87da80f99aac344a223a3f15"
+    },
+    {
+      "id": "y2022q4",
+      "count": 5,
+      "prefix": "44e70ec12ef169efba34384994d21b53c33659dac47e7c981f4d90fcd36ca64c"
+    },
+    {
+      "id": "y2025q1",
+      "count": 5,
+      "prefix": "d5936189b2b1cb47b98454fe3b0eb85c9088a77c0cff88880d2b8890b7b16dac"
+    },
+    {
+      "id": "y2025q31",
+      "count": 3,
+      "prefix": "0e804f19164fcc1edff1f0ccd528b2b41209534addc15916851c7f64c85c668c"
+    }
+  ],
+  "word": "1c3e1aa0c643b0b796a9824e40ad3e0b28b24881c5b97648a8d48ffb90babdd4",
+  "wordDisplayOnlyChange": {
+    "id": "syllabus-office-exchange",
+    "field": "pointGroups[0].title",
+    "before": "已有知识",
+    "after": "文件格式与跨软件交换"
+  }
+}
