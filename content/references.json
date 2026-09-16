@@ -837,12 +837,28 @@
     [
       "Fill series",
       "https://support.microsoft.com/en-us/excel/enter-a-series-of-numbers-dates-or-other-items"
+    ],
+    [
+      "自动填充：数值样本与填充选项（含2016）",
+      "https://support.microsoft.com/en-us/excel/get-started/fill-data-automatically-in-worksheet-cells"
+    ],
+    [
+      "自定义序列：列表内容、建立和导入（含2016）",
+      "https://support.microsoft.com/en-us/excel/create-or-delete-a-custom-list-for-sorting-and-filling-data"
     ]
   ],
   "y2022q58": [
     [
       "Microsoft：选择性粘贴的内容与运算选项",
       "https://support.microsoft.com/en-us/excel/paste-options"
+    ],
+    [
+      "选择性粘贴：部分属性、转置与跳过空格（含2016）",
+      "https://support.microsoft.com/en-us/excel/paste-options"
+    ],
+    [
+      "运算方向：目标值加减乘除已复制值（Excel对象模型）",
+      "https://learn.microsoft.com/en-us/office/vba/api/excel.xlpastespecialoperation"
     ]
   ],
   "y2023q11": [
@@ -1801,6 +1817,14 @@
     [
       "Microsoft：隐藏工作表仍可被引用",
       "https://support.microsoft.com/en-us/excel/hide-or-unhide-worksheets"
+    ],
+    [
+      "Excel 2016规格：行列、内存限制与数值精度",
+      "https://support.microsoft.com/en-us/excel/excel-specifications-and-limits"
+    ],
+    [
+      "工作表分组：同位置编辑、选择与解除（含2016）",
+      "https://support.microsoft.com/en-us/excel/group-worksheets"
     ]
   ],
   "y2021q9": [
@@ -1821,6 +1845,10 @@
     [
       "Microsoft：日期文本受系统日期设置影响",
       "https://support.microsoft.com/en-us/excel/functions/datevalue-function"
+    ],
+    [
+      "分数输入与日期误判（含2016）",
+      "https://support.microsoft.com/en-us/excel/display-numbers-as-fractions"
     ]
   ],
   "y2020q49": [
@@ -1957,6 +1985,10 @@
     [
       "Protect a worksheet",
       "https://support.microsoft.com/en-us/excel/lock-cells-to-protect-them-in-excel"
+    ],
+    [
+      "保护工作簿结构与工作表的区别（含2016）",
+      "https://support.microsoft.com/en-us/excel/protect-a-workbook"
     ]
   ],
   "syllabus-word-smartart": [

@@ -1,0 +1,248 @@
+{
+  "baseCommit": "cf629d40528f8d909c20b395272c01304e4d0f6d",
+  "baseTree": "b3008da846e34e565a5e0e2f7fdec998427532b6",
+  "notes": [
+    {
+      "id": "y2020q7",
+      "count": 3,
+      "prefix": "d81fa082d2e030e5e8d3adad24fa8ad99bad79929fed79ca4cc18fd4a502386e"
+    },
+    {
+      "id": "y2020q8",
+      "count": 5,
+      "prefix": "19a3b2ae2abbaf21e342bdd972ccd4a1accfe7595eb2bc672bae042e2cd4b5ff"
+    },
+    {
+      "id": "y2020q48",
+      "count": 4,
+      "prefix": "3f2b5ba95794453794c7a5c0ff977b6a1a0cd4072eba17385b89631a4fc97386"
+    },
+    {
+      "id": "y2021q47",
+      "count": 5,
+      "prefix": "d5cf2e5a8eb5d38fbe48dfe7cb644025652b7296f15ee4f5f7639f3debcdf7b1"
+    },
+    {
+      "id": "y2022q58",
+      "count": 4,
+      "prefix": "4bff0b24ce536ae484f16bc7e8d045bfc6213a931fe42979387bc88362486deb"
+    },
+    {
+      "id": "y2022q66",
+      "count": 3,
+      "prefix": "8918a6585ff9f8140e6339b4f334f27b221d9774f2fc4bc4f45d4af1fda245b4"
+    },
+    {
+      "id": "y2023q11",
+      "count": 4,
+      "prefix": "3dd57720abe52a0723b26e7c8d0b5af470bf93867370ff73e2f77fa46c8668b5"
+    },
+    {
+      "id": "y2023q60",
+      "count": 4,
+      "prefix": "722ca8e742fec6be89b48e4a9a43d7a1d834e4843474345fe9cfd1787f677470"
+    },
+    {
+      "id": "y2024q10",
+      "count": 3,
+      "prefix": "1a4e0ed4609d6ee4ef14b0e6206487e6b5c4e28207573d89003c132bdbc30678"
+    },
+    {
+      "id": "y2024q57",
+      "count": 4,
+      "prefix": "45d53ee582eded41d6763b68fe34c573f1b25a78d7c2830424aaffd0812ceaae"
+    },
+    {
+      "id": "y2024q58",
+      "count": 4,
+      "prefix": "32339940c2d5a64d58cfe8c4f67f920726c5be9fa3ebef637f7dfc24fcd2aeaa"
+    },
+    {
+      "id": "merged-10",
+      "count": 5,
+      "prefix": "90e6ca9d191d84d75d184cc095306f7a685d2fb109a0f8bc0c549dede7a5bffd"
+    },
+    {
+      "id": "y2020q56",
+      "count": 5,
+      "prefix": "0e47b01878a4474148b1aa1db15ea3be878bde1cd6965a3a34f0ac26d28afa2d"
+    },
+    {
+      "id": "y2020q57",
+      "count": 8,
+      "prefix": "10aa2c8e3d8557d759fcf142fe63cde66f97b9ad1998c0f7645f405fa5fb384d"
+    },
+    {
+      "id": "y2021q9",
+      "count": 6,
+      "prefix": "9b57b80fdd8b0e84aa8c6bc08928a0aaeba1f73662ddb97021c793d80f69013a"
+    },
+    {
+      "id": "y2021q49",
+      "count": 5,
+      "prefix": "d94856f18e1bd54205427a62e5a82b7ee5c4fc22eb5674869068205ef356e8be"
+    },
+    {
+      "id": "y2021q50",
+      "count": 5,
+      "prefix": "1bc8a8ed40b1d3c2f874d51938fdd38704eb73f06a3e7a91599c8acd562ec7f4"
+    },
+    {
+      "id": "y2021q51",
+      "count": 7,
+      "prefix": "24b76a35f83636e77aca00cc5774b29a49f9fdea581abadb59b10bcecd004126"
+    },
+    {
+      "id": "y2022q59",
+      "count": 5,
+      "prefix": "b0e5c56dcd6c5c649b7efbdc0e85f919f9a200e98e4fe33b44d90ee28e90bc5f"
+    },
+    {
+      "id": "y2024q11",
+      "count": 6,
+      "prefix": "3cdd2c387e31eaa1315ed6395cbd0b6aac14bea609d70e361908981404ac4781"
+    },
+    {
+      "id": "y2026q50",
+      "count": 7,
+      "prefix": "94ac0656dcf7c606c1c3a255c1b999c114de4a722d98274f0111b7214f3ef2f2"
+    },
+    {
+      "id": "y2025q50",
+      "count": 4,
+      "prefix": "7db911ac0e138d63de35584ec6f3496fa1677dd12697e9d6a5c8f586323921c9"
+    },
+    {
+      "id": "y2026q49",
+      "count": 5,
+      "prefix": "59dc0f9687b5397b3e545b03ca4152b37bf4c96560e4c84e15ad89242b8fd052"
+    },
+    {
+      "id": "y2020q47",
+      "count": 4,
+      "prefix": "947cbd583b2e9d5038cde976d6c867123f4cc00efb82ea41464e868a1b2f9b35"
+    },
+    {
+      "id": "y2020q52",
+      "count": 5,
+      "prefix": "b9b18e0e878aa929270a38c3b1d4415128df68d59e45dcd3a829a44c10af16ef"
+    },
+    {
+      "id": "y2022q61",
+      "count": 4,
+      "prefix": "54624450772a5f76525d56dbd44954f49bf5a9d1a1ef96140dfb3151e7726e7c"
+    },
+    {
+      "id": "y2024q59",
+      "count": 8,
+      "prefix": "bdce05b7d21e57ba58b5c624795d79ad8ebc2e5f8e397261e232020918b35564"
+    },
+    {
+      "id": "y2025q52",
+      "count": 6,
+      "prefix": "2b278b6019a7bb86c49b961108e76bf1ce5913beff678fb8724cc25629782109"
+    },
+    {
+      "id": "y2020q9",
+      "count": 6,
+      "prefix": "b139fd33f91c17346176f7c6087ee86a8a903c412768691ed4532598704db6a3"
+    },
+    {
+      "id": "y2020q49",
+      "count": 6,
+      "prefix": "6075c8421fce67466f6358684a393b44e942cefb782077429165a890a2cfdf86"
+    },
+    {
+      "id": "y2020q58",
+      "count": 6,
+      "prefix": "aee10fd412e5e1f4992e51d51bbf8fe770ce70c946801054761540c9950f3f84"
+    },
+    {
+      "id": "y2021q25",
+      "count": 6,
+      "prefix": "363aa30663b0b59c52ade2024effb5d97a9ae22313203f466f94e0d1389137a1"
+    },
+    {
+      "id": "y2021q58",
+      "count": 8,
+      "prefix": "61c407d72f14d8fdf83801ca43011710ce60a7128e745eb8619546a46c4d5848"
+    },
+    {
+      "id": "y2023q57",
+      "count": 4,
+      "prefix": "8ee031a5b0d1bb4ea1fc448a7cf0f20b2ef60c9f363492a8a79421729a2f2e25"
+    },
+    {
+      "id": "y2024q67",
+      "count": 8,
+      "prefix": "f463f34b3c58ea1da6311e4dc78181e5625f24de7165b53722fd09bfee485345"
+    },
+    {
+      "id": "y2026q51",
+      "count": 7,
+      "prefix": "03caeeee652c8a57592aeb52aaf1bb4ed66cbf9f84f4338717db6d74bbf4085f"
+    },
+    {
+      "id": "y2020q59",
+      "count": 4,
+      "prefix": "fd7213b57c324dbd52c3afa896eccb0ce613a6b8c2717a0028d353e3c023e788"
+    },
+    {
+      "id": "y2021q52",
+      "count": 5,
+      "prefix": "734750c0ad1c5c1e49d48eacd4a32f1bc50290ca8a9adb6bf6e448db28174069"
+    },
+    {
+      "id": "y2023q10",
+      "count": 6,
+      "prefix": "3d066c347f341555c48a09ad0e7dfdb0e9585cfe75ce6f583cbf8bdff068182c"
+    },
+    {
+      "id": "y2024q68",
+      "count": 5,
+      "prefix": "81190c649567e688f89917fb34f7e516317bbef90e2c0956d2ac01a215f3ab4a"
+    },
+    {
+      "id": "y2025q51",
+      "count": 5,
+      "prefix": "1546debbe8b7eca2155a5dd41f187a536f2cf0bccf06dab46be7dc21e14e4a86"
+    },
+    {
+      "id": "y2026q52",
+      "count": 7,
+      "prefix": "31d9d58108e9eef741307c14cec9d24c1573c7e19f4149dc323bbe8aa44b51bb"
+    },
+    {
+      "id": "syllabus-sparkline",
+      "count": 3,
+      "prefix": "e32ac8fcf87ae4730ca0271bd5986de481dc5a1b79a2ae2e05f5502e77594c36"
+    },
+    {
+      "id": "syllabus-worksheet-protection",
+      "count": 2,
+      "prefix": "7d243b0fcb1434ce5451f973c8a93f1cae8406db334c57f1549e4f56ea745292"
+    },
+    {
+      "id": "syllabus-excel-multikey-sort",
+      "count": 2,
+      "prefix": "e432af56c2154fd2b5c2dc6baecbfc683cb18667c42cd85d4838f6583d57492d"
+    },
+    {
+      "id": "syllabus-excel-whatif-table",
+      "count": 3,
+      "prefix": "e17a2f4b3f4a7a22ffc08fc51175fa2c8724a7fcbc18dcb52929ec43147c25f9"
+    }
+  ],
+  "otherChapters": {
+    "content/chapter1.json": "efb3355b6822b9704d0219aed7eb842febcc45f911d6a54f9156546521e91072",
+    "content/chapter2.json": "5f15a42f5f851858bf8be329388603806d10dde458d8c3557897e623297cadd6",
+    "content/chapter3.json": "98e0fca86d0bfe600675d11fd4199a78e22c679203f399ca96486976a352de12",
+    "content/chapter5.json": "048753ea9543298b1c01a61fb09041ed6602c9d617cbf3d8403666d408c5ee04",
+    "content/chapter6.json": "cdcad05f55a91fce865749dc15a3f188bc9e4a1c767217fd5c5a324574c4076f",
+    "content/chapter7.json": "5d5e86d1def2bf54a7afa36c1b366f72a06c52caa2acb36adf5dd66ac43ad3f0",
+    "content/chapter8.json": "5f0b6cf2afba45c9362508b5b339235ce051343abf5008b8df849760e9372d8a",
+    "content/chapter9.json": "5198ff23bd2cb57e026baa3c66595897ac83fa5d45855a699b5bc4ae207e5298",
+    "content/chapter10.json": "ad4a74a92f9efb689499ce694652f8cf77393a450d0d2c5d888d773d88f4a27d",
+    "content/chapter11.json": "64ff8b4093f0a10711f89b14cc2a1917da65b5450a75742127c38e2688a21751"
+  }
+}

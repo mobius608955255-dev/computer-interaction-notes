@@ -39,10 +39,49 @@
     function expression(){let value=product();skip();while(text[pos]==='+'||text[pos]==='-'){const op=text[pos++],right=product();value=op==='+'?value+right:value-right;skip();}return value;}
     try{const value=expression();skip();if(pos!==text.length)fail(`这里的“${text[pos]}”不是本例支持的运算符`,/[A-Za-z×]/.test(text[pos])?'#NAME?':'不支持的表达式');if(!Number.isFinite(value))fail('结果超出本例可表示范围','#NUM!');return {type:'公式',value:String(Number(value.toPrecision(15))),detail:'先计算括号，再乘除，最后加减；同级运算从左到右。'};}catch(error){return {type:'公式',value:error.code||'无法计算',detail:`第${error.position||pos+1}个字符附近：${error.message||'请检查表达式'}。${text.includes('×')?'Excel乘法使用星号 *。':''}`};}
   }
-  register(['y2024q11'],'自己输入，再看文本、数值和公式的区别','改变数字或运算符，比较输入内容、保存类型与显示结果。',{raw:'=2*3',applied:null},s=>{
-    const value=s.applied===null?null:parseInput(s.applied);
-    return office('Excel','开始',field('raw','编辑A1内容',s.raw,'text','maxlength="100"')+btn('确认输入','apply'),
-      `<p>示例：${['2*3','=2*3','=2×3',"'=2*3"].map(x=>btn(esc(x),'example',x)).join('')}</p>${value?table(['公式栏输入','内容类型','单元格显示'],[[esc(s.applied),value.type,esc(value.value)]]):'<p class="lab-empty">编辑后确认，结果显示在这里。</p>'}`)+(value?output(esc(value.detail)):output('可以先比较示例，再把2改成8或给表达式加上括号。'))+coach('本例开放数值、文本、前导单引号，以及 + − * / 和括号。日期、单元格引用和函数有各自解析规则，使用对应笔记演示；此处不模拟它们。');
-  },(s,a,v)=>{if(a==='apply')s.applied=s.raw;if(a==='example'){s.raw=v;s.applied=v;}},(s,k,v)=>{if(k==='raw')s.raw=v;});
+  // A six-cell teaching surface; values, display formats and pending edits are separate.
+  function inputRecord(raw){
+    const text=String(raw),t=text.trim();let value=parseInput(text);
+    if(!text.startsWith("'")&&!text.startsWith('=')){
+      if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)%$/.test(t))value={type:'数值',value:String(Number(t.slice(0,-1))/100),detail:'百分数按数值保存；25%对应0.25。'};
+      else if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)e[+-]?\d+$/i.test(t)&&Number.isFinite(Number(t)))value={type:'数值',value:String(Number(t)),detail:'科学计数输入被解释为数值。'};
+      else {const f=t.match(/^0 (\d+)\/(\d+)$/);if(f&&Number(f[2])!==0)value={type:'数值',value:String(Number(f[1])/Number(f[2])),detail:'0、空格、分数的输入按数值解释；本例用常规小数显示。'};}
+    }
+    return {...value,raw:text,bar:value.type==='数值'?value.value:text};
+  }
+  const addresses=['A1','B1','A2','B2','A3','B3'];
+  function shown(cell){
+    if(cell.raw==='')return '';
+    const r=inputRecord(cell.raw),v=Number(r.value);
+    if(r.type!=='文本'&&Number.isFinite(v))return cell.format==='fixed2'?v.toFixed(2):cell.format==='percent'?(v*100).toFixed(2)+'%':r.value;
+    return r.value;
+  }
+  function commitInput(s,move=0){
+    const address=addresses[s.active];s.cells[s.active].raw=s.raw;s.applied=s.raw;
+    if(move)s.active=(s.active+move)%6;
+    s.raw=s.cells[s.active].raw;s.message=`已确认${address}；当前活动单元格为${addresses[s.active]}。`;
+  }
+  register(['y2024q11'],'输入、确认，再比较单元格与编辑栏','实际值、公式和显示格式分开保存；修改未确认时可以取消。',{
+    raw:'=2*3',applied:null,active:0,cells:Array.from({length:6},()=>({raw:'',format:'general'})),message:'当前编辑A1；勾号只确认，Enter向下，Tab向右。本例在6格内循环。'
+  },s=>{
+    const cell=s.cells[s.active],value=cell.raw===''?null:inputRecord(cell.raw);
+    return office('Excel','开始',field('raw','编辑'+addresses[s.active]+'内容',s.raw,'text','maxlength="100"')+btn('✓ 确认输入','apply')+btn('× 取消修改','cancel'),
+      `<p><b>名称框：${addresses[s.active]}</b>　已保存的编辑栏内容：<code data-input-bar>${esc(value?.bar||'（空白）')}</code></p>`+
+      table(['行','A','B'],[0,1,2].map(row=>[row+1,...[0,1].map(col=>{const i=row*2+col;return btn(esc(shown(s.cells[i]))||'（空白）','cell',i,`aria-label="选择${addresses[i]}" aria-pressed="${s.active===i}"`);})]))+
+      window.NOTE_LABS.ui.select('format','当前格的显示格式',cell.format,[['general','常规（本例不按列宽切换科学计数）'],['fixed2','数值：2位小数'],['percent','百分比：2位小数']])+
+      `<p>比较示例：${['2*3','=2*3',"'001",'12.857','0.25'].map(x=>btn(esc(x),'example',x)).join('')}</p>`+
+      (value?table(['原输入','保存类型','单元格显示'],[[esc(cell.raw),value.type,`<span data-input-display>${esc(shown(cell))}</span>`]]):'<p class="lab-empty">当前格尚无已确认内容。</p>'))+
+      output(esc(s.message)+(value?' '+esc(value.detail):''))+coach('网页仅模拟这6格的短文本、数值、单引号、百分数、科学计数、0 空格分数及无引用的简单算术公式。日期地区解析、超过15位数值的精确截断、单元格引用与函数未模拟；不生成Excel文件。选择另一格会先确认当前输入，切换后编辑栏显示该格已保存内容。');
+  },(s,a,v)=>{
+    if(a==='apply')commitInput(s);
+    if(a==='cancel'){s.raw=s.cells[s.active].raw;s.message='已取消本次未确认修改，原内容与格式保留。';}
+    if(a==='cell'){commitInput(s);s.active=Math.max(0,Math.min(5,Number(v)));s.raw=s.cells[s.active].raw;s.message='已选中'+addresses[s.active]+'。';}
+    if(a==='example'){s.raw=v;commitInput(s);}
+  },(s,k,v)=>{if(k==='raw')s.raw=v;if(k==='format'){s.cells[s.active].format=v;s.message='只改变当前格显示格式，原内容未改。';}});
+  registry.y2024q11.keydown=(s,e)=>{
+    if(e.target.dataset.field!=='raw'||!['Enter','Tab','Escape'].includes(e.key))return false;
+    e.preventDefault();if(e.key==='Escape'){s.raw=s.cells[s.active].raw;s.message='已取消本次未确认修改。';}else commitInput(s,e.key==='Enter'?2:1);return true;
+  };
   registry.y2024q11.parseInput=parseInput;
+  registry.y2024q11.inputRecord=inputRecord;
 })();

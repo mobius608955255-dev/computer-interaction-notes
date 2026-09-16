@@ -86,8 +86,8 @@ const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}
 const salaryRows=[10000,9500,3500,12000];
 const salarySheet=(s,mode)=>table(['行','姓名',mode==='comments'?'证件编号（示意）':'基本工资'],s.values.map((v,i)=>[i+3,['王宁','李明','赵敏','周林'][i],`<button data-lab-drag="range" data-row="${i}" data-lab-act="cell" data-value="${i}" class="lab-cell ${i>=Math.min(s.start,s.end)&&i<=Math.max(s.start,s.end)?'lab-selected':''}">${mode==='comments'?['ID-001','ID-002','ID-003','ID-004'][i]:money(v)}${s.comments?.[i]?'<i class="lab-comment-corner"></i>':''}</button>`]));
 register(['y2022q58'],'复制倍率，框选工资，再选择性粘贴','从第一格拖到最后一格选择区域；倍率和粘贴运算都会影响真实结果。',{values:salaryRows,start:-1,end:-1,multiplier:1.15,copied:null,paste:false,operation:'multiply',message:'先复制倍率单元格。'},s=>
-    office('Excel','开始',btn('复制','copy')+btn('选择性粘贴…','paste'),`${field('multiplier','M1 倍率（初始选中）',s.multiplier,'number','step="0.01"')}${salarySheet(s)}${s.paste?dialog('选择性粘贴',select('operation','运算',s.operation,[['multiply','乘'],['add','加'],['none','无（普通覆盖）']])+`<p>已复制：${s.copied??'空'}；目标：${s.start<0?'未选中':`J${Math.min(s.start,s.end)+3}:J${Math.max(s.start,s.end)+3}`}</p>`,btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('键盘辅助：选择 J3:J6','all')}</div>${output(s.message)}`,
-    (s,a,v)=>{if(a==='copy'){s.copied=s.start<0?s.multiplier:s.values[s.start];s.message=`已复制 ${s.copied}，现在选中目标工资。`;}if(a==='cell')s.start=s.end=Number(v);if(a==='all'){s.start=0;s.end=3;}if(a==='paste')s.paste=true;if(a==='cancel')s.paste=false;if(a==='apply'){if(s.copied===null||s.start<0){s.message='需要先复制倍率并选择目标区域。';return;}s.values=s.values.map((x,i)=>i>=Math.min(s.start,s.end)&&i<=Math.max(s.start,s.end)?Math.round((s.operation==='multiply'?x*s.copied:s.operation==='add'?x+s.copied:s.copied)*100)/100:x);s.paste=false;s.message='所选单元格的数值已改变；未选中的单元格保持原值。';}},(s,k,v)=>{s[k]=k==='multiplier'?number(v,0,100):v;if(k==='multiplier')s.start=s.end=-1;});
+    office('Excel','开始',btn('复制','copy')+btn('选择性粘贴…','paste'),`${field('multiplier','M1 倍率（初始选中）',s.multiplier,'number','step="0.01"')}${salarySheet(s)}${s.paste?dialog('选择性粘贴',select('operation','运算',s.operation,[['multiply','乘'],['add','加'],['subtract','减'],['divide','除'],['none','无（普通覆盖）']])+`<p>已复制：${s.copied??'空'}；目标：${s.start<0?'未选中':`J${Math.min(s.start,s.end)+3}:J${Math.max(s.start,s.end)+3}`}</p>`,btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('键盘辅助：选择 J3:J6','all')}</div>${output(s.message)}`,
+    (s,a,v)=>{if(a==='copy'){s.copied=s.start<0?s.multiplier:s.values[s.start];s.message=`已复制 ${s.copied}，现在选中目标工资。`;}if(a==='cell')s.start=s.end=Number(v);if(a==='all'){s.start=0;s.end=3;}if(a==='paste')s.paste=true;if(a==='cancel')s.paste=false;if(a==='apply'){if(s.copied===null||s.start<0){s.message='需要先复制倍率并选择目标区域。';return;}if(s.operation==='divide'&&s.copied===0){s.message='本例不执行除以0：请取消后复制非零常数。';return;}s.values=s.values.map((x,i)=>i>=Math.min(s.start,s.end)&&i<=Math.max(s.start,s.end)?Math.round((s.operation==='multiply'?x*s.copied:s.operation==='add'?x+s.copied:s.operation==='subtract'?x-s.copied:s.operation==='divide'?x/s.copied:s.copied)*100)/100:x);s.paste=false;s.message='所选单元格的数值已改变；未选中的单元格保持原值。';}},(s,k,v)=>{s[k]=k==='multiplier'?number(v,0,100):v;if(k==='multiplier')s.start=s.end=-1;});
 register(['y2022q59'],'工龄究竟是取整，还是只改显示','改变日期，看INT、ROUND和显示格式得出的区别。',{start:'2020-09-01',end:'2022-05-07'},s=>{
     const days=daysBetween(s.start,s.end),years=days/365;const valid=Number.isFinite(days)&&days>=0;
     return `<div class="lab-controls">${field('start','入职日期',s.start,'date')}${field('end','计算基准日',s.end,'date')}</div>${valid?office('Excel','公式',`<code>=INT((基准日-入职日)/365)</code>`,table(['方法','显示值','实际数值'],[['INT向下取整',Math.floor(years),Math.floor(years)],['ROUND四舍五入',Math.round(years),Math.round(years)],['原值只显示0位小数',Math.round(years),years.toFixed(6)]]))+output(`${days}天 ÷ 365 = ${years.toFixed(6)}。满365天才增加一个整年。`):output('请选择合法日期，且入职日期不得晚于基准日。')}${coach('为了可重复观察，这里手动指定基准日；实际公式TODAY()读取当天日期。')}`;
@@ -232,9 +232,9 @@ register(['y2021q47'],'导入向导：先分列，再把长编号设为文本','
     }
   },(s,k,v)=>{s[k]=k==='textColumns'?v==='true':v;});
 const phoneData=['13000000001','13000000002','13000000003'];
-register(['y2021q49'],'辅助列脱敏，粘贴值后切断公式依赖','创建公式、向下填充、复制结果，再选择性粘贴为值。',{values:phoneData,names:['王宁','李明','赵敏'],pastedFormulas:false,formula:false,filled:0,copied:null,pane:false,kind:'values',message:'D列为虚构号码，F列尚无公式。'},s=>{
-    const masks=s.values.map(v=>v.slice(0,7)+'****');return office('Excel','开始',btn('复制辅助列','copy')+btn('选择性粘贴…','paste'),`${table(['行','B 姓名','D 联系电话','F 辅助列'],s.values.map((v,i)=>[i+2,esc(s.names[i]),esc(v)+(s.pastedFormulas?`<small>=LEFT(B${i+2},7)&amp;"****"</small>`:''),`<div class="lab-lookup-cell" data-fill-index="${i}">${s.formula&&i<=s.filled?esc(masks[i]):''}${s.formula&&i===0?'<button data-lab-drag="fill" class="lab-fill-handle" aria-label="向下拖动填充柄"></button>':''}</div>`]))}${s.pane?dialog('粘贴到D2:D4',select('kind','粘贴',s.kind,[['values','值'],['formulas','公式']]),btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('在F2输入 =LEFT(D2,7)&"****"','formula')}${btn('键盘辅助：填充辅助列','fill')}${btn('尝试直接在D2输入引用D2的公式','circular')}</div>${output(s.message)}`;
-  },(s,a)=>{if(a==='formula')s.formula=true;if(a==='fill'&&s.formula)s.filled=2;if(a==='copy'){if(s.filled<2){s.message='请先建立并填充辅助列。';return;}s.copied=s.values.map(v=>v.slice(0,7)+'****');s.message='已复制辅助列计算结果。';}if(a==='paste')s.pane=true;if(a==='cancel')s.pane=false;if(a==='circular')s.message='产生循环引用：D2中的公式又依赖D2本身，不能这样覆盖源值。';if(a==='apply'){if(!s.copied){s.message='没有复制结果。';return;}if(s.kind==='values'){s.values=[...s.copied];s.pastedFormulas=false;s.message='D列已变成独立的脱敏文本，不再保存原号码或辅助列公式。';}else{s.pastedFormulas=true;s.values=s.names.map(n=>n.slice(0,7)+'****');s.message='F列公式移到D列，相对引用从D移到B，错误地读取姓名列。公式实际已粘贴；要保留号码脱敏结果，请重置后粘贴值。';}s.pane=false;}});
+register(['y2021q49'],'辅助列脱敏，粘贴值后切断公式依赖','创建公式、向下填充、复制结果，再选择性粘贴为值。',{values:phoneData,names:['王宁','李明','赵敏'],pastedFormulas:false,formatted:false,formula:false,filled:0,copied:null,pane:false,kind:'values',message:'D列为虚构号码，F列尚无公式。'},s=>{
+    const masks=s.values.map(v=>v.slice(0,7)+'****');return office('Excel','开始',btn('复制辅助列','copy')+btn('选择性粘贴…','paste'),`${table(['行','B 姓名','D 联系电话','F 辅助列'],s.values.map((v,i)=>[i+2,esc(s.names[i]),`<span data-paste-target style="${s.formatted?'background:#fff0be;font-weight:bold':''}">${esc(v)}</span>`+(s.pastedFormulas?`<small>=LEFT(B${i+2},7)&amp;"****"</small>`:''),`<div class="lab-lookup-cell" data-fill-index="${i}"><span style="background:#fff0be;font-weight:bold">${s.formula&&i<=s.filled?esc(masks[i]):''}</span>${s.formula&&i===0?'<button data-lab-drag="fill" class="lab-fill-handle" aria-label="向下拖动填充柄"></button>':''}</div>`]))}${s.pane?dialog('粘贴到D2:D4',select('kind','粘贴',s.kind,[['values','值'],['formulas','公式'],['formats','格式']]),btn('确定','apply')+btn('取消','cancel')):''}`)+`<div class="lab-controls">${btn('在F2输入 =LEFT(D2,7)&"****"','formula')}${btn('键盘辅助：填充辅助列','fill')}${btn('尝试直接在D2输入引用D2的公式','circular')}</div>${output(s.message)}`;
+  },(s,a)=>{if(a==='formula')s.formula=true;if(a==='fill'&&s.formula)s.filled=2;if(a==='copy'){if(s.filled<2){s.message='请先建立并填充辅助列。';return;}s.copied=s.values.map(v=>v.slice(0,7)+'****');s.message='已复制辅助列计算结果。';}if(a==='paste')s.pane=true;if(a==='cancel')s.pane=false;if(a==='circular')s.message='产生循环引用：D2中的公式又依赖D2本身，不能这样覆盖源值。';if(a==='apply'){if(!s.copied){s.message='没有复制结果。';return;}if(s.kind==='values'){s.values=[...s.copied];s.pastedFormulas=false;s.message='D列已变成独立的脱敏文本，不再保存原号码或辅助列公式。';}else if(s.kind==='formats'){s.formatted=true;s.message='只粘贴辅助列的黄色填充和粗体；D列原号码及公式状态不变。';}else{s.pastedFormulas=true;s.values=s.names.map(n=>n.slice(0,7)+'****');s.message='F列公式移到D列，相对引用从D移到B，错误地读取姓名列。公式实际已粘贴；要保留号码脱敏结果，请重置后粘贴值。';}s.pane=false;}});
 register(['y2021q50'],'把嵌套公式拆成三层看','修改示例第17位，逐层查看MID、MOD和IF的计算值。',{digit:1,layer:0},s=>{
     const code='0000002000010100'+s.digit+'X',odd=Number(s.digit)%2;return `<div class="lab-controls">${select('digit','虚构编号的第17位',String(s.digit),Array.from({length:10},(_,i)=>[String(i),String(i)]))}${btn('查看下一层','next')}</div>`+office('Excel','公式','<code>=IF(MOD(MID(C2,17,1),2)=1,"男","女")</code>',`<div class="lab-code-digits">${[...code].map((v,i)=>`<span class="${i===16?'lab-highlight':''}"><small>${i+1}</small>${v}</span>`).join('')}</div>${table(['计算层','输出'],[['MID(C2,17,1)',s.layer>=1?esc(String(s.digit)):'待展开'],['MOD(第17位,2)',s.layer>=2?odd:'待展开'],['IF(余数=1,"男","女")',s.layer>=3?(odd?'男':'女'):'待展开']])}`)+coach('只演示题设编码规则；000000开头是无效示例，不能用本卡核验证件。');
   },s=>{s.layer=Math.min(3,s.layer+1);},(s,k,v)=>{s.digit=Number(v);s.layer=0;});
@@ -788,22 +788,50 @@ registry.y2020q7.preview=resizePreview;
 registry.y2020q7.gesture=(s,g)=>{if(g.kind==='column'){s.width=clamp(Math.round(s.width+g.dx),70,300);s.message='已按拖动距离改变B列宽度。';}};
 registry.y2020q7.keydown=(s,e)=>{if(!e.target.closest('[data-lab-drag="column"]')||!['ArrowLeft','ArrowRight'].includes(e.key))return false;e.preventDefault();s.width=clamp(s.width+(e.key==='ArrowRight'?10:-10),70,300);s.message='已用方向键调整列宽。';return true;};
 registry.y2020q7.displayDate=displayDate;
+const fillKinds=[['textnumber','文本型编号'],['number','单个数值'],['text','普通文本'],['suffix','文本＋末尾数字'],['date','日期'],['time','时间'],['two','两个数值起点'],['preset','预设星期'],['custom','自定义班级列表']];
+const fillSamples={textnumber:'002024000001',number:'2',text:'计算机',suffix:'学生1',date:'2026-09-16',time:'08:00',two:'1',preset:'星期一',custom:'一班'};
+const weekList=['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],classList=['一班','二班','三班','四班'];
+const fillMode=(s,ctrl=false)=>{const base=s.kind==='number'||s.kind==='text'?'copy':'series';return (ctrl||s.modifier==='ctrl')&&s.kind!=='text'?(base==='copy'?'series':'copy'):base;};
+function fillValid(s){
+  if(['number','two'].includes(s.kind))return s.source.trim()!==''&&Number.isFinite(Number(s.source))&&(s.kind!=='two'||s.second.trim()!==''&&Number.isFinite(Number(s.second)));
+  if(s.kind==='date')return /^\d{4}-\d{2}-\d{2}$/.test(s.source)&&Number.isFinite(Date.parse(s.source))&&new Date(s.source+'T00:00:00Z').toISOString().slice(0,10)===s.source;
+  if(s.kind==='time')return /^(?:[01]?\d|2[0-3]):[0-5]\d$/.test(s.source);
+  if(s.kind==='preset')return weekList.includes(s.source);if(s.kind==='custom')return classList.includes(s.source);return !!s.source;
+}
 function fillValue(s,index){
-    if(index>s.filled)return'';
-    if(s.mode==='copy'||index===0)return s.source;
+    if(index>s.filled&&!(s.kind==='two'&&index===1))return'';
+    if(index===0)return s.source;
+    if(s.kind==='two'&&index===1)return s.second;
+    if(s.mode==='copy')return s.kind==='two'&&index%2?s.second:s.source;
+    if(s.kind==='number'||s.kind==='two')return String(Number((Number(s.source)+index*(s.kind==='two'?Number(s.second)-Number(s.source):1)).toPrecision(12)));
+    if(s.kind==='date'){if(!fillValid(s))return s.source;const d=new Date(s.source+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+index);return d.toISOString().slice(0,10);}
+    if(s.kind==='time'){if(!fillValid(s))return s.source;const [h,m]=s.source.split(':').map(Number);return String((h+index)%24).padStart(2,'0')+':'+String(m).padStart(2,'0');}
+    if(s.kind==='preset'||s.kind==='custom'){const list=s.kind==='preset'?weekList:classList;return list[(list.indexOf(s.source)+index)%list.length];}
+    if(s.kind==='text')return s.source;
     const match=s.source.match(/^(.*?)(\d+)$/);
     return match?match[1]+String(BigInt(match[2])+BigInt(index)).padStart(match[2].length,'0'):s.source;
   }
-register(['y2020q48'],'亲手把编号填充到指定的最后一行','拖动A2右下角的填充柄，在想要的行松手；填充选项决定复制还是递增。',
-    {source:'002024000001',filled:0,mode:'copy',end:'4',message:'A2已按文本保存。拖动填充柄到A3—A7中的任意一行。'},s=>{
-      const rows=Array.from({length:6},(_,i)=>[i+2,`<div class="lab-lookup-cell" data-fill-index="${i}" style="position:relative;min-height:38px;padding:8px 6px;border:${i<=s.filled?'2px solid #388b62':'1px solid transparent'};font:16px/1.5 ui-monospace,monospace;overflow-wrap:anywhere">${esc(fillValue(s,i))||'&nbsp;'}${i===0?'<button type="button" data-lab-drag="fill" class="lab-fill-handle" aria-label="拖动A2填充柄到目标行" style="width:28px;height:28px;border-width:8px"></button>':''}</div>`]);
-      return controls(field('source','A2源编号（文本）',s.source,'text','maxlength="30"'))+
-        office('Excel','开始','<span>数字格式：文本</span>',simpleTable(['行','A 编号'],rows)+(s.filled>0?`<div style="padding:12px 0">${select('mode','自动填充选项',s.mode,[['copy','复制单元格'],['series','填充序列']])}</div>`:''))+
+function finishFill(s,end,ctrl=false){
+  if(!fillValid(s)){s.filled=0;s.message='起始内容与所选类型不符，请先修正。日期用YYYY-MM-DD，时间用HH:MM，预设/自定义值需在所示列表内。';return;}
+  s.filled=clamp(Number(end),s.kind==='two'?1:0,5);s.mode=fillMode(s,ctrl);s.message='已按终点填充；'+(s.mode==='copy'?'复制起始内容或两格模式。':'按所选类型续接序列。');
+}
+register(['y2020q48'],'同一填充柄，不同起点产生不同结果','拖到哪一行就填到哪一行；比较普通拖动、Ctrl和填充后的选项。',
+    {source:'002024000001',second:'3',kind:'textnumber',modifier:'normal',filled:0,mode:'series',end:'4',message:'A2已按文本保存。拖动填充柄到A3—A7中的任意一行。'},s=>{
+      const rows=Array.from({length:6},(_,i)=>[i+2,`<div class="lab-lookup-cell" data-fill-index="${i}" style="position:relative;min-height:38px;padding:8px 6px;border:${i<=Math.max(s.filled,s.kind==='two'?1:0)?'2px solid #388b62':'1px solid transparent'};font:16px/1.5 ui-monospace,monospace;overflow-wrap:anywhere">${esc(fillValue(s,i))||'&nbsp;'}${i===(s.kind==='two'?1:0)?'<button type="button" data-lab-drag="fill" class="lab-fill-handle" aria-label="拖动填充柄到目标行" style="width:28px;height:28px;border-width:8px"></button>':''}</div>`]);
+      return controls(select('kind','起始数据类型',s.kind,fillKinds)+field('source','A2起始内容',s.source,'text','maxlength="30"')+(s.kind==='two'?field('second','A3第二个起点',s.second,'text','maxlength="20"'):'')+select('modifier','拖动方式（触屏也可选）',s.modifier,[['normal','普通拖动'],['ctrl','模拟按住Ctrl']]))+
+        office('Excel','开始','<span>先核对输入类型，再拖动右下角填充柄</span>',simpleTable(['行','A 数据'],rows)+(s.filled>0?`<div style="padding:12px 0">${select('mode','本次填充后的选项',s.mode,[['copy','复制单元格'],['series','填充序列']])}</div>`:''))+
         `<details class="lab-assist"><summary>键盘辅助操作</summary>${select('end','填充到',s.end,[[1,'A3'],[2,'A4'],[3,'A5'],[4,'A6'],[5,'A7']])}${btn('执行向下填充','fill')}</details>`+
-        output(`${s.message}${s.filled>0?` 实际区域：A2:A${s.filled+2}；${s.mode==='copy'||!/\d+$/.test(s.source)?'每格复制原编号':'末尾数字每行加1，位数不足保留前导0'}。`:' 下方尚未填充。'}`);
-    },(s,a)=>{if(a==='fill'){s.filled=clamp(Number(s.end),1,5);s.message='已按指定终点填充。';}},
-    (s,k,v)=>{s[k]=String(v);if(k==='source'){s.filled=0;s.mode='copy';s.message='源编号已改变，重新拖动确定填充区域。';}if(k==='mode')s.message=v==='series'&& !/\d+$/.test(s.source)?'源文本没有末尾数字，本例按原文本复制。':'已将当前填充区域改为'+(v==='series'?'递增序列。':'复制原编号。');});
-registry.y2020q48.gesture=(s,g)=>{if(g.kind==='fill'){s.filled=clamp(s.filled,0,5);s.message=s.filled?'已在实际松手的行结束填充。':'尚未拖到下一行。';}};
+        output(`${esc(s.message)}${s.filled>0?` 实际区域：A2:A${s.filled+2}。`:' 下方尚未填充。'}`)+
+        window.NOTE_LABS.ui.coach('教学模型已明确指定输入类型，日期按天、时间按小时；预设星期一至星期日，自定义列表已设为一班至四班。支持鼠标松手时Ctrl和触屏替代选项。右键菜单、双击借邻列确定终点、日期月末及格式填充未模拟；现实规则见正文，不把网页结果当作原生Excel2016实测。');
+    },(s,a)=>{if(a==='fill')finishFill(s,s.end);},
+    (s,k,v)=>{
+      s[k]=String(v);
+      if(k==='kind'){s.source=fillSamples[v];s.second='3';s.modifier='normal';}
+      if(['kind','source','second'].includes(k)){s.filled=0;s.mode=fillMode(s);s.message='起始内容已改变，请重新填充。';}
+      if(k==='modifier')s.message='拖动方式只影响下一次填充，当前数据不变。';
+      if(k==='mode')s.message='已将当前填充区域改为'+(v==='series'?'序列。':'复制。');
+    });
+registry.y2020q48.gesture=(s,g)=>{if(g.kind==='fill'&&g.end!==undefined)finishFill(s,g.end,g.ctrlKey);};
 registry.y2020q48.fillValue=fillValue;
 const initialCells=[{value:.128,format:'percent',fill:true},{value:.25,format:'percent',fill:true},{value:.42,format:'percent',fill:true}];
 const cellText=c=>c.value===null?'':c.format==='percent'?(Math.round(c.value*1000)/10)+'%':String(c.value);
@@ -1009,12 +1037,51 @@ register(['y2020q47'],'居中的标题下面，到底还有几个单元格','对
     function expression(){let value=product();skip();while(text[pos]==='+'||text[pos]==='-'){const op=text[pos++],right=product();value=op==='+'?value+right:value-right;skip();}return value;}
     try{const value=expression();skip();if(pos!==text.length)fail(`这里的“${text[pos]}”不是本例支持的运算符`,/[A-Za-z×]/.test(text[pos])?'#NAME?':'不支持的表达式');if(!Number.isFinite(value))fail('结果超出本例可表示范围','#NUM!');return {type:'公式',value:String(Number(value.toPrecision(15))),detail:'先计算括号，再乘除，最后加减；同级运算从左到右。'};}catch(error){return {type:'公式',value:error.code||'无法计算',detail:`第${error.position||pos+1}个字符附近：${error.message||'请检查表达式'}。${text.includes('×')?'Excel乘法使用星号 *。':''}`};}
   }
-  register(['y2024q11'],'自己输入，再看文本、数值和公式的区别','改变数字或运算符，比较输入内容、保存类型与显示结果。',{raw:'=2*3',applied:null},s=>{
-    const value=s.applied===null?null:parseInput(s.applied);
-    return office('Excel','开始',field('raw','编辑A1内容',s.raw,'text','maxlength="100"')+btn('确认输入','apply'),
-      `<p>示例：${['2*3','=2*3','=2×3',"'=2*3"].map(x=>btn(esc(x),'example',x)).join('')}</p>${value?table(['公式栏输入','内容类型','单元格显示'],[[esc(s.applied),value.type,esc(value.value)]]):'<p class="lab-empty">编辑后确认，结果显示在这里。</p>'}`)+(value?output(esc(value.detail)):output('可以先比较示例，再把2改成8或给表达式加上括号。'))+coach('本例开放数值、文本、前导单引号，以及 + − * / 和括号。日期、单元格引用和函数有各自解析规则，使用对应笔记演示；此处不模拟它们。');
-  },(s,a,v)=>{if(a==='apply')s.applied=s.raw;if(a==='example'){s.raw=v;s.applied=v;}},(s,k,v)=>{if(k==='raw')s.raw=v;});
+  // A six-cell teaching surface; values, display formats and pending edits are separate.
+  function inputRecord(raw){
+    const text=String(raw),t=text.trim();let value=parseInput(text);
+    if(!text.startsWith("'")&&!text.startsWith('=')){
+      if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)%$/.test(t))value={type:'数值',value:String(Number(t.slice(0,-1))/100),detail:'百分数按数值保存；25%对应0.25。'};
+      else if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)e[+-]?\d+$/i.test(t)&&Number.isFinite(Number(t)))value={type:'数值',value:String(Number(t)),detail:'科学计数输入被解释为数值。'};
+      else {const f=t.match(/^0 (\d+)\/(\d+)$/);if(f&&Number(f[2])!==0)value={type:'数值',value:String(Number(f[1])/Number(f[2])),detail:'0、空格、分数的输入按数值解释；本例用常规小数显示。'};}
+    }
+    return {...value,raw:text,bar:value.type==='数值'?value.value:text};
+  }
+  const addresses=['A1','B1','A2','B2','A3','B3'];
+  function shown(cell){
+    if(cell.raw==='')return '';
+    const r=inputRecord(cell.raw),v=Number(r.value);
+    if(r.type!=='文本'&&Number.isFinite(v))return cell.format==='fixed2'?v.toFixed(2):cell.format==='percent'?(v*100).toFixed(2)+'%':r.value;
+    return r.value;
+  }
+  function commitInput(s,move=0){
+    const address=addresses[s.active];s.cells[s.active].raw=s.raw;s.applied=s.raw;
+    if(move)s.active=(s.active+move)%6;
+    s.raw=s.cells[s.active].raw;s.message=`已确认${address}；当前活动单元格为${addresses[s.active]}。`;
+  }
+  register(['y2024q11'],'输入、确认，再比较单元格与编辑栏','实际值、公式和显示格式分开保存；修改未确认时可以取消。',{
+    raw:'=2*3',applied:null,active:0,cells:Array.from({length:6},()=>({raw:'',format:'general'})),message:'当前编辑A1；勾号只确认，Enter向下，Tab向右。本例在6格内循环。'
+  },s=>{
+    const cell=s.cells[s.active],value=cell.raw===''?null:inputRecord(cell.raw);
+    return office('Excel','开始',field('raw','编辑'+addresses[s.active]+'内容',s.raw,'text','maxlength="100"')+btn('✓ 确认输入','apply')+btn('× 取消修改','cancel'),
+      `<p><b>名称框：${addresses[s.active]}</b>　已保存的编辑栏内容：<code data-input-bar>${esc(value?.bar||'（空白）')}</code></p>`+
+      table(['行','A','B'],[0,1,2].map(row=>[row+1,...[0,1].map(col=>{const i=row*2+col;return btn(esc(shown(s.cells[i]))||'（空白）','cell',i,`aria-label="选择${addresses[i]}" aria-pressed="${s.active===i}"`);})]))+
+      window.NOTE_LABS.ui.select('format','当前格的显示格式',cell.format,[['general','常规（本例不按列宽切换科学计数）'],['fixed2','数值：2位小数'],['percent','百分比：2位小数']])+
+      `<p>比较示例：${['2*3','=2*3',"'001",'12.857','0.25'].map(x=>btn(esc(x),'example',x)).join('')}</p>`+
+      (value?table(['原输入','保存类型','单元格显示'],[[esc(cell.raw),value.type,`<span data-input-display>${esc(shown(cell))}</span>`]]):'<p class="lab-empty">当前格尚无已确认内容。</p>'))+
+      output(esc(s.message)+(value?' '+esc(value.detail):''))+coach('网页仅模拟这6格的短文本、数值、单引号、百分数、科学计数、0 空格分数及无引用的简单算术公式。日期地区解析、超过15位数值的精确截断、单元格引用与函数未模拟；不生成Excel文件。选择另一格会先确认当前输入，切换后编辑栏显示该格已保存内容。');
+  },(s,a,v)=>{
+    if(a==='apply')commitInput(s);
+    if(a==='cancel'){s.raw=s.cells[s.active].raw;s.message='已取消本次未确认修改，原内容与格式保留。';}
+    if(a==='cell'){commitInput(s);s.active=Math.max(0,Math.min(5,Number(v)));s.raw=s.cells[s.active].raw;s.message='已选中'+addresses[s.active]+'。';}
+    if(a==='example'){s.raw=v;commitInput(s);}
+  },(s,k,v)=>{if(k==='raw')s.raw=v;if(k==='format'){s.cells[s.active].format=v;s.message='只改变当前格显示格式，原内容未改。';}});
+  registry.y2024q11.keydown=(s,e)=>{
+    if(e.target.dataset.field!=='raw'||!['Enter','Tab','Escape'].includes(e.key))return false;
+    e.preventDefault();if(e.key==='Escape'){s.raw=s.cells[s.active].raw;s.message='已取消本次未确认修改。';}else commitInput(s,e.key==='Enter'?2:1);return true;
+  };
   registry.y2024q11.parseInput=parseInput;
+  registry.y2024q11.inputRecord=inputRecord;
 })();
 
 /* Small data-driven additions for two explicit syllabus gaps. */

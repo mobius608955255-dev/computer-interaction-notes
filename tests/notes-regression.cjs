@@ -1164,8 +1164,8 @@ test('v55 revision display never accepts or rejects a pending replacement',()=>{
 test('v55 protects v54 semantic links and all other Word cards while fully rendering new prose',()=>{
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/word-v54-protection.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex'),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter3.json'),'utf8')),e=env(3);
  for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.equal(hash([n.id,n.points.slice(0,row.count),n.sources,n.keys]),row.prefix,row.id);if(row.unchanged){const historical=structuredClone(n);if(n.id==='syllabus-office-exchange'){assert.equal(n.pointGroups[0].title,'文件格式与跨软件交换');historical.pointGroups[0].title='已有知识';}assert.equal(hash(historical),row.unchanged,row.id);}else for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}}
- // v56 audits Chapter1 under the explicit v55 paragraph/identity fixture below; all other historical guards remain.
- for(const [file,digest] of Object.entries(expected.otherChapters))if(file!=='content/chapter1.json')assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
+ // v56 Chapter1 and v57 Excel have explicit paragraph/identity guards below; other chapter guards remain.
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(!['content/chapter1.json','content/chapter4.json'].includes(file))assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
 });
 test('v55 protection and print search hits reach distinct canonical paragraphs without losing an open model',()=>{
  const e=env(3),c=open(e,'y2022q71'),lab=c.querySelector('[data-lab]'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
@@ -1195,4 +1195,51 @@ test('v56 chapter1 search and directory resolve separate canonical explanations 
   const anchor=`${id}--point-${i}`;input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const found=e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id);assert.ok(found?.matches.some(m=>m.anchor===anchor),q);const card=e.d.getElementById(id);assert.ok([...card.querySelectorAll('.note-search-jumps a')].some(a=>a.hash==='#'+anchor));e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.w.location.hash,'#'+anchor);assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-field="char"]').value,'中');
  }
  e.d.getElementById('clear-search').click();assert.equal(e.d.querySelector('.note-search-jumps'),null);assert.match(lab.querySelector('tbody').textContent,/E4 B8 AD/);e.dom.window.close();
+});
+
+test('v57 preserves every Excel historical point and all ten other canonical chapters',()=>{
+ const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v56-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
+ assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));
+ for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);}
+ for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+ const e=env();for(const n of notes)for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);const decoded=e.d.createElement('textarea');decoded.innerHTML=n.points[i];assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(el=>el.textContent).join(''),decoded.value);}e.dom.window.close();
+});
+test('v57 input stores values separately from display and cancels pending edits',()=>{
+ const e=env(),c=open(e,'y2024q11'),bar=()=>c.querySelector('[data-input-bar]').textContent,display=()=>c.querySelector('[data-input-display]').textContent;
+ change(e,c,'raw','12.857');click(c,'apply');change(e,c,'format','fixed2');assert.equal(display(),'12.86');assert.equal(bar(),'12.857');
+ change(e,c,'raw','999');click(c,'cancel');assert.equal(display(),'12.86');assert.equal(c.querySelector('[data-field="raw"]').value,'12.857');
+ change(e,c,'raw','=2*3');click(c,'apply');assert.equal(display(),'6.00');assert.equal(bar(),'=2*3');
+ change(e,c,'raw',"'001");click(c,'apply');assert.equal(display(),'001');assert.match(c.querySelector('.note-lab tbody').textContent,/001/);
+ const parser=e.w.NOTE_LABS.registry.y2024q11.inputRecord;assert.equal(parser('25%').value,'0.25');assert.equal(parser('1E3').value,'1000');assert.equal(parser('0 2/3').type,'数值');e.dom.window.close();
+});
+test('v57 Enter and Tab confirm in different cells and Escape keeps stored input',()=>{
+ const e=env(),c=open(e,'y2024q11'),key=k=>c.querySelector('[data-field="raw"]').dispatchEvent(new e.w.KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true}));
+ change(e,c,'raw','11');key('Enter');assert.match(c.querySelector('.lab-office').textContent,/名称框：A2/);change(e,c,'raw','22');key('Tab');assert.match(c.querySelector('.lab-office').textContent,/名称框：B2/);change(e,c,'raw','33');key('Escape');assert.equal(c.querySelector('[data-field="raw"]').value,'');click(c,'cell','0');assert.equal(c.querySelector('[data-input-bar]').textContent,'11');e.dom.window.close();
+});
+test('v57 fill distinguishes nine input types, two seeds and Ctrl copy versus series',()=>{
+ const e=env(),c=open(e,'y2020q48'),value=i=>c.querySelector(`[data-fill-index="${i}"]`).textContent.trim();
+ for(const [kind,want] of [['textnumber','002024000003'],['number','2'],['text','计算机'],['suffix','学生3'],['date','2026-09-18'],['time','10:00'],['two','5'],['preset','星期三'],['custom','三班']]){change(e,c,'kind',kind);click(c,'fill');assert.equal(value(2),want,kind);}
+ change(e,c,'kind','number');change(e,c,'modifier','ctrl');click(c,'fill');assert.equal(value(3),'5');change(e,c,'modifier','normal');assert.equal(value(3),'5');click(c,'fill');assert.equal(value(3),'2');
+ change(e,c,'kind','two');change(e,c,'modifier','ctrl');click(c,'fill');assert.equal(value(2),'1');assert.equal(value(3),'3');
+ change(e,c,'kind','date');change(e,c,'source','2026-02-30');click(c,'fill');assert.equal(value(2),'');assert.match(c.querySelector('output').textContent,/不符/);e.dom.window.close();
+});
+test('v57 actual Ctrl pointer release and pointer cancellation preserve the correct fill endpoint',()=>{
+ const e=env(),c=open(e,'y2020q48');change(e,c,'kind','number');
+ const drag=(cancel,ctrl)=>{const h=c.querySelector('[data-lab-drag="fill"]');c.querySelectorAll('[data-fill-index]').forEach((el,i)=>el.getBoundingClientRect=()=>({left:100,right:200,top:100+i*40,bottom:140+i*40}));for(const [type,y] of [['pointerdown',130],['pointermove',250],[cancel?'pointercancel':'pointerup',250]])h.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:180,clientY:y,ctrlKey:ctrl}));};
+ drag(false,true);assert.equal(c.querySelector('[data-fill-index="3"]').textContent.trim(),'5');assert.equal(c.querySelector('[data-fill-index="4"]').textContent.trim(),'');change(e,c,'source','7');drag(true,false);assert.equal(c.querySelector('[data-fill-index="3"]').textContent.trim(),'');e.dom.window.close();
+});
+test('v57 paste formulas, values and formats produce distinct data and formatting',()=>{
+ const e=env(),c=open(e,'y2021q49');click(c,'formula');click(c,'fill');click(c,'copy');click(c,'paste');change(e,c,'kind','formats');click(c,'cancel');assert.equal(c.querySelector('[data-paste-target]').style.background,'');click(c,'paste');click(c,'apply');assert.equal(c.querySelector('[data-paste-target]').textContent,'13000000001');assert.notEqual(c.querySelector('[data-paste-target]').style.background,'');
+ click(c,'paste');change(e,c,'kind','values');click(c,'apply');assert.equal(c.querySelector('[data-paste-target]').textContent,'1300000****');
+ c.querySelector('[data-sim-reset]').click();click(c,'formula');click(c,'fill');click(c,'copy');click(c,'paste');change(e,c,'kind','formulas');click(c,'apply');assert.equal(c.querySelector('[data-paste-target]').textContent,'王宁****');assert.match(c.querySelector('table').textContent,/LEFT\(B2/);e.dom.window.close();
+});
+test('v57 arithmetic paste checks targets, cancellation and noncommutative direction',()=>{
+ const e=env(),c=open(e,'y2022q58'),salary=()=>c.querySelector('[data-row="0"]').textContent;
+ change(e,c,'multiplier','2');click(c,'copy');click(c,'all');click(c,'paste');change(e,c,'operation','divide');click(c,'cancel');assert.match(salary(),/10,?000/);click(c,'paste');click(c,'apply');assert.match(salary(),/5,?000/);click(c,'paste');change(e,c,'operation','subtract');click(c,'apply');assert.match(salary(),/4,?998/);
+ change(e,c,'multiplier','0');click(c,'copy');click(c,'all');click(c,'paste');change(e,c,'operation','divide');click(c,'apply');assert.match(salary(),/4,?998/);assert.ok(c.querySelector('.lab-dialog'));assert.match(c.querySelector('output').textContent,/除以0/);click(c,'cancel');e.dom.window.close();
+});
+test('v57 Excel navigation and search identify separate fill and input paragraphs without resetting models',()=>{
+ const e=env(),c=open(e,'y2020q48'),lab=c.querySelector('[data-lab]'),input=e.d.getElementById('search-input'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));change(e,c,'kind','date');click(c,'fill');
+ for(const [q,id,i] of [['两个起点与等差','y2020q48',5],['预设与自定义序列','y2020q48',8],['确认、取消与活动单元格','y2024q11',10],['转置与跳过空单元格','y2022q58',7]]){const anchor=`${id}--point-${i}`;input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok(e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id)?.matches.some(m=>m.anchor===anchor),q);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);}
+ e.d.getElementById('clear-search').click();assert.match(c.querySelector('[data-fill-index="2"]').textContent,/2026-09-18/);e.dom.window.close();
 });
