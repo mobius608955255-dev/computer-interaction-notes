@@ -70,22 +70,33 @@ function placeField(s,field,zone){
   }
 const products=[['产品1','BKC-001',2322],['产品2','BKC-002',1628],['产品3','BKC-003',3120],['产品4','BKC-004',670]];
 register(['y2020q57'],'精确查价，再比较数量折扣','拖动填充柄；切换数量折扣，观察19件与20件的不同结果。',{
-    locked:true,exact:true,col:3,filled:0,selected:0,task:'lookup',quantities:[19,20,21,20]
+    locked:true,exact:true,col:3,filled:0,selected:0,task:'lookup',quantities:[19,20,21,20],lookupKey:'产品2',prices:[2322,1628,3120,670],editLookup:false,draftKey:'产品2',draftPrice:'1628',lookupMessage:''
   },s=>{
-    const names=['产品2','产品4','产品1','产品3'];
+    const names=[s.lookupKey,'产品4','产品1','产品3'],source=products.map((r,i)=>[r[0],r[1],s.prices[i]]);
     const formula=i=>`${s.task==='discount'?`=IF(F${i+3}>=20,0.95,1)*`:'='}VLOOKUP(D${i+3},产品信息!${s.locked?'$A$2:$C$5':`A${i+2}:C${i+5}`},${s.col},${s.exact?'FALSE':'TRUE'})`;
     const rows=names.map((name,i)=>{
-      const pool=s.locked?products:products.slice(i);
+      const pool=s.locked?source:source.slice(i);
       const row=s.exact?pool.find(r=>r[0]===name):pool.filter(r=>r[0]<=name).at(-1);
-      const result=!row?'#N/A':s.task==='discount'?money(row[2]*(s.quantities[i]>=20?.95:1)):row[s.col-1];
+      const result=s.col>3?'#REF!':!row?'#N/A':s.task==='discount'?money(row[2]*(s.quantities[i]>=20?.95:1)):row[s.col-1];
       return [i+3,name,...(s.task==='discount'?[field('quantity'+i,'第'+(i+3)+'行数量',s.quantities[i],'number','min="1" step="1"'),s.quantities[i]>=20?'0.95':'1']:[]),`<div class="lab-lookup-cell" data-fill-index="${i}">${i<=s.filled?esc(result):'—'}${i===0?'<button data-lab-drag="fill" class="lab-fill-handle" aria-label="向下拖动填充柄"></button>':''}</div>`];
     });
     return `<div class="lab-controls">${select('task','任务',s.task,[['lookup','查找单价'],['discount','数量达到20件享95折']])}</div>`+
       office('Excel','公式',`<code class="lab-formula">${esc(formula(s.selected))}</code>`,table(['行','D 产品名称',...(s.task==='discount'?['F 数量','IF折扣系数']:[]),'G '+(s.task==='discount'?'折后单价':'查找结果')],rows))+
-      `<div class="lab-controls">${select('locked','查找区域',String(s.locked),[['true','绝对引用（固定）'],['false','相对引用（漂移）']])}${select('exact','匹配方式',String(s.exact),[['true','FALSE 精确匹配'],['false','TRUE 近似匹配']])}${s.task==='lookup'?select('col','返回第几列',s.col,[[1,'1 产品名'],[2,'2 编号'],[3,'3 单价']]):''}${btn('键盘辅助：向下填充','fill')}</div>`+
-      `<details class="lab-assist"><summary>产品信息源表</summary>${table(['A 产品名','B 编号','C 单价'],products)}</details>`+
+      `<div class="lab-controls">${select('locked','查找区域',String(s.locked),[['true','绝对引用（固定）'],['false','相对引用（漂移）']])}${select('exact','匹配方式',String(s.exact),[['true','FALSE 精确匹配'],['false','TRUE 近似匹配']])}${s.task==='lookup'?select('col','返回第几列',s.col,[[1,'1 产品名'],[2,'2 编号'],[3,'3 单价'],[4,'4 超出区域列数']]):''}${btn('键盘辅助：向下填充','fill')}</div>`+
+      `<details class="lab-assist"><summary>产品信息源表</summary>${table(['A 产品名','B 编号','C 单价'],source)}</details>`+
+      btn('修改查找键与源价格…','editLookup')+(s.editLookup?dialog('查找数据',field('draftKey','D3查找键',s.draftKey,'text','maxlength="30"')+field('draftPrice','源表产品2单价',s.draftPrice,'number','min="0" max="1000000" step="0.01"')+'<p>确定后源表与结果一起更新；取消保留已确认数据。</p>',btn('确定','applyLookup')+btn('取消','cancelLookup')):'')+output(esc(s.lookupMessage))+coach('只模拟这张升序产品表与字面产品名；含通配符的合法Excel查找键尚未模拟。价格为有限非负数；网页不读取真实工作簿。')+
       output(s.task==='discount'?'IF先判断数量是否≥20，再把查回的单价乘折扣系数。本列是折后单价；销售额还要再乘数量。':!s.exact?'本例首列已升序排列。TRUE近似匹配可能用另一产品替代；按产品查价应使用FALSE。':'填充时查找值的行号逐行变化，源区域应固定；找不到返回#N/A。');
-  },(s,a)=>{if(a==='fill')s.filled=3;},(s,k,v)=>{
+  },(s,a)=>{
+    if(a==='fill')s.filled=3;
+    if(a==='editLookup'){s.editLookup=true;s.draftKey=s.lookupKey;s.draftPrice=String(s.prices[1]);s.lookupMessage='';}
+    if(a==='cancelLookup'){s.editLookup=false;s.lookupMessage='已取消，查找键与源价格未改变。';}
+    if(a==='applyLookup'){
+      if(!s.draftKey.trim()||/[~*?]/.test(s.draftKey)||s.draftKey.length>30){s.lookupMessage='演示未支持空键或通配符；请使用字面产品名，例如产品2或产品9。';return;}
+      const price=Number(s.draftPrice);if(s.draftPrice.trim()===''||!Number.isFinite(price)||price<0||price>1000000){s.lookupMessage='请输入0—1000000的有限价格；原价格保留。';return;}
+      s.lookupKey=s.draftKey;s.prices[1]=price;s.editLookup=false;s.lookupMessage='已更新源表；第3行按新键查找，已填充行也重新计算。';
+    }
+  },(s,k,v)=>{
+    if(k==='draftKey'||k==='draftPrice'){s[k]=v;return;}
     if(k.startsWith('quantity'))s.quantities[Number(k.slice(8))]=Math.round(number(v,1,10000));
     else if(k==='task'){s.task=v;if(v==='discount')s.col=3;}
     else s[k]=k==='col'?Number(v):v==='true';
@@ -160,11 +171,25 @@ register(['y2021q49'],'辅助列脱敏，粘贴值后切断公式依赖','创建
 register(['y2021q50'],'把嵌套公式拆成三层看','修改示例第17位，逐层查看MID、MOD和IF的计算值。',{digit:1,layer:0},s=>{
     const code='0000002000010100'+s.digit+'X',odd=Number(s.digit)%2;return `<div class="lab-controls">${select('digit','虚构编号的第17位',String(s.digit),Array.from({length:10},(_,i)=>[String(i),String(i)]))}${btn('查看下一层','next')}</div>`+office('Excel','公式','<code>=IF(MOD(MID(C2,17,1),2)=1,"男","女")</code>',`<div class="lab-code-digits">${[...code].map((v,i)=>`<span class="${i===16?'lab-highlight':''}"><small>${i+1}</small>${v}</span>`).join('')}</div>${table(['计算层','输出'],[['MID(C2,17,1)',s.layer>=1?esc(String(s.digit)):'待展开'],['MOD(第17位,2)',s.layer>=2?odd:'待展开'],['IF(余数=1,"男","女")',s.layer>=3?(odd?'男':'女'):'待展开']])}`)+coach('只演示题设编码规则；000000开头是无效示例，不能用本卡核验证件。');
   },s=>{s.layer=Math.min(3,s.layer+1);},(s,k,v)=>{s.digit=Number(v);s.layer=0;});
+// Only typed cells in this example are accepted, never arbitrary formula execution.
+function rangeStats(cells){
+  const nums=cells.filter(c=>c.kind==='number').map(c=>Number(c.value));
+  const error=cells.find(c=>c.kind==='error'),sum=nums.reduce((a,b)=>a+b,0);
+  return {SUM:error?'#N/A':sum,COUNT:nums.length,COUNTA:cells.filter(c=>c.kind!=='blank').length,AVERAGE:error?'#N/A':nums.length?sum/nums.length:'#DIV/0!',MAX:error?'#N/A':nums.length?Math.max(...nums):0,MIN:error?'#N/A':nums.length?Math.min(...nums):0};
+}
+function statsView(s){
+  const values=rangeStats(s.statCells),types=[['number','数值'],['text','文本数字'],['logical','TRUE'],['blank','真正空白'],['empty','公式空字符串'],['error','#N/A错误']];
+  return office('Excel','公式','<code>范围参数：A1:A6</code>',table(['地址','保存类型','内容'],s.statCells.map((c,i)=>['A'+(i+1),select('statKind'+i,'A'+(i+1)+'类型',c.kind,types),['number','text'].includes(c.kind)?field('statValue'+i,'A'+(i+1)+'值',c.value,c.kind==='number'?'number':'text'):esc({logical:'TRUE',blank:'（空单元格）',empty:'=""',error:'#N/A'}[c.kind])]))+table(['公式','实际结果'],Object.entries(values).map(([key,value])=>['='+key+'(A1:A6)',`<span data-stat-result="${key}">${typeof value==='number'?Number(value.toPrecision(12)):value}</span>`])))+output(esc(s.statMessage||'改变类型会改变参与统计的格数；真正空白、空字符串和数值0分别观察。'))+coach('这是区域参数的有限模型：文本数字、TRUE、空白、空字符串与#N/A；不模拟直接参数转换或任意输入公式。错误传播与忽略规则按各函数分别处理。');
+}
 const people=[['市场部','女',28],['市场部','男',32],['后勤部','女',40],['市场部','女',24],['后勤部','男',30]];
-register(['y2021q51'],'让同一张名单回答三个统计问题','改部门、年龄和条件，命中的行与计数、平均值一起变化。',{people,department:'市场部',sex:'女'},s=>{
+register(['y2021q51'],'让同一张名单回答三个统计问题','改部门、年龄和条件，命中的行与计数、平均值一起变化。',{people,department:'市场部',sex:'女',statsMode:'conditions',statCells:[{kind:'number',value:'10'},{kind:'number',value:'0'},{kind:'text',value:'20'},{kind:'logical',value:''},{kind:'blank',value:''},{kind:'empty',value:''}],statMessage:''},s=>{
+    const mode=`<div class="lab-controls">${select('statsMode','统计场景',s.statsMode,[['conditions','条件计数与平均'],['range','数据类型与基础统计']])}</div>`;if(s.statsMode==='range')return mode+statsView(s);
     const match=s.people.filter(r=>r[0]===s.department),both=match.filter(r=>r[1]===s.sex),ages=match.map(r=>r[2]).filter(v=>v!==''&&Number.isFinite(Number(v)));const avg=ages.length?money(ages.reduce((n,v)=>n+Number(v),0)/ages.length):'#DIV/0!';
-    return `<div class="lab-controls">${select('department','部门条件',s.department,[['市场部','市场部'],['后勤部','后勤部'],['研发部','研发部（无记录）']])}${select('sex','第二条件',s.sex,[['女','女'],['男','男']])}</div>`+office('Excel','公式',`<code>COUNTIF / COUNTIFS / AVERAGEIF</code>`,table(['部门 E','性别 F','年龄 G'],s.people.map((r,i)=>[select('dept'+i,`第${i+2}行部门`,r[0],[['市场部','市场部'],['后勤部','后勤部']]),`<span class="${r[0]===s.department&&r[1]===s.sex?'lab-highlight':''}">${r[1]}</span>`,field('age'+i,`第${i+2}行年龄`,r[2],'number','min="16" max="80"')]))+table(['公式','结果'],[[`COUNTIF(E2:E6,"${s.department}")`,match.length],[`COUNTIFS(E2:E6,"${s.department}",F2:F6,"${s.sex}")`,both.length],[`AVERAGEIF(E2:E6,"${s.department}",G2:G6)`,avg]]))+output('第二项要求部门和性别同时符合；平均值忽略空白年龄，不把空白当0。');
-  },()=>{},(s,k,v)=>{if(k.startsWith('dept'))s.people[Number(k.slice(4))][0]=v;else if(k.startsWith('age'))s.people[Number(k.slice(3))][2]=v===''?'':number(v,16,80);else s[k]=v;});
+    return mode+`<div class="lab-controls">${select('department','部门条件',s.department,[['市场部','市场部'],['后勤部','后勤部'],['研发部','研发部（无记录）']])}${select('sex','第二条件',s.sex,[['女','女'],['男','男']])}</div>`+office('Excel','公式',`<code>COUNTIF / COUNTIFS / AVERAGEIF</code>`,table(['部门 E','性别 F','年龄 G'],s.people.map((r,i)=>[select('dept'+i,`第${i+2}行部门`,r[0],[['市场部','市场部'],['后勤部','后勤部']]),`<span class="${r[0]===s.department&&r[1]===s.sex?'lab-highlight':''}">${r[1]}</span>`,field('age'+i,`第${i+2}行年龄`,r[2],'number','min="16" max="80"')]))+table(['公式','结果'],[[`COUNTIF(E2:E6,"${s.department}")`,match.length],[`COUNTIFS(E2:E6,"${s.department}",F2:F6,"${s.sex}")`,both.length],[`AVERAGEIF(E2:E6,"${s.department}",G2:G6)`,avg]]))+output('第二项要求部门和性别同时符合；平均值忽略空白年龄，不把空白当0。');
+  },()=>{},(s,k,v)=>{
+    if(k.startsWith('statKind')){const c=s.statCells[Number(k.slice(8))];c.kind=v;if(v==='number'&&(!c.value.trim()||!Number.isFinite(Number(c.value))))c.value='0';s.statMessage='已更改保存类型，统计重新计算。';return;}
+    if(k.startsWith('statValue')){const c=s.statCells[Number(k.slice(9))];if(c.kind==='number'&&(!v.trim()||!Number.isFinite(Number(v)))){s.statMessage='数值模式须输入有限数；原值保留。要模拟空白，请改保存类型。';return;}c.value=v;s.statMessage='源数据已更新，统计重新计算。';return;}
+    if(k.startsWith('dept'))s.people[Number(k.slice(4))][0]=v;else if(k.startsWith('age'))s.people[Number(k.slice(3))][2]=v===''?'':number(v,16,80);else s[k]=v;});
 register(['y2021q52'],'同样的数据，选错系列就回答不了问题','选择两系列比较、单系列或比例，观察图的意义改变。',{mode:'both',women:6},s=>{
     const total=[12,14,8],women=[Number(s.women),4,2],ratio=total.map((v,i)=>Math.round(women[i]/v*100));const series=s.mode==='ratio'?[{name:'女职工比例（%）',values:ratio,color:'#b35385'}]:[{name:'女职工人数',values:women,color:'#b35385'},...(s.mode==='both'?[{name:'总人数',values:total,color:'#527eaa'}]:[])];return `<div class="lab-controls">${select('mode','图表数据',s.mode,[['both','总人数与女职工人数'],['women','只选女职工人数'],['ratio','先计算女职工比例']])}${field('women','市场部女职工人数',s.women,'range','min="0" max="12"')}</div>`+office('Excel','插入 · 簇状柱形图','',clusteredChart(['市场部','财务部','后勤部'],series))+output(s.mode==='both'?'两组柱并排，不把子集与总数叠加。':s.mode==='women'?'这里只有女职工数量，无法直接看出各部门总人数。':'比例的分母是各部门总人数；此时纵向量纲为百分比。');
   },()=>{});
@@ -186,13 +211,35 @@ register(['y2026q50'],'文字包含条件与交叉条件如何求和','改公司
  const formula=s.mode==='single'?`=SUMIF(A2:A5,"*${s.keyword.replace(/[~*?]/g,c=>'~'+c).replace(/"/g,'""')}*",C2:C5)`:`=SUMIFS(C2:C5,A2:A5,"${s.company}",B2:B5,"${s.quarter}")`;
  return controls(select('mode','求和任务',s.mode,[['single','公司名包含文字'],['multi','指定公司且指定季度']])+(s.mode==='single'?field('keyword','包含文字',s.keyword):select('company','公司',s.company,[...new Set(sales.map(r=>r[0]))].map(v=>[v,v]))+select('quarter','季度',s.quarter,[['一季度','一季度'],['二季度','二季度']])))+office('Excel','公式',`<code>${esc(formula)}</code>`,table(['A 公司','B 季度','C 金额'],sales.map((r,i)=>[`<span class="${hit(r)?'lab-highlight':''}">${r[0]}</span>`,r[1],field('value'+i,'第'+(i+2)+'行金额',s.values[i],'number')]))+output(`实际求和：${money(sales.reduce((sum,r,i)=>sum+(hit(r)?Number(s.values[i]):0),0))}`));
 },()=>{},(s,k,v)=>{if(k.startsWith('value'))s.values[Number(k.slice(5))]=Number(v);else s[k]=v;});
-register(['merged-10'],'复制公式，查看地址与排名怎样变化','在复制方向和锁定方式之间切换；相同分数也参与实际排名。',{mode:'ref',style:'mixed',dx:1,dy:1,order:'0',scores:[88,76,88,92],locked:true},s=>{
+const refTemplates={tax:'=B2*$F$1',range:'=B4*$F$1+SUM(C$2:D3)',matrix:'=SUMIFS($C$2:$C$5,$A$2:$A$5,$F3,$B$2:$B$5,G$2)'};
+function cellPosition(text){
+ const m=String(text).trim().toUpperCase().match(/^([A-Z]{1,3})([1-9]\d{0,6})$/);if(!m)return null;
+ const col=[...m[1]].reduce((n,c)=>n*26+c.charCodeAt(0)-64,0),row=Number(m[2]);return col<=16384&&row<=1048576?{col,row}:null;
+}
+function shiftedTemplate(template,from,to){
+ const a=cellPosition(from),b=cellPosition(to);if(!a||!b)return null;
+ const dx=b.col-a.col,dy=b.row-a.row,parts=[];
+ const formula=refTemplates[template].replace(/(\$?)([A-Z]{1,3})(\$?)([1-9]\d*)/g,(full,lc,letters,lr,digits)=>{
+  let col=[...letters].reduce((n,c)=>n*26+c.charCodeAt(0)-64,0)+(lc?0:dx),row=Number(digits)+(lr?0:dy),result='#REF!';
+  if(col>=1&&col<=16384&&row>=1&&row<=1048576){let name='';while(col){col--;name=String.fromCharCode(65+col%26)+name;col=Math.floor(col/26);}result=lc+name+lr+row;}
+  parts.push([full,result]);return result;
+ });return {dx,dy,formula,parts};
+}
+function wholeRefView(s){
+ const result=shiftedTemplate(s.template,s.from,s.to);
+ return office('Excel','复制公式',btn('设置源格与目标格…','editRef'),`<p>源格 ${esc(s.from)} → 目标格 ${esc(s.to)}；列位移 ${result.dx}，行位移 ${result.dy}</p><p>原公式</p><pre class="lab-code" data-original-formula>${esc(refTemplates[s.template])}</pre><p>复制后的完整公式</p><pre class="lab-code" data-shifted-formula>${esc(result.formula)}</pre>${table(['每个原引用','各自调整后'],result.parts.map(row=>row.map(esc)))}${s.refPane?dialog('设置复制位置',select('draftTemplate','公式练习',s.draftTemplate,[['range','范围两端与混合引用'],['tax','固定税率'],['matrix','二维条件汇总']])+field('draftFrom','原公式所在格',s.draftFrom)+field('draftTo','复制目标格',s.draftTo),btn('确定','applyRef')+btn('取消','cancelRef')):''}`)+output(esc(s.refMessage||'先计算目标减来源的行列位移，再对每段引用单独应用。'))+coach('只变换三条给定公式中的同表A1引用，不计算这些公式的值，也不模拟剪切、结构插删、名称或外部引用。改变源格不改变题给公式文字；请按当前显示的位置推导。');
+}
+register(['merged-10'],'复制公式，查看地址与排名怎样变化','在复制方向和锁定方式之间切换；相同分数也参与实际排名。',{mode:'ref',style:'mixed',dx:1,dy:1,order:'0',scores:[88,76,88,92],locked:true,template:'range',from:'D4',to:'F7',refPane:false,draftTemplate:'range',draftFrom:'D4',draftTo:'F7',refMessage:''},s=>{
  const origin={relative:'B2',absolute:'$B$2',mixed:'$B2',row:'B$2'},lockCol=['absolute','mixed'].includes(s.style),lockRow=['absolute','row'].includes(s.style);
  const col=2+(lockCol?0:Number(s.dx)),row=2+(lockRow?0:Number(s.dy));
  const columnName=n=>{let text='';while(n>0){n--;text=String.fromCharCode(65+n%26)+text;n=Math.floor(n/26);}return text;};
  const valid=s.dx!==''&&s.dy!==''&&Number.isInteger(Number(s.dx))&&Number.isInteger(Number(s.dy)),address=!valid?'请输入整数位移':col<1||row<1||col>16384||row>1048576?'#REF!':`${lockCol?'$':''}${columnName(col)}${lockRow?'$':''}${row}`;
- return controls(select('mode','场景',s.mode,[['ref','复制引用'],['rank','RANK.EQ排名']]))+(s.mode==='ref'?controls(select('style','引用形式',s.style,Object.entries(origin))+field('dx','向右复制列数',s.dx,'number','step="1"')+field('dy','向下复制行数',s.dy,'number','step="1"'))+office('Excel','公式','',table(['原公式','复制后公式'],[[`=${origin[s.style]}`,`=${address}`]])):controls(select('locked','比较范围',String(s.locked),[['true','固定$B$2:$B$5'],['false','相对B2:B5']])+select('order','排名方向',s.order,[['0','0：降序'],['1','1：升序']]))+office('Excel','公式','',table(['行','分数 B','公式','名次'],s.scores.map((v,i)=>{const pool=(s.locked?s.scores:s.scores.slice(i)).filter(x=>x!==''&&Number.isFinite(Number(x))).map(Number),rank=v===''?'空白':1+pool.filter(x=>s.order==='0'?x>Number(v):x<Number(v)).length;return[i+2,field('score'+i,'第'+(i+2)+'行分数',v,'number'),`=RANK.EQ(B${i+2},${s.locked?'$B$2:$B$5':`B${i+2}:B${i+5}`},${s.order})`,rank];}))))+output(s.mode==='ref'?'$锁住它后面的行号或列标，复制方向决定未锁住部分的变化。':'88并列时获得相同名次，后续名次跳号；范围漂移会改变比较对象。仅向下填充时，B$2:B$5也可固定比较行。');
-},()=>{},(s,k,v)=>{if(k.startsWith('score'))s.scores[Number(k.slice(5))]=v===''?'':Number(v);else s[k]=k==='locked'?v==='true':v;});
+ return controls(select('mode','场景',s.mode,[['ref','复制引用'],['whole','整条公式与目标位置'],['rank','RANK.EQ排名']]))+(s.mode==='whole'?wholeRefView(s):s.mode==='ref'?controls(select('style','引用形式',s.style,Object.entries(origin))+field('dx','向右复制列数',s.dx,'number','step="1"')+field('dy','向下复制行数',s.dy,'number','step="1"'))+office('Excel','公式','',table(['原公式','复制后公式'],[[`=${origin[s.style]}`,`=${address}`]])):controls(select('locked','比较范围',String(s.locked),[['true','固定$B$2:$B$5'],['false','相对B2:B5']])+select('order','排名方向',s.order,[['0','0：降序'],['1','1：升序']]))+office('Excel','公式','',table(['行','分数 B','公式','名次'],s.scores.map((v,i)=>{const pool=(s.locked?s.scores:s.scores.slice(i)).filter(x=>x!==''&&Number.isFinite(Number(x))).map(Number),rank=v===''?'空白':1+pool.filter(x=>s.order==='0'?x>Number(v):x<Number(v)).length;return[i+2,field('score'+i,'第'+(i+2)+'行分数',v,'number'),`=RANK.EQ(B${i+2},${s.locked?'$B$2:$B$5':`B${i+2}:B${i+5}`},${s.order})`,rank];}))))+(s.mode==='whole'?'':output(s.mode==='ref'?'$锁住它后面的行号或列标，复制方向决定未锁住部分的变化。':'88并列时获得相同名次，后续名次跳号；范围漂移会改变比较对象。仅向下填充时，B$2:B$5也可固定比较行。'));
+},(s,a)=>{
+ if(a==='editRef'){s.refPane=true;s.draftFrom=s.from;s.draftTo=s.to;s.draftTemplate=s.template;s.refMessage='';}
+ if(a==='cancelRef'){s.refPane=false;s.refMessage='已取消，原公式与目标位置保留。';}
+ if(a==='applyRef'){if(!cellPosition(s.draftFrom)||!cellPosition(s.draftTo)){s.refMessage='请输入A1至XFD1048576内的单格地址；已确认结果未改变。';return;}s.from=s.draftFrom.trim().toUpperCase();s.to=s.draftTo.trim().toUpperCase();s.template=s.draftTemplate;s.refPane=false;s.refMessage='已确认位置并逐项变换引用。';}
+},(s,k,v)=>{if(k.startsWith('score'))s.scores[Number(k.slice(5))]=v===''?'':Number(v);else s[k]=k==='locked'?v==='true':v;});
 register(['y2020q59'],'切换行列，同时交换系列与横轴','原表不变，图例和柱的分组随着“切换行/列”重建。',{swapped:false},s=>{
  const data=[['一班',80,75,90],['二班',72,85,78],['三班',90,80,88],['四班',82,92,84]],colors=['#527eaa','#bc7750','#558777','#9b6694'];
  const labels=s.swapped?['数学','英语','计算机']:data.map(r=>r[0]);const series=s.swapped?data.map((r,i)=>({name:r[0],values:r.slice(1),color:colors[i]})):['数学','英语','计算机'].map((name,i)=>({name,values:data.map(r=>r[i+1]),color:colors[i]}));

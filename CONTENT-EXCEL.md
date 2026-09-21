@@ -1,6 +1,51 @@
-# Excel专项 · v57 基础与数据编辑
+# Excel专项 · 基础编辑、公式与函数
 
-## 恢复入口
+## 当前恢复入口 · v58补完续接
+
+沿用中间提交`d26c7fb9b20e0a46c92db0f3425a3083de4b2fc7`、树`88cfb55e3c0ba53f987781af2ab50d66f380e6c8`，现场工作区与暂存区干净。保留该提交，不amend，不重新开发公式函数。
+
+AVERAGE：明确区分[标注Excel 2016的支持页](https://support.microsoft.com/en-us/excel/functions/average-function)的“直接参数不计入”与[Learn的VBA WorksheetFunction.Average方法](https://learn.microsoft.com/en-us/office/vba/api/excel.worksheetfunction.average)的“计入”措辞。正文原位补充来源对象，COUNT规则未移植到AVERAGE；现有统计模型与测试仅处理区域传入，无行为修改。微软Excel 2016适用文档已核；原生Excel2016未实测。
+
+素材：已直接读取实际工作簿“考点8、9 公式函数”表头，D列性别、I列语文、J列英语，无隐藏列；配套答案任务2的英语平均引用I列错误，应为J3:J33。网站自编例子没有引用这张原表，无需改其列号。另记录原指令汇总区与S列原有任务重叠，实际操作须选空区域；不改动私有源文件。
+
+本轮仅修改一段来源说明及进度文件；测试、模型和共享逻辑保持。完整237/237为中间冻结主体证据，文字修订后6/6项内容/生成/搜索/保护定向检查通过；另核对正文仅一段变化、54个保护文件未变、39个生成文件重复构建一致，git diff --check通过。不声称重跑完整回归。
+
+浏览器：此前Cloud浏览器明确拒绝本地预览，本轮未重试被禁地址。按用户授权检查独立Playwright途径，库存在但Chromium/Firefox/WebKit引擎均未安装；一次限时获取官方Chromium引擎失败（502 Connection refused）。未禁用沙箱或修改平台安全策略，390px/桌面实际交互仍未完成，因此v58仍为部分完成，尚未发布。
+
+连续公式函数课堂资料与独立第四章练习PDF仍未取得。下列主体开发记录保留当时语境，素材列号的旧待核状态由本节核定结果取代。最终commit/tree、定向日志及补丁验证见仓库外恢复包。
+
+## v58中间恢复点记录（主体开发时状态）
+
+v57已由Work2发布，commit `cbe8d68cd0d9f8d25bb72d4f1e0fe964ce92f156`，tree `670bd2b44ab9a331b0cad868a068ac70c14b5ef4`。本地原提交`5afc9341272b83ef297c4d54b0f82200a5e15ee8`与发布提交内容树相同，工作区干净。经一次只读获取确认发布对象后，从发布提交建立`content/excel-formulas-v58`分支；未查询CI/Pages。Work1进入v58本地开发，不发布。
+
+v58本地部分完成，尚未发布。正文与模型已冻结，浏览器操作验收受当前环境安全策略阻断；未将自动测试当作浏览器或Excel原生验证。私有phase、原题/练习映射及交付文件位于仓库外。下列v57记录保留其当时语境。
+
+### v58处理范围
+
+- 复用原有4.3卡片，9卡追加38段；保留全部旧points前缀、ID、sources、keys，未改其他章节正文。公式结构、运算顺序、横纵引用、区域两端、F4、名称/跨表/外部/三维地址按学习顺序组织。
+- 完善基础统计、条件统计、逻辑判断、取整排名、文本、日期和VLOOKUP；完整示例连接固定税率、二维汇总、查价折扣、文本判断与日期差。未引入XLOOKUP、动态数组或函数百科。
+- 三张现有演示定点升级：整条公式按源格/目标格变换引用；类型化区域真实统计并传播错误；查找键与源价格可确认/取消，精确失败与近似结果可比较。输入模型补负号/%/^优先级；未支持的引用/函数/连接/比较明确提示演示范围，不冒充Excel错误。没有新增模型注册或共享组件重构。
+
+### v58来源与判断边界
+
+- 沿用2026考纲第四章（四），不是2027完整考纲。课堂仅回读已取得的第14课幻灯片1、3全图，Excel基础转写03:57—13:24、23:27—33:42及填充编辑转写34:43—37:31、42:27—47:21的相关范围。独立公式/引用/函数连续课堂PPT与转写尚未取得，不宣称全部课堂已覆盖。
+- 七年来源索引筛查后回读23道主要原题的完整题干、选项和共用条件；另登记3条相邻范围。2020/2024部分题设采用Office2010，保留其语境。2021第9题的广义“三维地址”与微软多表区间3-D语法分开；2022第67题省略VLOOKUP参数按近似匹配与题设条件判断。
+- 完整读取第四章操作素材“考点7、8 公式函数”10项指令及未署名配套答案。定点指出“任意一科”误用AND、工龄INT括号错位；及格边界按明确假设编写。任务2的科目列号仍待原工作簿核对，独立第四章练习PDF未取得，不称全练习终审。
+- [公式概览](https://support.microsoft.com/en-us/excel/get-started/overview-of-formulas-in-excel)、[引用切换](https://support.microsoft.com/en-us/excel/switch-between-relative-absolute-and-mixed-references)支持公式结构与复制规则；[运算顺序](https://support.microsoft.com/en-us/excel/calculation-operators-and-precedence)当前页标注2021+，只采用历史通用运算，不采用新动态数组规则。移动/结构调整仅说明必要边界，原生Excel2016待核。
+- [COUNT](https://support.microsoft.com/en-us/excel/functions/count-function)、[COUNTA](https://support.microsoft.com/en-us/excel/functions/counta-function)、[AVERAGEIF](https://support.microsoft.com/en-us/excel/functions/averageif-function)分别支持数值计数、非空含空串/错误及条件平均分母；SUM、MAX/MIN与条件函数页逐项对齐，未由一条链接为整组背书。
+- [VLOOKUP](https://support.microsoft.com/en-us/excel/functions/vlookup-function)支持首列、区域内列号、匹配模式与错误；IF/AND/OR支持条件组合；[INT](https://support.microsoft.com/en-us/excel/functions/int-function)、[ROUND](https://support.microsoft.com/en-us/excel/functions/round-function)、[MOD](https://support.microsoft.com/en-us/excel/functions/mod-function)支持负数与参数规则。LEFT/LEN/VALUE及DATE/TODAY说明文本和日期链；仅纳入2016可用规则。逐断言与题目映射在私有阶段记录中。
+
+### v58验收与恢复
+
+基线只做4项定向；开发阶段相关9项通过，新行为检查与保护检查随后纳入冻结回归。两个新测试最初误用了重置按钮选择器，已按现有运行时契约修正，未因此改动产品行为。
+
+最终构建与完整回归：`npm run check`通过237/237，0失败、0跳过；构建生成238条笔记、460条来源。回归核对规范正文与生成内容一致，旧锚点/points、ID、sources、keys以及其他10章正文保护通过。`git diff --check`通过。最终回归后仅更新交付说明和私有记录，没有修改正文、模型或测试。浏览器：当前Cloud Chrome对本地HTTP预览报ERR_BLOCKED_BY_CLIENT，对本地文件协议明确安全策略拒绝；停止该路径，没有绕过策略、换用隐蔽浏览器接口或发布预览。390px/桌面引用横纵操作、函数参数/条件变化、查找成败、搜索定位、展开返回与v57代表操作仍待实际浏览器补验。相关DOM与状态自动检查不能替代这项门槛。
+
+恢复包目标：`Excel_公式引用与函数_v58_本地恢复与验收.zip`，包含发布v57基线、局部成果补丁、冻结commit/tree、已执行测试、文件摘要与明确待验项。由Work2发布前须先补足本批验收，不将该状态当作已批准发布。
+
+保留限定：Windows Excel2016与实体手机未实测；AVERAGE直接参数两份微软文档措辞冲突待原生裁决；课堂连续资料、独立练习PDF及操作素材具体列映射缺口保留。未进入排序筛选、分类汇总、透视表、图表、打印或PowerPoint。
+
+## v57历史恢复入口
 
 v56已由Work2发布。发布记录commit为`62bda2364938c2d41be23fc4ba7e5608bb0427c2`，内容树为`b3008da846e34e565a5e0e2f7fdec998427532b6`。本轮实际本地HEAD `cf629d40528f8d909c20b395272c01304e4d0f6d`的树与该记录相同；远端commit对象未在本地取得，没有查询发布状态。开始时工作区与暂存区干净，在`content/excel-foundations-v57`继续。
 

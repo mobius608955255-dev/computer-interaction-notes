@@ -31,13 +31,16 @@
     if(!text.startsWith('=')){
       const trimmed=text.trim();return trimmed&&/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(trimmed)?{type:'数值',value:String(Number(trimmed)),detail:'输入为可识别的数值。'}:{type:'文本',value:text||'（空白）',detail:'没有公式前导等号，这段输入不按算术公式执行。'};
     }
+    if(/[A-Za-z$!:,"&<>=]/.test(text.slice(1)))return {type:'公式',value:'演示未支持',detail:'本输入卡仅计算无引用的算术公式；引用、函数、文本连接与比较请阅读相应卡片。这不是Excel错误值。'};
     let pos=1;const fail=(message,code='公式未完成')=>{throw {message,code,position:pos+1};};
     const skip=()=>{while(/\s/.test(text[pos]||'')&&pos<text.length)pos++;};
     function primary(){skip();if(text[pos]==='('){pos++;const value=expression();skip();if(text[pos]!==')')fail('缺少右括号');pos++;return value;}const match=text.slice(pos).match(/^(?:\d+(?:\.\d*)?|\.\d+)/);if(!match)fail(pos>=text.length?'这里还需要一个数值':`无法识别“${text[pos]}”`,/[A-Za-z×]/.test(text[pos]||'')?'#NAME?':'公式未完成');pos+=match[0].length;return Number(match[0]);}
     function unary(){skip();if(text[pos]==='+'||text[pos]==='-'){const sign=text[pos++];return (sign==='-'?-1:1)*unary();}return primary();}
-    function product(){let value=unary();skip();while(text[pos]==='*'||text[pos]==='/'){const op=text[pos++],right=unary();if(op==='/'&&right===0)fail('除数为0','#DIV/0!');value=op==='*'?value*right:value/right;skip();}return value;}
+    function percent(){let value=unary();skip();while(text[pos]==='%'){pos++;value/=100;skip();}return value;}
+    function power(){let value=percent();skip();while(text[pos]==='^'){pos++;value=Math.pow(value,percent());skip();}return value;}
+    function product(){let value=power();skip();while(text[pos]==='*'||text[pos]==='/'){const op=text[pos++],right=power();if(op==='/'&&right===0)fail('除数为0','#DIV/0!');value=op==='*'?value*right:value/right;skip();}return value;}
     function expression(){let value=product();skip();while(text[pos]==='+'||text[pos]==='-'){const op=text[pos++],right=product();value=op==='+'?value+right:value-right;skip();}return value;}
-    try{const value=expression();skip();if(pos!==text.length)fail(`这里的“${text[pos]}”不是本例支持的运算符`,/[A-Za-z×]/.test(text[pos])?'#NAME?':'不支持的表达式');if(!Number.isFinite(value))fail('结果超出本例可表示范围','#NUM!');return {type:'公式',value:String(Number(value.toPrecision(15))),detail:'先计算括号，再乘除，最后加减；同级运算从左到右。'};}catch(error){return {type:'公式',value:error.code||'无法计算',detail:`第${error.position||pos+1}个字符附近：${error.message||'请检查表达式'}。${text.includes('×')?'Excel乘法使用星号 *。':''}`};}
+    try{const value=expression();skip();if(pos!==text.length)fail(`这里的“${text[pos]}”不是本例支持的运算符`,/[A-Za-z×]/.test(text[pos])?'#NAME?':'不支持的表达式');if(!Number.isFinite(value))fail('结果超出本例可表示范围','#NUM!');return {type:'公式',value:String(Number(value.toPrecision(15))),detail:'本例依次处理括号、负号、百分号、乘方、乘除、加减；同级从左向右。'};}catch(error){return {type:'公式',value:error.code||'无法计算',detail:`第${error.position||pos+1}个字符附近：${error.message||'请检查表达式'}。${text.includes('×')?'Excel乘法使用星号 *。':''}`};}
   }
   // A six-cell teaching surface; values, display formats and pending edits are separate.
   function inputRecord(raw){
@@ -71,7 +74,7 @@
       window.NOTE_LABS.ui.select('format','当前格的显示格式',cell.format,[['general','常规（本例不按列宽切换科学计数）'],['fixed2','数值：2位小数'],['percent','百分比：2位小数']])+
       `<p>比较示例：${['2*3','=2*3',"'001",'12.857','0.25'].map(x=>btn(esc(x),'example',x)).join('')}</p>`+
       (value?table(['原输入','保存类型','单元格显示'],[[esc(cell.raw),value.type,`<span data-input-display>${esc(shown(cell))}</span>`]]):'<p class="lab-empty">当前格尚无已确认内容。</p>'))+
-      output(esc(s.message)+(value?' '+esc(value.detail):''))+coach('网页仅模拟这6格的短文本、数值、单引号、百分数、科学计数、0 空格分数及无引用的简单算术公式。日期地区解析、超过15位数值的精确截断、单元格引用与函数未模拟；不生成Excel文件。选择另一格会先确认当前输入，切换后编辑栏显示该格已保存内容。');
+      output(esc(s.message)+(value?' '+esc(value.detail):''))+coach('网页仅模拟这6格的短文本、数值、单引号、百分数、科学计数、0 空格分数及无引用的 + - * / % ^ 算术公式。日期地区解析、超过15位数值的精确截断、单元格引用与函数未模拟；不生成Excel文件。选择另一格会先确认当前输入，切换后编辑栏显示该格已保存内容。');
   },(s,a,v)=>{
     if(a==='apply')commitInput(s);
     if(a==='cancel'){s.raw=s.cells[s.active].raw;s.message='已取消本次未确认修改，原内容与格式保留。';}

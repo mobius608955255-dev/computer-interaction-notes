@@ -1243,3 +1243,51 @@ test('v57 Excel navigation and search identify separate fill and input paragraph
  for(const [q,id,i] of [['两个起点与等差','y2020q48',5],['预设与自定义序列','y2020q48',8],['确认、取消与活动单元格','y2024q11',10],['转置与跳过空单元格','y2022q58',7]]){const anchor=`${id}--point-${i}`;input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok(e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id)?.matches.some(m=>m.anchor===anchor),q);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);}
  e.d.getElementById('clear-search').click();assert.match(c.querySelector('[data-fill-index="2"]').textContent,/2026-09-18/);e.dom.window.close();
 });
+
+test('v58 arithmetic follows Excel unary percent and left associative power, not JS precedence',()=>{
+ const e=env(4),parse=e.w.NOTE_LABS.registry.y2024q11.parseInput;
+ // Expected values derived independently from the documented operator table.
+ for(const [formula,want] of [['=-2^2','4'],['=0-2^2','-4'],['=2^3^2','64'],['=2^(3^2)','512'],['=200*10%','20'],['=2^-2','0.25'],['=8/4*2','4'],['=(-1)^0.5','#NUM!']])assert.equal(parse(formula).value,want,formula);
+ for(const formula of ['=SUM(A1:A3)','=B2*$F$1','=1+2&"月"','=2<3']){const result=parse(formula);assert.equal(result.value,'演示未支持');assert.match(result.detail,/不是Excel错误/);}
+ assert.equal(parse('=4/0').value,'#DIV/0!');e.dom.window.close();
+});
+test('v58 whole formula moves each endpoint horizontally vertically and diagonally',()=>{
+ const e=env(4),c=open(e,'merged-10');change(e,c,'mode','whole');const result=()=>c.querySelector('[data-shifted-formula]').textContent;
+ assert.equal(result(),'=D7*$F$1+SUM(E$2:F6)');
+ for(const [to,want] of [['F4','=D4*$F$1+SUM(E$2:F3)'],['D7','=B7*$F$1+SUM(C$2:D6)'],['B1','=\u0023REF!*$F$1+SUM(A$2:#REF!)']]){click(c,'editRef');change(e,c,'draftTo',to);click(c,'applyRef');assert.equal(result(),want);}
+ click(c,'editRef');change(e,c,'draftTemplate','matrix');change(e,c,'draftFrom','G3');change(e,c,'draftTo','H4');click(c,'applyRef');assert.equal(result(),'=SUMIFS($C$2:$C$5,$A$2:$A$5,$F4,$B$2:$B$5,H$2)');e.dom.window.close();
+});
+test('v58 whole formula cancellation invalid address and reset preserve confirmed state',()=>{
+ const e=env(4),c=open(e,'merged-10');change(e,c,'mode','whole');const saved=c.querySelector('[data-shifted-formula]').textContent;
+ click(c,'editRef');change(e,c,'draftTo','XFE1');click(c,'applyRef');assert.match(c.textContent,/请输入A1至XFD1048576/);assert.equal(c.querySelector('[data-shifted-formula]').textContent,saved);click(c,'cancelRef');
+ click(c,'editRef');change(e,c,'draftTo','G8');click(c,'cancelRef');assert.equal(c.querySelector('[data-shifted-formula]').textContent,saved);
+ c.querySelector('.simulation-toggle').click();c.querySelector('.simulation-toggle').click();assert.equal(c.querySelector('[data-shifted-formula]').textContent,saved);
+ c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-field="mode"]').value,'ref');e.dom.window.close();
+});
+test('v58 range statistics distinguish zero text logical empty string blank and error',()=>{
+ const e=env(4),c=open(e,'y2021q51');change(e,c,'statsMode','range');const values=()=>Object.fromEntries([...c.querySelectorAll('[data-stat-result]')].map(el=>[el.dataset.statResult,el.textContent]));
+ assert.deepEqual(values(),{SUM:'10',COUNT:'2',COUNTA:'5',AVERAGE:'5',MAX:'10',MIN:'0'});
+ change(e,c,'statKind2','number');assert.deepEqual(values(),{SUM:'30',COUNT:'3',COUNTA:'5',AVERAGE:'10',MAX:'20',MIN:'0'});
+ change(e,c,'statKind4','error');assert.deepEqual(values(),{SUM:'#N/A',COUNT:'3',COUNTA:'6',AVERAGE:'#N/A',MAX:'#N/A',MIN:'#N/A'});
+ for(let i=0;i<6;i++)change(e,c,'statKind'+i,'blank');assert.deepEqual(values(),{SUM:'0',COUNT:'0',COUNTA:'0',AVERAGE:'#DIV/0!',MAX:'0',MIN:'0'});e.dom.window.close();
+});
+test('v58 range invalid numeric edit cannot silently become zero',()=>{
+ const e=env(4),c=open(e,'y2021q51');change(e,c,'statsMode','range');change(e,c,'statValue0','');assert.equal(c.querySelector('[data-stat-result="SUM"]').textContent,'10');assert.match(c.textContent,/原值保留/);change(e,c,'statKind0','text');change(e,c,'statValue0','<img src=x onerror=alert(1)>');assert.equal(c.querySelectorAll('img[src=x]').length,0);assert.equal(c.querySelector('[data-stat-result="COUNT"]').textContent,'1');e.dom.window.close();
+});
+test('v58 lookup key price and match mode recompute actual results including failure and zero',()=>{
+ const e=env(4),c=open(e,'y2020q57');const value=()=>c.querySelector('[data-fill-index="0"]').textContent.trim();assert.equal(value(),'1628');
+ click(c,'editLookup');change(e,c,'draftKey','产品9');click(c,'applyLookup');assert.equal(value(),'#N/A');change(e,c,'exact','false');assert.equal(value(),'670');change(e,c,'exact','true');
+ click(c,'editLookup');change(e,c,'draftKey','产品2');change(e,c,'draftPrice','100');click(c,'applyLookup');assert.equal(value(),'100');change(e,c,'task','discount');assert.equal(value(),'100');change(e,c,'quantity0','20');assert.equal(value(),'95');
+ click(c,'editLookup');change(e,c,'draftPrice','0');click(c,'applyLookup');assert.equal(value(),'0');change(e,c,'task','lookup');change(e,c,'col','4');assert.equal(value(),'#REF!');e.dom.window.close();
+});
+test('v58 lookup rejects unmodeled wildcard and invalid price without destroying committed data',()=>{
+ const e=env(4),c=open(e,'y2020q57');const value=()=>c.querySelector('[data-fill-index="0"]').textContent.trim();click(c,'editLookup');change(e,c,'draftKey','产品*');click(c,'applyLookup');assert.match(c.textContent,/演示未支持/);assert.equal(value(),'1628');change(e,c,'draftKey','产品2');change(e,c,'draftPrice','');click(c,'applyLookup');assert.match(c.textContent,/有限价格/);assert.equal(value(),'1628');click(c,'cancelLookup');
+ click(c,'editLookup');change(e,c,'draftPrice','500');click(c,'cancelLookup');assert.equal(value(),'1628');c.querySelector('[data-sim-reset]').click();assert.equal(value(),'1628');e.dom.window.close();
+});
+
+test('v58 preserves v57 points sources keys and every out of scope chapter',()=>{
+ const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v57-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
+ assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));
+ for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);}
+ for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+});
