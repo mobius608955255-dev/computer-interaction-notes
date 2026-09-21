@@ -1,6 +1,31 @@
-# Excel专项 · 基础编辑、公式与函数
+# Excel专项 · 基础编辑、公式与数据处理
 
-## 当前恢复入口 · v58补完续接
+## 当前恢复入口 · v59本地完成，尚未发布
+
+v58已由Work2发布并完成真实浏览器终验。正式commit `4b805a07d1771e298acf9964fb0c93a4562143c0`，tree `d8bac73546a5c698aa3c861588b728419fd37462`；与Work1原提交`c128eb4eaed99eada3214220e74d46e431336fc0`同树。开工现场干净，一次只读取得正式对象后从该提交建立`content/excel-data-v59`。没有重做v58或查询发布状态。以下旧“部分完成/未发布”文字保留历史语境。
+
+本轮仅处理4.4与4.5的15张既有卡片，保留正确解释；14卡追加39段，批注粘贴复用v57。不改变旧points前缀、ID、sources、keys或其他章节正文。正文仍只维护`content/chapter4.json`。4.6图表与打印留待后续，未进入PowerPoint。
+
+### 来源范围与裁决
+
+沿用2026考纲第四章（五）（六）。重新检查当前资料库课件/转写目录和一次范围内搜索，未取得连续的条件格式、汇总透视与模拟分析课堂资料；第14课第5、6页完整图已查看，其中第6页确有数据验证条件、输入信息、出错警告和圈释无效数据。基础填充编辑转写只复用29:02—30:03与42:27—47:09的格式/内容/粘贴相关段，不冒称整段数据管理课堂已核。
+
+七年索引筛查后读取26道本批原题完整题干、选项和共用条件，另核2025第51题与排序的直接关系，不扩展图表。操作素材考点10、11、13—17任务全文，考点9批注及考点5数据验证相关任务已读；原工作簿核对对应表头、标签错位与单变量模型。考点15指令引用的三张模考隐藏表不在现有主工作簿或同包模块11案例簿中；保留素材版本缺口，没有把现有销售表当作模考源表。独立第四章练习PDF/月考本批材料尚未定位，不称全部练习已核。未署名答案不称官方答案。
+
+- 2023题图只展示四科，但合并任务文字和后续筛选选项明确五科，保留现有五科判断。
+- 2025第49题的“唯一”须区分查看/输出与真实删除，不能把高级筛选和删除重复项混成一种动作；题面没有充分限定永久删除时，不冒称只有一种软件机制可行。
+- 数据验证“防止无效输入”按警告类型与输入路径限定，保留粘贴可能绕过、既有数据不自动删除的边界。
+- 传统分类汇总不能直接作用于Excel表格对象；源链接不能用于同表源/目标，新增范围也不会凭链接自动纳入。这些限制已显式补入。
+
+[微软条件格式](https://support.microsoft.com/en-us/excel/use-conditional-formatting-to-highlight-information-in-excel)支持规则类型、范围、引用与冲突；[高级筛选](https://support.microsoft.com/en-us/excel/filter-by-using-advanced-criteria)分别支持普通字段条件和公式条件的标题例外。[数据验证](https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells)支持提示、序列和提醒方式；[分类汇总](https://support.microsoft.com/en-us/excel/insert-subtotals-in-a-list-of-data-in-a-worksheet)支持排序、表格限制和总平均。[合并计算](https://support.microsoft.com/en-us/excel/consolidate-data-in-multiple-worksheets)支持位置/标签与链接限制；[透视表](https://support.microsoft.com/en-us/excel/get-started/create-a-pivottable-to-analyze-worksheet-data)支持字段、汇总和刷新；[模拟运算表](https://support.microsoft.com/en-us/excel/calculate-multiple-results-by-using-a-data-table)支持行列输入格及反向分析区别。均只采用适用Excel2016的正文，不引入Copilot或新版专属入口。逐断言和逐题记录保存在仓库外，公开代码不包含原课件和题目摘录。
+
+### 本地验证与交接
+
+开发阶段先做7项既有定向检查，通过后定点升级条件格式、验证、筛选及透视表；不为开工重跑237项。最终构建与完整回归245/245通过，0失败、0跳过。首次完整回归的两项失败来自旧测试误取新增正文对照表，选择器限定到演示后10/10补测通过，再完成上述全量通过。随后仅修正透视表刷新后原筛选值消失的选项显示边界，构建及相关14/14定向通过；未声称又跑一次全量。最终生成物重复构建一致，git diff --check、历史身份/points和范围保护通过。正文/其他模型未再修改。真实浏览器终验由Work2在发布后完成，使用正式chapter4与tests/layout.html，检查桌面/390px的操作结果、局部滚动、搜索定位和展开返回；本地DOM结果不算真实浏览器。
+
+本地成果已冻结；恢复包：`Excel_格式与数据管理分析_v59_本地恢复与验收.zip`，位于仓库外；包含正式v58基线、最终commit/tree、补丁、阶段/来源摘要、测试、SHA256与浏览器交接。Windows原生Excel2016及实体手机未实测。
+
+## v58补完续接（当时状态）
 
 沿用中间提交`d26c7fb9b20e0a46c92db0f3425a3083de4b2fc7`、树`88cfb55e3c0ba53f987781af2ab50d66f380e6c8`，现场工作区与暂存区干净。保留该提交，不amend，不重新开发公式函数。
 

@@ -321,7 +321,7 @@ test('Word revision survives disabling tracking and can still be rejected',()=>{
  const e=env(3),c=open(e,'y2023q56');click(c,'track');change(e,c,'draft','明显改善');click(c,'track');assert.match(c.querySelector('del').textContent,/可能产生改善/);click(c,'reject');assert.match(c.querySelector('.lab-paper').textContent,/可能产生改善/);assert.equal(c.querySelector('ins'),null);e.dom.window.close();
 });
 test('advanced filtering cancellation keeps applied criteria; clear restores source rows',()=>{
- const e=env(),c=open(e,'y2020q9');click(c,'open');click(c,'apply');assert.match(c.textContent,/王宁/);assert.doesNotMatch(c.querySelector('tbody').textContent,/周林/);click(c,'open');change(e,c,'threshold',95);click(c,'cancel');assert.match(c.querySelector('tbody').textContent,/王宁/);click(c,'clear');assert.match(c.querySelector('tbody').textContent,/周林/);e.dom.window.close();
+ const e=env(),c=open(e,'y2020q9');click(c,'open');click(c,'apply');assert.match(c.textContent,/王宁/);assert.doesNotMatch(c.querySelector('[data-lab] tbody').textContent,/周林/);click(c,'open');change(e,c,'threshold',95);click(c,'cancel');assert.match(c.querySelector('[data-lab] tbody').textContent,/王宁/);click(c,'clear');assert.match(c.querySelector('[data-lab] tbody').textContent,/周林/);e.dom.window.close();
 });
 test('removing a pivot filter restores unfiltered total; two row fields create subtotals',()=>{
  const e=env(),c=open(e,'y2024q67');for(const [f,z] of [['产品','row'],['销量','value'],['分部','filter']]){click(c,'pick',f);click(c,'place',z);}change(e,c,'filter','一部');click(c,'remove','filter:分部');assert.match(c.querySelector('.lab-pivot-layout').textContent,/50/);click(c,'pick','分部');click(c,'place','row');assert.match(c.querySelector('.lab-pivot-layout').textContent,/产品1 小计/);assert.match(c.querySelector('.lab-pivot-layout').textContent,/95/);e.dom.window.close();
@@ -728,7 +728,7 @@ test('unique filtering preserves all source records and its copied list survives
  change(e,c,'scenario','delete');click(c,'select');click(c,'open');click(c,'apply');assert.equal(rows(),2);click(c,'undo');assert.equal(rows(),3);e.dom.window.close();
 });
 test('scholarship eligibility intersects the copied top-quarter set with all five thresholds',()=>{
- const e=env(4),c=open(e,'y2020q9');change(e,c,'scenario','scholarship');const tables=()=>[...c.querySelectorAll('table')].map(t=>[...t.querySelectorAll('tbody tr')].map(r=>r.textContent));
+ const e=env(4),c=open(e,'y2020q9');change(e,c,'scenario','scholarship');const tables=()=>[...c.querySelectorAll('[data-lab] table')].map(t=>[...t.querySelectorAll('tbody tr')].map(r=>r.textContent));
  assert.equal(tables()[0].length,8);click(c,'rankOpen');click(c,'rankCancel');assert.equal(tables()[0].length,8);click(c,'rankOpen');click(c,'rankApply');assert.equal(tables()[0].length,2);
  click(c,'rankCopy');click(c,'subjectsOpen');click(c,'subjectsApply');assert.equal(tables()[1].length,1);assert.match(tables()[1][0],/王宁/);assert.doesNotMatch(tables()[1][0],/李明|赵敏/);
  click(c,'rankClear');assert.equal(tables()[0].length,8);assert.equal(tables()[1].length,1);click(c,'subjectsClear');assert.equal(tables()[1].length,2);e.dom.window.close();
@@ -1290,4 +1290,53 @@ test('v58 preserves v57 points sources keys and every out of scope chapter',()=>
  assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));
  for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);}
  for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+});
+
+test('v59 conditional ranges include endpoints and top values include tied cutoffs',()=>{
+ const e=env(4),c=open(e,'y2020q52'),hits=()=>[...c.querySelectorAll('.lab-highlight input')].map(x=>Number(x.value));
+ change(e,c,'rule','between');change(e,c,'threshold','9500');change(e,c,'upper','10000');assert.deepEqual(hits(),[10000,9500]);
+ change(e,c,'salary2','10000');assert.deepEqual(hits(),[10000,9500,10000]);change(e,c,'rule','top');change(e,c,'top','2');assert.deepEqual(hits(),[10000,10000,12000]);
+ change(e,c,'salary3','');assert.deepEqual(hits(),[10000,10000]);c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-field="salary3"]').value,'12000');e.dom.window.close();
+});
+test('v59 formula formatting separates seven-day boundary, row lock and application range',()=>{
+ const e=env(4),c=open(e,'y2025q52');change(e,c,'mode','date');const hit=()=>[...c.querySelectorAll('tbody tr.lab-row-emphasis')].length;
+ assert.equal(hit(),2);change(e,c,'end0','2024-03-08');assert.equal(hit(),1);change(e,c,'lockedRow','true');assert.equal(hit(),0);change(e,c,'end0','2024-03-09');assert.equal(hit(),3);
+ change(e,c,'lockedRow','false');change(e,c,'full','false');assert.equal(hit(),0);assert.equal(c.querySelectorAll('td.lab-row-emphasis').length,2);assert.doesNotMatch(c.querySelector('.lab-output').textContent,/历史表排序/);e.dom.window.close();
+});
+test('v59 validation candidates stage input while cancel and clearing preserve committed values',()=>{
+ const e=env(4),c=open(e,'y2021q25');click(c,'open');click(c,'apply');change(e,c,'candidate','女');assert.equal(c.querySelector('tbody td').textContent,'男');click(c,'commit');assert.equal(c.querySelector('tbody td').textContent,'女');
+ change(e,c,'draft','无效');click(c,'commit');assert.ok(c.querySelector('.lab-dialog'));assert.equal(c.querySelector('tbody td').textContent,'女');click(c,'discard');assert.equal(c.querySelector('[data-field="draft"]').value,'女');
+ click(c,'open');change(e,c,'rule','length');click(c,'cancel');change(e,c,'draft','男');click(c,'commit');assert.equal(c.querySelector('tbody td').textContent,'男');
+ click(c,'open');click(c,'clearValidation');change(e,c,'draft','新自由输入');click(c,'commit');assert.equal(c.querySelector('tbody td').textContent,'新自由输入');c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('tbody td').textContent,'男');e.dom.window.close();
+});
+test('v59 two automatic filters intersect without applying an unfinished threshold',()=>{
+ const e=env(4),c=open(e,'y2026q51');
+ change(e,c,'mode','auto');click(c,'auto');assert.match(c.querySelector('.lab-office').textContent,/赵敏/);change(e,c,'autoThreshold','80');click(c,'autoBoth');assert.match(c.querySelector('.lab-office').textContent,/王宁/);assert.doesNotMatch(c.querySelector('.lab-office').textContent,/赵敏|李明|周林/);
+ change(e,c,'autoThreshold','90');assert.match(c.querySelector('.lab-office').textContent,/王宁/);click(c,'autoBoth');assert.doesNotMatch(c.querySelector('.lab-office').textContent,/王宁|赵敏|周林/);
+ change(e,c,'autoThreshold','');click(c,'autoBoth');assert.match(c.querySelector('.lab-output').textContent,/有限成绩/);click(c,'clear');for(const name of ['王宁','李明','赵敏','周林'])assert.match(c.querySelector('.lab-office').textContent,new RegExp(name));assert.ok(c.querySelector('[data-lab-act="auto"]'));e.dom.window.close();
+});
+test('v59 pivot filters the chosen field rather than always the second source column',()=>{
+ const e=env(4),c=open(e,'y2024q67'),place=(f,z)=>{click(c,'pick',f);click(c,'place',z);};
+ place('分部','row');place('销量','value');place('产品','filter');change(e,c,'filter','产品1');const rows=()=>[...c.querySelectorAll('.lab-pivot-layout tbody tr')].map(tr=>[...tr.cells].map(td=>td.textContent));assert.deepEqual(rows(),[['一部','20'],['二部','30']]);
+ change(e,c,'filter','产品2');assert.deepEqual(rows(),[['一部','15'],['二部','30']]);place('月份','filter');assert.equal(c.querySelector('[data-field="filter"]').value,'全部');change(e,c,'filter','2月');assert.deepEqual(rows(),[['一部','8'],['二部','40']]);click(c,'remove','filter:月份');assert.deepEqual(rows(),[['一部','35'],['二部','60']]);e.dom.window.close();
+});
+test('v59 pivot source edits commit separately from refresh and reject invalid drafts',()=>{
+ const e=env(4),c=open(e,'y2024q67');click(c,'pick','销量');click(c,'place','value');const total=()=>c.querySelector('.lab-pivot-layout tbody tr').lastElementChild.textContent;
+ assert.equal(total(),'95');click(c,'editSource');change(e,c,'draftSource','30');click(c,'cancelSource');assert.equal(total(),'95');assert.match(c.querySelector('[data-pivot-source]').textContent,/源销量：12/);
+ click(c,'editSource');change(e,c,'draftSource','');click(c,'applySource');assert.ok(c.querySelector('.lab-dialog'));assert.equal(total(),'95');change(e,c,'draftSource','30');click(c,'applySource');assert.equal(total(),'95');assert.match(c.querySelector('[data-pivot-source]').textContent,/源销量：30/);click(c,'refresh');assert.equal(total(),'113');click(c,'refresh');assert.equal(total(),'113');
+ c.querySelector('.simulation-toggle').click();c.querySelector('.simulation-toggle').click();assert.equal(total(),'113');c.querySelector('[data-sim-reset]').click();click(c,'pick','销量');click(c,'place','value');assert.equal(total(),'95');
+ click(c,'place','filter');click(c,'pick','产品');click(c,'place','value');change(e,c,'filter','12');assert.equal(total(),'1');click(c,'editSource');change(e,c,'draftSource','30');click(c,'applySource');click(c,'refresh');assert.equal(c.querySelector('[data-field="filter"]').value,'12');assert.match(c.querySelector('[data-field="filter"]').textContent,/当前无源记录/);assert.equal(total(),'—');change(e,c,'filter','全部');assert.equal(total(),'6');e.dom.window.close();
+});
+test('v59 keeps all historical Excel identities and protects every out-of-scope note and chapter',()=>{
+ const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v58-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
+ assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged)assert.equal(hash(JSON.stringify(n)),row.unchanged,row.id);}
+ for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+});
+test('v59 search distinguishes new subtopics and navigation retains the live analysis state',()=>{
+ const e=env(4),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')),c=open(e,'y2024q67'),lab=c.querySelector('[data-lab]');click(c,'pick','销量');click(c,'place','value');
+ const cases=[['多规则与清除规则','y2020q52',7],['字段条件和公式条件','y2020q9',8],['修改源值后为什么','y2024q67',10]];
+ for(const [query,id,i] of cases){const anchor=id+'--point-'+i,input=e.d.getElementById('search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const hit=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===anchor),query);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);}
+ assert.equal(c.querySelector('.lab-pivot-layout tbody tr').lastElementChild.textContent,'95');
+ for(const n of e.w.NOTES.notes.filter(n=>['4.4','4.5'].includes(n.section))){for(let i=0;i<n.points.length;i++){const el=e.d.getElementById(n.id+'--point-'+i);assert.ok(el);assert.equal(el.closest('details'),null);}}
+ e.dom.window.close();
 });

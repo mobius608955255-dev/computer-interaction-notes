@@ -1031,6 +1031,10 @@
     [
       "Microsoft：SUBTOTAL的9、109及隐藏行规则",
       "https://support.microsoft.com/en-us/excel/functions/subtotal-function"
+    ],
+    [
+      "Microsoft：自动筛选、多列交集与重新应用",
+      "https://support.microsoft.com/en-us/excel/get-started/filter-data-in-a-range-or-table-in-excel"
     ]
   ],
   "y2025q51": [
@@ -2417,6 +2421,12 @@
     [
       "计算机历史博物馆：ENIAC后续改造与历史条件",
       "https://computerhistory.org/blog/programming-the-eniac-an-example-of-why-computer-history-is-hard/"
+    ]
+  ],
+  "y2021q25": [
+    [
+      "Microsoft：数据验证设置、输入信息、出错提醒与清除（Excel2016适用）",
+      "https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells"
     ]
   ]
 }

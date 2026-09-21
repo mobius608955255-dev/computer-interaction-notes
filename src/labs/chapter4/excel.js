@@ -25,11 +25,12 @@ const gradeData=[['王宁','一班','2023/03/01',82,78,90],['李明','二班','2
 const pivotFields=s=>s.scenario==='grades'?['姓名','班级','日期','成绩','数学','外语','总分']:['产品','分部','月份','销量'];
 const pivotLabel=name=>name==='成绩'?'成绩（计算机）':name;
 register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列决定分组；多个成绩字段可并排留在值区域，结果从原始记录计算。',{
-    zones:{row:[],column:[],value:[],filter:[]},scenario:'sales',monthly:false,filter:'全部',filterLabel:'',aggregate:'sum',picked:'产品',message:'将产品拖到行，月份拖到列，销量拖到值。'
+    zones:{row:[],column:[],value:[],filter:[]},scenario:'sales',monthly:false,filter:'全部',filterLabel:'',aggregate:'sum',picked:'产品',sourceValue:12,cachedValue:12,draftSource:'12',editingSource:false,message:'将产品拖到行，月份拖到列，销量拖到值。'
   },s=>{
-    const grades=s.scenario==='grades',fields=pivotFields(s),data=grades?gradeData:pivotData;
+    const grades=s.scenario==='grades',fields=pivotFields(s),data=grades?gradeData:pivotData.map((r,i)=>i===0?[...r.slice(0,3),s.cachedValue]:r);
+    const source=grades?gradeData:pivotData.map((r,i)=>i===0?[...r.slice(0,3),s.sourceValue]:r),filterField=s.zones.filter[0],filterIndex=fields.indexOf(filterField);
     const zones=[['row','行'],['column','列'],['value','值'],['filter','筛选器']];
-    const rows=data.filter(r=>s.filter==='全部'||r[1]===s.filter).map(r=>r.map((v,i)=>grades&&s.monthly&&i===2?v.slice(0,7):v));
+    const rows=data.filter(r=>!filterField||s.filter==='全部'||String(r[filterIndex])===s.filter).map(r=>r.map((v,i)=>grades&&s.monthly&&i===2?v.slice(0,7):v));
     const index=name=>fields.indexOf(name),groupKey=(r,zone)=>s.zones[zone].map(name=>r[index(name)]).join(' / ');
     const rnames=s.zones.row.length?[...new Set(rows.map(r=>groupKey(r,'row')))]:['总计'];
     const cnames=s.zones.column.length?[...new Set(rows.map(r=>groupKey(r,'column')))]:['总计'];
@@ -46,26 +47,34 @@ register(['y2024q67'],'拖动多个字段，建立交叉汇总报表','行、列
       resultRows.push(['<b>总计</b>',...columnsFor(rows)]);
     }else for(const rn of rnames)resultRows.push([esc(rn),...columnsFor(rows.filter(r=>!s.zones.row.length||groupKey(r,'row')===rn))]);
     const result=s.zones.value.length?table(['行标签',...valueColumns.map(({name,metric})=>esc(name)+(s.zones.value.length>1?' · '+pivotLabel(metric):''))],resultRows):'<p class="lab-empty">把字段放入值区域；数值可求和，文字可计数。</p>';
-    const filter=s.zones.filter.includes(fields[1])?select('filter',esc(s.filterLabel||fields[1]+'筛选'),s.filter,[['全部','全部'],...[...new Set(data.map(r=>r[1]))].map(v=>[v,v])])+field('filterLabel','筛选字段显示名称',s.filterLabel||fields[1]+'筛选'):'';
+    const filterValues=[...new Set(data.map(r=>String(r[filterIndex])))],filterOptions=[['全部','全部'],...filterValues.map(v=>[v,v])];
+    if(filterField&&s.filter!=='全部'&&!filterValues.includes(s.filter))filterOptions.push([s.filter,s.filter+'（当前无源记录）']);
+    const filter=filterField?select('filter',s.filterLabel||filterField+'筛选',s.filter,filterOptions)+field('filterLabel','筛选字段显示名称',s.filterLabel||filterField+'筛选'):'';
     return `<div class="lab-controls">${select('scenario','源数据场景',s.scenario,[['sales','产品销量'],['grades','班级成绩：多个值字段']])}</div>`+
+      (!grades?`<div class="lab-controls">${btn('修改第一条源销量','editSource','',s.editingSource?'disabled':'')}${btn('刷新透视表','refresh','',s.editingSource?'disabled':'')}</div><p data-pivot-source>源销量：${s.sourceValue}；报表已读取：${s.cachedValue}</p>${s.editingSource?dialog('修改源数据',field('draftSource','第一条销量（0—1000000）',s.draftSource,'number'),btn('确认源值','applySource')+btn('取消','cancelSource')):''}`:'')+
       office('Excel','数据透视表分析',select('aggregate','值汇总方式',s.aggregate,[['sum','求和'],['average','平均值'],['count','计数']])+(grades?btn(s.monthly?'取消日期组合':'日期 → 按年、月组合','group'):''),
         `<div class="lab-pivot-layout"><div>${filter}${result}</div><aside class="lab-fields"><b>数据透视表字段</b><div class="lab-field-bank">${fields.map(f=>`<button data-lab-drag="field" data-key="${f}" data-lab-act="pick" data-value="${f}" aria-pressed="${s.picked===f}">${pivotLabel(f)} <span>⠿</span></button>`).join('')}</div><div class="lab-drop-zones">${zones.map(([key,label])=>`<section data-lab-drop="${key}"><b>${label}</b>${s.zones[key].map(f=>btn(`${pivotLabel(f)} ×`,'remove',key+':'+f)).join('')||'<small>拖到这里</small>'}</section>`).join('')}</div></aside></div>`)+
-      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个字段可并排汇总；文字字段默认计数。本例统一切换全部值字段的汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),data)}</details>`+output(s.message);
+      `<details class="lab-assist"><summary>键盘操作 / 查看源数据</summary><p>先选字段，再指定放入区域。多个字段可并排汇总；文字字段默认计数。本例统一切换全部值字段的汇总方式。</p>${zones.map(([key,label])=>btn(`放入${label}`,'place',key)).join('')}${table(fields.map(pivotLabel),source)}</details>`+output(s.message)+coach('本例每个字段只放一个区域，仅演示一个报表筛选字段，统一切换全部值字段的汇总方式；Excel还支持同字段多次放入值区域并分别设置。产品场景可修改第一条源销量，再手动刷新；未模拟自动刷新选项。');
   },(s,a,v)=>{
+    if(a==='editSource'&&s.scenario==='sales'){s.editingSource=true;s.draftSource=String(s.sourceValue);}
+    if(a==='cancelSource'){s.editingSource=false;s.draftSource=String(s.sourceValue);s.message='已取消源值草稿，源数据和报表均保留。';}
+    if(a==='applySource'&&s.editingSource){const n=Number(s.draftSource);if(String(s.draftSource).trim()===''||!Number.isFinite(n)||n<0||n>1000000){s.message='请输入本演示支持的0—1000000有限数值；尚未修改源数据。';return;}s.sourceValue=n;s.editingSource=false;s.message='源数据已修改，报表仍显示上次读取的结果；请刷新。';}
+    if(a==='refresh'&&!s.editingSource){s.cachedValue=s.sourceValue;s.message='已重新读取源数据，字段布局保留。';}
     if(a==='pick')s.picked=v;
     if(a==='remove'){const [zone,f]=v.split(':');s.zones[zone]=s.zones[zone].filter(x=>x!==f);if(zone==='filter')s.filter='全部';}
     if(a==='place')placeField(s,s.picked,v);
     if(a==='group'){s.monthly=!s.monthly;s.message=s.monthly?'日期按年、月合并；不同年份的3月保持分开。':'恢复逐日显示。';}
   },(s,k,v)=>{
     s[k]=v;
-    if(k==='scenario'){s.zones={row:[],column:[],value:[],filter:[]};s.filter='全部';s.filterLabel='';s.monthly=false;s.picked=v==='grades'?'姓名':'产品';s.message='已更换源数据，请重新放置字段。';}
+    if(k==='scenario'){s.editingSource=false;s.draftSource=String(s.sourceValue);s.zones={row:[],column:[],value:[],filter:[]};s.filter='全部';s.filterLabel='';s.monthly=false;s.picked=v==='grades'?'姓名':'产品';s.message='已更换源数据，请重新放置字段。';}
   });
 function placeField(s,field,zone){
-    const fields=pivotFields(s),metrics=fields.slice(3),filter=fields[1];
+    const fields=pivotFields(s),metrics=fields.slice(3),previousFilter=s.zones.filter[0];
     if(!fields.includes(field)||!Object.hasOwn(s.zones,zone))return;
     if(zone==='value'&&!metrics.includes(field))s.aggregate='count';
     for(const key of Object.keys(s.zones))s.zones[key]=s.zones[key].filter(f=>f!==field);
-    s.zones[zone].push(field);if(!s.zones.filter.includes(filter))s.filter='全部';
+    if(zone==='filter')s.zones.filter=[];
+    s.zones[zone].push(field);if(s.zones.filter[0]!==previousFilter){s.filter='全部';s.filterLabel='';}
     s.message=`${pivotLabel(field)}已放入${{row:'行',column:'列',value:'值',filter:'筛选器'}[zone]}区域，报表已重新计算。`;
   }
 const products=[['产品1','BKC-001',2322],['产品2','BKC-002',1628],['产品3','BKC-003',3120],['产品4','BKC-004',670]];
@@ -102,19 +111,19 @@ register(['y2020q57'],'精确查价，再比较数量折扣','拖动填充柄；
     else s[k]=k==='col'?Number(v):v==='true';
   });
 register(['y2020q52'],'改数据，观察条件格式重新判断','比较数值规则与重复编号；修改一个编号后，两处高亮会一起变化。',{
-    values:salaryRows,ids:['A01','A02','A01','A04'],rule:'average',threshold:9000
+    values:salaryRows,ids:['A01','A02','A01','A04'],rule:'average',threshold:9000,upper:12000,top:2
   },s=>{
     const nums=s.values.filter(v=>v!==''&&Number.isFinite(Number(v))).map(Number);
     const avg=nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:NaN;
-    const duplicate=s.rule==='duplicate';
+    const duplicate=s.rule==='duplicate',ranked=[...nums].sort((a,b)=>b-a),cutoff=ranked[Math.min(s.top,ranked.length)-1];
     const rows=s.values.map((v,i)=>{
       const value=duplicate?s.ids[i]:v;
-      const hit=duplicate?value!==''&&s.ids.filter(x=>x.toLocaleLowerCase()===value.toLocaleLowerCase()).length>1:v!==''&&(s.rule==='average'?v>avg:Number(v)<s.threshold);
+      const hit=duplicate?value!==''&&s.ids.filter(x=>x.toLocaleLowerCase()===value.toLocaleLowerCase()).length>1:v!==''&&(s.rule==='average'?Number(v)>avg:s.rule==='between'?Number(v)>=s.threshold&&Number(v)<=s.upper:s.rule==='top'?Number(v)>=cutoff:Number(v)<s.threshold);
       return [['王宁','李明','赵敏','周林'][i],`<div class="${hit?'lab-highlight':''}">${field((duplicate?'id':'salary')+i,duplicate?'编号':'工资',value,duplicate?'text':'number')}</div>`];
     });
-    return office('Excel','开始 · 条件格式',select('rule','规则',s.rule,[['average','高于平均值'],['below','小于…'],['duplicate','重复值：编号']])+(s.rule==='below'?field('threshold','阈值',s.threshold,'number'):''),table(['姓名',duplicate?'编号':'工资'],rows))+
-      output(duplicate?'重复编号的每一次出现都着色，原始记录不删除；空白不参与本例判重。':`当前平均值 ${Number.isFinite(avg)?money(avg):'无数值'}（空白不参与平均）。改变数据后重新判断。`);
-  },()=>{},(s,k,v)=>{if(k.startsWith('salary'))s.values[Number(k.slice(6))]=v===''?'':number(v,0,1000000);else if(k.startsWith('id'))s.ids[Number(k.slice(2))]=v;else s[k]=k==='threshold'?number(v,0,1000000):v;});
+    return office('Excel','开始 · 条件格式',select('rule','规则',s.rule,[['average','高于平均值'],['below','小于…'],['between','介于…（含两端）'],['top','前N项'],['duplicate','重复值：编号']])+(['below','between'].includes(s.rule)?field('threshold',s.rule==='below'?'阈值':'下限',s.threshold,'number'):'')+(s.rule==='between'?field('upper','上限',s.upper,'number'):'')+(s.rule==='top'?field('top','前几项',s.top,'number','min="1" max="4"') :''),table(['姓名',duplicate?'编号':'工资'],rows))+
+      output(duplicate?'重复编号的每一次出现都着色，原始记录不删除；空白不参与本例判重。':`当前平均值 ${Number.isFinite(avg)?money(avg):'无数值'}（空白不参与平均）。${s.rule==='between'&&s.threshold>s.upper?'下限大于上限，本演示没有符合项；请修正上下限。':s.rule==='top'?'按数值排名，并列边界一并着色。':''}改变数据后重新判断。`);
+  },()=>{},(s,k,v)=>{if(k.startsWith('salary'))s.values[Number(k.slice(6))]=v===''?'':number(v,0,1000000);else if(k.startsWith('id'))s.ids[Number(k.slice(2))]=v;else s[k]=k==='top'?Math.round(number(v,1,4)):['threshold','upper'].includes(k)?number(v,0,1000000):v;});
 register(['y2024q57'],'在Excel中直接用通配符清理部门名称','编辑查找内容与替换文字，观察所选列实际被替换的结果。',{values:['销售部-01','财务部-02','综合部-03'],find:'-*',replacement:'',pane:false,message:'仅处理部门列，订单编号不会改动。'},s=>
     office('Excel','开始',btn('查找和选择 → 替换','open'),`${table(['订单编号','部门'],s.values.map((v,i)=>['DD-00'+(i+1),esc(v)]))}${s.pane?dialog('查找和替换',field('find','查找内容',s.find)+field('replacement','替换为',s.replacement),btn('全部替换','replace')+btn('关闭','close')):''}`)+output(s.message)+coach('Excel直接识别*、?、~，这里没有“使用通配符”复选框。试试把-*改为-0?，或用~*查找真正的星号。'),
     (s,a)=>{if(a==='open')s.pane=true;if(a==='close')s.pane=false;if(a==='replace'){if(!s.find){s.message='本卡片请提供非空查找表达式。';return;}let pattern='';for(let i=0;i<s.find.length;i++){const ch=s.find[i];if(ch==='~'&&i+1<s.find.length)pattern+=s.find[++i].replace(/[.*+?^${}()|[\]\\]/g,'\\$&');else pattern+=ch==='*'?'.*':ch==='?'?'.':ch.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}const rx=new RegExp(pattern,'g');let count=0;s.values=s.values.map(v=>v.replace(rx,match=>{if(!match)return match;count++;return s.replacement;}));s.message=`已替换${count}处；订单编号列保持不变。`;}});
@@ -133,8 +142,8 @@ register(['y2021q9'],'外部链接与多表汇总是两种关系','改变源单�
     return `<div class="lab-controls">${select('mode','引用范围',s.mode,[['external','另一工作簿的一个单元格'],['3d','本工作簿的多张表']])}</div>`+office('Excel','公式',`<code>${esc(expr)}</code>`,s.mode==='external'?`${field('external','源：工资.xlsx / 明细 / B2',s.external,'number')}${table(['本簿结果'],[[money(s.cached)]])}`:`<div class="lab-controls">${field('jan','一月!B2',s.jan,'number')}${field('feb','二月!B2',s.feb,'number')}${field('mar','三月!B2',s.mar,'number')}</div>${table(['三维汇总'],[[money(Number(s.jan)+Number(s.feb)+Number(s.mar))]])}`)+`<div class="lab-controls">${s.mode==='external'?btn(s.path?'模拟源路径失效':'恢复源路径','path'):''}</div>${output(s.mode==='external'?(s.path?'':'源路径失效，保留上次取得的值，无法更新。')+'[工作簿]、工作表、!、单元格地址共同定位来源；$只负责复制时锁定行列。':'一月:三月是工作表区间，包含其中的二月；不是单个工作簿文件名。')}`;
   },(s,a)=>{if(a==='path'){s.path=!s.path;if(s.path)s.cached=s.external;}},(s,k,v)=>{s[k]=v;if(k==='external'&&s.path)s.cached=v;});
 register(['y2021q25'],'给单元格设规则，再亲自输入','设置序列或文本长度，比较停止与警告的实际后果。',{pane:false,rule:'list',warning:'stop',enabled:false,value:'男',draft:'男',error:false,appliedRule:'list',appliedWarning:'stop',message:'未应用数据验证。'},s=>
-    office('Excel','数据',btn('数据验证','open','',s.pane||s.error?'disabled':''),`${table(['B2 当前值','输入新值'],[[esc(s.value),field('draft','B2编辑',s.draft,'text',s.pane||s.error?'disabled':'')]])}${btn('提交输入','commit','',s.pane||s.error?'disabled':'')}${s.pane?dialog('数据验证',select('rule','允许',s.rule,[['list','序列：男,女'],['length','文本长度等于18']])+select('warning','出错警告',s.warning,[['stop','停止'],['warning','警告']])+'<p>本例忽略空值；编号按文本保存。</p>',btn('确定','apply')+btn('取消','cancel')):''}${s.error?dialog('输入不符合验证规则',`<p>${s.appliedRule==='list'?'只允许序列中的值：男、女。':'需要18个字符；当前'+s.draft.length+'个。'}</p>`,btn('重试','retry')+(s.appliedWarning==='warning'?btn('仍然保留输入','keep'):'')+btn('取消输入','discard')):''}`)+output(s.message),
-    (s,a)=>{if(a==='open'){s.pane=true;s.rule=s.appliedRule;s.warning=s.appliedWarning;}if(a==='cancel')s.pane=false;if(a==='apply'){s.appliedRule=s.rule;s.appliedWarning=s.warning;s.enabled=true;s.pane=false;s.message='规则已应用；已有值不会被自动删除。';}if(a==='commit'&&!s.pane&&!s.error){const valid=!s.enabled||s.draft===''||(s.appliedRule==='list'?['男','女'].includes(s.draft):s.draft.length===18);s.error=!valid;if(valid){s.value=s.draft;s.message='输入已保留。';}else s.message='新输入尚未写入单元格，请处理出错警告。';}if(a==='retry')s.error=false;if(a==='keep'&&s.appliedWarning==='warning'){s.value=s.draft;s.error=false;s.message='已选择继续，警告规则允许保留不合法输入。';}if(a==='discard'){s.draft=s.value;s.error=false;s.message='取消了本次输入，原值保留。';}});
+    office('Excel','数据',btn('数据验证','open','',s.pane||s.error?'disabled':''),`${table(['B2 当前值','输入新值'],[[esc(s.value),field('draft','B2编辑',s.draft,'text',s.pane||s.error?'disabled':'')]])}${s.enabled&&!s.pane&&!s.error&&s.appliedRule==='list'?select('candidate','下拉候选（选择后提交）','',[['','请选择'],['男','男'],['女','女']])+'<p>输入提示：请选择男或女；也可键入后提交。</p>':''}${btn('提交输入','commit','',s.pane||s.error?'disabled':'')}${s.pane?dialog('数据验证',select('rule','允许',s.rule,[['list','序列：男,女'],['length','文本长度等于18']])+select('warning','出错警告',s.warning,[['stop','停止'],['warning','警告']])+'<p>本例忽略空值；编号按文本保存。仅模拟序列/长度及停止/警告，不模拟全部验证条件。</p>',btn('确定','apply')+btn('取消','cancel')+btn('清除验证并确定','clearValidation')):''}${s.error?dialog('输入不符合验证规则',`<p>${s.appliedRule==='list'?'只允许序列中的值：男、女。':'需要18个字符；当前'+s.draft.length+'个。'}</p>`,btn('重试','retry')+(s.appliedWarning==='warning'?btn('仍然保留输入','keep'):'')+btn('取消输入','discard')):''}`)+output(s.message),
+    (s,a)=>{if(a==='open'){s.pane=true;s.rule=s.appliedRule;s.warning=s.appliedWarning;}if(a==='cancel')s.pane=false;if(a==='clearValidation'&&s.pane){s.enabled=false;s.pane=false;s.error=false;s.message='验证已解除，当前值未删除。';}if(a==='apply'){s.appliedRule=s.rule;s.appliedWarning=s.warning;s.enabled=true;s.pane=false;s.message='规则已应用；已有值不会被自动删除。';}if(a==='commit'&&!s.pane&&!s.error){const valid=!s.enabled||s.draft===''||(s.appliedRule==='list'?['男','女'].includes(s.draft):s.draft.length===18);s.error=!valid;if(valid){s.value=s.draft;s.message='输入已保留。';}else s.message='新输入尚未写入单元格，请处理出错警告。';}if(a==='retry')s.error=false;if(a==='keep'&&s.appliedWarning==='warning'){s.value=s.draft;s.error=false;s.message='已选择继续，警告规则允许保留不合法输入。';}if(a==='discard'){s.draft=s.value;s.error=false;s.message='取消了本次输入，原值保留。';}},(s,k,v)=>{if(k==='candidate'){if(v&&!s.pane&&!s.error)s.draft=v;}else s[k]=v;});
 function parseCSV(text,delimiter=',') {
     const rows=[];let row=[],cell='',quoted=false;
     for(let i=0;i<text.length;i++){const ch=text[i];if(ch==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}else if(ch===delimiter&&!quoted){row.push(cell);cell='';}else if((ch==='\n'||ch==='\r')&&!quoted){if(ch==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}else cell+=ch;}
@@ -273,13 +282,13 @@ function actScholarship(s,a){
  if(a==='subjectsApply'&&s.copy){s.filtered=true;s.subjectsPane=false;s.message='两层条件取交集：先满足总分排名，再要求五科均≥75。高级筛选仅隐藏未达标记录。';}
  if(a==='subjectsClear'){s.filtered=false;s.message='奖学金表恢复已复制的前25%记录；不会变回源表全部8人。';}
 }
-register(['y2020q9','y2026q51'],'设置条件区，再观察高级筛选和清除','条件同一行是AND、不同行是OR；输出可留在原处或复制到旁表。',{scenario:'logic',scholarship:{top:false,copy:null,filtered:false,rankPane:false,subjectsPane:false},mode:'advanced',autoEnabled:true,logic:'and',destination:'inplace',threshold:80,filtered:false,copy:null,applied:{logic:'and',threshold:80}},s=>{
+register(['y2020q9','y2026q51'],'设置条件区，再观察高级筛选和清除','条件同一行是AND、不同行是OR；输出可留在原处或复制到旁表。',{scenario:'logic',scholarship:{top:false,copy:null,filtered:false,rankPane:false,subjectsPane:false},mode:'advanced',autoEnabled:true,autoThreshold:80,logic:'and',destination:'inplace',threshold:80,filtered:false,copy:null,applied:{logic:'and',threshold:80}},s=>{
  const scenario=controls(select('scenario','真题场景',s.scenario,[['logic','条件区AND / OR'],['scholarship','奖学金：前25%再筛五科']]));
  if(s.scenario==='scholarship')return scenario+renderScholarship(s.scholarship);
  const hit=r=>s.logic==='and'?r[1]==='女'&&r[2]>=Number(s.threshold):r[1]==='女'||r[2]>=Number(s.threshold);
  const active=r=>s.applied.logic==='and'?r[1]==='女'&&r[2]>=Number(s.applied.threshold):r[1]==='女'||r[2]>=Number(s.applied.threshold);const shown=s.filtered?filterRows.filter(active):filterRows;
- return scenario+controls(select('mode','筛选方式',s.mode,[['advanced','高级筛选'],['auto','自动筛选']]))+office('Excel','数据',(s.mode==='advanced'?btn('高级…','open'):btn(s.autoEnabled?'筛选：开':'筛选：关','toggleAuto'))+btn('清除','clear'),`${s.pane?dialog('高级筛选',select('logic','条件行关系',s.logic,[['and','同一行：女 且 成绩达标'],['or','不同行：女 或 成绩达标']])+field('threshold','最低成绩',s.threshold,'number')+select('destination','方式',s.destination,[['inplace','在原有区域显示'],['copy','复制到其他位置']])+table(['性别','成绩'],s.logic==='and'?[['女','>='+s.threshold]]:[['女',''],['','>='+s.threshold]]),btn('确定','apply')+btn('取消','cancel')):''}${s.mode==='auto'&&s.autoEnabled?controls(btn('性别筛选：女','auto')):''}${table(['姓名',`性别${s.mode==='auto'&&s.autoEnabled?' ▾':''}`,'成绩'],shown)}${s.copy?'<h4>复制出的结果</h4>'+table(['姓名','性别','成绩'],s.copy):''}`)+output(s.message||'未隐藏任何原始记录。');
-},(s,a)=>{if(s.scenario==='scholarship'){actScholarship(s.scholarship,a);return;}if(a==='open')s.pane=true;if(a==='cancel')s.pane=false;if(a==='apply'){const hit=r=>s.logic==='and'?r[1]==='女'&&r[2]>=Number(s.threshold):r[1]==='女'||r[2]>=Number(s.threshold);if(s.destination==='inplace'){s.filtered=true;s.applied={logic:s.logic,threshold:s.threshold};}else s.copy=filterRows.filter(hit);s.pane=false;s.message=s.destination==='inplace'?'原位置仅显示匹配记录；清除可恢复。':'旁表是独立结果副本；源记录保持显示。';}if(a==='clear'){s.filtered=false;s.message='原区域已恢复全部记录；已复制的结果副本不被自动删除。';}if(a==='toggleAuto'){s.autoEnabled=!s.autoEnabled;if(!s.autoEnabled)s.filtered=false;s.message=s.autoEnabled?'已显示筛选下拉入口。':'已关闭自动筛选，全部记录恢复，下拉入口移除。';}if(a==='auto'&&s.autoEnabled){s.logic='and';s.threshold=0;s.applied={logic:'and',threshold:0};s.filtered=true;s.message='自动筛选只显示性别为女的记录，清除后下拉入口仍在。';}},(s,k,v)=>{s[k]=v;if(k==='mode'){s.filtered=false;s.pane=false;}});
+ return scenario+controls(select('mode','筛选方式',s.mode,[['advanced','高级筛选'],['auto','自动筛选']]))+office('Excel','数据',(s.mode==='advanced'?btn('高级…','open'):btn(s.autoEnabled?'筛选：开':'筛选：关','toggleAuto'))+btn('清除','clear'),`${s.pane?dialog('高级筛选',select('logic','条件行关系',s.logic,[['and','同一行：女 且 成绩达标'],['or','不同行：女 或 成绩达标']])+field('threshold','最低成绩',s.threshold,'number')+select('destination','方式',s.destination,[['inplace','在原有区域显示'],['copy','复制到其他位置']])+table(['性别','成绩'],s.logic==='and'?[['女','>='+s.threshold]]:[['女',''],['','>='+s.threshold]]),btn('确定','apply')+btn('取消','cancel')):''}${s.mode==='auto'&&s.autoEnabled?controls(btn('性别筛选：女','auto')+field('autoThreshold','追加成绩下限',s.autoThreshold,'number')+btn('性别女且成绩达标','autoBoth')):''}${table(['姓名',`性别${s.mode==='auto'&&s.autoEnabled?' ▾':''}`,'成绩'],shown)}${s.copy?'<h4>复制出的结果</h4>'+table(['姓名','性别','成绩'],s.copy):''}`)+output(s.message||'未隐藏任何原始记录。');
+},(s,a)=>{if(s.scenario==='scholarship'){actScholarship(s.scholarship,a);return;}if(a==='open')s.pane=true;if(a==='cancel')s.pane=false;if(a==='apply'){if(String(s.threshold).trim()===''||!Number.isFinite(Number(s.threshold))){s.message='请输入有限成绩下限，尚未应用条件。';return;}const hit=r=>s.logic==='and'?r[1]==='女'&&r[2]>=Number(s.threshold):r[1]==='女'||r[2]>=Number(s.threshold);if(s.destination==='inplace'){s.filtered=true;s.applied={logic:s.logic,threshold:s.threshold};}else s.copy=filterRows.filter(hit);s.pane=false;s.message=s.destination==='inplace'?'原位置仅显示匹配记录；清除可恢复。':'旁表是独立结果副本；源记录保持显示。';}if(a==='clear'){s.filtered=false;s.message='原区域已恢复全部记录；已复制的结果副本不被自动删除。';}if(a==='toggleAuto'){s.autoEnabled=!s.autoEnabled;if(!s.autoEnabled)s.filtered=false;s.message=s.autoEnabled?'已显示筛选下拉入口。':'已关闭自动筛选，全部记录恢复，下拉入口移除。';}if(a==='autoBoth'&&s.autoEnabled){if(String(s.autoThreshold).trim()===''||!Number.isFinite(Number(s.autoThreshold))){s.message='请输入有限成绩下限，保留当前筛选。';return;}s.applied={logic:'and',threshold:Number(s.autoThreshold)};s.filtered=true;s.message='两列条件取交集：性别为女且成绩达到下限。';}if(a==='auto'&&s.autoEnabled){s.logic='and';s.threshold=0;s.applied={logic:'and',threshold:0};s.filtered=true;s.message='自动筛选只显示性别为女的记录，清除后下拉入口仍在。';}},(s,k,v)=>{s[k]=v;if(k==='mode'){s.filtered=false;s.pane=false;}});
 register(['y2025q52'],'跨表按编号查找，再给整行设置条件格式','调换历史记录的顺序，或修改当前编号，验证查找依赖键而不是行号。',{
  mode:'lookup',ids:['A01','A02','A03'],old:[['A02',85],['A03',95],['A01',90]],values:[110,80,95],starts:['2024-03-01','2024-03-02','2024-03-03'],ends:['2024-03-10','2024-03-07','2024-03-12'],lockedRow:false,full:true
 },s=>{
@@ -290,7 +299,7 @@ register(['y2025q52'],'跨表按编号查找，再给整行设置条件格式','
  return controls(select('mode','判断任务',s.mode,[['lookup','超过历史年度值'],['date','日期相差超过7天']])+select('lockedRow','引用行',String(s.lockedRow),[['false','随行变化'],['true','错误地锁在首行']])+select('full','应用范围',String(s.full),[['true','完整数据行'],['false','仅判断数值列']]))+
   office('Excel','开始 · 条件格式',`<code>${esc(formula)}</code>`,`<div class="lab-table-scroll"><table><thead><tr><th>A 编号</th><th>B ${s.mode==='lookup'?'项目':'开始日期'}</th>${s.mode==='lookup'?'<th>C 说明</th>':''}<th>${s.mode==='lookup'?'D 当前值':'C 完成日期'}</th></tr></thead><tbody>${rows}</tbody></table></div>`)+
   (s.mode==='lookup'?controls(btn('调换历史表顺序','reorder'))+table(['2023表 A 编号','B 名称','C 历史值'],s.old.map(r=>[r[0],'景区',r[1]]))+table(['当前编号','实际查回的历史值'],s.ids.map(id=>[esc(id),lookup(id)??'#N/A'])):'')+
-  output('精确匹配按编号定位；历史表排序不改变查回值。找不到编号时返回#N/A，本规则不着色。严格大于才符合，相等不符合。');
+  output(s.mode==='lookup'?'精确匹配按编号定位；历史表排序不改变查回值。找不到编号时返回#N/A，本规则不着色。严格大于才符合，相等不符合。':'按每行两个合法日期相减；相差超过7天才着色，恰好7天不着色。锁死行号会使所有行跟随第一行；本例不模拟Excel全部日期系统。');
 },(s,a)=>{if(a==='reorder')s.old.reverse();},(s,k,v)=>{
  if(k.startsWith('value'))s.values[Number(k.slice(5))]=Number(v);
  else if(k.startsWith('id'))s.ids[Number(k.slice(2))]=v;

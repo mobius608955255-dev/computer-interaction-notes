@@ -1,0 +1,294 @@
+{
+  "baseCommit": "4b805a07d1771e298acf9964fb0c93a4562143c0",
+  "baseTree": "d8bac73546a5c698aa3c861588b728419fd37462",
+  "notes": [
+    {
+      "id": "y2020q7",
+      "count": 3,
+      "prefix": "d81fa082d2e030e5e8d3adad24fa8ad99bad79929fed79ca4cc18fd4a502386e",
+      "unchanged": "6612e4bb008e89206a4ef69de3d4ccc32fefbe41367f6a4ee528e3845078f14c"
+    },
+    {
+      "id": "y2020q8",
+      "count": 13,
+      "prefix": "176ea3969011105ec0554b8231a15c8843ab83dccc1571b796236c7865ecf16e",
+      "unchanged": "0b4c5c8462e8f34b3c6a709df42d08ecc4d8c22aeda591fba2888d1612db32be"
+    },
+    {
+      "id": "y2020q48",
+      "count": 10,
+      "prefix": "0f588e518b5aada2702cbf380a909a4a2fb118a69c11c0ef785b6acc5db9ee67",
+      "unchanged": "7116d91c36386d73f03c6faede41119108da281a4af036b738a76be1ba453305"
+    },
+    {
+      "id": "y2021q47",
+      "count": 5,
+      "prefix": "d5cf2e5a8eb5d38fbe48dfe7cb644025652b7296f15ee4f5f7639f3debcdf7b1",
+      "unchanged": "e8c2346c1ce7bdbb8e06014bc0af947e7f839768f57f0446cae90b6196156853"
+    },
+    {
+      "id": "y2022q58",
+      "count": 9,
+      "prefix": "52b3f1ac1371f9f71abb97d032c168c889e7c9e2449effd7fddd086fb4c922ef",
+      "unchanged": "5748a538bcf966d5ff2ed424175e81eb91b8b9b632dd9a89aadc19ce0947ec14"
+    },
+    {
+      "id": "y2022q66",
+      "count": 3,
+      "prefix": "8918a6585ff9f8140e6339b4f334f27b221d9774f2fc4bc4f45d4af1fda245b4",
+      "unchanged": "355e075018332a5057d6ebe1a3562bc5ae4d462ae709a1914c7aca00ac9f4813"
+    },
+    {
+      "id": "y2023q11",
+      "count": 6,
+      "prefix": "9e579c6993f6af2573fbd20b44a5536706b55c1bba238d49befcce5968e53a0f",
+      "unchanged": "46ba64cf1a2858266fc526ba06aa1d93b99e83eed07776aa73fc20ede449af49"
+    },
+    {
+      "id": "y2023q60",
+      "count": 4,
+      "prefix": "722ca8e742fec6be89b48e4a9a43d7a1d834e4843474345fe9cfd1787f677470",
+      "unchanged": "1fa8424d0d18f0e8881b4625f0b666d9a2d21d6331b98b95f1632547acfed6e9"
+    },
+    {
+      "id": "y2024q10",
+      "count": 6,
+      "prefix": "c4547e713b932a62201fc2987e2baf214079f674bdbca5a011b27df932c0083d",
+      "unchanged": "479d1c90e161982893fdcb9e9e1e12f579b69cca0caffa2771b4c67052bed169"
+    },
+    {
+      "id": "y2024q57",
+      "count": 4,
+      "prefix": "45d53ee582eded41d6763b68fe34c573f1b25a78d7c2830424aaffd0812ceaae",
+      "unchanged": "a2a3844d10a469a3e546ddf6dd64b07861f262b4709fa985fbf9be39a3ad13cf"
+    },
+    {
+      "id": "y2024q58",
+      "count": 4,
+      "prefix": "32339940c2d5a64d58cfe8c4f67f920726c5be9fa3ebef637f7dfc24fcd2aeaa",
+      "unchanged": "a8fa6ffb0e05e47edb712f90f49a515049682a334da0785e258777a9da5e47c1"
+    },
+    {
+      "id": "merged-10",
+      "count": 18,
+      "prefix": "079bfbd8dae1d81208656a2c563c89337707d1c75d019ee314082882246a8f04",
+      "unchanged": "ee73a966d29546c1e4b60ce3f9213bd13575d1793a6a2ecdef8d811b236ad00e"
+    },
+    {
+      "id": "y2020q56",
+      "count": 7,
+      "prefix": "2d3319522ce04ea484d5310ae6dae8651b7f108761cb4a4395ca9994956faf03",
+      "unchanged": "0d77bdbe09deafa013b98e2f784814bfd884a4615ab3bff92437328f716c5cfa"
+    },
+    {
+      "id": "y2020q57",
+      "count": 11,
+      "prefix": "fe14698566eab62cc444dd6c4576d10387934dc8425bfdc241d4c68b149a93d9",
+      "unchanged": "d1e0e04c292f96d29e64aff00255d3fcd08a4eff1385956bae8bc8466ccb26bd"
+    },
+    {
+      "id": "y2021q9",
+      "count": 9,
+      "prefix": "3f9891fb2b6d6fdf72c9e6694aea0028496b7d18d2b56c60ea9f48fd14aadacb",
+      "unchanged": "cc8d9e86153777e8c4b7a839dbc8194dec75062bfb710536f5cdbfe5364fc8b3"
+    },
+    {
+      "id": "y2021q49",
+      "count": 5,
+      "prefix": "d94856f18e1bd54205427a62e5a82b7ee5c4fc22eb5674869068205ef356e8be",
+      "unchanged": "8dcb437dfea984f3b64791b900688747073b1d45bdefe106bf697d93ee0c90b0"
+    },
+    {
+      "id": "y2021q50",
+      "count": 9,
+      "prefix": "aef36ae7ad457eef31fe57db05751e9c6fdefa216da61d5a4c63ffa07d73fc8f",
+      "unchanged": "459c95dcc9246cfa8e85ec1eea3f079e0daf158934a3452bfc6cd0e9b9a72a69"
+    },
+    {
+      "id": "y2021q51",
+      "count": 13,
+      "prefix": "80f9525fe3a3b1157a63facb2e0657fa04e99d028a47e4e4eda96437699973d2",
+      "unchanged": "02290d6b6e66fdad9bdf9eb76c0b128e5d942b6b1f3cf8f27d524aa974b4ebfb"
+    },
+    {
+      "id": "y2022q59",
+      "count": 7,
+      "prefix": "95526a6bcfceca28467a928b943e2c9b1118b23553f5a00ef968cdd37120b402",
+      "unchanged": "713f36f08458077a1e91f967c2dda666df0a348206828b50258587f22304bc4a"
+    },
+    {
+      "id": "y2024q11",
+      "count": 14,
+      "prefix": "8c25c846c3f8136a73d42f5c21343a487a7b66ac5a57f3fc420aadc067fdc63a",
+      "unchanged": "fc34aff737baefd3a3bf96fe5b92acd0a8a3e2afa9a56d824b53518d6ac4b992"
+    },
+    {
+      "id": "y2026q50",
+      "count": 10,
+      "prefix": "22d3239025fdb9b6edd776694c9d35491f2423b3da719140dbbb2dde770c4f1c",
+      "unchanged": "4569af3a41dc9863dfadbc872ac24b504155dd8baebe05bb63c065a80cb3711f"
+    },
+    {
+      "id": "y2025q50",
+      "count": 6,
+      "prefix": "3dcc7a0dd21ba6bdc898727f20edcfd80bfd53ddb915491b6351f9d33d6c32c3",
+      "unchanged": "c8e4eae966f9d64f27ea91fd8c10159a53a1ef1a7132deabfcb3dfcf1599e524"
+    },
+    {
+      "id": "y2026q49",
+      "count": 6,
+      "prefix": "a5fa22c09ee98fcfcd5de76fdd3b4014cd23aaaabb8b7a41e61c0d5b10264bee",
+      "unchanged": "ac14494c395e65b44c4e4e1f6d0f9b6bbeae6e146caac74be12bc4312e0809de"
+    },
+    {
+      "id": "y2020q47",
+      "count": 4,
+      "prefix": "947cbd583b2e9d5038cde976d6c867123f4cc00efb82ea41464e868a1b2f9b35",
+      "unchanged": null
+    },
+    {
+      "id": "y2020q52",
+      "count": 5,
+      "prefix": "b9b18e0e878aa929270a38c3b1d4415128df68d59e45dcd3a829a44c10af16ef",
+      "unchanged": null
+    },
+    {
+      "id": "y2022q61",
+      "count": 4,
+      "prefix": "54624450772a5f76525d56dbd44954f49bf5a9d1a1ef96140dfb3151e7726e7c",
+      "unchanged": null
+    },
+    {
+      "id": "y2024q59",
+      "count": 8,
+      "prefix": "bdce05b7d21e57ba58b5c624795d79ad8ebc2e5f8e397261e232020918b35564",
+      "unchanged": null
+    },
+    {
+      "id": "y2025q52",
+      "count": 6,
+      "prefix": "2b278b6019a7bb86c49b961108e76bf1ce5913beff678fb8724cc25629782109",
+      "unchanged": null
+    },
+    {
+      "id": "y2020q9",
+      "count": 6,
+      "prefix": "b139fd33f91c17346176f7c6087ee86a8a903c412768691ed4532598704db6a3",
+      "unchanged": null
+    },
+    {
+      "id": "y2020q49",
+      "count": 6,
+      "prefix": "6075c8421fce67466f6358684a393b44e942cefb782077429165a890a2cfdf86",
+      "unchanged": null
+    },
+    {
+      "id": "y2020q58",
+      "count": 6,
+      "prefix": "aee10fd412e5e1f4992e51d51bbf8fe770ce70c946801054761540c9950f3f84",
+      "unchanged": null
+    },
+    {
+      "id": "y2021q25",
+      "count": 6,
+      "prefix": "363aa30663b0b59c52ade2024effb5d97a9ae22313203f466f94e0d1389137a1",
+      "unchanged": null
+    },
+    {
+      "id": "y2021q58",
+      "count": 8,
+      "prefix": "61c407d72f14d8fdf83801ca43011710ce60a7128e745eb8619546a46c4d5848",
+      "unchanged": null
+    },
+    {
+      "id": "y2023q57",
+      "count": 4,
+      "prefix": "8ee031a5b0d1bb4ea1fc448a7cf0f20b2ef60c9f363492a8a79421729a2f2e25",
+      "unchanged": null
+    },
+    {
+      "id": "y2024q67",
+      "count": 8,
+      "prefix": "f463f34b3c58ea1da6311e4dc78181e5625f24de7165b53722fd09bfee485345",
+      "unchanged": null
+    },
+    {
+      "id": "y2026q51",
+      "count": 7,
+      "prefix": "03caeeee652c8a57592aeb52aaf1bb4ed66cbf9f84f4338717db6d74bbf4085f",
+      "unchanged": null
+    },
+    {
+      "id": "y2020q59",
+      "count": 4,
+      "prefix": "fd7213b57c324dbd52c3afa896eccb0ce613a6b8c2717a0028d353e3c023e788",
+      "unchanged": "91e8805e0649ab8d600df5d60ea852bbe4588f1715a5d22e239c3169f90519b6"
+    },
+    {
+      "id": "y2021q52",
+      "count": 5,
+      "prefix": "734750c0ad1c5c1e49d48eacd4a32f1bc50290ca8a9adb6bf6e448db28174069",
+      "unchanged": "ddc9d1c5d2429b4ff049f9c4b04fbf2bba4923a527a7fe73419743c36b74bdd1"
+    },
+    {
+      "id": "y2023q10",
+      "count": 6,
+      "prefix": "3d066c347f341555c48a09ad0e7dfdb0e9585cfe75ce6f583cbf8bdff068182c",
+      "unchanged": "df6274b73807180f9edfb0f7e2ce3f5e642d79be3d2d9f6c6034df71250fdbd4"
+    },
+    {
+      "id": "y2024q68",
+      "count": 5,
+      "prefix": "81190c649567e688f89917fb34f7e516317bbef90e2c0956d2ac01a215f3ab4a",
+      "unchanged": "e993ff10be89f4d7fbd5166a99eca4b1ff49ad43b9258b4e2afe1937e9417231"
+    },
+    {
+      "id": "y2025q51",
+      "count": 5,
+      "prefix": "1546debbe8b7eca2155a5dd41f187a536f2cf0bccf06dab46be7dc21e14e4a86",
+      "unchanged": "bc6cc58d05f5c9c0f7a7771992d7589531da80a9c95c1af407399f17f4bdb958"
+    },
+    {
+      "id": "y2026q52",
+      "count": 7,
+      "prefix": "31d9d58108e9eef741307c14cec9d24c1573c7e19f4149dc323bbe8aa44b51bb",
+      "unchanged": "4c27ae035537f6a872aa01ae6be23a6cdcc08428aa904ffac5517e2f82bca7a8"
+    },
+    {
+      "id": "syllabus-sparkline",
+      "count": 3,
+      "prefix": "e32ac8fcf87ae4730ca0271bd5986de481dc5a1b79a2ae2e05f5502e77594c36",
+      "unchanged": "991964be44b38bf9575c2f17ad274cfd039d8e541106f593749dc602bfb47bc0"
+    },
+    {
+      "id": "syllabus-worksheet-protection",
+      "count": 4,
+      "prefix": "ff7de8f6aa0d26d04019007a0343af79b62a8511b45130b73f20960c89b57139",
+      "unchanged": "5df83b5c950204106a3e60bda540990f4bf1fded4baf20fa29fde846d389c626"
+    },
+    {
+      "id": "syllabus-excel-multikey-sort",
+      "count": 2,
+      "prefix": "e432af56c2154fd2b5c2dc6baecbfc683cb18667c42cd85d4838f6583d57492d",
+      "unchanged": null
+    },
+    {
+      "id": "syllabus-excel-whatif-table",
+      "count": 3,
+      "prefix": "e17a2f4b3f4a7a22ffc08fc51175fa2c8724a7fcbc18dcb52929ec43147c25f9",
+      "unchanged": null
+    }
+  ],
+  "otherChapters": {
+    "content/chapter1.json": "efb3355b6822b9704d0219aed7eb842febcc45f911d6a54f9156546521e91072",
+    "content/chapter2.json": "5f15a42f5f851858bf8be329388603806d10dde458d8c3557897e623297cadd6",
+    "content/chapter3.json": "98e0fca86d0bfe600675d11fd4199a78e22c679203f399ca96486976a352de12",
+    "content/chapter5.json": "048753ea9543298b1c01a61fb09041ed6602c9d617cbf3d8403666d408c5ee04",
+    "content/chapter6.json": "cdcad05f55a91fce865749dc15a3f188bc9e4a1c767217fd5c5a324574c4076f",
+    "content/chapter7.json": "5d5e86d1def2bf54a7afa36c1b366f72a06c52caa2acb36adf5dd66ac43ad3f0",
+    "content/chapter8.json": "5f0b6cf2afba45c9362508b5b339235ce051343abf5008b8df849760e9372d8a",
+    "content/chapter9.json": "5198ff23bd2cb57e026baa3c66595897ac83fa5d45855a699b5bc4ae207e5298",
+    "content/chapter10.json": "ad4a74a92f9efb689499ce694652f8cf77393a450d0d2c5d888d773d88f4a27d",
+    "content/chapter11.json": "64ff8b4093f0a10711f89b14cc2a1917da65b5450a75742127c38e2688a21751"
+  }
+}
