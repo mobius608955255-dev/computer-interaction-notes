@@ -1329,7 +1329,7 @@ test('v59 pivot source edits commit separately from refresh and reject invalid d
 });
 test('v59 keeps all historical Excel identities and protects every out-of-scope note and chapter',()=>{
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v58-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
- assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged)assert.equal(hash(JSON.stringify(n)),row.unchanged,row.id);}
+ assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged&&n.section!=='4.6'){const old=structuredClone(n);if(n.id==='y2020q8')old.related=old.related.slice(0,2);assert.equal(hash(JSON.stringify(old)),row.unchanged,row.id);}}
  for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
 });
 test('v59 search distinguishes new subtopics and navigation retains the live analysis state',()=>{
@@ -1339,4 +1339,55 @@ test('v59 search distinguishes new subtopics and navigation retains the live ana
  assert.equal(c.querySelector('.lab-pivot-layout tbody tr').lastElementChild.textContent,'95');
  for(const n of e.w.NOTES.notes.filter(n=>['4.4','4.5'].includes(n.section))){for(let i=0;i<n.points.length;i++){const el=e.d.getElementById(n.id+'--point-'+i);assert.ok(el);assert.equal(el.closest('details'),null);}}
  e.dom.window.close();
+});
+
+test('v60 chart selection and row column switching rebuild categories without transposing source',()=>{
+ const e=env(),c=open(e,'y2020q59'),src=()=>c.querySelector('[data-chart-source]').textContent,result=()=>c.querySelector('[data-chart-result]'),original=src();
+ assert.equal(result().dataset.categories,'4');assert.equal(result().dataset.seriesCount,'3');click(c,'switch');assert.equal(result().dataset.categories,'3');assert.equal(result().dataset.seriesCount,'4');assert.equal(src(),original);
+ click(c,'selectData');change(e,c,'draftRows','2');change(e,c,'draftColumns','math');click(c,'cancelData');assert.equal(result().dataset.seriesCount,'4');
+ click(c,'selectData');change(e,c,'draftRows','2');change(e,c,'draftColumns','math');click(c,'applyData');assert.equal(result().dataset.categories,'1');assert.equal(result().dataset.seriesCount,'2');assert.equal(src(),original);
+ click(c,'switch');assert.equal(result().dataset.categories,'2');assert.equal(result().dataset.seriesCount,'1');change(e,c,'type','line');assert.equal(result().querySelectorAll('polyline').length,1);assert.equal(result().querySelector('rect'),null);assert.match(result().textContent,/一班.*二班/);e.dom.window.close();
+});
+test('v60 chart edits actually update values and legend while invalid or cancelled drafts preserve them',()=>{
+ const e=env(),c=open(e,'y2020q59');change(e,c,'type','line');const points=()=>c.querySelector('[data-chart-result] polyline').getAttribute('points'),original=points();
+ click(c,'editSource');change(e,c,'draftValue','95');click(c,'cancelSource');assert.equal(points(),original);
+ click(c,'editSource');change(e,c,'draftValue','101');click(c,'applySource');assert.equal(points(),original);assert.ok(c.querySelector('[data-field="draftValue"]'));
+ change(e,c,'draftValue','40');change(e,c,'draftName','<甲>');click(c,'applySource');assert.notEqual(points(),original);assert.match(points(),/^55,154 /);assert.equal(c.querySelector('[data-chart-source] th:nth-child(2)').textContent,'<甲>');assert.equal(c.querySelector('.lab-chart-legend').textContent.includes('<甲>'),true);assert.equal(c.querySelector('甲'),null);
+ c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-chart-source] th:nth-child(2)').textContent,'数学');assert.match(c.querySelector('[data-chart-source]').textContent,/80/);e.dom.window.close();
+});
+test('v60 print width retains vertical pages and repeating header while whole page shrinks further',()=>{
+ const e=env(),c=open(e,'y2023q10');click(c,'open');click(c,'tab','sheet');change(e,c,'rowCount','40');change(e,c,'repeatRow',true);click(c,'tab','page');change(e,c,'scaleMode','width');click(c,'apply');click(c,'preview');assert.match(c.textContent,/第 1 \/ 2 页/);
+ const widthFactor=Number(c.querySelector('[data-print-factor]').dataset.printFactor);assert.ok(c.querySelector('[data-print-cell="D1"]'));click(c,'next');assert.ok(c.querySelector('[data-print-cell="A1"]'));assert.ok(c.querySelector('[data-print-cell="D41"]'));
+ click(c,'open');click(c,'tab','page');change(e,c,'scaleMode','page');click(c,'cancel');assert.equal(Number(c.querySelector('[data-print-factor]').dataset.printFactor),widthFactor);
+ click(c,'open');click(c,'tab','page');change(e,c,'scaleMode','page');click(c,'apply');assert.match(c.textContent,/第 1 \/ 1 页/);assert.ok(Number(c.querySelector('[data-print-factor]').dataset.printFactor)<widthFactor);assert.ok(c.querySelector('[data-print-cell="D41"]'));e.dom.window.close();
+});
+test('v60 print area excludes columns from paper while the worksheet and page settings remain independent',()=>{
+ const e=env(),c=open(e,'y2023q10');const source=c.querySelector('[data-print-source]').textContent;
+ click(c,'open');click(c,'tab','sheet');change(e,c,'area','first');click(c,'apply');assert.equal(c.querySelector('[data-print-source]').textContent,source);click(c,'preview');assert.match(c.textContent,/第 1 \/ 1 页/);assert.equal(c.querySelector('[data-print-cell="D1"]'),null);assert.ok(c.querySelector('[data-print-cell="B9"]'));
+ click(c,'open');click(c,'tab','sheet');change(e,c,'area','all');click(c,'apply');assert.match(c.textContent,/第 1 \/ 2 页/);click(c,'next');assert.ok(c.querySelector('[data-print-cell="D1"]'));click(c,'preview');assert.equal(c.querySelector('[data-print-source]').textContent,source);e.dom.window.close();
+});
+test('v60 page order and left title affect actual page contents rather than data order',()=>{
+ const e=env(),c=open(e,'y2023q10');click(c,'open');click(c,'tab','sheet');change(e,c,'rowCount','40');change(e,c,'repeatRow',true);change(e,c,'repeatCol',true);click(c,'apply');click(c,'preview');click(c,'next');assert.ok(c.querySelector('[data-print-cell="A1"]'));assert.ok(c.querySelector('[data-print-cell="A22"]'));assert.equal(c.querySelector('[data-print-cell="C2"]'),null);
+ click(c,'open');click(c,'tab','sheet');change(e,c,'order','across');click(c,'apply');click(c,'next');assert.ok(c.querySelector('[data-print-cell="C2"]'));assert.ok(c.querySelector('[data-print-cell="A2"]'));assert.equal(c.querySelector('[data-print-cell="B2"]'),null);e.dom.window.close();
+});
+test('v60 print paper margin footer and invalid size retain confirmed layout',()=>{
+ const e=env(),c=open(e,'y2023q10');click(c,'open');change(e,c,'margin','10');click(c,'tab','page');change(e,c,'paperSize','A5');change(e,c,'firstPage','7');change(e,c,'footer',true);change(e,c,'scaleMode','page');click(c,'apply');click(c,'preview');assert.equal(c.querySelector('.lab-print-page').getAttribute('viewBox'),'0 0 148 210');assert.equal(c.querySelector('[data-print-footer]').textContent,'7');
+ click(c,'open');change(e,c,'margin','99');click(c,'apply');assert.ok(c.querySelector('[data-field="margin"]'));assert.match(c.querySelector('.lab-output').textContent,/10—30/);click(c,'cancel');assert.equal(c.querySelector('[data-print-footer]').textContent,'7');
+ c.querySelector('[data-sim-reset]').click();click(c,'preview');assert.equal(c.querySelector('.lab-print-page').getAttribute('viewBox'),'0 0 210 297');assert.equal(c.querySelector('[data-print-footer]'),null);e.dom.window.close();
+});
+test('v60 sparkline source rows map to destination cells and cancelled ranges never move them',()=>{
+ const e=env(),c=open(e,'syllabus-sparkline');click(c,'ranges');change(e,c,'draftSource','two');change(e,c,'draftLocation','G');click(c,'cancelRanges');assert.ok(c.querySelector('[data-spark-location="F2"]'));assert.equal(c.querySelector('[data-spark-location="G2"]'),null);
+ click(c,'ranges');change(e,c,'draftSource','two');change(e,c,'draftLocation','G');click(c,'applyRanges');const one=c.querySelector('[data-spark-location="G2"]'),two=c.querySelector('[data-spark-location="G3"]');assert.equal(one.dataset.sparkSource,'B2:E2');assert.equal(two.dataset.sparkSource,'B3:E3');assert.equal(one.querySelector('polyline').getAttribute('points'),two.querySelector('polyline').getAttribute('points'));assert.equal(c.querySelector('[data-spark-location="F2"]'),null);
+ change(e,c,'rawOther','100,50,80,40');assert.notEqual(c.querySelector('[data-spark-location="G2"] polyline').getAttribute('points'),c.querySelector('[data-spark-location="G3"] polyline').getAttribute('points'));change(e,c,'mark',true);assert.equal(c.querySelectorAll('[data-spark-location="G3"] circle').length,4);
+ c.querySelector('[data-sim-reset]').click();assert.ok(c.querySelector('[data-spark-location="F2"]'));assert.equal(c.querySelector('[data-field="rawOther"]').value,'40,80,50,100');e.dom.window.close();
+});
+test('v60 preserves v59 identities all old paragraphs and every unmodified note and chapter',()=>{
+ const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v59-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
+ assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged){const old=structuredClone(n);if(n.id==='y2020q8'){assert.equal(n.related[2].id,'syllabus-office-exchange');old.related=old.related.slice(0,2);}assert.equal(hash(JSON.stringify(old)),row.unchanged,row.id);}}
+ for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+});
+test('v60 search locates new chart and print paragraphs without losing the active chart on return',()=>{
+ const e=env(),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')),c=open(e,'y2020q59'),lab=c.querySelector('[data-lab]');click(c,'switch');change(e,c,'type','line');
+ for(const [query,id,i] of [['图表区、绘图区','y2020q59',4],['名称、数值和类别','y2020q59',6],['网格线、行列标题','y2023q10',9],['批量创建时范围','syllabus-sparkline',3]]){const anchor=id+'--point-'+i,input=e.d.getElementById('search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const hit=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===anchor),query);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);}
+ assert.equal(c.querySelectorAll('[data-chart-result] polyline').length,4);for(const n of e.w.NOTES.notes.filter(n=>n.section==='4.6'))for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(n.id+'--point-'+i);assert.ok(p);assert.equal(p.closest('details'),null);}e.dom.window.close();
 });

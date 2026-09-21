@@ -1869,6 +1869,18 @@
     [
       "Microsoft：转置会重排工作表数据",
       "https://support.microsoft.com/en-us/excel/transpose-rotate-data-from-rows-to-columns-or-vice-versa"
+    ],
+    [
+      "Microsoft：图表选区与系列/类别组织（含2016）",
+      "https://support.microsoft.com/en-us/excel/select-data-for-a-chart"
+    ],
+    [
+      "Microsoft：源数据、数据标签与行列解释（含2016）",
+      "https://support.microsoft.com/en-us/excel/get-started/update-the-data-in-an-existing-chart"
+    ],
+    [
+      "Microsoft：编辑/增删系列；当前页版本列表不含2016，结合操作素材使用",
+      "https://support.microsoft.com/en-us/office/change-the-data-series-in-a-chart"
     ]
   ],
   "y2023q10": [
@@ -1879,6 +1891,18 @@
     [
       "Microsoft：打印标题设置与命令不可用的原因",
       "https://support.microsoft.com/en-us/excel/print-rows-with-column-headers-on-top-of-every-page"
+    ],
+    [
+      "Microsoft：页面设置各选项（含2016）",
+      "https://support.microsoft.com/en-us/excel/page-setup"
+    ],
+    [
+      "Microsoft：设置与清除打印区域",
+      "https://support.microsoft.com/en-us/excel/set-or-clear-a-print-area-on-a-worksheet"
+    ],
+    [
+      "Microsoft：打印工作表、选区或工作簿",
+      "https://support.microsoft.com/en-us/excel/get-started/print-a-worksheet-or-workbook"
     ]
   ],
   "y2024q68": [
@@ -1927,6 +1951,10 @@
     [
       "Use sparklines to show data trends",
       "https://support.microsoft.com/en-us/excel/get-started/use-sparklines-to-show-data-trends"
+    ],
+    [
+      "Microsoft：迷你图范围、编辑和坐标轴；当前页版本列表不含2016，细项保留原生核验",
+      "https://support.microsoft.com/en-us/excel/analyze-trends-in-data-using-sparklines"
     ]
   ],
   "syllabus-quantum-basics": [
@@ -2427,6 +2455,16 @@
     [
       "Microsoft：数据验证设置、输入信息、出错提醒与清除（Excel2016适用）",
       "https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells"
+    ]
+  ],
+  "y2021q52": [
+    [
+      "Microsoft：图型及数据组织；当前版本列表不含2016，结合原题/素材使用",
+      "https://support.microsoft.com/en-us/excel/available-chart-types-in-office"
+    ],
+    [
+      "Microsoft：饼图一个系列、散点X/Y（含2016）",
+      "https://support.microsoft.com/en-us/excel/select-data-for-a-chart"
     ]
   ]
 }

@@ -327,11 +327,33 @@ register(['merged-10'],'复制公式，查看地址与排名怎样变化','在�
  if(a==='cancelRef'){s.refPane=false;s.refMessage='已取消，原公式与目标位置保留。';}
  if(a==='applyRef'){if(!cellPosition(s.draftFrom)||!cellPosition(s.draftTo)){s.refMessage='请输入A1至XFD1048576内的单格地址；已确认结果未改变。';return;}s.from=s.draftFrom.trim().toUpperCase();s.to=s.draftTo.trim().toUpperCase();s.template=s.draftTemplate;s.refPane=false;s.refMessage='已确认位置并逐项变换引用。';}
 },(s,k,v)=>{if(k.startsWith('score'))s.scores[Number(k.slice(5))]=v===''?'':Number(v);else s[k]=k==='locked'?v==='true':v;});
-register(['y2020q59'],'切换行列，同时交换系列与横轴','原表不变，图例和柱的分组随着“切换行/列”重建。',{swapped:false},s=>{
- const data=[['一班',80,75,90],['二班',72,85,78],['三班',90,80,88],['四班',82,92,84]],colors=['#527eaa','#bc7750','#558777','#9b6694'];
- const labels=s.swapped?['数学','英语','计算机']:data.map(r=>r[0]);const series=s.swapped?data.map((r,i)=>({name:r[0],values:r.slice(1),color:colors[i]})):['数学','英语','计算机'].map((name,i)=>({name,values:data.map(r=>r[i+1]),color:colors[i]}));
- return office('Excel','图表工具 · 设计',btn('切换行/列','switch'),clusteredChart(labels,series)+table(['班级','数学','英语','计算机'],data))+output(`横轴是${s.swapped?'课程':'班级'}；图例是${series.map(x=>x.name).join('、')}。数据值本身没有被交换或改写。`);
-},s=>{s.swapped=!s.swapped;});
+const chartSource=[['一班',80,75,90],['二班',72,85,78],['三班',90,80,88],['四班',82,92,84]];
+function chartFromSelection(s){
+ const rows=s.data.slice(0,Number(s.rows)),indices=s.columns==='math'?[1]:[1,2,3],names=[s.mathName,'英语','计算机'],colors=['#527eaa','#bc7750','#558777','#9b6694'];
+ return {labels:s.swapped?indices.map(i=>names[i-1]):rows.map(r=>r[0]),series:s.swapped?rows.map((r,i)=>({name:r[0],values:indices.map(j=>r[j]),color:colors[i]})):indices.map(i=>({name:names[i-1],values:rows.map(r=>r[i]),color:colors[i-1]}))};
+}
+function selectedLineChart(labels,series){
+ const x=i=>55+i*370/Math.max(1,labels.length-1),y=v=>220-v*1.65;
+ return `<svg class="lab-data-chart" viewBox="0 0 480 270" role="img" aria-label="折线图"><path d="M40 40V220H455" fill="none" stroke="#687482"/>${[0,50,100].map(v=>`<text x="35" y="${y(v)}" text-anchor="end">${v}</text>`).join('')}${series.map(row=>`<polyline data-chart-series="${esc(row.name)}" points="${row.values.map((v,i)=>`${x(i)},${y(v)}`).join(' ')}" fill="none" stroke="${row.color}" stroke-width="2"/>${row.values.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${row.color}"/><text x="${x(i)}" y="${y(v)-8}" text-anchor="middle">${v}</text>`).join('')}`).join('')}${labels.map((v,i)=>`<text x="${x(i)}" y="245" text-anchor="middle">${esc(v)}</text>`).join('')}</svg><div class="lab-chart-legend">${series.map(row=>`<span><i style="background:${row.color}"></i>${esc(row.name)}</span>`).join('')}</div>`;
+}
+register(['y2020q59'],'选择数据、换图型，再核对类别和系列','保留源表，对比改变选择范围、切换行列和修改源值的不同结果。',{
+ swapped:false,type:'column',data:chartSource,mathName:'数学',rows:'4',columns:'all',pane:false,draftRows:'4',draftColumns:'all',sourcePane:false,draftValue:'80',draftName:'数学',message:''
+},s=>{
+ const {labels,series}=chartFromSelection(s),busy=s.pane||s.sourcePane;
+ return office('Excel','图表工具 · 设计',btn('选择数据…','selectData','',busy?'disabled':'')+btn('切换行/列','switch','',busy?'disabled':'')+btn('修改源数据…','editSource','',busy?'disabled':'')+select('type','图表类型',s.type,[['column','簇状柱形图'],['line','折线图']]),
+  `${s.pane?dialog('选择数据 · 本例提供两个范围',select('draftRows','类别行范围',s.draftRows,[['4','A2:A5 · 四个班'],['2','A2:A3 · 前两个班']])+select('draftColumns','数值列范围',s.draftColumns,[['all','B:D · 三科'],['math','B · 数学列']])+'<p>改变选用范围，不删除源表记录；切换状态下仍使用同一块源数据。</p>',btn('确定','applyData')+btn('取消','cancelData')):''}
+  ${s.sourcePane?dialog('编辑源单元格',field('draftName','B1系列名称',s.draftName,'text','maxlength="8"')+field('draftValue','B2一班成绩',s.draftValue,'number','min="0" max="100"'),btn('确认源数据','applySource')+btn('取消','cancelSource')):''}
+  <div data-chart-result data-categories="${labels.length}" data-series-count="${series.length}" ${busy?'inert':''}>${s.type==='column'?clusteredChart(labels,series):selectedLineChart(labels,series)}</div>
+  <div data-chart-source>${table(['班级',esc(s.mathName),'英语','计算机'],s.data.map(row=>row.map(esc)))}</div>`)+output(`横轴是${s.swapped?'课程':'班级'}；图例是${series.map(x=>esc(x.name)).join('、')}。${labels.length}个类别，${series.length}个系列。`)+output(esc(s.message||'切换行列只重解释选中数据；原表不被转置。'))+coach('本例只演示给定区域、一个源值/名称和二维柱形/折线，不模拟任意系列公式、图表移动或全部格式。分数限定0—100；四个班不是时间顺序，折线外形不能解释成时间趋势。');
+},(s,a)=>{
+ if(a==='switch'&&!s.pane&&!s.sourcePane)s.swapped=!s.swapped;
+ if(a==='selectData'){s.pane=true;s.draftRows=s.rows;s.draftColumns=s.columns;}
+ if(a==='applyData'){if(!['2','4'].includes(s.draftRows)||!['all','math'].includes(s.draftColumns))return;s.rows=s.draftRows;s.columns=s.draftColumns;s.pane=false;s.message='图中类别与系列已按范围重建；源表所有记录保留。';}
+ if(a==='cancelData'){s.pane=false;s.message='已取消选区修改，已确认的图表保持。';}
+ if(a==='editSource'){s.sourcePane=true;s.draftValue=String(s.data[0][1]);s.draftName=s.mathName;}
+ if(a==='applySource'){const v=Number(s.draftValue),name=s.draftName.trim();if(!s.draftValue.trim()||!Number.isFinite(v)||v<0||v>100||!name||name.length>8){s.message='本例须输入0—100的数值及1—8字名称；原数据保留。';return;}s.data[0][1]=v;s.mathName=name;s.sourcePane=false;s.message='源格已确认；所选图表读取新值，图例读取系列名称。';}
+ if(a==='cancelSource'){s.sourcePane=false;s.message='源数据草稿已取消，源格和图形保持。';}
+},(s,k,v)=>{if(k==='type'&&(s.pane||s.sourcePane))return;s[k]=v;});
 const filterRows=[['王宁','女',88],['李明','男',76],['赵敏','女',58],['周林','男',92]];
 const scholarshipRows=[
  ['王宁',92,94,90,93,91],['李明',99,98,97,96,74],['赵敏',88,89,90,91,92],['周林',87,88,86,89,85],
@@ -623,47 +645,52 @@ register(['y2024q58'],'冻结后亲手滚动，观察哪几行列留在原处','
       s.message=a==='unfreeze'?'已取消冻结，请再次上下、左右滚动验证。':`已冻结前${s.frozen.rows}行和前${s.frozen.cols}列；现在在表格里滚动查看。`;
     }
   });
-const printRows=[['编号','项目','负责人','金额'],...Array.from({length:8},(_,i)=>[String(i+1).padStart(3,'0'),['设备维护','资料印刷','实验耗材','系统升级'][i%4],['王宁','李悦'][i%2],String(680+i*125)])];
-const printWidths=[55,65,60,50];
-const rowHeight=12;
-const printDefaults={horizontal:false,vertical:false,orientation:'portrait',scaleMode:'percent',percent:100};
+const printRows=[['编号','项目','负责人','金额'],...Array.from({length:40},(_,i)=>[String(i+1).padStart(3,'0'),['设备维护','资料印刷','实验耗材','系统升级'][i%4],['王宁','李悦'][i%2],String(680+i*125)])];
+const printWidths=[55,65,60,50],rowHeight=12;
+const printDefaults={horizontal:false,vertical:false,orientation:'portrait',scaleMode:'percent',percent:100,rowCount:'8',area:'all',repeatRow:false,repeatCol:false,order:'down',paperSize:'A4',margin:20,firstPage:1,footer:false};
 function printLayout(settings){
-    const width=settings.orientation==='portrait'?210:297,height=settings.orientation==='portrait'?297:210,margin=20,usableWidth=width-margin*2,usableHeight=height-margin*2;
-    const factor=settings.scaleMode==='percent'?settings.percent/100:Math.min(1,usableWidth/230,settings.scaleMode==='page'?usableHeight/(printRows.length*rowHeight):1);
-    const columns=[];let group=[],size=0;printWidths.forEach((v,i)=>{if(group.length&&size+v*factor>usableWidth+.001){columns.push(group);group=[];size=0;}group.push(i);size+=v*factor;});columns.push(group);
-    const rowsPerPage=Math.max(1,Math.floor(usableHeight/(rowHeight*factor))),rowGroups=[];for(let i=0;i<printRows.length;i+=rowsPerPage)rowGroups.push(Array.from({length:Math.min(rowsPerPage,printRows.length-i)},(_,n)=>i+n));
-    const pages=rowGroups.flatMap(rows=>columns.map(cols=>({rows,cols})));
-    return {width,height,margin,usableWidth,usableHeight,factor,pages};
-  }
+ const short=settings.paperSize==='A5'?148:210,long=settings.paperSize==='A5'?210:297;
+ const width=settings.orientation==='portrait'?short:long,height=settings.orientation==='portrait'?long:short,margin=Number(settings.margin),usableWidth=width-margin*2,usableHeight=height-margin*2;
+ const sourceRows=Array.from({length:Number(settings.rowCount)+1},(_,i)=>i),sourceCols=settings.area==='first'?[0,1]:[0,1,2,3],totalWidth=sourceCols.reduce((n,i)=>n+printWidths[i],0);
+ const factor=settings.scaleMode==='percent'?settings.percent/100:Math.min(1,usableWidth/totalWidth,settings.scaleMode==='page'?usableHeight/(sourceRows.length*rowHeight):1);
+ const columns=[];let group=[],size=0;
+ sourceCols.forEach(i=>{const v=printWidths[i]*factor;if(group.length&&size+v>usableWidth+.001){columns.push(group);group=settings.repeatCol?[0]:[];size=settings.repeatCol?printWidths[0]*factor:0;}group.push(i);size+=v;});columns.push(group);
+ const rowsPerPage=Math.max(1,Math.floor(usableHeight/(rowHeight*factor))),rowGroups=[];
+ let cursor=0;while(cursor<sourceRows.length){const repeat=settings.repeatRow&&cursor>0?[0]:[],take=Math.max(1,rowsPerPage-repeat.length);rowGroups.push([...repeat,...sourceRows.slice(cursor,cursor+take)]);cursor+=take;}
+ const pages=settings.order==='down'?columns.flatMap(cols=>rowGroups.map(rows=>({rows,cols}))):rowGroups.flatMap(rows=>columns.map(cols=>({rows,cols})));
+ return {width,height,margin,usableWidth,usableHeight,factor,pages};
+}
 function printPage(s){
-    const layout=printLayout(s.applied),page=layout.pages[Math.min(s.page,layout.pages.length-1)],width=page.cols.reduce((sum,c)=>sum+printWidths[c]*layout.factor,0),height=page.rows.length*rowHeight*layout.factor;
-    const x=layout.margin+(s.applied.horizontal?(layout.usableWidth-width)/2:0),y=layout.margin+(s.applied.vertical?(layout.usableHeight-height)/2:0);
-    let grid='';page.rows.forEach((r,ri)=>{let left=x;page.cols.forEach(c=>{const cw=printWidths[c]*layout.factor,rh=rowHeight*layout.factor;grid+=`<rect x="${left}" y="${y+ri*rh}" width="${cw}" height="${rh}" fill="${r===0?'#f1e8f8':'white'}" stroke="#776c80" stroke-width=".35"/><text x="${left+2*layout.factor}" y="${y+ri*rh+7.8*layout.factor}" font-size="${4.7*layout.factor}" fill="#332a3b">${esc(printRows[r][c])}</text>`;left+=cw;});});
-    return `<div class="lab-print-scroll" tabindex="0" aria-label="打印预览，可放大后滚动"><svg class="lab-print-page ${s.zoom?'zoomed':''}" viewBox="0 0 ${layout.width} ${layout.height}" role="img" aria-label="${s.applied.orientation==='portrait'?'纵向':'横向'}纸张，第${s.page+1}页，共${layout.pages.length}页"><rect x=".5" y=".5" width="${layout.width-1}" height="${layout.height-1}" fill="white" stroke="#b5a9bf"/><rect x="20" y="20" width="${layout.usableWidth}" height="${layout.usableHeight}" fill="none" stroke="#bba4c5" stroke-dasharray="2 2" stroke-width=".4"/>${grid}</svg></div><p>第 ${s.page+1} / ${layout.pages.length} 页 · A4 ${s.applied.orientation==='portrait'?'纵向':'横向'} · 实际缩放 ${Math.round(layout.factor*100)}%</p>`;
-  }
-register(['y2023q10'],'调整纸张布局，再切到真正的打印预览','分别设置水平、垂直居中与方向、缩放；预览按实际列宽分页。',{
-    applied:printDefaults,draft:printDefaults,pane:false,tab:'margins',preview:false,page:0,zoom:false,message:'工作表中的数据位置固定。页面设置只影响纸张上的排版。'
-  },s=>{
-    const layout=printLayout(s.applied);
-    return office('Excel',s.preview?'文件 · 打印':'页面布局',btn('页面设置 ↘','open','',s.pane?'disabled':'')+btn(s.preview?'返回工作表':'文件 → 打印预览','preview','',s.pane?'disabled':''),
-      `<div ${s.pane?'inert':''}>${s.preview?printPage(s):table(printRows[0],printRows.slice(1))}</div>`+
-      (s.pane?dialog('页面设置',`<div class="lab-tabs">${btn('页面','tab','page',`aria-pressed="${s.tab==='page'}"`)}${btn('页边距','tab','margins',`aria-pressed="${s.tab==='margins'}"`)}</div>`+
-        (s.tab==='margins'?'<p>本例上、下、左、右页边距均为20 mm。</p>'+`<label><input type="checkbox" data-field="horizontal" ${s.draft.horizontal?'checked':''}>水平居中</label><label><input type="checkbox" data-field="vertical" ${s.draft.vertical?'checked':''}>垂直居中</label>`:
-          select('orientation','方向',s.draft.orientation,[['portrait','纵向'],['landscape','横向']])+select('scaleMode','缩放',s.draft.scaleMode,[['percent','缩放比例'],['width','调整为1页宽，高度自动'],['page','调整为1页宽、1页高']])+(s.draft.scaleMode==='percent'?field('percent','缩放比例（%）',s.draft.percent,'number','min="50" max="150" step="10"'):'')),btn('确定','apply')+btn('取消','cancel')):''))+
-      (s.preview?controls(btn('上一页','previous','',s.page===0||s.pane?'disabled':'')+btn('下一页','next','',s.page>=layout.pages.length-1||s.pane?'disabled':'')+btn(s.zoom?'适合屏幕':'放大预览','zoom','',s.pane?'disabled':'')):'')+output(s.message)+coach('纸张虚线表示页边距；预览分页不切断单元格。预览下方的翻页和放大按钮是学习辅助，不会改动工作表数据。');
-  },(s,a,v)=>{
-    if(a==='open'){s.draft=clone(s.applied);s.pane=true;s.tab='margins';}
-    if(a==='tab')s.tab=v;
-    if(a==='cancel'){s.pane=false;s.message='已取消本次设置，纸张方向、居中与缩放保持原值。';}
-    if(a==='apply'){
-      if(s.draft.scaleMode==='percent'&&(!Number.isFinite(Number(s.draft.percent))||Number(s.draft.percent)<50||Number(s.draft.percent)>150)){s.message='本例缩放比例可输入50—150。';return;}
-      s.applied=clone(s.draft);s.applied.percent=Number(s.applied.percent);s.pane=false;s.page=0;
-      s.message=`已应用：水平居中${s.applied.horizontal?'开':'关'}，垂直居中${s.applied.vertical?'开':'关'}。切换打印预览检查纸张；工作表数据没有移动。`;
-    }
-    if(a==='preview'&&!s.pane){s.preview=!s.preview;s.page=0;}
-    if(a==='previous')s.page=Math.max(0,s.page-1);if(a==='next')s.page=Math.min(printLayout(s.applied).pages.length-1,s.page+1);if(a==='zoom')s.zoom=!s.zoom;
-    if(['apply','cancel','preview','previous','next','zoom'].includes(a)&&!s.pane)s.revealResult=true;
-  },(s,k,v)=>{s.draft[k]=v;});
+ const layout=printLayout(s.applied),page=layout.pages[Math.min(s.page,layout.pages.length-1)],width=page.cols.reduce((sum,c)=>sum+printWidths[c]*layout.factor,0),height=page.rows.length*rowHeight*layout.factor;
+ const x=layout.margin+(s.applied.horizontal?(layout.usableWidth-width)/2:0),y=layout.margin+(s.applied.vertical?(layout.usableHeight-height)/2:0);
+ let grid='';page.rows.forEach((r,ri)=>{let left=x;page.cols.forEach(c=>{const cw=printWidths[c]*layout.factor,rh=rowHeight*layout.factor;grid+=`<rect x="${left}" y="${y+ri*rh}" width="${cw}" height="${rh}" fill="${r===0?'#f1e8f8':'white'}" stroke="#776c80" stroke-width=".35"/><text data-print-cell="${String.fromCharCode(65+c)}${r+1}" x="${left+2*layout.factor}" y="${y+ri*rh+7.8*layout.factor}" font-size="${4.7*layout.factor}" fill="#332a3b">${esc(printRows[r][c])}</text>`;left+=cw;});});
+ return `<div class="lab-print-scroll" tabindex="0" aria-label="打印预览，可放大后滚动"><svg class="lab-print-page ${s.zoom?'zoomed':''}" viewBox="0 0 ${layout.width} ${layout.height}" role="img" data-print-factor="${layout.factor}" aria-label="${s.applied.orientation==='portrait'?'纵向':'横向'}纸张，第${s.page+1}页，共${layout.pages.length}页"><rect x=".5" y=".5" width="${layout.width-1}" height="${layout.height-1}" fill="white" stroke="#b5a9bf"/><rect x="${layout.margin}" y="${layout.margin}" width="${layout.usableWidth}" height="${layout.usableHeight}" fill="none" stroke="#bba4c5" stroke-dasharray="2 2" stroke-width=".4"/>${grid}${s.applied.footer?`<text data-print-footer x="${layout.width/2}" y="${layout.height-8}" text-anchor="middle" font-size="5">${Number(s.applied.firstPage)+s.page}</text>`:''}</svg></div><p>第 ${s.page+1} / ${layout.pages.length} 页 · ${s.applied.paperSize} ${s.applied.orientation==='portrait'?'纵向':'横向'} · 实际缩放 ${Math.round(layout.factor*100)}%</p>`;
+}
+register(['y2023q10'],'从打印范围到跨页标题，逐页核对输出','先用8行观察横向分页，再用40行比较一页宽与整表一页。',{
+ applied:printDefaults,draft:printDefaults,pane:false,tab:'margins',preview:false,page:0,zoom:false,message:'工作表数据位置固定。页面设置只影响纸张输出。'
+},s=>{
+ const layout=printLayout(s.applied);
+ return office('Excel',s.preview?'文件 · 打印':'页面布局',btn('页面设置 ↘','open','',s.pane?'disabled':'')+btn(s.preview?'返回工作表':'文件 → 打印预览','preview','',s.pane?'disabled':''),
+  `<div ${s.pane?'inert':''}>${s.preview?printPage(s):`<div data-print-source>${table(printRows[0],printRows.slice(1,Number(s.applied.rowCount)+1))}</div>`}</div>`+
+  (s.pane?dialog('页面设置',`<div class="lab-tabs">${btn('页面','tab','page',`aria-pressed="${s.tab==='page'}"`)}${btn('页边距','tab','margins',`aria-pressed="${s.tab==='margins'}"`)}${btn('工作表','tab','sheet',`aria-pressed="${s.tab==='sheet'}"`)}</div>`+
+   (s.tab==='margins'?field('margin','四边页边距（mm）',s.draft.margin,'number','min="10" max="30"')+`<label><input type="checkbox" data-field="horizontal" ${s.draft.horizontal?'checked':''}>水平居中</label><label><input type="checkbox" data-field="vertical" ${s.draft.vertical?'checked':''}>垂直居中</label>`:
+   s.tab==='page'?select('orientation','方向',s.draft.orientation,[['portrait','纵向'],['landscape','横向']])+select('paperSize','纸张大小',s.draft.paperSize,[['A4','A4'],['A5','A5']])+select('scaleMode','缩放',s.draft.scaleMode,[['percent','缩放比例'],['width','调整为1页宽，高度自动'],['page','调整为1页宽、1页高']])+(s.draft.scaleMode==='percent'?field('percent','缩放比例（%）',s.draft.percent,'number','min="50" max="150" step="10"'):'')+field('firstPage','起始页码',s.draft.firstPage,'number','min="1" max="99"')+`<label><input type="checkbox" data-field="footer" ${s.draft.footer?'checked':''}>页脚插入页码（本例合并展示）</label>`:
+   select('rowCount','示例记录规模',s.draft.rowCount,[['8','8行明细'],['40','40行明细']])+select('area','打印区域',s.draft.area,[['all','全部A:D（清除范围限制）'],['first','只打印A:B']])+`<label><input type="checkbox" data-field="repeatRow" ${s.draft.repeatRow?'checked':''}>顶端标题行 $1:$1</label><label><input type="checkbox" data-field="repeatCol" ${s.draft.repeatCol?'checked':''}>左端标题列 $A:$A</label>`+select('order','打印顺序',s.draft.order,[['down','先向下，再向右'],['across','先向右，再向下']])),btn('确定','apply')+btn('取消','cancel')):''))+
+  (s.preview?controls(btn('上一页','previous','',s.page===0||s.pane?'disabled':'')+btn('下一页','next','',s.page>=layout.pages.length-1||s.pane?'disabled':'')+btn(s.zoom?'适合屏幕':'放大预览','zoom','',s.pane?'disabled':'')):'')+output(s.message)+coach('本例用固定尺寸和已设置边框的示例表计算分页；8/40行切换是学习控制，页脚开关在真实Excel的“页眉/页脚”页。未模拟打印机、任意区域、多打印区域、手动分页或全部纸型。边框不是默认打印网格线；确认不会实际打印文件。');
+},(s,a,v)=>{
+ if(a==='open'){s.draft=clone(s.applied);s.pane=true;s.tab='margins';}
+ if(a==='tab')s.tab=v;
+ if(a==='cancel'){s.pane=false;s.message='已取消本次设置，打印范围、纸张和已确认分页保持原值。';}
+ if(a==='apply'){
+  if(s.draft.scaleMode==='percent'&&(!Number.isFinite(Number(s.draft.percent))||Number(s.draft.percent)<50||Number(s.draft.percent)>150)){s.message='本例缩放比例可输入50—150。';return;}
+  if(!Number.isFinite(Number(s.draft.margin))||Number(s.draft.margin)<10||Number(s.draft.margin)>30||!Number.isInteger(Number(s.draft.firstPage))||Number(s.draft.firstPage)<1||Number(s.draft.firstPage)>99){s.message='本例页边距须为10—30 mm，起始页码为1—99整数。原设置未改变。';return;}
+  const proposed=printLayout(s.draft);if(proposed.pages.some(p=>p.cols.reduce((sum,c)=>sum+printWidths[c]*proposed.factor,0)>proposed.usableWidth+.001)){s.message='本例纸宽无法容纳完整单元格与重复标题列；请减小比例、边距或改为一页宽。原设置未改变。';return;}
+  s.applied=clone(s.draft);s.applied.percent=Number(s.applied.percent);s.pane=false;s.page=0;s.message='已应用纸张与输出设置；请逐页核对重复标题和缺失列，返回工作表可见未打印的数据仍在。';
+ }
+ if(a==='preview'&&!s.pane){s.preview=!s.preview;s.page=0;}
+ if(a==='previous')s.page=Math.max(0,s.page-1);if(a==='next')s.page=Math.min(printLayout(s.applied).pages.length-1,s.page+1);if(a==='zoom')s.zoom=!s.zoom;
+ if(['apply','cancel','preview','previous','next','zoom'].includes(a)&&!s.pane)s.revealResult=true;
+},(s,k,v)=>{s.draft[k]=v;});
 window.NOTE_LABS.registry.y2023q10.afterRender=(s,root)=>{
     if(!s.revealResult)return;
     s.revealResult=false;
@@ -1148,20 +1175,29 @@ register(['y2020q47'],'居中的标题下面，到底还有几个单元格','对
   'use strict';
   const {register,ui}=window.NOTE_LABS;
   const {btn,field,select,table,office,output,esc}=ui;
-  register(['syllabus-sparkline'],'改一行数，观察单元格里的迷你图','输入4个以逗号分隔的数，再比较折线、柱形和盈亏类型。',{
-    raw:'4,8,5,10',type:'line'
+  function spark(raw,type,mark){
+    const parts=raw.split(/[,，]/).map(v=>v.trim()),values=parts.map(Number),valid=parts.length===4&&parts.every(v=>v!=='')&&values.every(v=>Number.isFinite(v)&&Math.abs(v)<=1000);
+    if(!valid)return '请输入4个−1000至1000之间的数（演示范围）';
+    const lo=Math.min(0,...values),hi=Math.max(0,...values),range=hi-lo||1,y=n=>65-(n-lo)/range*55,zero=y(0),color=v=>mark&&v===Math.max(...values)?'#b2536a':mark&&v===Math.min(...values)?'#286988':v<0?'#bb688b':'#9e7bbb';let shapes='';
+    if(type==='line')shapes=`<polyline points="${values.map((v,i)=>`${15+i*50},${y(v)}`).join(' ')}" fill="none" stroke="#9670ae" stroke-width="3"/>`+(mark?values.map((v,i)=>`<circle cx="${15+i*50}" cy="${y(v)}" r="4" fill="${color(v)}"/>`).join(''):'');
+    else shapes=values.map((v,i)=>{const end=type==='win'?(v>0?12:v<0?65:38):y(v),base=type==='win'?38:zero;return `<rect x="${i*50+5}" y="${Math.min(base,end)}" width="24" height="${Math.abs(base-end)}" fill="${color(v)}"/>`;}).join('');
+    return `<svg viewBox="0 0 180 80" role="img" aria-label="${esc({line:'折线',column:'柱形',win:'盈亏'}[type])}迷你图：${values.join('、')}" style="width:180px;max-width:100%;height:80px"><path d="M0 ${type==='win'?38:zero}H180" stroke="#ded1e6"/>${shapes}</svg>`;
+  }
+  register(['syllabus-sparkline'],'确认数据范围和位置范围，再看迷你图','同一行可改类型；换来源行或输出列，观察哪一格真正承载图形。',{
+    raw:'4,8,5,10',rawOther:'40,80,50,100',type:'line',source:'row2',location:'F',mark:false,pane:false,draftSource:'row2',draftLocation:'F',message:''
   },s=>{
-    const parts=s.raw.split(/[,，]/).map(v=>v.trim()),values=parts.map(Number),valid=parts.length===4&&parts.every(v=>v!=='')&&values.every(v=>Number.isFinite(v)&&Math.abs(v)<=1000);
-    let chart='请输入4个−1000至1000之间的数';
-    if(valid){const lo=Math.min(0,...values),hi=Math.max(0,...values),range=hi-lo||1,y=n=>65-(n-lo)/range*55,zero=y(0);let shapes='';
-      if(s.type==='line')shapes=`<polyline points="${values.map((v,i)=>`${15+i*50},${y(v)}`).join(' ')}" fill="none" stroke="#9670ae" stroke-width="3"/>`;
-      else shapes=values.map((v,i)=>{const end=s.type==='win'?(v>0?12:v<0?65:38):y(v),base=s.type==='win'?38:zero;return `<rect x="${i*50+5}" y="${Math.min(base,end)}" width="24" height="${Math.abs(base-end)}" fill="${v<0?'#bb688b':'#9e7bbb'}"/>`;}).join('');
-      chart=`<svg viewBox="0 0 180 80" role="img" aria-label="${esc({line:'折线',column:'柱形',win:'盈亏'}[s.type])}迷你图：${values.join('、')}" style="width:180px;height:80px"><path d="M0 ${s.type==='win'?38:zero}H180" stroke="#ded1e6"/>${shapes}</svg>`;
-    }
-    return office('Excel','迷你图工具 · 设计',select('type','迷你图类型',s.type,[['line','折线'],['column','柱形'],['win','盈亏']]),
-      table(['B2:E2 · 四个月数据','F2 · 位置单元格'],[[field('raw','源数据',s.raw,'text','maxlength="60"'),chart]]))+
-      output(valid?(s.type==='win'?'盈亏标记只比较正负；把4改成40，正向柱仍等高。':'迷你图读取这行数值；数据改变后图形同步变化。此处按当前行自动缩放。'):'源数据无效，图形暂不绘制。');
-  },()=>{});
+    const assignments=s.source==='two'?[[2,2],[3,3]]:s.source==='row3'?[[3,2]]:[[2,2]],range=s.source==='two'?'B2:E3':s.source==='row3'?'B3:E3':'B2:E2',place=s.location+'2'+(s.source==='two'?':'+s.location+'3':'');
+    const display=(row,col)=>{const pair=assignments.find(a=>a[1]===row);return pair&&col===s.location?`<div data-spark-location="${col}${row}" data-spark-source="B${pair[0]}:E${pair[0]}">${spark(pair[0]===2?s.raw:s.rawOther,s.type,s.mark)}</div>`:'（空）';};
+    return office('Excel','迷你图工具 · 设计',btn('编辑数据与位置范围…','ranges','',s.pane?'disabled':'')+select('type','迷你图类型',s.type,[['line','折线'],['column','柱形'],['win','盈亏']])+`<label><input type="checkbox" data-field="mark" ${s.mark?'checked':''}>标出高点、低点</label>`,
+      (s.pane?ui.dialog('范围设置 · 本例可选范围',select('draftSource','数据范围',s.draftSource,[['row2','B2:E2 · 第一行'],['row3','B3:E3 · 第二行'],['two','B2:E3 · 两行']])+select('draftLocation','位置范围起始列',s.draftLocation,[['F','F列（从F2起）'],['G','G列（从G2起）']])+'<p>两行来源对应两个位置格；单行来源对应一个位置格。本例只提供可匹配范围。</p>',btn('确定','applyRanges')+btn('取消','cancelRanges')):'')+
+      `<p data-spark-mapping>数据范围 ${range} → 位置范围 ${place}</p>`+table(['行 / B:E数据','F列','G列'],[2,3].map(row=>[field(row===2?'raw':'rawOther',`第${row}行源数据`,row===2?s.raw:s.rawOther,'text',`maxlength="60" ${s.pane?'disabled':''}`),display(row,'F'),display(row,'G')]))+
+      '<p>极值标记：红色为高点，蓝色为低点；本例每行独立缩放。</p>')+output(esc(s.message||'换来源不移动原数据；换位置将图形放入新的承载格。'))+
+      output(s.type==='win'?'盈亏只表示正负；4与40的正向柱等高。':'各行独立缩放时，4/8/5/10与40/80/50/100外形可相同，不能据图高判断金额相同。')+'<p class="core-caption">只模拟数值、给定范围和三种迷你图；不模拟任意区域、分组轴设置或原生Excel文件保存。</p>';
+  },(s,a)=>{
+    if(a==='ranges'){s.pane=true;s.draftSource=s.source;s.draftLocation=s.location;}
+    if(a==='applyRanges'){s.source=s.draftSource;s.location=s.draftLocation;s.pane=false;s.message='已重建数据行与位置格的对应关系，原数据仍在原处。';}
+    if(a==='cancelRanges'){s.pane=false;s.message='已取消，原数据范围和位置范围保持。';}
+  },(s,k,v)=>{if(s.pane&&!k.startsWith('draft'))return;s[k]=v;});
 
   register(['syllabus-worksheet-protection'],'锁定属性与保护开关一起决定能否编辑','先只勾锁定，再启用保护；比较A1与解除锁定的B1。',{
     protected:false,locked:true,a:'公式区',b:'请填写',message:'工作表尚未保护，两个单元格均可编辑。'
