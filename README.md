@@ -1,10 +1,10 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=59)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=60)
 
 保留教材11章结构与原题源关联，逐步建设能用于日常学习和做题的详细笔记。现有数据含460个题源标识、220条归并笔记与18条知识补充，共238条；这些是代码记录数量，不表示全站已经逐题核查或完整覆盖考纲。Windows和Office操作按Windows 10 / Office 2016解释；答案是否官方需有发布依据，出现冲突时记录版本、前提和核验来源。
 
-v59已由Work2发布并完成桌面、390px终验。Work1本轮完成v60“Excel图表、页面输出与全章终审”本地冻结，尚未发布；Excel全章转入新增资料驱动的增量维护。真实浏览器终验交由Work2在Pages部署后完成。Excel专项与恢复入口见[CONTENT-EXCEL.md](CONTENT-EXCEL.md)；既往Word及第一章记录保留在[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
+v60已由Work2正式发布并完成桌面、390px终验；Excel全章终审已完成，转入新增资料驱动的增量维护。Work1本轮完成v61“Windows剩余小节与第2章全章终审”本地冻结，尚未发布，真实浏览器终验交由Work2在Pages部署后完成。当前维护与恢复入口见[CONTENT-WINDOWS.md](CONTENT-WINDOWS.md)；Excel见[CONTENT-EXCEL.md](CONTENT-EXCEL.md)，既往Word及第一章记录保留在[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
 
 ## 开发
 
@@ -70,6 +70,6 @@ npm run check
 6. 详细正文保持直接可读，重要限制不藏在来源区；来源、争议放在学习正文之后。只修当批小节所需布局和交互，不顺势做全站重构。原始课件、课堂转写、个人月考及摘录不进公开仓库。
 7. 每批完成一个完整小节即验收并停止。进度记录列范围、文件、证据、待核项与下一批入口；断线后先读记录，再对照Git和实际运行恢复，禁止整体回退方便重做。
 
-已完成试点：[CONTENT-ROUND1.md](CONTENT-ROUND1.md)。当前批次与恢复点：[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。
+2.3历史专项：[CONTENT-ROUND1.md](CONTENT-ROUND1.md)。Word与第一章历史记录：[CONTENT-ROUND2.md](CONTENT-ROUND2.md)。Windows当前维护入口：[CONTENT-WINDOWS.md](CONTENT-WINDOWS.md)。
 
-v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。v57已由Work2发布；Work1当前进入v58本地开发。此前各版本的测试数量与“尚未发布”保留在对应历史记录中，不代表当前发布状态。
+v51展示修整记录：[READABILITY-v51.md](READABILITY-v51.md)。v57/v58等开发回合的状态见各自历史记录。此前各版本的测试数量与“尚未发布”保留在对应历史记录中，不代表当前发布状态。

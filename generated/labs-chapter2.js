@@ -204,14 +204,31 @@ register(['y2025q33'],'粘贴文本与移动文件，不是同一条规则','先
       else{s.targetFile=true;if(s.buffer.op==='cut'){s.sourceFile=false;s.cut=false;s.buffer=null;s.message='粘贴成功，文件已移动到D盘，待移动操作完成。';}else s.message='目标建立文件副本，源文件保留。';}
     }
   });
-register(['y2020q2'],'让置顶窗口盖住活动窗口，再实际输入','点击A或B标题，把键盘输入送到相应文本框；B置顶时不必成为活动窗口。',{
-    active:'A',top:true,textA:'A中的笔记',textB:'B中的笔记',focusWindow:null,message:'B当前置顶；点击A标题后，可输入A，同时B仍覆盖在前。'
-  },s=>controls(btn(s.top?'取消B置顶':'学习辅助：将B置顶','top'))+`<div class="lab-window-stack core-window-stack">${['A','B'].map((id,i)=>`<section class="lab-sample-window ${s.active===id?'active':''}" data-window="${id}" style="left:${i*15}%;top:${i*100}px;z-index:${id==='B'&&s.top?3:s.active===id?2:1}">${btn(`记事本 ${id}${s.active===id?' · 活动':''}${id==='B'&&s.top?' · 置顶':''}`,'activate',id)}${area('text'+id,'窗口'+id+'的文本',s['text'+id])}</section>`).join('')}</div>`+table(['窗口','实际文本'],[['A',esc(s.textA)],['B',esc(s.textB)]])+output(s.message)+coach('A、B是两个独立文本框。这里的“置顶”是外部学习辅助，不能理解成每个Windows窗口自带该按钮；覆盖次序与键盘输入焦点可以不同。'),
-  (s,a,v)=>{if(a==='activate'){s.active=v;s.focusWindow=v;s.message='键盘输入送到窗口'+v+'的文本框。';}if(a==='top')s.top=!s.top;});
-registry.y2020q2.focus=(s,key)=>{if(['textA','textB'].includes(key))s.active=key.slice(-1);};
+register(['y2020q2'],'切换窗口状态，核对文本与运行状态','先输入文字，再最小化、还原或关闭；B置顶时仍可把键盘焦点送到A。',{
+    active:'A',top:true,textA:'A中的笔记',textB:'B中的笔记',savedA:'A中的笔记',savedB:'B中的笔记',stateA:'normal',stateB:'normal',beforeA:'normal',beforeB:'normal',closing:null,focusWindow:null,message:'B当前置顶；置顶和活动是两个维度。'
+  },s=>controls(btn(s.top?'取消B置顶':'学习辅助：将B置顶','top'))+
+    `<div class="lab-window-stack core-window-stack" style="height:500px;overflow:auto">${['A','B'].filter(id=>!['min','closed'].includes(s['state'+id])).map((id,i)=>`<section class="lab-sample-window ${s.active===id?'active':''}" data-window="${id}" data-state="${s['state'+id]}" style="left:${s['state'+id]==='max'?0:i*15}%;top:${s['state'+id]==='max'?0:i*145}px;width:${s['state'+id]==='max'?100:82}%;${s['state'+id]==='max'?'min-height:460px;':''}z-index:${id==='B'&&s.top?3:s.active===id?2:1}">${btn(`记事本 ${id}${s.active===id?' · 活动':''}${id==='B'&&s.top?' · 置顶':''}`,'activate',id)}${controls(btn('最小化','min',id)+btn(s['state'+id]==='max'?'还原':'最大化','size',id)+btn('关闭','closeWindow',id))}${area('text'+id,'窗口'+id+'的文本',s['text'+id])}</section>`).join('')}</div>`+
+    controls(['A','B'].map(id=>s['state'+id]==='closed'?btn('重新打开'+id,'reopen',id):btn('任务栏：'+id+(s['state'+id]==='min'?'（已最小化）':''),'activate',id)).join(''))+
+    table(['窗口','状态','当前文本','已保存的教学副本'],['A','B'].map(id=>[id,{normal:'还原大小',max:'最大化',min:'最小化（仍运行）',closed:'已关闭'}[s['state'+id]],esc(s['text'+id]),esc(s['saved'+id])]))+
+    (s.closing?dialog('关闭前保存？','<p>本例未保存的文字不同于已保存副本。取消会继续编辑；不保存将丢弃未保存改动。</p>',btn('保存并关闭','saveClose')+btn('不保存','discardClose')+btn('取消','cancelClose')):'')+
+    output(esc(s.message))+coach('这是两份独立记事本文档的窗口教学模型，只模拟所列状态及保存副本；不写入真实磁盘，不模拟拖拽、系统调度或所有应用的关闭行为。置顶是外部学习辅助。'),
+  (s,a,v)=>{
+    if(s.closing){if(a==='cancelClose'){s.closing=null;s.message='取消关闭，未保存文字保留。';return;}if(!['saveClose','discardClose'].includes(a))return;const id=s.closing;if(a==='saveClose')s['saved'+id]=s['text'+id];else s['text'+id]=s['saved'+id];s.closing=null;closeWindow(s,id);return;}
+    if(a==='top'){s.top=!s.top;return;}if(!['A','B'].includes(v))return;
+    if(a==='reopen'&&s['state'+v]==='closed'){s['state'+v]='normal';s['text'+v]=s['saved'+v];s.active=v;s.focusWindow=v;s.message='重新打开教学副本，未自动恢复被丢弃的内容。';return;}
+    if(s['state'+v]==='closed')return;
+    if(a==='activate'){if(s['state'+v]==='min')s['state'+v]=s['before'+v];s.active=v;s.focusWindow=v;s.message='切换到窗口'+v+'；原有文本保留，没有重新打开文件。';}
+    if(a==='min'&&s['state'+v]!=='min'){s['before'+v]=s['state'+v];s['state'+v]='min';nextWindow(s,v);s.message='窗口'+v+'已最小化，文本保留、仍在运行；单击任务栏入口恢复。';}
+    if(a==='size'&&s['state'+v]!=='min'){s['state'+v]=s['state'+v]==='max'?'normal':'max';s.active=v;s.focusWindow=v;s.message='只改变窗口布局，文档内容没有变化。';}
+    if(a==='closeWindow'){if(s['text'+v]!==s['saved'+v])s.closing=v;else closeWindow(s,v);}
+  });
+function nextWindow(s,id){if(s.active===id){const other=id==='A'?'B':'A';s.active=['min','closed'].includes(s['state'+other])?null:other;}}
+function closeWindow(s,id){s['state'+id]='closed';nextWindow(s,id);s.message='窗口'+id+'已关闭；教学保存副本仍在，没有卸载程序。';}
+registry.y2020q2.change=(s,key,value)=>{if(!s.closing&&['textA','textB'].includes(key)&&!['min','closed'].includes(s['state'+key.slice(-1)]))s[key]=String(value);};
+registry.y2020q2.focus=(s,key)=>{if(!s.closing&&['textA','textB'].includes(key))s.active=key.slice(-1);};
 registry.y2020q2.afterRender=(s,root)=>{
     const paint=()=>root.querySelectorAll('[data-window]').forEach(el=>{const id=el.dataset.window;el.style.zIndex=String(id==='B'&&s.top?3:s.active===id?2:1);el.classList.toggle('active',s.active===id);el.querySelector('button').textContent=`记事本 ${id}${s.active===id?' · 活动':''}${id==='B'&&s.top?' · 置顶':''}`;});
-    root.querySelectorAll('textarea').forEach(el=>el.addEventListener('focus',()=>{s.active=el.dataset.field.slice(-1);paint();}));
+    root.querySelectorAll('textarea').forEach(el=>el.addEventListener('focus',()=>{if(!s.closing){s.active=el.dataset.field.slice(-1);paint();}}));
     if(s.focusWindow){const id=s.focusWindow;s.focusWindow=null;root.querySelector(`[data-field="text${id}"]`)?.focus({preventScroll:true});}
   };
 })();
@@ -246,18 +263,29 @@ registry.y2020q2.afterRender=(s,root)=>{
   const check=(key,label,value)=>`<label><input type="checkbox" data-field="${key}" ${value?'checked':''}>${label}</label>`;
   const windowBox=(title,body)=>`<div class="lab-browser"><header>Windows 10 · ${title}</header><div class="lab-browser-page">${body}</div></div>`;
 
-  register(['y2026q33'],'分别管理保护开关、空间上限与还原点','调整最大用量不会创造还原点；关闭保护会清除本例已有还原点。',{
-    enabled:true,quota:6,points:[{id:1,label:'安装驱动前',size:1.2},{id:2,label:'更新前',size:.8}],next:3,confirm:false,message:'系统盘总容量100 GB；还原点大小为教学示例。'
+  register(['y2026q33'],'还原系统状态，保留个人文档','先改变示例驱动和个人文档，再选择还原点；比较系统状态与个人文件。',{
+    enabled:true,quota:6,points:[{id:1,label:'安装驱动前',size:1.2,driver:'1.0'},{id:2,label:'更新前',size:.8,driver:'1.1'}],next:3,confirm:false,restore:false,target:'1',driver:'2.0',personal:'今天补写的复习笔记',message:'系统盘100 GB；点大小与驱动版本均为教学示例。'
   },s=>{
     const used=s.points.reduce((sum,p)=>sum+p.size,0);
-    return windowBox('系统属性 → 系统保护 → 配置',`<p>保护状态：<b>${s.enabled?'已启用':'已关闭'}</b></p>`+
+    return windowBox('系统保护与系统还原',`<p>保护状态：<b>${s.enabled?'已启用':'已关闭'}</b></p>`+
       controls(field('quota','最大用量（GB）',s.quota,'number','min="1" max="20" step="1"')+btn(s.enabled?'关闭系统保护…':'启用系统保护','toggle')+btn('创建还原点','create','',s.enabled?'':'disabled'))+
       `<p>当前占用 <b>${used.toFixed(1)} GB</b> / 最大用量 <b>${s.quota} GB</b></p><progress max="${s.quota}" value="${used}"></progress>`+
-      table(['还原点','占用'],s.points.map(p=>[esc(p.label),p.size.toFixed(1)+' GB']))+(!s.points.length?'<p class="lab-empty">没有可用还原点</p>':'')+
-      controls(btn('删除所有还原点','delete','',s.points.length?'':'disabled'))+
-      (s.confirm?dialog('关闭系统保护','<p>已有还原点会被删除。取消则保留保护与还原点。</p>',btn('关闭并删除','confirm')+btn('取消','cancel')):''))+output(esc(s.message));
-  },(s,a)=>{if(s.confirm&&!['confirm','cancel'].includes(a))return;if(a==='toggle'){if(s.enabled)s.confirm=true;else{s.enabled=true;s.message='已启用保护；现在尚无还原点。';}}if(a==='confirm'){s.enabled=false;s.points=[];s.confirm=false;s.message='保护已关闭，还原点已删除，当前占用为0。';}if(a==='cancel')s.confirm=false;if(a==='delete'){s.points=[];s.message='还原点已删除，最大用量设置保持不变。';}if(a==='create'&&s.enabled){s.points.push({id:s.next,label:'手动创建 #'+s.next++,size:1});trim(s);s.message='创建了1 GB的示例还原点；超过最大用量时移除最旧的点。';}},
-    (s,k,v)=>{if(s.confirm)return;s.quota=Math.round(number(v,1,20));trim(s);s.message='最大用量已调整；未超上限的已有还原点保持不变，空集合不会增加占用。';});
+      table(['还原点','占用','该点的示例驱动'],s.points.map(p=>[esc(p.label),p.size.toFixed(1)+' GB',esc(p.driver)]))+(!s.points.length?'<p class="lab-empty">没有可用还原点</p>':'')+
+      `<p>当前系统驱动：<b data-current-driver>${esc(s.driver)}</b></p>`+field('personal','当前个人文档',s.personal)+controls(btn('安装示例驱动3.0','install')+btn('系统还原…','restore','',s.points.length?'':'disabled')+btn('删除所有还原点','delete','',s.points.length?'':'disabled'))+
+      (s.confirm?dialog('关闭系统保护','<p>已有还原点会被删除。取消则保留保护与还原点。</p>',btn('关闭并删除','confirm')+btn('取消','cancel')):'')+
+      (s.restore?dialog('选择还原点并核对影响',select('target','还原点',s.target,s.points.map(p=>[String(p.id),p.label]))+`<p data-restore-impact>示例驱动将由 ${esc(s.driver)} 回到 ${esc(s.points.find(p=>String(p.id)===s.target)?.driver||'未选择')}；个人文档保持当前内容。</p>`,btn('确认还原','applyRestore')+btn('取消','cancelRestore')):''))+
+      output(esc(s.message))+`<p class="lab-coach">仅模拟驱动快照、空间配额及个人文档的独立性；不执行真实系统恢复，不模拟完整快照、重启、撤销还原和所有软件兼容行为。</p>`;
+  },(s,a)=>{
+    if(s.restore){if(a==='cancelRestore'){s.restore=false;s.message='已取消还原，当前系统状态未改。';return;}if(a==='applyRestore'){const p=s.points.find(p=>String(p.id)===s.target);if(!p){s.message='请选择仍存在的还原点。';return;}s.driver=p.driver;s.restore=false;s.message='示例驱动已回退；个人文档保持当前内容，没有从还原点找回旧文档。';}return;}
+    if(s.confirm&&!['confirm','cancel'].includes(a))return;
+    if(a==='toggle'){if(s.enabled)s.confirm=true;else{s.enabled=true;s.message='已启用保护；现在尚无还原点。';}}
+    if(a==='confirm'){s.enabled=false;s.points=[];s.confirm=false;s.message='保护已关闭，还原点已删除，当前系统驱动未回退。';}
+    if(a==='cancel')s.confirm=false;
+    if(a==='delete'){s.points=[];s.message='还原点已删除，最大用量与当前驱动保持不变。';}
+    if(a==='create'&&s.enabled){s.points.push({id:s.next,label:'手动创建 #'+s.next++,size:1,driver:s.driver});trim(s);s.message='保存当前示例驱动快照；超出最大用量时移除最旧的点。';}
+    if(a==='install'){s.driver='3.0';s.message='当前驱动改为3.0；已有还原点的快照保持不变。';}
+    if(a==='restore'&&s.points.length){s.target=String(s.points[0].id);s.restore=true;}
+  },(s,k,v)=>{if(s.confirm)return;if(s.restore){if(k==='target'&&s.points.some(p=>String(p.id)===v))s.target=v;return;}if(k==='personal')s.personal=String(v);if(k==='quota'){s.quota=Math.round(number(v,1,20));trim(s);s.message='只调整空间上限；没有创造还原点或回退系统状态。';}});
   function trim(s){while(s.points.reduce((sum,p)=>sum+p.size,0)>s.quota)s.points.shift();}
 
   register(['y2026q35'],'快速访问入口与原文件夹分别变化','取消固定后检查原位置，再删除原文件夹，比较两种结果。',{

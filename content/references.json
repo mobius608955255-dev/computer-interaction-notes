@@ -1505,6 +1505,10 @@
     [
       "Microsoft：机械硬盘碎片整理与SSD优化",
       "https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/defragment-optimize-your-data-drives-in-windows"
+    ],
+    [
+      "Microsoft：格式化及快速格式化参数（适用Windows 10）",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/format"
     ]
   ],
   "y2026q33": [
@@ -1515,6 +1519,10 @@
     [
       "Microsoft：系统还原",
       "https://support.microsoft.com/en-us/windows/experience/backup-recovery/system-restore"
+    ],
+    [
+      "Microsoft：File History个人文件备份与恢复（适用于Windows 10）",
+      "https://support.microsoft.com/en-us/windows/experience/backup-recovery/backup-and-restore-with-file-history"
     ]
   ],
   "y2025q34": [
@@ -2465,6 +2473,30 @@
     [
       "Microsoft：饼图一个系列、散点X/Y（含2016）",
       "https://support.microsoft.com/en-us/excel/select-data-for-a-chart"
+    ]
+  ],
+  "y2022q34": [
+    [
+      "Microsoft：打开/另存为对话框可缩放（OFN_ENABLESIZING）",
+      "https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-openfilenamea"
+    ]
+  ],
+  "y2026q26": [
+    [
+      "Microsoft：任务栏位置、锁定、尺寸（采用Windows 10部分）",
+      "https://support.microsoft.com/en-us/windows/experience/personalization/customize-the-taskbar-in-windows"
+    ]
+  ],
+  "y2026q32": [
+    [
+      "Microsoft：关机、睡眠、休眠（采用Windows 10部分）",
+      "https://support.microsoft.com/en-us/windows/experience/power-battery/shut-down-sleep-or-hibernate-your-pc"
+    ]
+  ],
+  "y2026q9": [
+    [
+      "Microsoft：可移动存储读写策略及ADMX对应路径",
+      "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-removablestorage"
     ]
   ]
 }

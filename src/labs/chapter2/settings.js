@@ -7,18 +7,29 @@
   const check=(key,label,value)=>`<label><input type="checkbox" data-field="${key}" ${value?'checked':''}>${label}</label>`;
   const windowBox=(title,body)=>`<div class="lab-browser"><header>Windows 10 · ${title}</header><div class="lab-browser-page">${body}</div></div>`;
 
-  register(['y2026q33'],'分别管理保护开关、空间上限与还原点','调整最大用量不会创造还原点；关闭保护会清除本例已有还原点。',{
-    enabled:true,quota:6,points:[{id:1,label:'安装驱动前',size:1.2},{id:2,label:'更新前',size:.8}],next:3,confirm:false,message:'系统盘总容量100 GB；还原点大小为教学示例。'
+  register(['y2026q33'],'还原系统状态，保留个人文档','先改变示例驱动和个人文档，再选择还原点；比较系统状态与个人文件。',{
+    enabled:true,quota:6,points:[{id:1,label:'安装驱动前',size:1.2,driver:'1.0'},{id:2,label:'更新前',size:.8,driver:'1.1'}],next:3,confirm:false,restore:false,target:'1',driver:'2.0',personal:'今天补写的复习笔记',message:'系统盘100 GB；点大小与驱动版本均为教学示例。'
   },s=>{
     const used=s.points.reduce((sum,p)=>sum+p.size,0);
-    return windowBox('系统属性 → 系统保护 → 配置',`<p>保护状态：<b>${s.enabled?'已启用':'已关闭'}</b></p>`+
+    return windowBox('系统保护与系统还原',`<p>保护状态：<b>${s.enabled?'已启用':'已关闭'}</b></p>`+
       controls(field('quota','最大用量（GB）',s.quota,'number','min="1" max="20" step="1"')+btn(s.enabled?'关闭系统保护…':'启用系统保护','toggle')+btn('创建还原点','create','',s.enabled?'':'disabled'))+
       `<p>当前占用 <b>${used.toFixed(1)} GB</b> / 最大用量 <b>${s.quota} GB</b></p><progress max="${s.quota}" value="${used}"></progress>`+
-      table(['还原点','占用'],s.points.map(p=>[esc(p.label),p.size.toFixed(1)+' GB']))+(!s.points.length?'<p class="lab-empty">没有可用还原点</p>':'')+
-      controls(btn('删除所有还原点','delete','',s.points.length?'':'disabled'))+
-      (s.confirm?dialog('关闭系统保护','<p>已有还原点会被删除。取消则保留保护与还原点。</p>',btn('关闭并删除','confirm')+btn('取消','cancel')):''))+output(esc(s.message));
-  },(s,a)=>{if(s.confirm&&!['confirm','cancel'].includes(a))return;if(a==='toggle'){if(s.enabled)s.confirm=true;else{s.enabled=true;s.message='已启用保护；现在尚无还原点。';}}if(a==='confirm'){s.enabled=false;s.points=[];s.confirm=false;s.message='保护已关闭，还原点已删除，当前占用为0。';}if(a==='cancel')s.confirm=false;if(a==='delete'){s.points=[];s.message='还原点已删除，最大用量设置保持不变。';}if(a==='create'&&s.enabled){s.points.push({id:s.next,label:'手动创建 #'+s.next++,size:1});trim(s);s.message='创建了1 GB的示例还原点；超过最大用量时移除最旧的点。';}},
-    (s,k,v)=>{if(s.confirm)return;s.quota=Math.round(number(v,1,20));trim(s);s.message='最大用量已调整；未超上限的已有还原点保持不变，空集合不会增加占用。';});
+      table(['还原点','占用','该点的示例驱动'],s.points.map(p=>[esc(p.label),p.size.toFixed(1)+' GB',esc(p.driver)]))+(!s.points.length?'<p class="lab-empty">没有可用还原点</p>':'')+
+      `<p>当前系统驱动：<b data-current-driver>${esc(s.driver)}</b></p>`+field('personal','当前个人文档',s.personal)+controls(btn('安装示例驱动3.0','install')+btn('系统还原…','restore','',s.points.length?'':'disabled')+btn('删除所有还原点','delete','',s.points.length?'':'disabled'))+
+      (s.confirm?dialog('关闭系统保护','<p>已有还原点会被删除。取消则保留保护与还原点。</p>',btn('关闭并删除','confirm')+btn('取消','cancel')):'')+
+      (s.restore?dialog('选择还原点并核对影响',select('target','还原点',s.target,s.points.map(p=>[String(p.id),p.label]))+`<p data-restore-impact>示例驱动将由 ${esc(s.driver)} 回到 ${esc(s.points.find(p=>String(p.id)===s.target)?.driver||'未选择')}；个人文档保持当前内容。</p>`,btn('确认还原','applyRestore')+btn('取消','cancelRestore')):''))+
+      output(esc(s.message))+`<p class="lab-coach">仅模拟驱动快照、空间配额及个人文档的独立性；不执行真实系统恢复，不模拟完整快照、重启、撤销还原和所有软件兼容行为。</p>`;
+  },(s,a)=>{
+    if(s.restore){if(a==='cancelRestore'){s.restore=false;s.message='已取消还原，当前系统状态未改。';return;}if(a==='applyRestore'){const p=s.points.find(p=>String(p.id)===s.target);if(!p){s.message='请选择仍存在的还原点。';return;}s.driver=p.driver;s.restore=false;s.message='示例驱动已回退；个人文档保持当前内容，没有从还原点找回旧文档。';}return;}
+    if(s.confirm&&!['confirm','cancel'].includes(a))return;
+    if(a==='toggle'){if(s.enabled)s.confirm=true;else{s.enabled=true;s.message='已启用保护；现在尚无还原点。';}}
+    if(a==='confirm'){s.enabled=false;s.points=[];s.confirm=false;s.message='保护已关闭，还原点已删除，当前系统驱动未回退。';}
+    if(a==='cancel')s.confirm=false;
+    if(a==='delete'){s.points=[];s.message='还原点已删除，最大用量与当前驱动保持不变。';}
+    if(a==='create'&&s.enabled){s.points.push({id:s.next,label:'手动创建 #'+s.next++,size:1,driver:s.driver});trim(s);s.message='保存当前示例驱动快照；超出最大用量时移除最旧的点。';}
+    if(a==='install'){s.driver='3.0';s.message='当前驱动改为3.0；已有还原点的快照保持不变。';}
+    if(a==='restore'&&s.points.length){s.target=String(s.points[0].id);s.restore=true;}
+  },(s,k,v)=>{if(s.confirm)return;if(s.restore){if(k==='target'&&s.points.some(p=>String(p.id)===v))s.target=v;return;}if(k==='personal')s.personal=String(v);if(k==='quota'){s.quota=Math.round(number(v,1,20));trim(s);s.message='只调整空间上限；没有创造还原点或回退系统状态。';}});
   function trim(s){while(s.points.reduce((sum,p)=>sum+p.size,0)>s.quota)s.points.shift();}
 
   register(['y2026q35'],'快速访问入口与原文件夹分别变化','取消固定后检查原位置，再删除原文件夹，比较两种结果。',{

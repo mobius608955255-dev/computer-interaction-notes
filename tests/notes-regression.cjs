@@ -205,7 +205,7 @@ test('one directory contains chapter links and grouped notes with a working focu
  const links=[...menu.querySelectorAll('a')];assert.equal(links.length,11);assert.match(links[1].textContent,/Windows 10/);assert.equal(links[1].getAttribute('aria-current'),'page');
  assert.equal(new URL(links[3].href).pathname,'/chapter4.html');let prevented;
  d.addEventListener('click',event=>{if(event.target===links[3]){prevented=event.defaultPrevented;event.preventDefault();}});links[3].click();assert.equal(prevented,false,'chapter links retain normal browser navigation');
- menu.querySelector('summary').click();const last=drawer.querySelector('.directory-section:last-child .note-list li:last-child a');last.focus();last.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));assert.equal(d.activeElement.id,'close-drawer');
+ menu.querySelector('summary').click();const last=[...drawer.querySelectorAll('.directory-section:last-child .note-list li:last-child a')].at(-1);last.focus();last.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true}));assert.equal(d.activeElement.id,'close-drawer');
  d.activeElement.dispatchEvent(new e.w.KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true}));assert.equal(d.activeElement,last);
  last.click();assert.equal(trigger.getAttribute('aria-expanded'),'false');assert.equal(drawer.hidden,true);assert.equal(e.w.location.hash,last.hash);assert.equal(d.activeElement.id,last.hash.slice(1));assert.equal(last.getAttribute('aria-current'),'location');
  trigger.click();d.getElementById('scrim').click();assert.equal(d.activeElement,trigger);e.dom.window.close();
@@ -1165,7 +1165,7 @@ test('v55 protects v54 semantic links and all other Word cards while fully rende
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/word-v54-protection.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex'),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter3.json'),'utf8')),e=env(3);
  for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.equal(hash([n.id,n.points.slice(0,row.count),n.sources,n.keys]),row.prefix,row.id);if(row.unchanged){const historical=structuredClone(n);if(n.id==='syllabus-office-exchange'){assert.equal(n.pointGroups[0].title,'文件格式与跨软件交换');historical.pointGroups[0].title='已有知识';}assert.equal(hash(historical),row.unchanged,row.id);}else for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}}
  // v56 Chapter1 and v57 Excel have explicit paragraph/identity guards below; other chapter guards remain.
- for(const [file,digest] of Object.entries(expected.otherChapters))if(!['content/chapter1.json','content/chapter4.json'].includes(file))assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(!['content/chapter1.json','content/chapter2.json','content/chapter4.json'].includes(file))assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),digest,file);e.dom.window.close();
 });
 test('v55 protection and print search hits reach distinct canonical paragraphs without losing an open model',()=>{
  const e=env(3),c=open(e,'y2022q71'),lab=c.querySelector('[data-lab]'),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8'));
@@ -1201,7 +1201,7 @@ test('v57 preserves every Excel historical point and all ten other canonical cha
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v56-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
  assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));
  for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);}
- for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(file!=='content/chapter2.json')assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
  const e=env();for(const n of notes)for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal(p.closest('details'),null);const decoded=e.d.createElement('textarea');decoded.innerHTML=n.points[i];assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(el=>el.textContent).join(''),decoded.value);}e.dom.window.close();
 });
 test('v57 input stores values separately from display and cancels pending edits',()=>{
@@ -1289,7 +1289,7 @@ test('v58 preserves v57 points sources keys and every out of scope chapter',()=>
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v57-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
  assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));
  for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);}
- for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(file!=='content/chapter2.json')assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
 });
 
 test('v59 conditional ranges include endpoints and top values include tied cutoffs',()=>{
@@ -1330,7 +1330,7 @@ test('v59 pivot source edits commit separately from refresh and reject invalid d
 test('v59 keeps all historical Excel identities and protects every out-of-scope note and chapter',()=>{
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v58-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
  assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged&&n.section!=='4.6'){const old=structuredClone(n);if(n.id==='y2020q8')old.related=old.related.slice(0,2);assert.equal(hash(JSON.stringify(old)),row.unchanged,row.id);}}
- for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(file!=='content/chapter2.json')assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
 });
 test('v59 search distinguishes new subtopics and navigation retains the live analysis state',()=>{
  const e=env(4),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')),c=open(e,'y2024q67'),lab=c.querySelector('[data-lab]');click(c,'pick','销量');click(c,'place','value');
@@ -1384,10 +1384,43 @@ test('v60 sparkline source rows map to destination cells and cancelled ranges ne
 test('v60 preserves v59 identities all old paragraphs and every unmodified note and chapter',()=>{
  const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/excel-v59-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter4.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
  assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged){const old=structuredClone(n);if(n.id==='y2020q8'){assert.equal(n.related[2].id,'syllabus-office-exchange');old.related=old.related.slice(0,2);}assert.equal(hash(JSON.stringify(old)),row.unchanged,row.id);}}
- for(const [file,digest] of Object.entries(expected.otherChapters))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+ for(const [file,digest] of Object.entries(expected.otherChapters))if(file!=='content/chapter2.json')assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
 });
 test('v60 search locates new chart and print paragraphs without losing the active chart on return',()=>{
  const e=env(),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')),c=open(e,'y2020q59'),lab=c.querySelector('[data-lab]');click(c,'switch');change(e,c,'type','line');
  for(const [query,id,i] of [['图表区、绘图区','y2020q59',4],['名称、数值和类别','y2020q59',6],['网格线、行列标题','y2023q10',9],['批量创建时范围','syllabus-sparkline',3]]){const anchor=id+'--point-'+i,input=e.d.getElementById('search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const hit=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===anchor),query);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);}
  assert.equal(c.querySelectorAll('[data-chart-result] polyline').length,4);for(const n of e.w.NOTES.notes.filter(n=>n.section==='4.6'))for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(n.id+'--point-'+i);assert.ok(p);assert.equal(p.closest('details'),null);}e.dom.window.close();
+});
+
+// v61 owns Chapter 2 protection; historical otherChapters checks above delegate only that file.
+test('v61 preserves all old Windows points and identities plus 2.3 and ten other chapters',()=>{
+ const expected=JSON.parse(fs.readFileSync(path.join(root,'tests/windows-v60-protection.json'),'utf8')),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter2.json'),'utf8')),hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
+ assert.deepEqual(notes.map(n=>n.id),expected.notes.map(n=>n.id));for(const row of expected.notes){const n=notes.find(n=>n.id===row.id);assert.equal(hash(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys??null])),row.prefix,row.id);if(row.unchanged)assert.equal(hash(JSON.stringify(n)),row.unchanged,row.id);if(n.section==='2.3')assert.ok(row.unchanged);}
+ for(const [file,digest] of Object.entries(expected.otherFiles))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
+});
+test('v61 minimize retains text and restores the preceding maximized state',()=>{
+ const e=env(2),c=open(e,'y2020q2');change(e,c,'textA','尚未保存的输入');click(c,'size','A');assert.equal(c.querySelector('[data-window="A"]').dataset.state,'max');assert.equal(c.querySelector('[data-window="A"]').style.width,'100%');click(c,'min','A');assert.equal(c.querySelector('[data-window="A"]'),null);assert.match(c.textContent,/最小化（仍运行）/);click(c,'activate','A');assert.equal(c.querySelector('[data-window="A"]').dataset.state,'max');assert.equal(c.querySelector('[data-field="textA"]').value,'尚未保存的输入');click(c,'size','A');assert.equal(c.querySelector('[data-window="A"]').style.width,'82%');e.dom.window.close();
+});
+test('v61 close cancel discard and save keep independent window documents',()=>{
+ const e=env(2),c=open(e,'y2020q2');change(e,c,'textA','临时内容');click(c,'closeWindow','A');click(c,'cancelClose');assert.equal(c.querySelector('[data-field="textA"]').value,'临时内容');click(c,'closeWindow','A');click(c,'discardClose');assert.equal(c.querySelector('[data-window="A"]'),null);assert.ok(c.querySelector('[data-window="B"]'));click(c,'reopen','A');assert.equal(c.querySelector('[data-field="textA"]').value,'A中的笔记');change(e,c,'textA','保存的内容');click(c,'closeWindow','A');click(c,'saveClose');click(c,'reopen','A');assert.equal(c.querySelector('[data-field="textA"]').value,'保存的内容');c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-field="textA"]').value,'A中的笔记');e.dom.window.close();
+});
+test('v61 window modal rejects background actions and escaped text stays text',()=>{
+ const e=env(2),m=e.w.NOTE_LABS.registry.y2020q2,s=structuredClone(m.initial);m.change(s,'textA','<img src=x onerror=alert(1)>');m.action(s,'closeWindow','A');m.action(s,'min','B');m.change(s,'textB','不能提交');assert.equal(s.stateB,'normal');assert.equal(s.textB,'B中的笔记');assert.ok(m.render(s).includes('&lt;img'));m.action(s,'cancelClose');m.action(s,'min','A');m.change(s,'textA','隐藏时不编辑');assert.match(s.textA,/<img/);e.dom.window.close();
+});
+test('v61 restore changes driver snapshot but not current personal document',()=>{
+ const e=env(2),c=open(e,'y2026q33');change(e,c,'personal','还原前刚写完的笔记');click(c,'install');click(c,'restore');change(e,c,'target','2');assert.match(c.querySelector('[data-restore-impact]').textContent,/3.0 回到 1.1/);click(c,'cancelRestore');assert.equal(c.querySelector('[data-current-driver]').textContent,'3.0');click(c,'restore');change(e,c,'target','2');click(c,'applyRestore');assert.equal(c.querySelector('[data-current-driver]').textContent,'1.1');assert.equal(c.querySelector('[data-field="personal"]').value,'还原前刚写完的笔记');e.dom.window.close();
+});
+test('v61 newly created restore point captures current driver and deleting points never restores',()=>{
+ const e=env(2),m=e.w.NOTE_LABS.registry.y2026q33,s=structuredClone(m.initial);m.action(s,'create');assert.equal(s.points.at(-1).driver,'2.0');m.action(s,'install');m.action(s,'restore');m.change(s,'target','3');m.action(s,'delete');m.change(s,'personal','不能后台改');assert.equal(s.points.length,3);assert.equal(s.personal,'今天补写的复习笔记');m.action(s,'applyRestore');assert.equal(s.driver,'2.0');m.action(s,'install');m.action(s,'delete');assert.equal(s.driver,'3.0');assert.equal(s.points.length,0);m.action(s,'restore');assert.equal(s.restore,false);m.action(s,'toggle');m.action(s,'cancel');assert.equal(s.enabled,true);m.action(s,'toggle');m.action(s,'confirm');m.action(s,'create');assert.equal(s.points.length,0);m.action(s,'toggle');m.action(s,'create');assert.equal(s.points[0].driver,'3.0');e.dom.window.close();
+});
+test('v61 task startup permissions dialog and device mechanisms remain independent',()=>{
+ const e=env(2),c=open(e,'y2026q34');click(c,'tab','startup');click(c,'startup');assert.match(c.querySelector('tbody').textContent,/已禁用/);click(c,'tab','process');assert.match(c.querySelector('tbody').textContent,/记事本/);click(c,'end','记事本');assert.doesNotMatch(c.querySelector('tbody').textContent,/记事本/);
+ const a=open(e,'y2025q32');change(e,a,'draft',true);click(a,'apply');change(e,a,'draft',false);click(a,'cancel');click(a,'open');assert.equal(a.querySelector('[data-field="draft"]').checked,true);
+ const d=open(e,'y2026q8');change(e,d,'mode','disabled');click(d,'properties');assert.match(d.textContent,/禁用/);e.dom.window.close();
+});
+test('v61 search and chapter navigation preserve the opened window model and exact text',()=>{
+ const e=env(2),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'),'utf8')),c=open(e,'y2020q2'),lab=c.querySelector('[data-lab]');change(e,c,'textA','返回后仍在');click(c,'min','A');
+ for(const [q,id,i] of [['五类归纳','y2024q6',7],['可移动存储访问','y2026q9',3],['个人文档','y2026q33',5],['步骤记录器','y2025q34',11]]){const input=e.d.getElementById('search-input');input.value=q;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const hit=e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id),anchor=id+'--point-'+i;assert.ok(hit?.matches.some(m=>m.anchor===anchor),q);e.d.getElementById('open-drawer').click();e.d.querySelector(`#drawer a[href="#${anchor}"]`).click();assert.equal(e.d.activeElement.id,anchor);assert.equal(c.querySelector('[data-lab]'),lab);}
+ e.d.getElementById('clear-search').click();click(c,'activate','A');assert.equal(c.querySelector('[data-field="textA"]').value,'返回后仍在');
+ for(const n of e.w.NOTES.notes)for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(n.id+'--point-'+i);assert.ok(p);assert.equal(p.closest('details'),null);const decoded=e.d.createElement('textarea');decoded.innerHTML=n.points[i];assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),decoded.value);}e.dom.window.close();
 });
