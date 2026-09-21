@@ -271,6 +271,14 @@
     [
       "Microsoft：并排查看和比较文档",
       "https://support.microsoft.com/en-us/word/view-and-compare-documents-side-by-side"
+    ],
+    [
+      "Microsoft：自定义或创建样式",
+      "https://support.microsoft.com/en-us/word/customize-or-create-new-styles"
+    ],
+    [
+      "Microsoft：添加文档标题",
+      "https://support.microsoft.com/en-us/word/add-a-heading-in-a-word-document"
     ]
   ],
   "y2023q55": [
@@ -1409,6 +1417,14 @@
     [
       "北斗系统官方介绍",
       "https://www.beidou.gov.cn/xt/"
+    ],
+    [
+      "统信桌面操作系统专业版V20",
+      "https://www.uniontech.com/OS-Professional-edition.html"
+    ],
+    [
+      "统信应用外设迁移解决方案",
+      "https://www.uniontech.com/case-applicationPeripheral.html"
     ]
   ],
   "y2020q31": [
@@ -2001,6 +2017,14 @@
     [
       "Microsoft：Excel基本任务",
       "https://support.microsoft.com/en-us/excel/basic-tasks-in-excel"
+    ],
+    [
+      "Microsoft：Word基本任务",
+      "https://support.microsoft.com/en-us/word/basic-tasks-in-word"
+    ],
+    [
+      "Microsoft：Word键盘快捷方式",
+      "https://support.microsoft.com/en-us/accessibility/word/keyboard-shortcuts-in-word"
     ]
   ],
   "syllabus-ppt-output": [
@@ -2143,6 +2167,14 @@
     [
       "ITU/WSIS：信息社会原则宣言",
       "https://www.itu.int/net/wsis/docs/geneva/official/dop.html"
+    ],
+    [
+      "NIST CSRC: information",
+      "https://csrc.nist.gov/glossary/term/information"
+    ],
+    [
+      "NIST Information Quality Standards",
+      "https://www.nist.gov/director/nist-information-quality-standards"
     ]
   ],
   "syllabus-windows-paths": [
@@ -2457,6 +2489,14 @@
     [
       "计算机历史博物馆：ENIAC后续改造与历史条件",
       "https://computerhistory.org/blog/programming-the-eniac-an-example-of-why-computer-history-is-hard/"
+    ],
+    [
+      "The IBM PC",
+      "https://www.ibm.com/history/personal-computer"
+    ],
+    [
+      "ThinkPad",
+      "https://www.ibm.com/history/thinkpad"
     ]
   ],
   "y2021q25": [
@@ -2497,6 +2537,12 @@
     [
       "Microsoft：可移动存储读写策略及ADMX对应路径",
       "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-removablestorage"
+    ]
+  ],
+  "y2020q1": [
+    [
+      "What is a microcomputer?",
+      "https://www.lenovo.com/us/en/glossary/microcomputer/"
     ]
   ]
 }

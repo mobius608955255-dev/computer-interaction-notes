@@ -1,0 +1,3380 @@
+{
+  "baseCommit": "b8172db215a715a306091e653f9cc19958ebeb28",
+  "baseTree": "88d92c07d129e7b15708fa2182ef1b200b077681",
+  "purpose": "Original complete note hashes plus narrowly authorized presentation changes. Never restore old point text in projections.",
+  "chapters": {
+    "1": [
+      {
+        "id": "y2025q23",
+        "count": 8,
+        "appendCount": 1,
+        "hash": "d0bbc9f9a8ac5563b21693aaf787d2f5dc1671ef0ee11640641406caab596efb",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "信息、数据与介质的关系",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "信息技术把采集、处理、存储和传递连接起来",
+                "indices": [
+                  3,
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "数据表意与信息技术发展",
+                "indices": [
+                  6,
+                  7
+                ]
+              }
+            ],
+            "afterHash": "f407c2f9fde9a9102b1f4d0cf20614a0c65595c56ded7076ff3800afbdf3046b"
+          },
+          "pointPresentation": {
+            "had": true,
+            "before": {
+              "0": {
+                "title": "数据需要语境解释",
+                "navigationLabel": "数据需要语境解释"
+              },
+              "1": {
+                "title": "数据的表现形式",
+                "navigationLabel": "数据的表现形式"
+              },
+              "2": {
+                "title": "介质、数据与信息的载体关系",
+                "navigationLabel": "介质、数据与信息的载体关系"
+              },
+              "3": {
+                "title": "采集、处理、存储与传递",
+                "navigationLabel": "采集、处理、存储与传递"
+              },
+              "4": {
+                "title": "信息社会的关注点",
+                "navigationLabel": "信息社会的关注点"
+              },
+              "5": {
+                "title": "效率与数字鸿沟",
+                "navigationLabel": "效率与数字鸿沟"
+              },
+              "6": {
+                "title": "不同数据也能表达同一信息",
+                "navigationLabel": "不同数据也能表达同一信息"
+              },
+              "7": {
+                "title": "信息技术的五次发展与计算机四代",
+                "navigationLabel": "信息技术的五次发展与计算机四代"
+              }
+            },
+            "afterHash": "68e22ecb81ffa013c41b4486d4720a719332604e9d4cca71c3b1f8c69d578973"
+          }
+        }
+      },
+      {
+        "id": "y2026q18",
+        "count": 4,
+        "appendCount": 2,
+        "hash": "e283ecffab58ccde5df07c1f16e453ef96a9a438dce83d56699d2a6de7789bdc",
+        "displayChanges": {
+          "pointPresentation": {
+            "had": false,
+            "before": null,
+            "afterHash": "54a077c785ed9c2163ea25783351cefc285620c23a122f740bcfec6132e69884"
+          },
+          "pointGroups": {
+            "had": false,
+            "before": null,
+            "afterHash": "70a4d36e147104f84a8ae684ff83c17551e0a1ace2a2f8a48e00616b5c96bdad"
+          }
+        }
+      },
+      {
+        "id": "y2025q21",
+        "count": 5,
+        "appendCount": 1,
+        "hash": "d32944fd1cc4bb2577d0879c4ced157dc0987a4db40d721fee26194785a8f909",
+        "displayChanges": {
+          "pointPresentation": {
+            "had": true,
+            "before": {
+              "0": {
+                "title": "ENIAC的代际",
+                "navigationLabel": "ENIAC的代际"
+              },
+              "1": {
+                "title": "继电器与电子管",
+                "navigationLabel": "继电器与电子管"
+              },
+              "2": {
+                "title": "集成度与性能变化",
+                "navigationLabel": "集成度与性能变化"
+              },
+              "3": {
+                "title": "ENIAC十进制与后来的二进制结构",
+                "navigationLabel": "ENIAC十进制与后来的二进制结构"
+              },
+              "4": {
+                "title": "最初的ENIAC与后来的改造",
+                "navigationLabel": "最初的ENIAC与后来的改造"
+              }
+            },
+            "afterHash": "74a655925e7c87075713a174918a91f2fc120286a572fdc3a6566d0412e91351"
+          },
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "代际依据与ENIAC",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "历史条件与课堂辨析",
+                "indices": [
+                  4
+                ]
+              }
+            ],
+            "afterHash": "a753cd0f8997e7bf3482145c98484322a2b968c56f836c033d238ba91d4518a7"
+          }
+        }
+      },
+      {
+        "id": "y2026q1",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "0840676875ae8013e59085afb186c16f9162e5c462b8147bf384c0b55974a1ff",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q31",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "03c9cd1d7f3f8beec1f2a700edf034f4e73c91cc777e0fcfd0c972a09105877b",
+        "displayChanges": {}
+      },
+      {
+        "id": "merged-3",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "92466b25388518f150e341f26a2e8ffb306022fbd7f6192965f9b7bc9de80413",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q2",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "0cdc495b3f1467b7b4ea19f1820ea241055c530cc7afc990bc6f52e806214295",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "ASCII码值与大小写计算",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "汉字编码与Unicode形式",
+                "indices": [
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "字形容量与实际字节示例",
+                "indices": [
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "怎样区分编码错误与显示问题",
+                "indices": [
+                  6
+                ]
+              },
+              {
+                "title": "输入与编码方案辨析",
+                "indices": [
+                  7,
+                  8,
+                  9
+                ]
+              }
+            ],
+            "afterHash": "47642d4dc21f54b61300319892dc96db067dc53b95a7410fd1cb853aaa57c176"
+          }
+        }
+      },
+      {
+        "id": "y2026q41",
+        "count": 6,
+        "appendCount": 1,
+        "hash": "3f360c4e44a266a0b7716bba00b43bbf432a425ba4539ad0ef2f5a4e889851e9",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "按位权与除基、乘基转换",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "二进制按组转换八、十六进制",
+                "indices": [
+                  3
+                ]
+              },
+              {
+                "title": "什么时候能有限精确表示",
+                "indices": [
+                  4
+                ]
+              },
+              {
+                "title": "课堂与真题的判断边界",
+                "indices": [
+                  5
+                ]
+              }
+            ],
+            "afterHash": "04a6b43b1639bfccc672a3ef271e050be79278dcf5e6677f30ff0f63d702f899"
+          },
+          "pointPresentation": {
+            "had": true,
+            "before": {
+              "0": {
+                "title": "位权展开转十进制",
+                "navigationLabel": "位权展开转十进制"
+              },
+              "1": {
+                "title": "整数除基取余，逆序排列",
+                "navigationLabel": "整数除基取余，逆序排列",
+                "blocks": [
+                  {
+                    "label": "方法"
+                  },
+                  {
+                    "from": "教学示例",
+                    "label": "完整算例"
+                  },
+                  {
+                    "from": "不能漏掉",
+                    "label": "检查"
+                  }
+                ]
+              },
+              "2": {
+                "title": "小数乘基取整，顺序排列",
+                "navigationLabel": "小数乘基取整，顺序排列",
+                "blocks": [
+                  {
+                    "label": "方法"
+                  },
+                  {
+                    "from": "教学示例",
+                    "label": "完整算例"
+                  },
+                  {
+                    "from": "按取出顺序",
+                    "label": "结果"
+                  }
+                ]
+              },
+              "3": {
+                "title": "二、八、十六进制分组与补零",
+                "navigationLabel": "二、八、十六进制分组与补零"
+              },
+              "4": {
+                "title": "有限小数的表示条件",
+                "navigationLabel": "有限小数的表示条件"
+              },
+              "5": {
+                "title": "数码、基数与位权的区别",
+                "navigationLabel": "数码、基数与位权的区别"
+              }
+            },
+            "afterHash": "d00de5dd0d7df53a9a7f78e7123480e99e6b1b62bbdddbc0628fa002c5393c26"
+          }
+        }
+      },
+      {
+        "id": "merged-1",
+        "count": 6,
+        "appendCount": 1,
+        "hash": "6835d7e623c494a00fe4fa739c39b151b3f9709196ed8172a8f6b315bf898692",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "CPU部件各做什么",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "指令怎样存储并运行",
+                "indices": [
+                  2,
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "课堂与真题的判断边界",
+                "indices": [
+                  5
+                ]
+              }
+            ],
+            "afterHash": "c0724cd7fceb0e7155e38170aa5e890a36f1dfb0cb22b9dde97f013c902c67d5"
+          },
+          "pointPresentation": {
+            "had": true,
+            "before": {
+              "0": {
+                "title": "CPU与五大部件",
+                "navigationLabel": "CPU与五大部件"
+              },
+              "1": {
+                "title": "运算器和控制器的分工",
+                "navigationLabel": "运算器和控制器的分工"
+              },
+              "2": {
+                "title": "存储程序与程序控制",
+                "navigationLabel": "存储程序与程序控制"
+              },
+              "3": {
+                "title": "二进制位串的解释身份",
+                "navigationLabel": "二进制位串的解释身份"
+              },
+              "4": {
+                "title": "取指、译码、执行与转移",
+                "navigationLabel": "取指、译码、执行与转移"
+              },
+              "5": {
+                "title": "图灵模型与冯·诺依曼体系结构",
+                "navigationLabel": "图灵模型与冯·诺依曼体系结构"
+              }
+            },
+            "afterHash": "b03b8c88a6536d54f0a5df16454b278681a2f04df4e6573e3d7dd21834d425b3"
+          }
+        }
+      },
+      {
+        "id": "y2020q23",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "690a589caed4e342345d17a75eac7ee2f8d017c76faa54bed8cf6c147cb8c7ea",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "三种语言的表达与执行方式",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "源文件怎样成为可执行程序",
+                "indices": [
+                  3
+                ]
+              },
+              {
+                "title": "课堂与真题的判断边界",
+                "indices": [
+                  4
+                ]
+              }
+            ],
+            "afterHash": "b515f810a15d987b6819f14b652a1bffc54e0f2b6cc1c2861fd101a05f1687d2"
+          }
+        }
+      },
+      {
+        "id": "merged-2",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "36923b7deb1c41db2ea0e0f3f8701b1f55ea1b35ecf8c8e4367bb07531631da7",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q41",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "6712e1bfd84c2f9fa1441d4ac4ecca1aa108e1a954efc786d6fece380dd9aa99",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q3",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "6db48e22e4a7ad93ff686612304a102cf48a7fe2f021347156572ed6fbd32f70",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "运行内存与Cache",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "ROM、Flash与外存分类",
+                "indices": [
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "剪贴板和回收站存在哪里",
+                "indices": [
+                  5
+                ]
+              },
+              {
+                "title": "课堂与真题的判断边界",
+                "indices": [
+                  6
+                ]
+              }
+            ],
+            "afterHash": "ef46839509392f0723341ddd038f224ebcffbd476da5dc844c21251ee8f99012"
+          }
+        }
+      },
+      {
+        "id": "y2026q31",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "6c4bca6069432e0a470d4dcbddf1ecb6a1d40a0b99f2fac399e8f73e737e18be",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q1",
+        "count": 3,
+        "appendCount": 1,
+        "hash": "5752523de160e06becf5a889b661db6146d23cb095def9456ff6879ece5269a0",
+        "displayChanges": {
+          "pointPresentation": {
+            "had": false,
+            "before": null,
+            "afterHash": "59971018a91f26ec2ebc25809c9204d6dcd692485880f72d680d2af63f49445b"
+          },
+          "pointGroups": {
+            "had": false,
+            "before": null,
+            "afterHash": "801beec6cb6f22da4b3aa5ff802de813bb0dd8d5f0955f679758fd8e77ae2480"
+          }
+        }
+      },
+      {
+        "id": "y2020q22",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "047aa2785d9068bb67595b74133b758c0614d0ead779ab1ec3cba6ca670e7889",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q4",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "81bd6097f65b3a08bd9897eeb39f7a45d2010a5a347ac3e7f508e256756754b4",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q1",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "a859cd3de35e57fa9cf23387db6f745fdae09e8bc038806958bacb0f8a53fd2a",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "字长、主频与指令速率的单位",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "并行条件与实际运行速度",
+                "indices": [
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "课堂与真题的判断边界",
+                "indices": [
+                  5
+                ]
+              }
+            ],
+            "afterHash": "d99f1bef79265865689820b68c2f399cc7f3a81296c480dede0aaf6159111b6e"
+          }
+        }
+      },
+      {
+        "id": "y2025q31",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "01857b9ec679b47dcab39da6dddf2f7992e5090c6faac37cea7998fdd23a4499",
+        "displayChanges": {}
+      }
+    ],
+    "2": [
+      {
+        "id": "y2022q44",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "93111dd74c143cec9760e0a87d64a7434603ec27086e7c4650934201ed51f2ff",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q7",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "0798c1a99aba88ca0785461c5e15539af1332494a717cfbc874e74b0980bb5a0",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q6",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "c0a3b091c434ab6cee86b92d302dde8dd1dfdac2f1e9de796016ec42222b3e3e",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "系统服务与组织方式",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "认识国产系统时同时看用途与适配范围",
+                "indices": [
+                  3,
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "功能、分类与应用",
+                "indices": [
+                  6,
+                  7,
+                  8,
+                  9
+                ]
+              }
+            ],
+            "afterHash": "c4bfa5e57d54530960078e889ff115ec20b97af0001aa3611b0a33a93a1557ab"
+          }
+        }
+      },
+      {
+        "id": "y2025q6",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "083d7d06892f66bd811d80473657b2aa2e4adbf1152e9a8c5831286d2dc5e821",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q7",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "724118642ccc3004cb91f730c673477544861aee3897e4d094cc93dabec766d2",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q2",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "729b7de66e1f8e4fc0a2f768403d85b4a7549cd92bb323bb581dde4b47c4559b",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "活动、焦点与置顶的区别",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "最小化、最大化与贴靠操作",
+                "indices": [
+                  2,
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "识别对象并完成操作",
+                "indices": [
+                  5,
+                  6,
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "e14541f7c9ed3c79390ccd3635eae54964232624e6c3e53ea17504c4e74a016d"
+          }
+        }
+      },
+      {
+        "id": "y2022q34",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "6bb4ee18fd1e207e3daa45ee1bb0fc247e80c1e607f7d8151946e4bde41b35b2",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q32",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "1c58d8795abdd0693fedbc4f4baa88141a561711834c2faaf0fc46185231ac71",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-windows-paths",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "0c328d8d11add9dc7843cb50f9f8d09ab9cccdf4ebdd3200ecc5a7d5b513a3c5",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "认识对象与路径",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "打开和导航",
+                "indices": [
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "库和长度限制",
+                "indices": [
+                  5,
+                  6
+                ]
+              },
+              {
+                "title": "在库中保存、移除与删除",
+                "indices": [
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "08564ce056d26806926d1133d303efb2d9133f8ec8c818b2188dd16a21bd2559"
+          }
+        }
+      },
+      {
+        "id": "syllabus-windows-selection",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "3ebe256bb4a766841fbcf7813114d3eb0a1deec9c48956ec9bca2259236313ee",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-windows-search",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "d6e1072f48ee2e3298835cb0c97526cb2cde061bdcf8adcb147a595ef2b519fc",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q3",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "f9c81e8173286b052a7f52fb07c42e6ceb95ad0931746d2c278433d5d3ad184c",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q24",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "c59271c98a1e844d023b9866feb5ffcb4e9116a387e5c2fc49a85204f696e738",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "先按逻辑卷和拖放提示判断动作",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "剪切文件何时完成移动",
+                "indices": [
+                  3
+                ]
+              },
+              {
+                "title": "批量命名与操作权限",
+                "indices": [
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "从选择到粘贴的完整流程",
+                "indices": [
+                  6,
+                  7
+                ]
+              },
+              {
+                "title": "文件剪切和文本剪切区别",
+                "indices": [
+                  8
+                ]
+              }
+            ],
+            "afterHash": "7a6a35741d81dba40bfa50e8c68f3ea9ebc9ff32b6e528223528720f0cbfb3ec"
+          }
+        }
+      },
+      {
+        "id": "merged-4",
+        "count": 15,
+        "appendCount": 0,
+        "hash": "f50bce891cd24c546b9c8e27e3c08c911e7c6ce887e3dc096180dc4b33efe1ec",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q75",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "7f6d07008472f9c7a43a045b37272a9a0f14dd28f44f42db28a8cddff8329c57",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q25",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "9c0a7f3e01dd474721bacda01c198716d5c47eca0cf716ad245b1b4321be84bf",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q35",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "75edb60349c25727988dc039ddd92cc7332dccf76677cf503227a720ff5ad04c",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q26",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "3b86d3364d2a3c3b7de4da8c982dc1db3c6265f8b7426b0a2a332092273bd471",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "控制面板视图与设置入口",
+                "indices": [
+                  0,
+                  2
+                ]
+              },
+              {
+                "title": "账户身份、UAC与操作权限",
+                "indices": [
+                  1,
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "入口、对象与权限边界",
+                "indices": [
+                  5,
+                  6,
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "ec31996e8ceb3a208c1a400833c1b6ed8fd8e4ba2783d0dc17937f2509fc9e5b"
+          }
+        }
+      },
+      {
+        "id": "y2026q34",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "abe2054b3829ace5d2a7d4333b1f8e037cf81d8098fc244ed7e4f9c57d6d19eb",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q26",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "bcabbabfd586a720666434bf0e62b1668a4d0dd7ed7f10b8ce12e3e8b2a9ca42",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "搜索入口及结果范围",
+                "indices": [
+                  0,
+                  1,
+                  4
+                ]
+              },
+              {
+                "title": "任务栏状态和管理入口",
+                "indices": [
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "桌面背景应在哪里设置",
+                "indices": [
+                  5
+                ]
+              },
+              {
+                "title": "入口、对象与权限边界",
+                "indices": [
+                  6,
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "74335dcb2fdd646c1d712cb73d8e9899521014111bfebdf6fa785cccc84b86ab"
+          }
+        }
+      },
+      {
+        "id": "y2026q8",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "bf541ff44c1e69f12d006f0ba555c2f84d57b308ef47975c21311d50ecc37490",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q32",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "2a3ccc1eead6a4e4ea33dadc24c2ad82fe1b085d4eccba9660f211f446e73a10",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q9",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "ab15a325772081603ba879dc0197044a69748d00a69a561a4eb4b2c0623d683a",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q33",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "ef0f3a670e1055d0ee7cc93707603d27f564589b70b65bf601ffc1d2b422caf2",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q5",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "29a2ebad9b2506d2f833e16657f6baaef8ab45ffe3ed3ce4dd90ff8e576fe015",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q33",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "10518dace80fe5f418aef494e2834c1587ee5717fa93c08db00a7e6c93705ecf",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q33",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "404cda13236d8d9d64239beaa7876a90451dbad1b0926e8b6b76023de56786ff",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q34",
+        "count": 12,
+        "appendCount": 0,
+        "hash": "5d7d7bee1ccbb523245c17547c2e9e3e2000333498e407b7c64cd8095ad41b9e",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "截图、画图与图像格式",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "传统记事本能改什么、文件保留什么",
+                "indices": [
+                  3,
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "日期计算怎样操作和读结果",
+                "indices": [
+                  6
+                ]
+              },
+              {
+                "title": "按任务选择实用工具",
+                "indices": [
+                  7,
+                  8,
+                  9,
+                  10,
+                  11
+                ]
+              }
+            ],
+            "afterHash": "3639deff29d0ec162e456111aa1214366b69c8fac197a12bed67d8386ff9c8c5"
+          }
+        }
+      }
+    ],
+    "3": [
+      {
+        "id": "merged-5",
+        "count": 8,
+        "appendCount": 1,
+        "hash": "c64433afc2b75b9f66585c58b7124fc1716e3f6c69d0b99f8e76a7d2e5bc5ae8",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "y2023q52",
+                "label": "统一修改同级标题应直接修改样式",
+                "reason": "导航和自动目录使用可识别的标题结构，包括标题样式或适当的大纲级别；修改外观时另核对对应样式定义。"
+              },
+              {
+                "id": "y2022q72",
+                "label": "Word标题层级决定导入PowerPoint后的幻灯片结构",
+                "reason": "同一套Word标题层级还决定从大纲导入PowerPoint时的幻灯片和正文归属。"
+              },
+              {
+                "id": "merged-6",
+                "label": "题注与交叉引用要配合使用",
+                "reason": "普通目录依据标题，图表目录依据题注，可对照理解自动目录各自的结构来源。"
+              }
+            ],
+            "afterHash": "c0a0782be7ee260987dd1c0da216a50dcc0655275186459a36c680a2b2534287"
+          },
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "建立标题层级并导航",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "生成与更新自动目录",
+                "indices": [
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "按任务选择文档视图",
+                "indices": [
+                  4
+                ]
+              },
+              {
+                "title": "撤消恢复看操作历史，并排查看看窗口关系",
+                "indices": [
+                  5,
+                  6,
+                  7
+                ]
+              }
+            ],
+            "afterHash": "5cb7da0962b3980ab8279d6dff1715d73418889e558c6a6ff968896f0c36208d"
+          },
+          "pointPresentation": {
+            "had": false,
+            "before": null,
+            "afterHash": "11d803d9c98db89408217b9d6cd88a1fadb5be98abe50a0782a9d5c1a3a0fe5c"
+          }
+        }
+      },
+      {
+        "id": "syllabus-word-text-editing",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "c946254b89b3b23f58799dbf52cb01cb958e31cc918caeb8d16d1da5833dbbdd",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q10",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "91f9539eace0586905e32357f9842b35be7e1f48a743434b640c9365087db9e2",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "y2023q52",
+                "label": "统一修改同级标题应直接修改样式",
+                "reason": "按样式选中可以批量删文字；只要统一标题格式时应修改样式定义并保留内容。"
+              },
+              {
+                "id": "y2025q48",
+                "label": "查找替换可批量处理文本、特殊字符与格式",
+                "reason": "查找替换也能按格式匹配，但要核对查找条件，防止相同外观掩盖不同样式。"
+              },
+              {
+                "id": "y2021q56",
+                "label": "样式和模板分别在哪个文件保存",
+                "reason": "删除或修改定义前，确认操作对象是当前文档还是模板，避免混淆影响范围。"
+              }
+            ],
+            "afterHash": "514212bf3b68351d4adfab15cd48d9bbf5fbb519f66bfaf6e18045616a233e58"
+          }
+        }
+      },
+      {
+        "id": "y2023q55",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "2782be6aef909d3e07620802f8ff498cbbada2e1de4cd68c1e6a8e3f72cbb3d2",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q7",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "cb7ea79d18f3e13e416929732b5f44515b895ab67e0b46f3cdf1261b306a632d",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "键盘选区的核心规则",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  5
+                ]
+              },
+              {
+                "title": "鼠标选择与选定栏",
+                "indices": [
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "按位置定位",
+                "indices": [
+                  6
+                ]
+              }
+            ],
+            "afterHash": "64a84e152c245c2065f6451cf1f07e1e0f0179808236a5086102be6926bd060e"
+          }
+        }
+      },
+      {
+        "id": "y2025q48",
+        "count": 11,
+        "appendCount": 0,
+        "hash": "c3738ca0980462d6f1f9a24613e2897ac50d9e58818723861be661566a7dc859",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "先完成普通查找与替换",
+                "indices": [
+                  6,
+                  7,
+                  8
+                ]
+              },
+              {
+                "title": "按字形或格式批量处理",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  5,
+                  4
+                ]
+              },
+              {
+                "title": "识别特殊标记与通配条件",
+                "indices": [
+                  3,
+                  9,
+                  10
+                ]
+              }
+            ],
+            "afterHash": "84e2719e8e474945a18760ac5e1dcacd540e2c9b6da99f89c91f9e0e7bf1ee84"
+          }
+        }
+      },
+      {
+        "id": "merged-8",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "37816f0474fabe8444893785c5aa4375541ab3a96dac13aa7d860144feb15d55",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q41",
+        "count": 12,
+        "appendCount": 0,
+        "hash": "f229734c34e51bb2ef781ba42d2cdac61bc74a58612a63e6f89253e6c28f9ab8",
+        "displayChanges": {}
+      },
+      {
+        "id": "merged-7",
+        "count": 14,
+        "appendCount": 0,
+        "hash": "e29a8e7f5e0790493203a9be0d255736206bbba7cf0e68e6a241cea558b9f58a",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q43",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "c22b4e747ad575b07f2f33f8646bc9a88c77c8ad1e68d4ccf96bdf5b82749137",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "首行缩进与段落结构",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "另起页与段落分页控制",
+                "indices": [
+                  4,
+                  5
+                ]
+              }
+            ],
+            "afterHash": "e14995164dcc2cccf41088385126bf82bbfacc5167d4b10777afcb4013509d39"
+          }
+        }
+      },
+      {
+        "id": "y2020q44",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "493e5dc94f83ddc5f9685c8f86ab2cac7e2f187bbd83469bc6569ed09ad9d5e1",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q61",
+        "count": 12,
+        "appendCount": 0,
+        "hash": "3f51a946f8b0760b6f4db3accdad96c9c5ced70b3e4a1d84183428dc416119a9",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2021q56",
+        "count": 12,
+        "appendCount": 0,
+        "hash": "0a29271763796a82ed256a07ccede5c373ae0506da07f0a71a2ff4275e084e4a",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q24",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "ed992fba0959f0e9d1553bceec3e80627873efec33d0d6df390a103f69e779a4",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q70",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "743b783e2df4964cb61c227c2ebf013f01a1b87715dcc3568ce8a68ebf57acf4",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q52",
+        "count": 13,
+        "appendCount": 0,
+        "hash": "b8c29e94a1f038723a3e26512a26bee674b106da53dac01867638cfaf891fa4a",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q54",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "d365aa11aa48d154f452434dfd88f225219b1018ffe4c7d82de2a18e652381f8",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-word-paragraph-spacing",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "d0cef525e8eeeda71d723f00e452358b29d5cff5bad76f124b949c144f1d1110",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q66",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "028f451010e86038d6faadf82669434789e1010f78aa47a855fdedadcf8af524",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q47",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "5efc0d14ca838dd50de3c51bc1c1854f923bf5b692ddf740c25c3a083b5c7b5c",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q60",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "8917a1015bd1d41c690569128c8e4cf6c798d0b9c10903902637208ad07eb2a8",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q62",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "4149ea1c16cad471a5c4d3eed8e3d4addcdea26ae88375e1c2c18c0caf8d8a46",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q63",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "b7bfb2802cf48110879fb21128e86c7b7679acad67b1d4110f91f58a70971235",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q69",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "b950c3a008ae26b73286dda58b42ece3491def278e31039cba6752c912a9c6bb",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q8",
+        "count": 21,
+        "appendCount": 0,
+        "hash": "839a2713a641e3e3769e8ec8b3dc51c98a44ebe16055cf84e98022efe6180d1c",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "建表与选择对象",
+                "indices": [
+                  5,
+                  6,
+                  7,
+                  8,
+                  9
+                ]
+              },
+              {
+                "title": "修改结构、合并与拆分",
+                "indices": [
+                  10,
+                  11,
+                  0,
+                  12,
+                  13,
+                  14
+                ]
+              },
+              {
+                "title": "文本与表格双向转换",
+                "indices": [
+                  1,
+                  15,
+                  16
+                ]
+              },
+              {
+                "title": "公式：范围、显示与更新",
+                "indices": [
+                  3,
+                  4,
+                  17,
+                  18,
+                  19
+                ]
+              },
+              {
+                "title": "排序与记录对应",
+                "indices": [
+                  2,
+                  20
+                ]
+              }
+            ],
+            "afterHash": "7e0cde76ea0542b3513c6737179134e740c3d7337578fe8e74c95afa3151eb64"
+          }
+        }
+      },
+      {
+        "id": "merged-9",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "e2b28cf39b727ac8afa1a4ebc995c7c60d1312583b39a1c48c6162bd1024081b",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q54",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "6d15b35cccb76efbda2e26369f3eea1df77e9f4e1e80c810e08ef405b0b81c32",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q7",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "43e6eae4556702df42b2460e9c2e559f94f3bacf2bf1f178d28f651766b36e3e",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q47",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "37778d98437b70eaa76059b0e5fd5921458e9003c3499124fb0b17a7d37c6949",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q56",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "4b007f626f82aa363b3b1ab54db4b2981a0cae623f2b39cfd5f56389f689d5c3",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q36",
+        "count": 12,
+        "appendCount": 0,
+        "hash": "db6ef0b36f8587cf0b669755fe7cde0e2ea53551b8dae02f0b33d74c03b96fec",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q71",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "7b8b22807c7a89772325386788ca2f052464bcd3ac2457dec50d5f2a4516710d",
+        "displayChanges": {}
+      },
+      {
+        "id": "merged-6",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "aa5c59dd3711dd722c1499a75a61aee3c65db11953145de96d407f4fdab366e7",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q55",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "8f2c1ab8b49f86269a226b50d2b44fd028505a521c6e7ec0685bcd1b2044577d",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q56",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "f69ae1c3060edad67da1668fd15e649fbe43eb1f0ed315919925517a54497e2e",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q55",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "f3799b657d898f41a41fffc9373939711fce3076960c3b59d0b5ee65c3c1b865",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q36",
+        "count": 11,
+        "appendCount": 0,
+        "hash": "32fbb322237e6e3e55a1c5150e1fa98ccf492866b748b440c023369032e90669",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-document-coauthor",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "90e5a07373441b09c4df3c3bcf3e32bcdc9fd79a5ab4ceada0e628dc776313cd",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "y2023q56",
+                "label": "修订记录编辑，接受或拒绝决定最终文本",
+                "reason": "联系相邻知识理解作用范围"
+              }
+            ],
+            "afterHash": "dab52842dabb0d7c6032f3cf0fb6d016591b06f77a17fb10389e26381634bbd6"
+          }
+        }
+      },
+      {
+        "id": "syllabus-office-exchange",
+        "count": 5,
+        "appendCount": 2,
+        "hash": "0916f64b7c54f33e507ee5c483c3e9cde3d938677745cf6731030f305e20d0b6",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "y2021q56",
+                "label": "样式统一一份文档，模板给多份文档共同起点",
+                "reason": "联系相邻知识理解作用范围"
+              }
+            ],
+            "afterHash": "0dc4808275fa59176ed21d75af35da4969465a734d3f521148f168c022a524c4"
+          },
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "文件格式与跨软件交换",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "先按任务选文字、表格或演示软件",
+                "indices": [
+                  2,
+                  3,
+                  4
+                ]
+              }
+            ],
+            "afterHash": "d063a216ce6934b61afcf9803902ee7388606ef540da53f54eb219612c54b10c"
+          },
+          "pointPresentation": {
+            "had": false,
+            "before": null,
+            "afterHash": "26a9627e362da5c12c221512dd2144c52f6228ab67aaae8d7005fe8cc4ba9e01"
+          }
+        }
+      },
+      {
+        "id": "syllabus-word-smartart",
+        "count": 2,
+        "appendCount": 0,
+        "hash": "3f1b2f604cdfe37eebff7644bc3748390c637b7cc945fe10d00005f04fe50e2c",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "merged-9",
+                "label": "图片尺寸、纵横比与裁剪",
+                "reason": "对照相邻概念，检查作用范围"
+              }
+            ],
+            "afterHash": "b178bfd1303317a5968d8e8c9eb6ce560ddf690d11455306e048f34c82d52321"
+          }
+        }
+      },
+      {
+        "id": "syllabus-word-screen-clipping",
+        "count": 2,
+        "appendCount": 0,
+        "hash": "82c9829dd86eeeb53f323f3e4824e72cf76ecc2b5b43a8b46aa539f5602fef90",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "merged-9",
+                "label": "图片尺寸、纵横比与裁剪",
+                "reason": "对照相邻概念，检查作用范围"
+              }
+            ],
+            "afterHash": "a1a4394ac907d64ebb036dbb3ad13187b75929fd994970cbd661c9baa43e36fe"
+          }
+        }
+      },
+      {
+        "id": "syllabus-word-print-controls",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "760f99783d4e71c40c28d9dd5f58be04709f313245a4b605a46b4acc54db3eee",
+        "displayChanges": {
+          "related": {
+            "had": true,
+            "before": [
+              {
+                "id": "y2022q71",
+                "label": "只锁表格、保留正文可编辑，需要设置编辑例外",
+                "reason": "对照相邻概念，检查作用范围"
+              }
+            ],
+            "afterHash": "7509b789dd3969bc429e4ad285c7d7b23616d776e8acaae15793fdb62fbb0279"
+          }
+        }
+      }
+    ],
+    "4": [
+      {
+        "id": "y2020q7",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "6612e4bb008e89206a4ef69de3d4ccc32fefbe41367f6a4ee528e3845078f14c",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q8",
+        "count": 13,
+        "appendCount": 0,
+        "hash": "52d9cfa6896e7387abb345d7312959a0c27968bd3520a9368968be7079e572df",
+        "displayChanges": {
+          "section": {
+            "had": true,
+            "before": "4.2",
+            "afterHash": "51679b87b90a5f0dc9fb326d578425772eda15bd83ec4c2758e8f644dc6930b6"
+          },
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "先认对象与选区",
+                "indices": [
+                  0,
+                  5,
+                  6,
+                  7,
+                  8
+                ]
+              },
+              {
+                "title": "新建、数量与版本",
+                "indices": [
+                  1,
+                  4,
+                  9
+                ]
+              },
+              {
+                "title": "工作表组和标签管理",
+                "indices": [
+                  10,
+                  11,
+                  12
+                ]
+              },
+              {
+                "title": "可见表与隐藏边界",
+                "indices": [
+                  2,
+                  3
+                ]
+              }
+            ],
+            "afterHash": "8dd3eaf13ad67b549e10bc44ac4c6b86148b35fbfaaa93667665bcd984599842"
+          }
+        }
+      },
+      {
+        "id": "y2020q48",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "7116d91c36386d73f03c6faede41119108da281a4af036b738a76be1ba453305",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2021q47",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "e8c2346c1ce7bdbb8e06014bc0af947e7f839768f57f0446cae90b6196156853",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q58",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "5748a538bcf966d5ff2ed424175e81eb91b8b9b632dd9a89aadc19ce0947ec14",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "原地批量运算",
+                "indices": [
+                  0,
+                  3,
+                  8
+                ]
+              },
+              {
+                "title": "复制移动与公式依赖",
+                "indices": [
+                  1,
+                  2,
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "选择粘贴部分与布局",
+                "indices": [
+                  6,
+                  7
+                ]
+              }
+            ],
+            "afterHash": "12c5a86b384aa7c5c4845f68609efbb8135e021cde1ae5bd280e171b4fe59926"
+          }
+        }
+      },
+      {
+        "id": "y2022q66",
+        "count": 3,
+        "appendCount": 0,
+        "hash": "355e075018332a5057d6ebe1a3562bc5ae4d462ae709a1914c7aca00ac9f4813",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q11",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "46ba64cf1a2858266fc526ba06aa1d93b99e83eed07776aa73fc20ede449af49",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q60",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "1fa8424d0d18f0e8881b4625f0b666d9a2d21d6331b98b95f1632547acfed6e9",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q10",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "479d1c90e161982893fdcb9e9e1e12f579b69cca0caffa2771b4c67052bed169",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q57",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "a2a3844d10a469a3e546ddf6dd64b07861f262b4709fa985fbf9be39a3ad13cf",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q58",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "a8fa6ffb0e05e47edb712f90f49a515049682a334da0785e258777a9da5e47c1",
+        "displayChanges": {}
+      },
+      {
+        "id": "merged-10",
+        "count": 18,
+        "appendCount": 0,
+        "hash": "ee73a966d29546c1e4b60ce3f9213bd13575d1793a6a2ecdef8d811b236ad00e",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "先写出可计算的公式",
+                "indices": [
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11
+                ]
+              },
+              {
+                "title": "按复制方向确定锁行、锁列",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "固定排名范围并理解并列名次",
+                "indices": [
+                  4
+                ]
+              },
+              {
+                "title": "按目标位置推导，再反查",
+                "indices": [
+                  12,
+                  13,
+                  14,
+                  15,
+                  16,
+                  17
+                ]
+              }
+            ],
+            "afterHash": "1c2b8ccd855c72a21e2fdf9d9fdaeee21599890b18ef5d10ca72f663e8b49567"
+          }
+        }
+      },
+      {
+        "id": "y2020q56",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "0d77bdbe09deafa013b98e2f784814bfd884a4615ab3bff92437328f716c5cfa",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "MID参数与越界结果",
+                "indices": [
+                  0,
+                  4
+                ]
+              },
+              {
+                "title": "LEFT、RIGHT的等价提取",
+                "indices": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "提取后连接说明文字",
+                "indices": [
+                  3
+                ]
+              },
+              {
+                "title": "文本长度、类型与可复制公式",
+                "indices": [
+                  5,
+                  6
+                ]
+              }
+            ],
+            "afterHash": "958f741de99085db64df79730b4d549f82884957fbc0073d79dd2269e703b3c2"
+          }
+        }
+      },
+      {
+        "id": "y2020q57",
+        "count": 11,
+        "appendCount": 0,
+        "hash": "d1e0e04c292f96d29e64aff00255d3fcd08a4eff1385956bae8bc8466ccb26bd",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2021q9",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "cc8d9e86153777e8c4b7a839dbc8194dec75062bfb710536f5cdbfe5364fc8b3",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "外部引用写法、锁定与链接更新",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  4
+                ]
+              },
+              {
+                "title": "三维引用的端点和表页顺序",
+                "indices": [
+                  3,
+                  5
+                ]
+              },
+              {
+                "title": "名称与跨表地址的使用边界",
+                "indices": [
+                  6,
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "1652db1837c32416895a0935bf8bfb664083948c9b62821e5eee4fadd01abfd8"
+          }
+        }
+      },
+      {
+        "id": "y2021q49",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "8dcb437dfea984f3b64791b900688747073b1d45bdefe106bf697d93ee0c90b0",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2021q50",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "459c95dcc9246cfa8e85ec1eea3f079e0daf158934a3452bfc6cd0e9b9a72a69",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "从内向外提取、求余与分支",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "原始编号完整性与判断范围",
+                "indices": [
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "先判断条件，再组合函数",
+                "indices": [
+                  5,
+                  6,
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "3f5418d187e40ef9610d2ff13e7e7fbd48be4a9db32abaf5dd46c623a4d8cb0d"
+          }
+        }
+      },
+      {
+        "id": "y2021q51",
+        "count": 13,
+        "appendCount": 0,
+        "hash": "02290d6b6e66fdad9bdf9eb76c0b128e5d942b6b1f3cf8f27d524aa974b4ebfb",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "基础函数先判断哪些值参与计算",
+                "indices": [
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12
+                ]
+              },
+              {
+                "title": "按题意选择计数或平均函数",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "固定同行区域并核对有效分母",
+                "indices": [
+                  3,
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "区分真正空单元格与空字符串",
+                "indices": [
+                  6
+                ]
+              }
+            ],
+            "afterHash": "6b08717448028a4ced98f7dd570ab21668d72310a2ee928b942a14c4c546ba87"
+          }
+        }
+      },
+      {
+        "id": "y2022q59",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "713f36f08458077a1e91f967c2dda666df0a348206828b50258587f22304bc4a",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q11",
+        "count": 14,
+        "appendCount": 0,
+        "hash": "fc34aff737baefd3a3bf96fe5b92acd0a8a3e2afa9a56d824b53518d6ac4b992",
+        "displayChanges": {
+          "section": {
+            "had": true,
+            "before": "4.3",
+            "afterHash": "0a118ff418673219b95ffa3e2cbe84843c03c1351cd0bf656fcc1ab2f9547f19"
+          }
+        }
+      },
+      {
+        "id": "y2026q50",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "4569af3a41dc9863dfadbc872ac24b504155dd8baebe05bb63c065a80cb3711f",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q50",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "c8e4eae966f9d64f27ea91fd8c10159a53a1ef1a7132deabfcb3dfcf1599e524",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "提取月份、连接文字并逐行填充",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "跨年分类与结果类型的检查",
+                "indices": [
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "从文本日期材料到真正日期",
+                "indices": [
+                  4,
+                  5
+                ]
+              }
+            ],
+            "afterHash": "27da51014f931cecdfedb794b37cc53ca525fe5aa8c00be1256901a464ae94e6"
+          }
+        }
+      },
+      {
+        "id": "y2026q49",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "ac14494c395e65b44c4e4e1f6d0f9b6bbeae6e146caac74be12bc4312e0809de",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q47",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "6140aa1eed571a867329cd32365becd918b642c4bf98564acfa3964a4f98b949",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "原有判断与操作",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "普通格式：先选对象，再核对显示",
+                "indices": [
+                  4,
+                  5,
+                  6
+                ]
+              }
+            ],
+            "afterHash": "cbff5b7082234bfd52c724037de1281b7efb3488d440827729a596c2ac509725"
+          }
+        }
+      },
+      {
+        "id": "y2020q52",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "6c549307406c77031d764bf4818c53b05d8135962bd480075ace171ebeeea46a",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2022q61",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "d704ddefb6d21800f3b4670477abd249e7f3800b60bffdf5495640c1608841f2",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q59",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "343867ffc40f4cd012604f8fa016d2177c36ed2005ac766464b45cc65721c9fd",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "确认数据区域与标题行",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "表格结构、扩展能力与外观样式",
+                "indices": [
+                  2,
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "数据清单按一行一记录、一列一字段组织",
+                "indices": [
+                  5,
+                  6,
+                  7
+                ]
+              },
+              {
+                "title": "表格对象的后续操作",
+                "indices": [
+                  8,
+                  9
+                ]
+              }
+            ],
+            "afterHash": "0e8de03dfe3524916c2f5f90cff0504ad318617743c60c13d561af0410398f3d"
+          }
+        }
+      },
+      {
+        "id": "y2025q52",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "3e045a99f99fa729bce4fa34420f4be01ecea6c8a91d055b38a862561bbc9345",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q9",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "c38f9941a330a0f4b888f4fa3953a291b7d2363db42e9e8218aa11637745c5ff",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q49",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "3a2f1b857d4cc5d377c1894718e36329898ba0a6b0b065caa8afdf174c8fc144",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2020q58",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "0c6e42f1a77ed540303bc8e72ac9a8a0e01dea1d21b0e7042bde01b181b2cd17",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2021q25",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "1a42f4e861d05648d87c3dc929b6bbc996eb73730287c4f30d36d2b139362f77",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2021q58",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "65179491c6c499c03cf8338b32be22db6f1a3829ff011a0b2f6a6e6d20a70a58",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q57",
+        "count": 7,
+        "appendCount": 0,
+        "hash": "2309a3711adc3f54272b3c3c0359fdcfd5dfbc6147f8fbf1b7e4800bf3b88827",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2024q67",
+        "count": 11,
+        "appendCount": 0,
+        "hash": "059030310af42243c176f21c179393d8a72534065b3e3b23f391c85217f5cb03",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "行列层级与报表筛选范围",
+                "indices": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              {
+                "title": "检查类型并选择值的汇总方式",
+                "indices": [
+                  3,
+                  6,
+                  7
+                ]
+              },
+              {
+                "title": "日期分组、刷新与新增源记录",
+                "indices": [
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "从源数据建立可复查报表",
+                "indices": [
+                  8,
+                  9,
+                  10
+                ]
+              }
+            ],
+            "afterHash": "c3e33b37a9f8a259513b59950d08ba43dd3651c5f089d9b6b7501d1726d696c8"
+          }
+        }
+      },
+      {
+        "id": "y2026q51",
+        "count": 10,
+        "appendCount": 0,
+        "hash": "1e2320501e24b0b40d739c5e9404f22b43aee01a2a8e3965df1a538498198112",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "清除筛选、关闭按钮与独立输出",
+                "indices": [
+                  0,
+                  1,
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "筛选后求和及手动隐藏边界",
+                "indices": [
+                  4,
+                  5,
+                  6
+                ]
+              },
+              {
+                "title": "自动筛选的完整操作链",
+                "indices": [
+                  7,
+                  8,
+                  9
+                ]
+              }
+            ],
+            "afterHash": "0da8193650193adc2e6ba3667d96c27ac18f42ab738b275ad05d74f68185856c"
+          }
+        }
+      },
+      {
+        "id": "y2020q59",
+        "count": 9,
+        "appendCount": 0,
+        "hash": "c52b7e3f15e6a6ce1eafd94f43bbbc152b6009ad1c084b24ee5524d86cfef9fe",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "判断类别与系列是否符合比较目标",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "执行切换并区别源区域错误",
+                "indices": [
+                  2,
+                  3
+                ]
+              },
+              {
+                "title": "从源数据建立图表并核对对象",
+                "indices": [
+                  4,
+                  5
+                ]
+              },
+              {
+                "title": "调整数据源与图表对象",
+                "indices": [
+                  6,
+                  7,
+                  8
+                ]
+              }
+            ],
+            "afterHash": "dacfa2dc803fd4bdf772bc90083b888691fa74160368afcda2fd737fcf6a508a"
+          }
+        }
+      },
+      {
+        "id": "y2021q52",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "75c8bdc8df7c1286a8a5e9eb0f735e97c5772bfc108dd75c97f0ce60fd2d20e5",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2023q10",
+        "count": 12,
+        "appendCount": 0,
+        "hash": "0390483037665a21d2df1a0fc1ad2bd2562151f961b3dad6993f66f0efaaf842",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "打印放置位置与页宽缩放",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "重复标题与不可用状态排查",
+                "indices": [
+                  2,
+                  5
+                ]
+              },
+              {
+                "title": "页码顺序和打印区域",
+                "indices": [
+                  3,
+                  4
+                ]
+              },
+              {
+                "title": "确定输出对象、纸张和边距",
+                "indices": [
+                  6,
+                  7
+                ]
+              },
+              {
+                "title": "跨页标识与打印外观",
+                "indices": [
+                  8,
+                  9
+                ]
+              },
+              {
+                "title": "预览、分页和输出检查",
+                "indices": [
+                  10,
+                  11
+                ]
+              }
+            ],
+            "afterHash": "7a1ea7f19d0404d61bc0e91f85d0284a47591163d43107278ffea811733668d2"
+          }
+        }
+      },
+      {
+        "id": "y2024q68",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "c0e9f7efd98a469e46fdc0b3de02718828db491924c6e56a8ac7e4f0cdbd3688",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2025q51",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "bc6cc58d05f5c9c0f7a7771992d7589531da80a9c95c1af407399f17f4bdb958",
+        "displayChanges": {}
+      },
+      {
+        "id": "y2026q52",
+        "count": 8,
+        "appendCount": 0,
+        "hash": "5738cf179366f4d0c3f6a9d5b2da4c82086d4f43fe3ccb360d0954fccb160439",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-sparkline",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "530317fbaa300adfd8d51d3a8d956f5b162f277b5f2449e3f50507fb8ed6be70",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-worksheet-protection",
+        "count": 4,
+        "appendCount": 0,
+        "hash": "5df83b5c950204106a3e60bda540990f4bf1fded4baf20fa29fde846d389c626",
+        "displayChanges": {}
+      },
+      {
+        "id": "syllabus-excel-multikey-sort",
+        "count": 5,
+        "appendCount": 0,
+        "hash": "8c12efafbaf6eb4d217378f9c6d326b60251c1001156ebf451e000e8e8e4b1bc",
+        "displayChanges": {
+          "pointGroups": {
+            "had": true,
+            "before": [
+              {
+                "title": "原有判断与操作",
+                "indices": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "title": "排序前提与结果检查",
+                "indices": [
+                  2,
+                  3,
+                  4
+                ]
+              }
+            ],
+            "afterHash": "88c8c34917e0bcf328936e95585c7bbbab421504a30557f4058b38d2be1ed89f"
+          }
+        }
+      },
+      {
+        "id": "syllabus-excel-whatif-table",
+        "count": 6,
+        "appendCount": 0,
+        "hash": "4c86778855046973bff46b05964d1e28db531efd3d660763fb771796e2d5432a",
+        "displayChanges": {}
+      }
+    ]
+  },
+  "protectedFiles": {
+    "CONTENT-ROUND1.md": "c1fa728b5a89d24138f0356ac7f96fded7d5ee3d764f3265dd141938c4c024d6",
+    "content/chapter10.json": "ad4a74a92f9efb689499ce694652f8cf77393a450d0d2c5d888d773d88f4a27d",
+    "content/chapter11.json": "64ff8b4093f0a10711f89b14cc2a1917da65b5450a75742127c38e2688a21751",
+    "content/chapter5.json": "048753ea9543298b1c01a61fb09041ed6602c9d617cbf3d8403666d408c5ee04",
+    "content/chapter6.json": "cdcad05f55a91fce865749dc15a3f188bc9e4a1c767217fd5c5a324574c4076f",
+    "content/chapter7.json": "5d5e86d1def2bf54a7afa36c1b366f72a06c52caa2acb36adf5dd66ac43ad3f0",
+    "content/chapter8.json": "5f0b6cf2afba45c9362508b5b339235ce051343abf5008b8df849760e9372d8a",
+    "content/chapter9.json": "5198ff23bd2cb57e026baa3c66595897ac83fa5d45855a699b5bc4ae207e5298",
+    "content/chapters.json": "9923097b205ebaf691838d9033699893263133769987389a408fbbed392f3c4c",
+    "content/comparisons.json": "d9e3cba89e5d0b756a86f33c03f1761065a13f50f5627da140ba32287d3357cd",
+    "content/legacy-demos.json": "f33eeba59e8a09727e69cb953439a2bb659a4c77971ac4721ba58e0650017c67",
+    "note-labs-runtime.js": "c6a4ba5857bb747d4c8b180624ad07252341a926dc51947a4c0e63496434a71e",
+    "simulations.js": "85b4314d8f75ec54484bde6186a60caa87c080cacd84dd0f2fab8ba5ea25b36e",
+    "src/labs/chapter1/arithmetic.js": "f3e0c75ae57755a387e833f7a6a56270219c72c1055c199052364e2ed52e45f8",
+    "src/labs/chapter1/foundations.js": "21d91badbccd10521beaee342a2984d268d52c4c0a92e34994d5d997f2c65cdc",
+    "src/labs/chapter10/database.js": "4ff23fcfc0e80b1a80f8a8892460a6d8b834a1649f34724e74f78fb6d43165dc",
+    "src/labs/chapter10/update.js": "b2f5d622116fbbeefd0e02dd8a1d4247d80ce407d8fd0fa6b22027d97c11aa77",
+    "src/labs/chapter11/algorithms.js": "e8a314a94befbdac9f56e6283fd8843de65017c282448b7c73a5803cd166f1cd",
+    "src/labs/chapter2/file-management.js": "a759e6d7fe9cb38c494a4e1c03a2d07ab100e4912a78df377697f2cff64a3ae5",
+    "src/labs/chapter2/maintenance.js": "45bf7eab1d916e2cf8ea67e6b3110c9777d6978c56b79972f260b57758c2fcd1",
+    "src/labs/chapter2/settings.js": "62765911aecb53a9189fac27bdb004391d51ea49a6a506037618a52473f0fcb1",
+    "src/labs/chapter2/windows.js": "1361697f292333d74193388266bd0ab4a5ab6ce5820de74c0e94327da4a6c48e",
+    "src/labs/chapter3/columns.js": "a4bbf74188d84c21d1084c306daca8a8dcb9574735de81a55baa262e1f109da1",
+    "src/labs/chapter3/paragraph-spacing.js": "a622ca25377f70bf62e13e918f95fca49722d9e60bb70782f99086267e20f180",
+    "src/labs/chapter3/printing.js": "0f65f78b1808e4dcbd0b54c2f7fd47971d3ff9988ebd3f430b6309a48ba1d427",
+    "src/labs/chapter3/text-editing.js": "8091850d53aa2693c65f928db9e0fdaa932c235e70ae06d05dc584ff76f90547",
+    "src/labs/chapter3/word.js": "282bc8eef22d0b2a89cdfce16b135fbf13ab9cd54b05a810ba1ba4a88351936f",
+    "src/labs/chapter4/analysis.js": "546b40aedc2767a99d33d44748be0bc48eb5a3f689fb6f4f1125c00b960066bc",
+    "src/labs/chapter4/excel.js": "44b3557691b98080072caa29c8335e6fc212acde27233d012b45573ab2a17408",
+    "src/labs/chapter4/syllabus.js": "9276947875d77a5adb453a76026507ad7599d0db41f66359cd376e61c1261d57",
+    "src/labs/chapter4/workbook.js": "1ead5ef14df9c3e406558bd390f9042a387dac96bdb05af2fffbc2c6326c895f",
+    "src/labs/chapter5/editing.js": "c089229575d6d41482835f655c300f519212f7ec421375ba31ef34ee945eab10",
+    "src/labs/chapter5/presentation.js": "70364482a9cb7f9be9f9618cc5263556fc9aceb2d3788416dbb2f12029e0e027",
+    "src/labs/chapter6/network.js": "0e890fe06590d5cc664b709b9a59772f282734b719d2e355a1d350fc5105ec74",
+    "src/labs/chapter6/printing.js": "645ed3ab7d5cc1c68cd6e8d6cddafb86a7b1d683bd3d86183f056a52dd2102ca",
+    "src/labs/chapter7/media.js": "806e6bb8292a2bd68e3919f53cdf7f93aa5ebd22c9934c7ecaf6a24f394adc1d",
+    "src/labs/chapter7/playback.js": "a0176c615afab7bed2ff132f7c571a016bc6dda4ecb758e90f120c2d46287da6",
+    "src/labs/chapter8/security.js": "529b279d8b4003e2e4ed11823da9d69da17b8cc7046af8c8fcd49fc013cbda04",
+    "src/labs/chapter9/chain.js": "9b66be45ac640295cff318956830d6929ae9ea4acca80a1863592c341f26c6f3",
+    "src/labs/manifest.json": "564e06f82ccf0b2a126b474da6bdcf7afd6effa4fc3a703cf7859cbf5cde0222",
+    "src/labs/shared/math.js": "95c609b399be3f807ab685272fea197e01b314b6440107add2b53167a4042718",
+    "src/labs/shared/syllabus.js": "411bf40cef4abaeb3bd0e29a028eae4d4cc3f5f323a1a1c1323877dd907a238a"
+  },
+  "laterSearchHash": "dad43c5b98c5ff64d1455017eadf33e6283c5d5fa6d2f751c20922381a52f9bf",
+  "referenceRows": {
+    "merged-3": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "0783ff9bec6d3dba6e8b402ef72242e01dbf79cae8c096f6ecc896320c237074"
+    },
+    "y2025q2": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "668cec4116008f084e576f2a8d6649e31baf991b6597a06959be61b06feaf056"
+    },
+    "y2026q41": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "a85b68010b8bc2b6da341a26b7c51c9839ebd2097710b632d499be3aa2c53d6d"
+    },
+    "merged-1": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "aae93112187344765286f532d9e430e6dd8494d9921b9ae5fdf77cea9af167c4"
+    },
+    "y2024q41": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "9f19c53f7534156c4b72c91ccf576ee0ccfcf3cb1e305631ae3a21809d315928"
+    },
+    "y2026q3": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "fa5c4b5f81909181e21d16fa96f4ca82015b32d2f856941d69b5a60989c6cb28"
+    },
+    "y2022q4": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "3928550d5a7b1b1ac3aa356d52914e7e2924baf0b0f4af64dfce92faf1cae4bd"
+    },
+    "y2025q1": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "8f831ec839a3363138c56d7a1de35921e8893442f842729634ae2c9ec7ab9174"
+    },
+    "y2020q2": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "f482252ee77548245c22d6d3eda14bd97274490be0e812c0db074332a5b3697b"
+    },
+    "y2020q3": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "66d986d6deeb3f81b1d5c4d984b87ddbd297c6c15fb9c020c8a53f425ae6274f"
+    },
+    "y2020q24": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "dbb35894b40d0fe96aa43ce3cd800f81d51962e47a9446079cfad5608a7bb039"
+    },
+    "merged-4": {
+      "count": 10,
+      "appendCount": 0,
+      "hash": "7ccf0f30086104863685b8b204d3438eb493ab364e1d7be325d179e950be6f0c"
+    },
+    "y2026q35": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "779fd42847c56af7bba3f432b82b284ffc474e94cd6d531ad585949d1eb60fae"
+    },
+    "y2025q33": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "828f4e0098cb3cdf8909932eec04ea11c19dd06086af17c7f3be6159a63bc3fa"
+    },
+    "merged-5": {
+      "count": 4,
+      "appendCount": 2,
+      "hash": "36924111cb2011a618f8a2c5056d80c934d665fd8b0281ebcd010ccf740da35d"
+    },
+    "y2023q55": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "462ec8b5c1e41848f5264d161cb5a1456cc72c46695798c757f50722af9b2b5d"
+    },
+    "y2025q48": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "ff35d55834199b674edbf344865ae6bbe2c705c5de1e5a24e17a029351afe826"
+    },
+    "y2020q41": {
+      "count": 9,
+      "appendCount": 0,
+      "hash": "722c273438d5fc91f420d2879927f02f74882a1dd80a143685a0c37cce8d8bb4"
+    },
+    "y2020q43": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "e2a3b615ed0ef2de1456823272228c900b10575f1080f6bc64727bbaba1e1f98"
+    },
+    "y2020q44": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "9b53e654ff61d23c750c2935b5a002d4bdf2d92a27a5cb8e8b3664e2e8cb92ce"
+    },
+    "y2020q61": {
+      "count": 9,
+      "appendCount": 0,
+      "hash": "7bccfdb9326d912739f5036edd89ddd52c612ed3ac2cb0538ada22b8a5fd6fe6"
+    },
+    "y2021q56": {
+      "count": 8,
+      "appendCount": 0,
+      "hash": "1c3dd88097b2623e76027f274228e379271a4124884bb4bababd3675a1ec6795"
+    },
+    "y2022q24": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "cbe1f741fa70fba44bafa1d4e8664ef9235c3624152434d9f58add384c1e2466"
+    },
+    "y2023q52": {
+      "count": 11,
+      "appendCount": 0,
+      "hash": "b92fe92fe3e7fc44a51f674771c30e6cc0659ba0ca78fde0db338ad817ee553c"
+    },
+    "y2020q62": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "b9412f0d01e37e6b9671937428bce53ef565b3cf6b97ef271db6dfa09267129e"
+    },
+    "y2020q63": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "6b1e1bcbad27217b996ee5d1c4a95d6b17cfb72842510f8d142be8b0b61ab2a3"
+    },
+    "y2022q69": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "15593efe9f747ee33f4a6d0aaa7ffe68079fad972d6ba742cac05e3f4273864d"
+    },
+    "y2024q8": {
+      "count": 20,
+      "appendCount": 0,
+      "hash": "e683d07db203032808878fe4845713d05a3dfbd081c7d3196832654d374eba94"
+    },
+    "y2025q47": {
+      "count": 12,
+      "appendCount": 0,
+      "hash": "adbcb47791c471d8ea549a8f9dce7a013a36f55bbb82ad49fe2c36a83fef3d87"
+    },
+    "y2026q36": {
+      "count": 14,
+      "appendCount": 0,
+      "hash": "6d64b35619f1b2983bdac786082d519e13af7a455f9634f69f67a440a3ab13f4"
+    },
+    "y2022q71": {
+      "count": 9,
+      "appendCount": 0,
+      "hash": "3b4f928ebf8fcd3835ef01e411219d4957e7de48bf60bf60824dca2c48725b98"
+    },
+    "y2023q56": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "9a5dd698093bea6af4c6364bbf1240ebea786384e5de5eb8034f9f191f024dff"
+    },
+    "y2025q36": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "eff58a6f0edc69c23f319cfb9fa345c22c231489863a19f3100c553883e798b6"
+    },
+    "y2020q48": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "c6e7226ead44760c62e0b5fccb72f7a0b9d6d893cd7b70ab84500d8d843bc24e"
+    },
+    "y2022q58": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "acc3d0268ed52b35c28a2e4b70c789fdea49d26db96223ec2e5f652121fd9304"
+    },
+    "y2023q11": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "2c20b5df35f19ac13207edb5c44eda7e5c84d1283ad184bfa2f36b4101a567e5"
+    },
+    "y2023q60": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "b803076523267e1de56b911e63722fdf2bae0709219e33d9d06f23e0aab14054"
+    },
+    "y2024q57": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "ee743f4da18a132ef609606c212fcf228170e653852a4085d422baeb56022a4f"
+    },
+    "merged-10": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "37af917c1d98c5f17dd0836858795dfed3e0e8a4d03656659faf8bc09de55640"
+    },
+    "y2020q56": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "b9ebf72bf42c94eb0d5305b0d02e7ec16d3b716f3d5f736b0cb7d469973485fb"
+    },
+    "y2020q57": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "f92264fabd4249cf103ed2e8f31303c9400bbd28fd6be63cca21cbd614605492"
+    },
+    "y2021q49": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "0fc52d9f599b0f40c2da7937dc3e844847bdbe867881a8ff5425e6e419cda54b"
+    },
+    "y2021q51": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "2ce2c1b02f9ff20fd0f2cb654f1ac793d08534d5096b15c1076d67836eb5dca5"
+    },
+    "y2026q50": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "9b9c84ba8a091a79aca5719d5ac4444a718955eafdb68e60fd4f88e724c842b0"
+    },
+    "y2026q49": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "7496802a1bf4eb5cd3aba4b3a920e94cb058bafda00e4b6dd92132fd1d7de300"
+    },
+    "y2020q47": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "68bcbb76833f959efc7cb59911e85f26a3545cb4b1a1279753c41f09e23376a8"
+    },
+    "y2020q52": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "27d4f040088fc9f7eba87782eb1082e065587590808e6a36a4437ebcc7cd9d86"
+    },
+    "y2022q61": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "2640d0db85265ba0bdffdac2c975352b919d577eca073292c7272f71cb565a62"
+    },
+    "y2025q52": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "27d4f040088fc9f7eba87782eb1082e065587590808e6a36a4437ebcc7cd9d86"
+    },
+    "y2020q9": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "fde203a988bae7df7adb0f1c7b0e514a98f761328a69ed6371aba6c084f56ae5"
+    },
+    "y2020q58": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "906dbd8f6fef2779ce5c14e882fb4f9facf674e90b1ad73a085276c2797d5ffd"
+    },
+    "y2021q58": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "94e62d6bc540c3ecdaae2f1ee44ec496d64c5d27f64ac036d8d72cb97c7261b5"
+    },
+    "y2023q57": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "a812fc5a15d347b6f65475d74454ef61dc87110426b283966f9c10d7e12b9d71"
+    },
+    "y2024q67": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "a9d5867b4dfdf0165d67ff2a672c167832c79766e164f71ccf9064e8b217cd50"
+    },
+    "y2026q51": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "107c31f5c40862f560d05b9f14eebce7e1d8a774581c0fa203d1d11c3fb3e5ec"
+    },
+    "y2025q51": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "375c569ee589735900037ec42f9a5c4522cbdd42d09a558d686d9f81c593e0dc"
+    },
+    "y2020q10": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "1754c0dd3af5b93960fbf89255fb83eaa8e7dfa5cd7a30a3d431542e8587fcf7"
+    },
+    "y2020q12": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "ab15daed7d7dc1e4006c88eceb8045d0322fb83d4966905bad4015edde02aac5"
+    },
+    "y2020q11": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "cfb5da0e6dcf637a292cf703fb5b6378f53a44e1b19507ef4da2b4fcc1004d9b"
+    },
+    "y2020q53": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "d1fbfb5cf18ee9d6735312f6bcfb2f34fb8f14041ef95375cedc99485aac955f"
+    },
+    "y2020q54": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "da75858285b36b4f6fac14e1baec70f3c6b45e6454cdd974b3e5cef1a64b7b40"
+    },
+    "merged-11": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "d8d78027b3964524bbec1b028e5eab36f247637e9e39fa868d2ab2cdcbc54a51"
+    },
+    "y2023q13": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "1a4e80ac8e6cde26a289f9a97177b5c20f32225397c188e7cebd83ee75945f34"
+    },
+    "y2024q65": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "1d512216c7466272f815e1ac94c819f3bb50cff4330e73887517f7b689caeb86"
+    },
+    "y2026q55": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "4c9b820187af60cebce8f4e1ab1d9c2e1946f0db4a2383aa86f88a50d1e30e1f"
+    },
+    "y2020q26": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "8fcb69a6843838386a61fae0c0865855ac689cd2c72344c1f955027fb732f5c8"
+    },
+    "merged-13": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "ca4b70d0fc0628ae4099c1126a1b238ddefdf04ed93568e7beea1ffa3978f6c7"
+    },
+    "y2023q17": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "1abdfe70d8e92c42c956b0ffd16a06d48b36551da604d946fd99fb55aca43485"
+    },
+    "y2023q47": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "5fdf0a35524d3f09df98305bfc4f67b36ca1cc7bfea1ea33fbeb007a61e66925"
+    },
+    "y2026q14": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "52af9752baa361c95d9e86f9c8032ad6bc1457d6adc542e006bcc5a53f9cf179"
+    },
+    "y2026q28": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "d8278968269099e023a560f15a17cfd4e718a5a845b82b84c07bd567eb7e7f95"
+    },
+    "merged-14": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "6db3ac88c94ff5af191471bd39030adb0fa6aba0bd3cb2d247e7dc5fd21057d1"
+    },
+    "y2020q27": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "10773ca00b654d90234569b841b34759b7a823a66fe4e69b791a76699049d768"
+    },
+    "y2023q18": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "f903c4053336e43ce3a80418a65df325876d5716e28f09a5e5ba0c5389e587c9"
+    },
+    "y2024q32": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "03b6a59328d5aede02b8d34d88580b69da252e47d5539429f325c4a91985dca7"
+    },
+    "merged-15": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "918209466f1d0384fd9cc7d54ebda0847d9398635c55788710fa81b01f8d0cbf"
+    },
+    "merged-16": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "6e09001c4e866e1838897d47bc2d6b0d21bc40e58a467424fdbc16ba72840d5f"
+    },
+    "y2026q39": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "d93c078450dcdc6269b73a1668243300d57c16d8ab48d7707789f834f472a32c"
+    },
+    "merged-20": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "70e0fcb05c849a0e699c50cd7c05ae8c8bbd1a19acd3fd8dc7b8341387aa09aa"
+    },
+    "merged-21": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "ab147ebff7c2a7bbc021e58dafb4b1dcafdf8fe21fc26a6da7ddce68f3608e6b"
+    },
+    "y2023q14": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "791523d9536f66b0256f2c15eeabc712e511758b14cbdcc66769801c9e237c32"
+    },
+    "y2024q36": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "b9cc2a829a402760e35163028e00ff68da23753afca83a4dbe02d09fe3581fa9"
+    },
+    "y2021q33": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "d761caacebe636e829fe3c585ba2e31aabcace8aa39bcc346e90ee84746c737a"
+    },
+    "y2024q69": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "260ff9bd5b4076de283db08e5c2fe0b6e0c692c44403400d5e83283e9b99f7c4"
+    },
+    "y2020q20": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "4e80aeada62bf0d0a81d1014931ee3516bceee84a7dc54b6160ec0cbf11a9aed"
+    },
+    "y2026q18": {
+      "count": 1,
+      "appendCount": 2,
+      "hash": "d6932a3d21475e0480c09f9da52a9a6703c56ed9035cd36edf6362bbed1d50b2"
+    },
+    "y2020q31": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "5f749a0ad107251199056d01b9905fc343657f2aceb66b71a92bec61b853f560"
+    },
+    "y2020q23": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "d3097da8eaf26b48f5ad4b7bae9d69b4d524fe7fba38aeb4a7cc8e1d9769ccf9"
+    },
+    "y2022q44": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "fb245a78975eba2e346c3fdb891e603a072753cb48412f1c5838c1458f86a878"
+    },
+    "y2026q7": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "c23e82d800e091a604df8ef22a78a7f3aa3c4a6d475ed9c5c87eb7f80cc973ea"
+    },
+    "y2022q75": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "926726975109219435b7d1d5fe8f2bf46d0833a0e20d08f0a97b1aec51c7fdf9"
+    },
+    "y2026q25": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "ae394f4bcff91fcf06b7e99b54f371b0bc883bb34a2c8b5f6b18b1fad6d04f21"
+    },
+    "y2025q26": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "291d2f78e9d39a76f815c814ee21e308613819a98386836ab7a739b5bfe797cf"
+    },
+    "y2026q34": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "898e640f76fd282404e5d3b3445632d2190f6ad88e8ad255a9390e77715a4b7d"
+    },
+    "y2026q8": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "67e1d5ab98ef671ba70bb6280d3543bfffd355986a0246bde84a82d04e77f7dd"
+    },
+    "y2024q5": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "36f2062fe867c4864e8f245a2ddc441ad0d7a5f05cc4f19ab927b0a60e0f8986"
+    },
+    "y2026q33": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "5506c9f9867710fe3a57396b40e5d5dee1223bf9e7999b4325c4d2447ef4c1c5"
+    },
+    "y2025q34": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "29dcb8a5dee99f7ddc61a46fa9415f11223457eb8d36f9c4f13877a268d8a31e"
+    },
+    "y2026q54": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "4571a391b9ba49b304cf738eb2d5ff2484e09d8cf8282217ea36058f654bddd1"
+    },
+    "y2022q72": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "c6c3f9a9b653a476ec4d0a8a782cdcf475a11d5a79cb27c2649b300f04bcb381"
+    },
+    "y2020q60": {
+      "count": 10,
+      "appendCount": 0,
+      "hash": "7bf722f3dd06a74b8958ecc4629d4e2f5987a5c9cefd5d9a5d687318c0e3cd80"
+    },
+    "y2022q70": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "db0d8b68d7cccf0cfb094ec7fe3f71cff1072fe223e89234ccaf119184c29213"
+    },
+    "y2023q7": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "898b8e95bc6be1321d49bc4310a98f23280e4e427d08ee20cef247bf744389dd"
+    },
+    "y2024q55": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "bc5cc07d07bd3fd3526e1f2acb3b72435eb356220319bcbde0fb5eafb1bb5ffd"
+    },
+    "y2024q26": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "620dae2f02c81fbbfdbcf35ab189cffcf2e3d5dfd934e8ccf3accecf0ab4240d"
+    },
+    "y2024q46": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "fcd1ca2749328092839402a01ec12c0c3988d137dcd8d2022963d7367770dc8d"
+    },
+    "y2025q10": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "eb2c5f6a08c3a6fec91efe48412a33a4e2bea08889729fc3b24e04d711049e41"
+    },
+    "y2023q35": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "dd77564f31ab9d53c19eac92953fb387bc8613159dea2038958a33d733286dea"
+    },
+    "merged-8": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "f44692b0d23215e29d9ad436534cfb5c07a677c3738413e27805447321366e61"
+    },
+    "y2026q53": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "00a2f120ccaeecde304e3fad5ae3c220c3458b3e112ed5e12ca989029041d2fc"
+    },
+    "y2021q15": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "3921083a2c70f9f9a44c530dea376fa747beb941634da1f3cba78bfa9f4afda9"
+    },
+    "y2025q13": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "f4244dd496f32179a992fa01c2539be5da4a2d99de8aa08864c6fa37c9a07d85"
+    },
+    "y2021q28": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "0c4597200df53b0c08839967f254f81c7ebcaa1a00cf41d31f3325eb186255fb"
+    },
+    "y2023q16": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "41a8c83b9a06bc2766589a5dfe9fbcc777a951e661032e893f13f06bbf0b7df7"
+    },
+    "y2020q38": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "290cea7d8c664617b1002f86d45a3cf00163e296958a6233a89110705965508c"
+    },
+    "y2020q17": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "ac47c7ddc2e1a190e84bda767a29f721082ef882b5b775ff97d60caca2181790"
+    },
+    "y2026q16": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "80ecb1fa132bf9efe6c177d6894617523806631bfdc1a13ad5ce37ab8db8b450"
+    },
+    "merged-19": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "dc516733d9b00cc80818391d2893a628e3c92d0f2418a5e4ec5ed3e87848f33b"
+    },
+    "y2025q20": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "10b057e3697e1bc237f07fdd6ff9990af79a0550b984f6e748fa68e670c4f393"
+    },
+    "y2020q14": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "03ab338072ad2453b78d19da6e0defe4b8e2c9de0f6db2b88e2efeb04da8f8c3"
+    },
+    "y2025q11": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "ea8017a27b9d8ad634329d817d1bb1683ebad3afc7a369e8debfdec45c586af7"
+    },
+    "y2023q15": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "721d1b8267da2ce6e9fd23d6843547690f8f044514d78e919aa11cad041079ee"
+    },
+    "y2022q33": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "ff59ab0eae7c9663e6fe3ed025f50e67df919e2fdf4ffd5be2d755f2c83f4a96"
+    },
+    "y2026q6": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "431c006a4e65ae6eb5da2452b0757493eff30d80ce4e1063df8476aa962522ea"
+    },
+    "y2022q43": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "548c4ea9fb25177997e52292baa7042a896deb4fe0f8b570d37b1490146bd36f"
+    },
+    "y2023q69": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "d1941df555a08a7062ac23ede6700657be1dde4067efbd718dc32fb609ae9ec6"
+    },
+    "y2025q24": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "0baa8968312dc7903de3ba049c3e40cb668cf289e782901dbbb5ed0c30c8e780"
+    },
+    "y2020q8": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "861d57379399a2ea6d12c0311feb91d78222f0c861e131ffffba5ddb727c3267"
+    },
+    "y2021q9": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "8415a74e6b1783fb7a3437afe2ccca5b722f27a365a00f3afaa4571d4d30c4bd"
+    },
+    "y2024q11": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "27b81b26cf00542a0fbb92c8624aa559e4dabffc60f837bafd34405eca135980"
+    },
+    "y2020q49": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "472d12c74a358d5ac0f2fa1f6ad70af64736f144679661bbf3834d52ee803001"
+    },
+    "y2020q59": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "0ca2057b719baffb20677843bdb426bfbb803a9c09a9e9769015736bea5cbf5c"
+    },
+    "y2023q10": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "a45b9cd1e9c6a249cd12185c930bfd79d6fd3f003bf38f14e4ea4570e6f2431a"
+    },
+    "y2024q68": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "c1fdb3bab22b7c39c24b64ef8fc8e0fef233ab1b5719a377566e87f040b8230f"
+    },
+    "y2026q52": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "bf8774839f1bf1570a900dc72919c53c0c6a2c3e32d9a16bbd4ebe0e177e32b7"
+    },
+    "syllabus-document-coauthor": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "7966339b295025d727d6d1b2b56fd183e55f4c2284332346190fd47e6a548552"
+    },
+    "syllabus-sparkline": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "b14fedfc1ed2ae6fbd9f8d63746711dadfe3b49c69bd3b28e04facb3be3da5dd"
+    },
+    "syllabus-quantum-basics": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "3e50faaa812386f79522e29eeb44c2de04ff348f7aba976d33d7b7ead76f0b88"
+    },
+    "syllabus-mobile-communication": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "2305fa3a2f5c08c1bdc749124da1e6b16036d3aad4d2b8ca589b5b1081039cff"
+    },
+    "syllabus-office-exchange": {
+      "count": 3,
+      "appendCount": 2,
+      "hash": "0a5b5d10560bdbd61ab3155fa32f9210b4a140a40ddc7f2c4e34d79a30f71221"
+    },
+    "syllabus-ppt-output": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "27cd0f46df4175159c41554e71e945359f1910d96cf515abbcc8f9a929ff2aab"
+    },
+    "syllabus-worksheet-protection": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "85699515a8e3f04025bd500c0b36af950e741811f6ff9d9937e99861baa68ad1"
+    },
+    "syllabus-word-smartart": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "43b84294e1fb33f274d073bb2d33cda7acb2b075b1c89eb027c5edf5bd910db7"
+    },
+    "syllabus-word-screen-clipping": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "6596f37257b012ceca8765a99b0b9a8f9354f0f70a62ad01c11c1a70ea295f04"
+    },
+    "syllabus-word-print-controls": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "1039610dea0c1953913a797b53ab548f151805b8537ba4cb48b2ed0a46dfe7c5"
+    },
+    "y2024q59": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "f50e8c7cf115fb983051a53caceedc43af39027aecd638e6e44d7e982dd13ca2"
+    },
+    "syllabus-excel-multikey-sort": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "3b2881053252caf3e8480df2de9d7307cc04c97fc1e72c2b9400005fde9a29eb"
+    },
+    "syllabus-excel-whatif-table": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "c8acb83f9c6664ed61f3dd38435a8f14b21364b9aedf6713ef86d286994dafc6"
+    },
+    "syllabus-media-edit-export": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "fccd3e6fd0074ce0b9379f0a34553cea2d9ca7f4def9b11ce6179ee9d6f885a2"
+    },
+    "y2024q6": {
+      "count": 3,
+      "appendCount": 0,
+      "hash": "a125a2462a1d53891626b8c87387d253e9f6f165048f1e5f89c1729c18731bcc"
+    },
+    "y2020q16": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "9dd0b110ab4ad78722b1988d7c820675e6a0da74ec55b687f1f08c1277517f89"
+    },
+    "y2025q4": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "7229f6d4e8d96d54e74c3c1c53260065b5a5fc37331b60512cb0804eeb0246c2"
+    },
+    "y2025q23": {
+      "count": 1,
+      "appendCount": 2,
+      "hash": "19b6654a2190f4474a23b49010c69c2630d996daf28635af2bfe581fc1b56889"
+    },
+    "syllabus-windows-paths": {
+      "count": 8,
+      "appendCount": 0,
+      "hash": "f311ac57ca60827d0c9d53bb265de01474bb39d1bb8420d216b94230f33e1d95"
+    },
+    "syllabus-windows-selection": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "af17c4b92bfe2cef9a0ab54797410aaa77df3ed2672da05fd93f9695f364fe3f"
+    },
+    "syllabus-windows-search": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "cf6400944ceb6986161a1af9e13d41c019f701f699bc1a3808eabe8e4606ada8"
+    },
+    "syllabus-word-text-editing": {
+      "count": 5,
+      "appendCount": 0,
+      "hash": "e1e11aed6684d3c18f7c74040025ca4fcf3985b1ebdd328185c15f31c893f9a9"
+    },
+    "y2024q7": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "aaf2fc3f21b9e645b5a732f52eae2492ca57f81b952b75a66d8df5c44aa30ff5"
+    },
+    "merged-7": {
+      "count": 6,
+      "appendCount": 0,
+      "hash": "edf38a4d79d966323b122d4001a9f5953101a179bfa6caf855b2781bf8476a80"
+    },
+    "syllabus-word-paragraph-spacing": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "8b737f8734c72bf05c952cd222e92c84b3576d4188bb89804a69c91e0781eda3"
+    },
+    "y2026q47": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "498540aa518d0982f58382bdadfa2d7deeef386ebf31dff285de2f65bf1df207"
+    },
+    "y2022q10": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "d7c11e354f192dc76d08a1439054d0934a31f29a2a0b82359f3791b0cdc0ecab"
+    },
+    "merged-9": {
+      "count": 12,
+      "appendCount": 0,
+      "hash": "6ba9bbfbda0d07b4fe511aacfcbee774b1fc14eb19ae754d82ca7853c83910f2"
+    },
+    "y2022q54": {
+      "count": 4,
+      "appendCount": 0,
+      "hash": "73d4fb6d0bbd95afcf68db3e6ca9bd65a16a47b9035ca19f6e02a40802e82e01"
+    },
+    "y2025q56": {
+      "count": 7,
+      "appendCount": 0,
+      "hash": "60d0d5d916cc807b0d647d9d22ef153bd1a3bf91a179bb33111704e63f943c21"
+    },
+    "merged-6": {
+      "count": 7,
+      "appendCount": 0,
+      "hash": "63a8065510800e2a7e80dd2c81c845824c899aab4a465e6cf4a6f4e71e2b4ce1"
+    },
+    "y2022q55": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "8adf4ba309073f4ad7c73373c4ade72ec0ca795430bc4f413712ed88a2bd7d3e"
+    },
+    "y2025q21": {
+      "count": 2,
+      "appendCount": 2,
+      "hash": "fe685b4849bb86b2bb541ad4417e2d1c40e87e0dae636bdcdcd3266223c8ffa8"
+    },
+    "y2021q25": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "164294d3fda78ca8b319b84d50b21c400380568cd15a21363a2dfb880057444e"
+    },
+    "y2021q52": {
+      "count": 2,
+      "appendCount": 0,
+      "hash": "d304dc8f8c27c0c7d7cb90071477d3d442cc447d5f4516bd8c725332b769cd1a"
+    },
+    "y2022q34": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "c5e97e7a9d8f9a1bcf3a6fa454c7e97f46b03ff8ef0c65066dc95f81bc418f00"
+    },
+    "y2026q26": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "950fb4c4cdcab34c91c0e5d843008d181fc9d1bed29fcdb0c259b68857e45309"
+    },
+    "y2026q32": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "9ad5a256773281e4b539a99948591edede7cf41b186fea105663f71cb28d0ce3"
+    },
+    "y2026q9": {
+      "count": 1,
+      "appendCount": 0,
+      "hash": "cd298e9a8b84fb8a467c92104d1b928591aca0bfda68d40d9f6f4ff616440ecd"
+    },
+    "y2020q1": {
+      "count": 0,
+      "appendCount": 1,
+      "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  }
+}

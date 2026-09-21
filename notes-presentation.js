@@ -20,7 +20,10 @@
   const fieldMeta = (note, field) => field.startsWith('point-') ? pointMeta(note, Number(field.slice(6))) : note.fieldPresentation?.[field] || {};
   const fieldText = (note, field) => field.startsWith('point-') ? note.points[Number(field.slice(6))] : note[field];
   const parts = (note, field) => split(fieldText(note, field), fieldMeta(note, field).blocks);
-  const subtopics = note => Object.entries(note.pointPresentation || {}).filter(([,p]) => p.navigationLabel).map(([i,p]) => ({anchor: `${note.id}--point-${i}`, label: p.navigationLabel}));
+  // Display order comes from the same groups used by the prose renderer.
+  // The stored point index remains the identity of every historic deep link.
+  const pointOrder = note => note.pointGroups ? note.pointGroups.flatMap(group => group.indices) : note.points.map((_, i) => i);
+  const subtopics = note => pointOrder(note).filter(i => pointMeta(note, i).navigationLabel).map(i => ({anchor: `${note.id}--point-${i}`, label: pointMeta(note, i).navigationLabel}));
   function validate(note) {
     for (const [i, meta] of Object.entries(note.pointPresentation || {})) {
       if (!/^(0|[1-9]\d*)$/.test(i) || !note.points[Number(i)] || !meta.title?.trim()) throw Error('Invalid point presentation: ' + note.id);
@@ -35,5 +38,5 @@
       }
     }
   }
-  return {split, pointMeta, fieldMeta, fieldText, parts, subtopics, validate};
+  return {split, pointMeta, fieldMeta, fieldText, parts, pointOrder, subtopics, validate};
 });
