@@ -31,7 +31,7 @@
         <div class="chapter-meta"><span id="chapter-count"></span><span id="source-count"></span></div>
       </section>
       <section class="chapter-tools" aria-label="搜索本章笔记"><div class="search"><span aria-hidden="true">⌕</span><label class="sr-only" for="search-input">搜索本章</label><input id="search-input" type="search" placeholder="搜索本章知识点" title="多个关键词用空格分隔" autocomplete="off"><button id="clear-search" type="button" aria-label="清空搜索" hidden>×</button></div><span class="count" id="result-count" role="status" aria-live="polite" aria-atomic="true"></span></section>
-      <section id="search-empty" class="search-empty" hidden><p>本章没有找到相关笔记。</p><p>试试更短的关键词，或从顶部切换到相关章节。</p><button id="restore-notes" type="button">清空搜索，显示本章全部笔记</button></section>
+      <section id="search-empty" class="search-empty" hidden><p>本章没有找到相关笔记。</p><p>试试更短的关键词，或从顶部切换到相关章节。</p><button id="restore-notes" type="button" class="shell-btn shell-btn-primary">清空搜索，显示本章全部笔记</button></section>
       <nav class="learning-links learning-toolbar" aria-label="继续查找"><a id="search-all" href="${homeUrl}">搜索全部11章</a><a href="${homeUrl}#browse-comparisons">易混知识对照</a></nav>
       <div id="notes-root"></div>
     </main>
@@ -113,9 +113,20 @@
     return `<nav class="note-related" aria-label="${esc(note.title)}的关联知识"><p>联系起来理解</p><ul>${links.related.map(n=>`<li><a href="${chapterUrl(n.chapter)}#${n.id}">${esc(n.label)}<small>${esc(n.reason)}</small></a></li>`).join('')}</ul>${links.topics.map(t=>`<a class="topic-link" href="${homeUrl}#compare-${t.id}">对照：${esc(t.title)}</a>`).join('')}</nav>`;
   }
 
+  function looksLikeFormula(text) {
+    const t = String(text).trim();
+    return /^(?:=|'=)/.test(t)
+      || /\$[A-Z]{1,3}\$\d+/.test(t)
+      || /\b(?:SUM|VLOOKUP|HLOOKUP|RANK(?:\.EQ)?|LEFT|RIGHT|MID|IF|DATE|MONTH|YEAR|INT|ROUND|COUNTIF|AVERAGE)\s*\(/i.test(t)
+      || /^\$?[A-Z]{1,3}\$?\d+(?::\$?[A-Z]{1,3}\$?\d+)?$/.test(t);
+  }
+  function formulaHTML(text) {
+    const html = simulation.escapeHTML(text);
+    return looksLikeFormula(text) ? `<span class="note-formula">${html}</span>` : html;
+  }
   function renderComparison(comparison) {
     const escape = simulation.escapeHTML;
-    return `<div class="note-comparison" role="region" aria-label="${escape(comparison.caption || '知识点对照')}" tabindex="0"><table>${comparison.caption ? `<caption>${escape(comparison.caption)}</caption>` : ''}<thead><tr>${comparison.headers.map(h=>`<th scope="col">${escape(h)}</th>`).join('')}</tr></thead><tbody>${comparison.rows.map(row=>`<tr>${row.map((cell,i)=>i===0?`<th scope="row">${escape(cell)}</th>`:`<td>${escape(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    return `<div class="note-comparison" role="region" aria-label="${escape(comparison.caption || '知识点对照')}" tabindex="0"><table>${comparison.caption ? `<caption>${escape(comparison.caption)}</caption>` : ''}<thead><tr>${comparison.headers.map(h=>`<th scope="col">${escape(h)}</th>`).join('')}</tr></thead><tbody>${comparison.rows.map(row=>`<tr>${row.map((cell,i)=>i===0?`<th scope="row">${formulaHTML(cell)}</th>`:`<td>${formulaHTML(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   }
 
   function renderSimulation(note) {
@@ -132,7 +143,7 @@
         <span class="simulation-open"><i>打开</i><b>›</b></span>
       </button>
       <div class="simulation-body" id="${bodyId}" hidden>
-        <header class="simulation-brief">${refined ? '' : '<span>动手理解</span>'}<p>${simulation.escapeHTML(demo.task)}</p>${refined ? '<div class="demo-view-actions"><button type="button" data-sim-expand>展开操作区</button><button type="button" data-sim-reset>重置演示</button></div>' : ''}</header>
+        <header class="simulation-brief">${refined ? '' : '<span>动手理解</span>'}<p>${simulation.escapeHTML(demo.task)}</p>${refined ? '<div class="demo-view-actions"><button type="button" class="shell-btn shell-btn-primary" data-sim-expand>展开操作区</button><button type="button" class="shell-btn" data-sim-reset>重置演示</button></div>' : ''}</header>
         <div class="simulation-mount" data-sim-mount></div>
         ${refined ? '' : '<footer class="simulation-footer"><span>直接操作画面；不计分</span><button type="button" data-sim-reset>↻ 恢复初始状态</button></footer>'}
       </div>
@@ -762,7 +773,19 @@
     if(focus){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}
   }
   addEventListener('hashchange',()=>revealNote(location.hash,true));
-  const updateProgress = () => { const root = document.documentElement; const max = root.scrollHeight - innerHeight; $('#progress-bar').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; };
+  const markOverflowTables = () => {
+    $$('.note-comparison').forEach(el => {
+      const prev = el.previousElementSibling;
+      const overflowing = el.scrollWidth > el.clientWidth + 1;
+      if (overflowing && !prev?.classList.contains('table-hint')) {
+        const hint = document.createElement('p');
+        hint.className = 'table-hint';
+        hint.textContent = '表格可左右滑动。';
+        el.before(hint);
+      } else if (!overflowing && prev?.classList.contains('table-hint')) prev.remove();
+    });
+  };
+  const updateProgress = () => { const root = document.documentElement; const max = root.scrollHeight - innerHeight; $('#progress-bar').style.width = `${max > 0 ? scrollY / max * 100 : 0}%`; markOverflowTables(); };
   addEventListener('scroll', updateProgress, {passive:true});
   addEventListener('resize', updateProgress);
   try { localStorage.removeItem('notes-reading-mode'); } catch {}

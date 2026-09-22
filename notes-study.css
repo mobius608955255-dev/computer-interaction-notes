@@ -2,8 +2,9 @@
    The simulated application's own colour and controls remain inside its window. */
 body[data-chapter] {
   --page:#f8f5fa; --line:#e5deeb; --line-strong:#d6c9e0;
-  --ink:#30283c; --muted:#685e76; --faint:#746b80;
+  --ink:#30283c; --muted:#5e546c; --faint:#645473;
   --accent:#77519b; --accent-soft:#f4edf9; --reading:760px;
+  --control-h:40px; --motion:.15s;
   background:var(--page);
 }
 .chapter-intro { margin-top:16px; padding:24px 28px; border:0; background:transparent; }
@@ -17,20 +18,34 @@ body[data-chapter] {
 .section-head { padding:19px 26px; background:linear-gradient(100deg,#f2e8f8,#fff3f7); }
 .section-head h2 { font:700 23px/1.5 system-ui,"Microsoft YaHei",sans-serif; }
 .section-head p { font-size:13px; }
-.note-item { padding:28px 26px 32px; }
+.note-item { padding:28px 26px 32px; border-bottom:0; }
+.note-item + .note-item { box-shadow:inset 0 1px 0 var(--line-strong); padding-top:32px; }
 .note-item h3 { font:700 22px/1.55 system-ui,"Microsoft YaHei",sans-serif; }
-.conclusion { margin-top:12px; padding:0; border:0; background:transparent; font-size:16px; line-height:1.85; color:var(--ink); }
-.conclusion b { font-weight:650; }
+.conclusion { margin-top:12px; padding:2px 0 2px 12px; border:0; border-left:2px solid var(--accent); background:transparent; font-size:16px; font-weight:500; line-height:1.85; color:var(--ink); }
+.conclusion b { font-weight:700; color:var(--ink); }
 .points { margin-top:15px; gap:10px; font-size:16px; line-height:1.85; }
 .note-point-group { margin-top:22px; }
-.note-point-group h4 { margin:0; color:#745181; font:650 17px/1.6 system-ui,sans-serif; }
+.note-point-group h4 { margin:0; color:var(--ink); font:700 18px/1.55 system-ui,"Microsoft YaHei",sans-serif; }
+body[data-chapter] .note-structured-point > h5 { font:650 16px/1.6 system-ui,"Microsoft YaHei",sans-serif; color:#4a3a4d; margin:0 0 8px; }
+body[data-chapter] .note-prose-block > h6 { font:650 15px/1.65 system-ui,"Microsoft YaHei",sans-serif; color:#5c4a5e; margin:0 0 3px; }
+.note-formula { font:650 15px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; overflow-wrap:anywhere; }
+body[data-chapter="4"] .lab-formula,
+body[data-chapter="4"] .note-lab input[data-field="formula"],
+body[data-chapter="4"] .note-lab [aria-label*="公式"] { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
 .note-point-group .points { margin-top:10px; }
 .boundary { margin-top:18px; padding:10px 12px; border-left:3px solid #bb709a; background:#fcf0f6; color:#6b3e59; font-size:15px; line-height:1.8; }
 .boundary b { color:#88496c; }
 .note-provenance { margin:10px 0 14px; font-size:13px; }
 .note-provenance summary { min-height:32px; }
 .note-provenance a { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
-.note-comparison { margin:20px 0; max-width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; overscroll-behavior-inline:contain; }
+.note-comparison { margin:20px 0; max-width:100%; overflow-x:auto; border:1px solid var(--line); border-radius:9px; overscroll-behavior-inline:contain; scrollbar-width:thin;
+  background:
+    linear-gradient(#fff,#fff) center / 100% 100% local,
+    linear-gradient(to right,#d6c9e0,transparent 16px) 0 0 / 16px 100% scroll,
+    linear-gradient(to left,#d6c9e0,transparent 16px) 100% 0 / 16px 100% scroll,
+    #fff;
+  background-repeat:no-repeat;
+}
 .note-comparison table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:15px; line-height:1.75; }
 .note-comparison caption { text-align:left; padding:11px 12px; font-size:14px; font-weight:650; color:var(--accent); }
 .note-comparison :is(th,td) { padding:10px 12px; text-align:left; vertical-align:top; overflow-wrap:anywhere; border-bottom:1px solid var(--line); }
@@ -39,7 +54,7 @@ body[data-chapter] {
 .note-comparison tbody tr:last-child>* { border-bottom:0; }
 .note-comparison table:has(th:nth-child(4)) { min-width:420px; }
 .note-comparison table:has(th:nth-child(4)) th:first-child { width:22%; }
-.reality-demo { margin-top:14px; border:1px solid #d9c9e6; border-radius:11px; box-shadow:none; background:#fff; --sim:#77519b; --sim-rgb:119,81,155; }
+.reality-demo { margin-top:14px; border:1px solid #d9c9e6; border-radius:11px; box-shadow:none; background:#fff; --sim:#77519b; --sim-rgb:119,81,155; isolation:isolate; max-width:100%; }
 .simulation-toggle { grid-template-columns:minmax(0,1fr) auto; gap:12px; padding:14px 15px; background:#f7f0fb; }
 .simulation-toggle:hover { background:#f0e5f7; }
 .simulation-heading { gap:4px; }
@@ -48,9 +63,11 @@ body[data-chapter] {
 .simulation-open b { background:transparent; color:#77519b; width:24px; }
 .simulation-open i { display:none; }
 .simulation-brief { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; padding:12px 15px; border:0; background:white; }
-.simulation-brief p { flex:1 1 220px; font-size:14px; line-height:1.7; color:#665b72; }
-.simulation-brief [data-sim-reset] { flex:none; min-height:40px; padding:7px 11px; font-size:14px; border:1px solid #ddcce5; border-radius:7px; background:#fff; color:#77519b; cursor:pointer; }
-.simulation-mount { padding:0 12px 14px; min-height:0; overflow:visible; }
+.simulation-brief p { flex:1 1 220px; font-size:14px; line-height:1.7; color:#5e546c; }
+.simulation-brief .shell-btn,
+.simulation-brief [data-sim-reset],
+.simulation-brief [data-sim-expand] { flex:none; min-height:var(--control-h); }
+.simulation-mount { padding:0 12px 14px; min-height:0; overflow:auto; max-width:100%; overscroll-behavior:contain; }
 .note-lab { padding:0; border:0; border-radius:0; background:transparent; color:#302e37; --lab-green:#77519b; --lab-line:#ddd7e3; }
 .note-lab .lab-office { border-color:#c9c8d1; border-radius:6px; }
 .note-lab .lab-office>footer { display:none; }
@@ -80,6 +97,7 @@ body[data-chapter] {
   .section-head { padding:16px 14px; }
   .section-head h2 { font-size:21px; }
   .note-item { padding:22px 14px 26px; }
+  .note-item + .note-item { padding-top:26px; }
   .note-item h3 { font-size:21px; }
   .points { padding-left:20px; font-size:16px; }
   .reality-demo { margin-inline:-5px; }
@@ -89,6 +107,20 @@ body[data-chapter] {
   .lab-workspace { padding:9px; }
   .note-lab .lab-paper { padding:22px 15px; }
   .note-comparison :is(th,td) { padding:9px 8px; }
+  .conclusion { padding-left:10px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .simulation-toggle,
+  .shell-btn,
+  .simulation-brief [data-sim-expand],
+  .simulation-brief [data-sim-reset] { transition: background-color var(--motion, .15s) ease, border-color var(--motion, .15s) ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .simulation-toggle,
+  .shell-btn,
+  .simulation-brief [data-sim-expand],
+  .simulation-brief [data-sim-reset],
+  .drawer { transition: none; }
 }
 @media print {
   .reality-demo { display:none; }

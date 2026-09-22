@@ -24,8 +24,11 @@
       document.querySelectorAll('.note-search-jumps').forEach(el=>el.remove());
       document.querySelectorAll('.note-search-match').forEach(el=>el.classList.remove('note-search-match'));
       const query=input.value.trim(),results=window.NOTE_SEARCH.search(entries,query),matches=new Map(results.map(r=>[r.id,r]));
+      const terms=window.NOTE_SEARCH.normalize(query).split(' ').filter(Boolean);
       for(const article of articles){
         article.classList.toggle('hidden',!!query&&!matches.has(article.id));
+        const heading=article.querySelector('h3');
+        if(heading) heading.classList.toggle('note-search-match', !!(query && matches.has(article.id) && terms.some(term=>window.NOTE_SEARCH.normalize(heading.textContent).includes(term))));
         const targets=[];
         for(const field of matches.get(article.id)?.matches||[]){
           const target=document.getElementById(field.anchor);if(!target)continue;
@@ -46,8 +49,8 @@
           labels.forEach(item=>{if(labels.some(other=>other!==item&&other.title===item.title&&other.summary===item.summary))item.summary=item.text;});
           labels.forEach(({target,title,summary})=>{
             const link=document.createElement('a');link.href='#'+target.id;
-            const heading=document.createElement('strong');heading.textContent=title;
-            const extract=document.createElement('span');extract.className='note-hit-summary';extract.textContent=summary;
+            const heading=document.createElement('strong');heading.innerHTML=window.NOTE_SEARCH.highlight(title,query);
+            const extract=document.createElement('span');extract.className='note-hit-summary';extract.innerHTML=window.NOTE_SEARCH.highlight(summary,query);
             link.append(heading,extract);
             nav.append(link);
           });

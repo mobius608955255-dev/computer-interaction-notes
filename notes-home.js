@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const {escape:esc, search, snippet}=window.NOTE_SEARCH;
+  const {escape:esc, search, snippet, highlight}=window.NOTE_SEARCH;
   const data=window.NOTE_CATALOGUE, version=data.version;
   const $=selector=>document.querySelector(selector);
   $('#source-total').textContent=`${data.sourceCount}道真题来源`;
@@ -20,8 +20,9 @@
     history.replaceState(history.state,'',url);
   }
   function resultHTML(result){
+    const query=$('#global-search').value;
     const href=result.kind==='comparison'?`./index.html?v=${version}#compare-${result.id}`:`./chapter${result.chapter}.html?v=${version}#${result.field.anchor}`;
-    return `<li><a class="search-result" href="${href}"><small>${result.kind==='comparison'?'易混知识对照':`第${result.chapter}章 · ${esc(result.chapterTitle)}`}</small><strong>${esc(result.field.title||result.title)}</strong>${result.field.title?`<span>${esc(result.title)}</span>`:''}<p>${esc(snippet(result.field.text,$('#global-search').value))}</p></a></li>`;
+    return `<li><a class="search-result" href="${href}"><small>${result.kind==='comparison'?'易混知识对照':`第${result.chapter}章 · ${esc(result.chapterTitle)}`}</small><strong>${highlight(result.field.title||result.title,query)}</strong>${result.field.title?`<span>${highlight(result.title,query)}</span>`:''}<p>${highlight(snippet(result.field.text,query),query)}</p></a></li>`;
   }
   function renderResults(append=false){
     const list=$('#global-results'),start=append?list.children.length:0;

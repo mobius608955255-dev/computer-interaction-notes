@@ -30,5 +30,19 @@
     const start = Math.max(0, first-35);
     return (start ? '…' : '') + text.slice(start, start+length) + (text.length > start+length ? '…' : '');
   };
-  window.NOTE_SEARCH = {normalize, escape, search, snippet};
+  // Presentation-only: escape first, then wrap already-matched original slices.
+  const highlight = (text, query) => {
+    const raw = String(text ?? '');
+    const terms = [...new Set(normalize(query).split(' ').filter(Boolean))].sort((a,b) => b.length - a.length);
+    if (!terms.length) return escape(raw);
+    const re = new RegExp(`(${terms.map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+    let out = '', last = 0, match;
+    while ((match = re.exec(raw))) {
+      if (!match[0]) { re.lastIndex += 1; continue; }
+      out += escape(raw.slice(last, match.index)) + '<mark>' + escape(match[0]) + '</mark>';
+      last = match.index + match[0].length;
+    }
+    return out + escape(raw.slice(last));
+  };
+  window.NOTE_SEARCH = {normalize, escape, search, snippet, highlight};
 })();

@@ -3,7 +3,7 @@
 .notes-demo-dialog::backdrop{background:#34233e80}
 .notes-demo-dialog>header{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 20px;background:#fff8fbeF;border-bottom:1px solid #e8dce9;backdrop-filter:blur(12px)}
 .notes-demo-dialog>header strong{font-size:16px;line-height:1.5}
-.notes-demo-dialog>header button{flex-shrink:0;min-height:42px;padding:8px 12px;border:1px solid #cfbbda;border-radius:10px;background:#f5eaf7;color:#644775;font:inherit}
+.notes-demo-dialog>header button{flex-shrink:0;min-height:42px;padding:8px 12px;border:1px solid #cfbbda;border-radius:8px;background:#f5eaf7;color:#644775;font:inherit}
 .notes-demo-dialog .simulation-body{padding:18px;container-type:inline-size}
 .notes-demo-dialog .note-lab{font-size:16px}
 .notes-demo-dialog .note-lab label{font-size:14px}

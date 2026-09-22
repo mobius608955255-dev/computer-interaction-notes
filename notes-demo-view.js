@@ -12,7 +12,7 @@
     const heading=document.createElement('header'),title=document.createElement('strong'),close=document.createElement('button');
     title.id='expanded-demo-title';title.textContent=card.querySelector('.simulation-heading b').textContent;
     dialog.setAttribute('aria-labelledby',title.id);
-    close.type='button';close.textContent='返回笔记';close.dataset.demoClose='';
+    close.type='button';close.className='shell-btn';close.textContent='返回笔记';close.dataset.demoClose='';
     heading.append(title,close);dialog.append(heading,body);card.append(dialog);
     const cleanup=()=>{placeholder.replaceWith(body);dialog.remove();active=null;opener.hidden=false;opener.focus({preventScroll:true});};
     dialog.addEventListener('close',cleanup,{once:true});

@@ -1515,3 +1515,26 @@ test('v62 repaired syllabus gaps have distinct searchable paragraph and director
  for(const [query,id,i,title] of cases){const anchor=id+'--point-'+i,hit=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===anchor&&m.title===title),query);const input=e.d.getElementById('search-input');input.value=query;input.dispatchEvent(new e.w.Event('input',{bubbles:true}));const card=e.d.getElementById(id);assert.equal(card.classList.contains('hidden'),false);assert.ok([...card.querySelectorAll('.note-search-jumps a')].some(a=>a.hash==='#'+anchor));const link=e.d.querySelector(`#drawer .directory-subtopics a[href="#${anchor}"]`);assert.equal(link.textContent,title);e.d.getElementById('open-drawer').click();link.click();assert.equal(e.d.activeElement.id,anchor);}
  e.dom.window.close();
 });
+test('v63 search highlight is presentation-only and does not inject markup',async()=>{
+ const probe=homeEnv();assert.match(probe.w.NOTE_SEARCH.highlight('剪贴板仍可粘贴','剪贴板'),/<mark>剪贴板<\/mark>/);
+ assert.equal(probe.w.NOTE_SEARCH.highlight('<img src=x onerror=alert(1)>','img'),'&lt;<mark>img</mark> src=x onerror=alert(1)&gt;');
+ assert.equal(probe.w.NOTE_SEARCH.highlight('AT&T','T'),'A<mark>T</mark>&amp;<mark>T</mark>');
+ probe.dom.window.close();
+ const e=homeEnv();typeGlobal(e,'剪贴板');await new Promise(setImmediate);
+ const mark=e.d.querySelector('#global-results mark');assert.ok(mark);assert.match(mark.textContent,/剪贴板/);
+ assert.ok(e.d.querySelector('.search-result small').textContent.includes('第'));
+ typeGlobal(e,'<img src=x onerror=alert(1)>');await new Promise(setImmediate);
+ assert.equal(e.d.querySelector('#global-results img'),null);e.dom.window.close();
+ const ch=env(1),input=ch.d.getElementById('search-input');input.value='位权';input.dispatchEvent(new ch.w.Event('input',{bubbles:true}));
+ const jumps=ch.d.querySelector('.note-search-jumps');assert.ok(jumps);assert.ok(jumps.querySelector('mark'));assert.equal(jumps.querySelector('img'),null);
+ assert.ok(ch.d.querySelector('[data-sim-expand]').classList.contains('shell-btn'));
+ assert.ok(ch.d.querySelector('.note-search-match'));
+ ch.dom.window.close();
+ const excel=env(4),formula=excel.d.querySelector('.note-formula');
+ assert.ok(formula);
+ assert.match(formula.textContent,/=|\$|[A-Z]+\(/);
+ excel.dom.window.close();
+ const word=env(3),chips=word.d.querySelectorAll('#y2024q8 .note-subtopics a');
+ assert.ok(chips.length>=20);
+ word.dom.window.close();
+});

@@ -23,6 +23,43 @@ button, input, select { font: inherit; }
 a { color: inherit; text-decoration: none; }
 button, a { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid rgba(91,80,183,.28); outline-offset: 3px; }
+.shell-btn,
+.simulation-brief [data-sim-expand],
+.simulation-brief [data-sim-reset] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  min-width: 44px;
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.shell-btn-primary,
+.simulation-brief [data-sim-expand] {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+.shell-btn:hover,
+.simulation-brief [data-sim-expand]:hover,
+.simulation-brief [data-sim-reset]:hover {
+  background: var(--accent-soft);
+}
+.shell-btn:active,
+.simulation-brief [data-sim-expand]:active,
+.simulation-brief [data-sim-reset]:active {
+  background: color-mix(in srgb, var(--accent-soft) 70%, #fff);
+}
 .skip-link { position: fixed; z-index: 200; top: 5px; left: 5px; padding: 8px 12px; border-radius: 7px; background: white; transform: translateY(-150%); }
 .skip-link:focus { transform: translateY(0); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -160,7 +197,7 @@ h1 { margin: 0; font-size: clamp(34px, 7vw, 54px); line-height: 1.15; letter-spa
 /* Search and directory refinements: readable controls without adding a toolbar. */
 .search input { font-size: 16px; }
 .search:focus-within { border-radius: 6px; outline: 2px solid var(--accent); outline-offset: 4px; }
-#clear-search { flex: 0 0 36px; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-size: 22px; cursor: pointer; }
+#clear-search { flex: 0 0 44px; width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 8px; background: var(--accent-soft); color: var(--accent); font-size: 22px; cursor: pointer; }
 #clear-search[hidden], .search-empty[hidden] { display: none; }
 .search-empty { margin: 14px 0 24px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
 .search-empty p { margin: 0 0 10px; line-height: 1.75; }
