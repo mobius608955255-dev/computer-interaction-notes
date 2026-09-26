@@ -1,0 +1,2047 @@
+{
+  "baselineCommit": "d818f618685b2a89fe65e783c934f8760d39861d",
+  "baselineTree": "a996bc332ccd88c2ebdf4282fd6be4838ae88d29",
+  "protectedFiles": {
+    "content/chapter1.json": "0e7a8a030418d7a93e9ef9ec61737c5ce28a7b8e2935f08326985965ddeb15c1",
+    "content/chapter10.json": "ad4a74a92f9efb689499ce694652f8cf77393a450d0d2c5d888d773d88f4a27d",
+    "content/chapter11.json": "64ff8b4093f0a10711f89b14cc2a1917da65b5450a75742127c38e2688a21751",
+    "content/chapter2.json": "77de73dbdeda427431a492d2e0af81eb2a19a1d9ff5abe4eeebb85c769916f95",
+    "content/chapter3.json": "8cff793a7f4996d663ab32f614d0196e2a63220af4e2ff3fb2ab855f0c428cc3",
+    "content/chapter4.json": "1ea1e9b004191a2e2418ee2e653caf9e9ca60711ecdb3cc00618d4db724e7928",
+    "content/chapter5.json": "29418c16c5f3f55efedf6f10ac79364ad8f16f63fd846bf38a88f437885a5fa7",
+    "content/chapter7.json": "5d5e86d1def2bf54a7afa36c1b366f72a06c52caa2acb36adf5dd66ac43ad3f0",
+    "content/chapter8.json": "5f0b6cf2afba45c9362508b5b339235ce051343abf5008b8df849760e9372d8a",
+    "content/chapter9.json": "5198ff23bd2cb57e026baa3c66595897ac83fa5d45855a699b5bc4ae207e5298",
+    "content/chapters.json": "9923097b205ebaf691838d9033699893263133769987389a408fbbed392f3c4c",
+    "content/comparisons.json": "d9e3cba89e5d0b756a86f33c03f1761065a13f50f5627da140ba32287d3357cd",
+    "content/legacy-demos.json": "f33eeba59e8a09727e69cb953439a2bb659a4c77971ac4721ba58e0650017c67",
+    "content/syllabus-audit.json": "0f946ea2fb6c35b928494c432163107ae46a6de07e25cc6e207ef2dd2cc4b631",
+    "note-labs-runtime.js": "c6a4ba5857bb747d4c8b180624ad07252341a926dc51947a4c0e63496434a71e",
+    "note-labs.css": "8d282af8dd7ce763f4d9e6a7b224fedec4c134cfbf4fc88c5fe69915692cf0ed",
+    "notes-2020.css": "d3457f81ccf3273526b933df2a3bb9c13a68428f2176cde8364511d9d9e8d214",
+    "notes-app.js": "2b1efdb04f9d3f01d034bef6906686dbf8c2004cdfbe0c9ff2fc8340e199228a",
+    "notes-chapter-search.js": "20b298ca466485168e58206b93c4ddfca10d5589f0b08f1dc238e8132a240761",
+    "notes-choices.css": "d000ce9b35910abb4cb896da1e3f3bbc68fc63a25bedfc22d068d3dfc597e2b0",
+    "notes-choices.js": "a996debd6424dae1fa7b1b94d896caad798ce801adcbbb7dc2d95a65d23ec69e",
+    "notes-core.css": "e5fd521b339a12911cf3c58a26839e02c7bda5128a442fa38cccfb2926f23941",
+    "notes-demo-view.css": "81b48801ab045712dea5070c539386fd4638409acb63f18a7b519ff3a1c02437",
+    "notes-demo-view.js": "7dbb0a8a4732969306ad04c16861d27489b3564bb8902bf4f1f2471dec77f059",
+    "notes-directory.js": "8fb23d92e0d2355f09bdbdffa06d90723a6b53ff6d39719781d3eac3c3c73a14",
+    "notes-extended.css": "a05a0943569ec2fb563c237cf9a2f920ac86a85fd0b301e9b6f4df68f18cf68a",
+    "notes-learning.css": "840c813e1d34478e289044e4ebaae6108724355f1a5b1a1632d8b8c9c6c39cf1",
+    "notes-presentation.js": "57bd7f2f016dccd20042a24c4a8add18a3ca34407db25ec99051327cef1a798d",
+    "notes-search.js": "a129d7f68316f320777814f5bf965002dd1ee119b342d74d830460b52201b0a9",
+    "notes-study.css": "152c019b8a7b73220273e92e758956c75aef92577195e33586d6ad53cb4cb496",
+    "scripts/build.cjs": "7729f4bf3cd0974972c1484f32d5e3ffad85e6c907844c69a74605a99eaa2dce",
+    "scripts/discovery.cjs": "d5910c8687e146fbafe3caaf57fdfed23a8943663bb03e2dc5835d8d66b604e4",
+    "simulations.css": "26b19b9c77c8b9b8698e9b7f73c892111da6e5b15e2da2a9639dd07253c8f35c",
+    "simulations.js": "85b4314d8f75ec54484bde6186a60caa87c080cacd84dd0f2fab8ba5ea25b36e",
+    "src/labs/chapter1/arithmetic.js": "f3e0c75ae57755a387e833f7a6a56270219c72c1055c199052364e2ed52e45f8",
+    "src/labs/chapter1/foundations.js": "21d91badbccd10521beaee342a2984d268d52c4c0a92e34994d5d997f2c65cdc",
+    "src/labs/chapter10/database.js": "4ff23fcfc0e80b1a80f8a8892460a6d8b834a1649f34724e74f78fb6d43165dc",
+    "src/labs/chapter10/update.js": "b2f5d622116fbbeefd0e02dd8a1d4247d80ce407d8fd0fa6b22027d97c11aa77",
+    "src/labs/chapter11/algorithms.js": "e8a314a94befbdac9f56e6283fd8843de65017c282448b7c73a5803cd166f1cd",
+    "src/labs/chapter2/file-management.js": "a759e6d7fe9cb38c494a4e1c03a2d07ab100e4912a78df377697f2cff64a3ae5",
+    "src/labs/chapter2/maintenance.js": "45bf7eab1d916e2cf8ea67e6b3110c9777d6978c56b79972f260b57758c2fcd1",
+    "src/labs/chapter2/settings.js": "62765911aecb53a9189fac27bdb004391d51ea49a6a506037618a52473f0fcb1",
+    "src/labs/chapter2/windows.js": "1361697f292333d74193388266bd0ab4a5ab6ce5820de74c0e94327da4a6c48e",
+    "src/labs/chapter3/columns.js": "a4bbf74188d84c21d1084c306daca8a8dcb9574735de81a55baa262e1f109da1",
+    "src/labs/chapter3/paragraph-spacing.js": "a622ca25377f70bf62e13e918f95fca49722d9e60bb70782f99086267e20f180",
+    "src/labs/chapter3/printing.js": "0f65f78b1808e4dcbd0b54c2f7fd47971d3ff9988ebd3f430b6309a48ba1d427",
+    "src/labs/chapter3/text-editing.js": "8091850d53aa2693c65f928db9e0fdaa932c235e70ae06d05dc584ff76f90547",
+    "src/labs/chapter3/word.js": "282bc8eef22d0b2a89cdfce16b135fbf13ab9cd54b05a810ba1ba4a88351936f",
+    "src/labs/chapter4/analysis.js": "546b40aedc2767a99d33d44748be0bc48eb5a3f689fb6f4f1125c00b960066bc",
+    "src/labs/chapter4/excel.js": "44b3557691b98080072caa29c8335e6fc212acde27233d012b45573ab2a17408",
+    "src/labs/chapter4/syllabus.js": "9276947875d77a5adb453a76026507ad7599d0db41f66359cd376e61c1261d57",
+    "src/labs/chapter4/workbook.js": "1ead5ef14df9c3e406558bd390f9042a387dac96bdb05af2fffbc2c6326c895f",
+    "src/labs/chapter5/editing.js": "564a9b26c46253f0b92887496cac7edb1a194c40d8916b5fa3f8290d9fca96b0",
+    "src/labs/chapter5/output.js": "bf689a0586b527ec069c389dd277d0a411627c0a5117b8de8d513416c8dd8cec",
+    "src/labs/chapter5/presentation.js": "70364482a9cb7f9be9f9618cc5263556fc9aceb2d3788416dbb2f12029e0e027",
+    "src/labs/chapter7/media.js": "806e6bb8292a2bd68e3919f53cdf7f93aa5ebd22c9934c7ecaf6a24f394adc1d",
+    "src/labs/chapter7/playback.js": "a0176c615afab7bed2ff132f7c571a016bc6dda4ecb758e90f120c2d46287da6",
+    "src/labs/chapter8/security.js": "529b279d8b4003e2e4ed11823da9d69da17b8cc7046af8c8fcd49fc013cbda04",
+    "src/labs/chapter9/chain.js": "9b66be45ac640295cff318956830d6929ae9ea4acca80a1863592c341f26c6f3",
+    "src/labs/shared/math.js": "95c609b399be3f807ab685272fea197e01b314b6440107add2b53167a4042718",
+    "src/labs/shared/syllabus.js": "ccd5e167a9bf91407be5e77ec1994473441a290482b6a011c5518e994656a6a6"
+  },
+  "chapter6": [
+    {
+      "id": "y2020q15",
+      "count": 4,
+      "pointHashes": [
+        "f57d11311f253f40bec73be3bde98023b5569edd987aee4ba5ff82a7ba230d3a",
+        "0dc2aea31dff75e75a2ca5a919402cc1ae9927f0ccf3410cbca02e23d82bd989",
+        "1490d8addd30a6bfe0d741e1a5678020e2999138cac52e72e363d8e8634b4902",
+        "b27c459bc1ea8133da75c8f8c5f1b4f198867c56176a08dd414f6c1bf2885ac3"
+      ],
+      "sources": [
+        {
+          "year": 2020,
+          "q": 15,
+          "type": "单选"
+        },
+        {
+          "year": 2022,
+          "q": 48,
+          "type": "填空"
+        }
+      ],
+      "keys": [
+        "2020-15",
+        "2022-48"
+      ],
+      "related": [
+        {
+          "id": "y2025q13",
+          "label": "校园网接入Internet需要路由转发",
+          "reason": "先按覆盖范围辨认校园局域网，再理解校园网与Internet之间为何需要跨网路由。"
+        },
+        {
+          "id": "y2026q15",
+          "label": "手机热点把移动网络共享给无线终端",
+          "reason": "手机热点中，笔记本到手机的一段是无线局域网，手机再共享蜂窝网络，可用来练习分段判断网络类型。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2020q26",
+      "count": 5,
+      "pointHashes": [
+        "feb1e8fd4042b36f28367f43d275ff0f09245d629ccd938d984e8abab4bddc2a",
+        "31ef22708aa0e7b96443900adef223165a8338d508ebadfd6d25d8d966e38cf0",
+        "3fab314dbbdf731bd0a2271bf5694c2694ce55ebcfe3cde230c85cf82e87c2e2",
+        "548adb066c9223240b89eedea357ccd1c6f0eb4691a651cf58241cd00efe7e04",
+        "df5e643e2732e67278f59578e1c2a8ec84ea916bc2940601ebc7ed09e0b05227"
+      ],
+      "sources": [
+        {
+          "year": 2020,
+          "q": 26,
+          "type": "多选"
+        },
+        {
+          "year": 2023,
+          "q": 37,
+          "type": "判断"
+        },
+        {
+          "year": 2024,
+          "q": 38,
+          "type": "判断"
+        },
+        {
+          "year": 2022,
+          "q": 36,
+          "type": "判断"
+        }
+      ],
+      "keys": [
+        "2020-26",
+        "2023-37",
+        "2024-38",
+        "2022-36"
+      ],
+      "related": [
+        {
+          "id": "merged-3",
+          "label": "bit、Byte、像素与存储容量单位",
+          "reason": "传输时间计算先统一bit与B，并分清十进制和二进制容量前缀，避免把速率和文件大小直接相除。"
+        },
+        {
+          "id": "y2023q18",
+          "label": "流媒体强调边传输边播放和连续时序",
+          "reason": "把网络有效速率与播放器消耗数据的速度比较，可以解释缓冲为何增长、耗尽或出现卡顿。"
+        },
+        {
+          "id": "y2024q32",
+          "label": "采样、位深、编码与冗余共同决定数字媒体数据量",
+          "reason": "PCM码率也是bit/s，可先由采样参数求出音频数据量，再结合有效网络速率估算传输时间。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2026q13",
+      "count": 3,
+      "pointHashes": [
+        "2ef566c8d8e629c1d93d1153dba1fa459f13d7281979c6cdd81e025b892e457b",
+        "1fe36403030889d6c2ce4f732587f6b1bed6da329c9ec4b97f5ec8bc70f80678",
+        "ad6efcf01bba0c801d4cb63fe53847a91668c25caf33183b40700bd63ba64ffd"
+      ],
+      "sources": [
+        {
+          "year": 2026,
+          "q": 13,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2026-13"
+      ],
+      "related": [
+        {
+          "id": "y2026q7",
+          "label": "并发、共享、虚拟和异步描述不同操作系统现象",
+          "reason": "网络打印是共享资源的实例；操作系统笔记进一步说明共享为何仍需要同步和调度。"
+        },
+        {
+          "id": "y2026q8",
+          "label": "设备管理器查看硬件与驱动状态",
+          "reason": "共享打印仍依赖设备驱动，设备管理器笔记补充如何查看硬件、驱动状态及异常线索。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "merged-13",
+      "count": 6,
+      "pointHashes": [
+        "af1e3c878b946cdca0f7bfc830893e68460f3338691437ec289b93f7eedc819d",
+        "1399ab4536fa83413e88eada1a68012e44a411cce6f59e7ba37ddbf86d4081ff",
+        "0858b9fa79c025c3b60b041790807f9397292c21f551ef667db0c97a34efabfa",
+        "fa05f72f009e38720f55762a1a4f6827d96af59e25b43c31c30a43b00c06e931",
+        "e7cc305592c52ab05d9d3a6728a77b5ee55851e086a35e5dd81a6890d58611bd",
+        "d5acfc1f46ea76663878ea6094fce1fc94a205864e0519a9c82787c63214aa42"
+      ],
+      "sources": [
+        {
+          "year": 2020,
+          "q": 37,
+          "type": "填空"
+        },
+        {
+          "year": 2023,
+          "q": 27,
+          "type": "多选"
+        },
+        {
+          "year": 2026,
+          "q": 37,
+          "type": "判断"
+        },
+        {
+          "year": 2022,
+          "q": 28,
+          "type": "多选"
+        }
+      ],
+      "keys": [
+        "2020-37",
+        "2023-27",
+        "2026-37",
+        "2022-28"
+      ],
+      "related": [
+        {
+          "id": "y2021q15",
+          "label": "网卡连接本机与网络，路由器负责跨网转发",
+          "reason": "用网卡的MAC寻址与路由器的IP转发，具体辨认网络接口层和网际层的职责。"
+        },
+        {
+          "id": "y2024q16",
+          "label": "SMTP负责邮件发送与服务器间转发",
+          "reason": "以网页邮箱和后台邮件投递为例，区分同属应用层、却承担不同通信任务的协议。"
+        },
+        {
+          "id": "y2021q28",
+          "label": "DNS把域名解析为地址，不是一对一对照表",
+          "reason": "DNS是应用层的域名解析服务，其返回的IP地址用于网络层寻址，两种职责不能混为一层。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2021q15",
+      "count": 5,
+      "pointHashes": [
+        "34c68beb73bc6880fbd6f89addb4a41573f6fb4b5271b81e8b37df1ffb089135",
+        "ac72b2ec97e04c26f5010a73c62c9df313a34a6c6b9ede36f2b32ba62c6c48a6",
+        "7414649fca5ba572b3d89a651ed54231f2407d8be0146afe7ad47785de8f376e",
+        "132d0a2337af7767def187b0648481b0ce5995c70cc50e8378045bcbb5aaf7f2",
+        "2ea1a8210f7a2eca38b0185da2ae4dc3f6ec94992149cd853277f3d37b4c3e0d"
+      ],
+      "sources": [
+        {
+          "year": 2021,
+          "q": 15,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2021-15"
+      ],
+      "related": [
+        {
+          "id": "y2023q17",
+          "label": "传统C类IPv4地址的默认掩码是255.255.255.0",
+          "reason": "先用IP地址和掩码判断目标是否属于本子网，再理解向异网目标发送时为何先交给默认网关。"
+        },
+        {
+          "id": "y2025q13",
+          "label": "校园网接入Internet需要路由转发",
+          "reason": "继续比较交换机、网桥与路由器，辨认局域网帧转发和跨IP网络转发。"
+        },
+        {
+          "id": "merged-13",
+          "label": "TCP/IP四层模型与OSI七层模型的对应关系",
+          "reason": "回到分层模型定位MAC、IP及接口职责，避免把网卡接入能力误认为路由功能。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2025q13",
+      "count": 3,
+      "pointHashes": [
+        "e737a41164e4d81d0c7252aff39c9c2c73757d0d03ec18848503e1560ef7d500",
+        "1734b661bd4ec71cc36c0bc79b0a8fcb549cb6f56bf55349c165a419aa209afd",
+        "229ea999f895df288e6f670c3e1c6223e8ec18e2cec9f0d58070c4fa3199e11e"
+      ],
+      "sources": [
+        {
+          "year": 2025,
+          "q": 13,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2025-13"
+      ],
+      "related": [
+        {
+          "id": "y2021q15",
+          "label": "网卡连接本机与网络，路由器负责跨网转发",
+          "reason": "从本机网卡发往默认网关的过程，补全校园网出口路由之前的链路层传送。"
+        },
+        {
+          "id": "merged-16",
+          "label": "防火墙与网络访问控制",
+          "reason": "出口设备可能集成路由与防火墙；有转发路径之后，请求仍须满足访问规则。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2021q28",
+      "count": 5,
+      "pointHashes": [
+        "23199e1ff84efbdef4448fdda8fbad6dd012783f963713d0a2c400b63b40349e",
+        "699258aec042232f75222cf28f209813ff871614ace6e93a1977728284daf8a2",
+        "4a85e89a1741127a99cea452146999cddfb082f9dbc8b29c02013127e6fe9a2d",
+        "289a0b8ce030b9779b18ecb529b863f8a85d8303b1c029ebe03b7381fde1b2b5",
+        "41da7a758e70b9c602abd6cd7a6bf117ab9a5b2eab7f1395d96fe1911557760f"
+      ],
+      "sources": [
+        {
+          "year": 2021,
+          "q": 28,
+          "type": "多选"
+        }
+      ],
+      "keys": [
+        "2021-28"
+      ],
+      "related": [
+        {
+          "id": "y2026q14",
+          "label": "URL由协议、主机和资源路径等部分组成",
+          "reason": "先从URL中准确找出主机名，才能知道DNS需要解析的部分；路径和查询不是待解析域名。"
+        },
+        {
+          "id": "y2023q47",
+          "label": "IPv6地址长度为128位，也就是16字节",
+          "reason": "AAAA记录返回IPv6地址，可结合128位地址的展开规则辨认地址与域名的不同表示。"
+        },
+        {
+          "id": "y2023q16",
+          "label": "HTTPS为HTTP通信增加加密与身份认证",
+          "reason": "域名还参与HTTPS站点身份验证，因此解析成功或能用IP连接都不足以保证证书验证通过。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2022q15",
+      "count": 4,
+      "pointHashes": [
+        "74739b801af9c004d3e1845d09467412ed71983298e3d7ca5d7de1a6df3c6c92",
+        "232bc2022963d9cd3f4b6b8a39dd982cfeb5b7f72735e4b79740da9350bb5492",
+        "a12e4b78c3448b56fb1cd0a0d78e4b60907007eb41d3fea15a57159b9bfcf63f",
+        "ae36bc99d454f7255088830ca7933f80d82f2c5434549d6d46a18f4ff58e0e1c"
+      ],
+      "sources": [
+        {
+          "year": 2022,
+          "q": 15,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2022-15"
+      ],
+      "related": [
+        {
+          "id": "y2024q16",
+          "label": "SMTP负责邮件发送与服务器间转发",
+          "reason": "进一步区分邮件客户端提交、服务器间转发和收取同步，避免把SMTP与POP3、IMAP互换。"
+        },
+        {
+          "id": "merged-13",
+          "label": "TCP/IP四层模型与OSI七层模型的对应关系",
+          "reason": "FTP、SMTP和Telnet都是具体应用协议，可在TCP/IP模型中与IP、TCP、UDP的职责对照。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2023q16",
+      "count": 4,
+      "pointHashes": [
+        "93440ab804805bc40ebf535277b410381959444181af1356212c366b85ff5cdd",
+        "a4c61ce54ee652696c8ed86bdd0586c1f91c3c892e8e46623945434d127e3d4d",
+        "081c6fc91800393b13c8ae231885301d99af57ba00fd3c875d3df1634f950959",
+        "47438a81c364ee056add66167a5c3751bdd6afd963e46af932ffb5732b222715"
+      ],
+      "sources": [
+        {
+          "year": 2023,
+          "q": 16,
+          "type": "单选"
+        },
+        {
+          "year": 2021,
+          "q": 36,
+          "type": "填空",
+          "page": 6
+        }
+      ],
+      "keys": [
+        "2023-16",
+        "2021-36"
+      ],
+      "related": [
+        {
+          "id": "merged-15",
+          "label": "加密、解密、公钥与私钥",
+          "reason": "证书把身份与公钥绑定；加密与签名笔记说明保密、完整性验证和公钥归属为何需要分别判断。"
+        },
+        {
+          "id": "y2021q18",
+          "label": "熟人转发和HTTPS都不能替你确认链接真实",
+          "reason": "HTTPS验证连接及对应站点身份，钓鱼识别还要核对准确域名、消息来源和所要求的动作。"
+        },
+        {
+          "id": "y2026q14",
+          "label": "URL由协议、主机和资源路径等部分组成",
+          "reason": "在URL中辨认https方案、主机与端口，避免把路径里的官方名称当作真实站点身份。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2023q17",
+      "count": 5,
+      "pointHashes": [
+        "7350c3354f933c1736e1a92b09e546e71ce8504978adbba0088e13acf40a04ca",
+        "6c1101e8e6baa79b60b4e46cfaa5214d0543c24e8fcbe5abddda0f8a683034d1",
+        "3b5a5966081e943b4df94130e1f0107589d42fb9c8bc54b39a6ddbc8e2d2cc59",
+        "dbced859f2d2ddf79ffc954e6577e9c17b302b6946506fa329b9103511cf3d9f",
+        "7c039fcdd0c3ec50711f19164a267744f21a17387eee45eb455563430eaf6230"
+      ],
+      "sources": [
+        {
+          "year": 2023,
+          "q": 17,
+          "type": "单选"
+        },
+        {
+          "year": 2022,
+          "q": 14,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2023-17",
+        "2022-14"
+      ],
+      "related": [
+        {
+          "id": "y2021q15",
+          "label": "网卡连接本机与网络，路由器负责跨网转发",
+          "reason": "子网判定解释了何时把帧交给默认网关，也说明IP网络部分与MAC接口地址不能互相替代。"
+        },
+        {
+          "id": "y2023q47",
+          "label": "IPv6地址长度为128位，也就是16字节",
+          "reason": "对比IPv4的32位与IPv6的128位，防止把IPv4点分十进制和历史分类掩码套到IPv6。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2023q47",
+      "count": 5,
+      "pointHashes": [
+        "83e97b9b3cabd8420fed2bd661d5487f66b86a99c5c5f996057fd360f8d8084d",
+        "cf8b486dd609a2a0d3ace798d19f071f782605d8e929c15f140793371092f6f8",
+        "ae906264d7fe43bb53a00eb8cdd032db84c31106580446a8d9995891a42e29a5",
+        "454cfb32ea83f09f8d452712f6fe9a2fe36581271a7cdc05971dc84080241fe3",
+        "a89421e86ef795da777dbc46c013647470bb56f1a152c3d16c40899fa92da0d1"
+      ],
+      "sources": [
+        {
+          "year": 2023,
+          "q": 47,
+          "type": "填空"
+        }
+      ],
+      "keys": [
+        "2023-47"
+      ],
+      "related": [
+        {
+          "id": "merged-3",
+          "label": "bit、Byte、像素与存储容量单位",
+          "reason": "固定地址长度换成字节时用128÷8，不能用屏幕字符数或双冒号压缩后的长度代替。"
+        },
+        {
+          "id": "y2026q41",
+          "label": "整数位权、小数分组与有限表示",
+          "reason": "一个十六进制数字对应4个二进制位，这正是IPv6每组4位十六进制数表示16 bit的依据。"
+        },
+        {
+          "id": "y2021q28",
+          "label": "DNS把域名解析为地址，不是一对一对照表",
+          "reason": "DNS用AAAA记录给出IPv6地址；地址写法与域名解析是相邻但不同的步骤。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2024q16",
+      "count": 3,
+      "pointHashes": [
+        "cd8ccbeff19f1c0c28785a36dbf6abcaa093930916a575f493be88cae0691bbc",
+        "2184f143265ad1c0f85b8b063a33a971cb4069ae627f7cfd37c3d15eaa945453",
+        "39180f98cf7a2c042234275de999e30e05c30c508ca0072279c54cd0febba8ad"
+      ],
+      "sources": [
+        {
+          "year": 2024,
+          "q": 16,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2024-16"
+      ],
+      "related": [
+        {
+          "id": "y2022q15",
+          "label": "FTP、SMTP、POP3和Telnet解决不同任务",
+          "reason": "把SMTP发送转发与POP3收取、IMAP同步放在同一任务对照中，辨清邮件传输方向。"
+        },
+        {
+          "id": "y2023q16",
+          "label": "HTTPS为HTTP通信增加加密与身份认证",
+          "reason": "浏览器与网页邮箱之间可用HTTPS；这段Web通信和后台服务器之间的SMTP投递须分别识别。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2024q48",
+      "count": 4,
+      "pointHashes": [
+        "110e0dddb8d2242fbf351a3396364cebecd37e35aac6527d27b94bfba37fe7b1",
+        "48915309596c112b77a34f854d7b88e644b205c6d0ec187d04b6f59fc117ece8",
+        "88644ded0cab271cdad5614e88879d639edba2569858eddceedb5b88bb96c1ab",
+        "611de4a0a96cccf0959cb2d2015d1c38c6a137b3fd205fb437602bb5db7bb8b4"
+      ],
+      "sources": [
+        {
+          "year": 2024,
+          "q": 48,
+          "type": "填空"
+        },
+        {
+          "year": 2022,
+          "q": 47,
+          "type": "填空"
+        }
+      ],
+      "keys": [
+        "2024-48",
+        "2022-47"
+      ],
+      "related": [
+        {
+          "id": "y2025q13",
+          "label": "校园网接入Internet需要路由转发",
+          "reason": "光猫承担光接入终端角色，跨网选路由路由功能完成；设备集成不改变这两种职责。"
+        },
+        {
+          "id": "y2020q26",
+          "label": "带宽、吞吐量、时延与单位",
+          "reason": "光纤的大带宽不等于文件必然按标称上限传输，可继续区分链路能力、实际吞吐量和传输时延。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2026q14",
+      "count": 8,
+      "pointHashes": [
+        "43db396b02d533f1b55844f23bba684fd383dd570cea238db26ac31ff3357c79",
+        "9f3ab00fc1e50fef75588d79fbb1dbb9d6d8d183d61f7e9f0db67b44e40ffca7",
+        "3d4bddfd2d483cab3c2de98c57cf076442c4ec86d9828b4189287f44ddee552b",
+        "f7e867f5711c910b96a689ad511df348fa0292e1218eeb60382561ae9b7294cd",
+        "8f909c51f358fdf5a4d2496eca4115cdad48d334960268529343bc92e0247f74",
+        "919245b10fd1b61dfa6a2f07080d29ff3fd5c9918f41d42efcb2299e9a4e574c",
+        "d4762250d0fdb5f5bac20cd8763789f70e670b0d1acbe2447ce7228b0f6c1406",
+        "a58686efb9b56f691f5b217806846e61c0fe7ba6713e7d76378d20ea709e495a"
+      ],
+      "sources": [
+        {
+          "year": 2026,
+          "q": 14,
+          "type": "单选"
+        },
+        {
+          "year": 2022,
+          "q": 37,
+          "type": "判断"
+        }
+      ],
+      "keys": [
+        "2026-14",
+        "2022-37"
+      ],
+      "related": [
+        {
+          "id": "y2020q36",
+          "label": "超链接标记a",
+          "reason": "将URL放入a元素的href，练习绝对地址、相对地址与链接文字之间的区别。"
+        },
+        {
+          "id": "y2021q28",
+          "label": "DNS把域名解析为地址，不是一对一对照表",
+          "reason": "URL的主机若是域名，通常需要DNS解析；解析主机不等于解释路径、查询或页内片段。"
+        },
+        {
+          "id": "y2021q18",
+          "label": "熟人转发和HTTPS都不能替你确认链接真实",
+          "reason": "仿冒链接常在子域名或路径放入熟悉名称，正确拆分URL有助于核对真正的站点域名。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2026q15",
+      "count": 3,
+      "pointHashes": [
+        "df57f10e0fc5e57e12c72cbcb089e3bdca09f5d2c4f649f5c1aa3dfae9ea8476",
+        "51039b1fd275e2f4bad7902444e5cda99a03f505853e7f253a3f085d9dfa2136",
+        "150394247aa950c3933c4aec2d9ef5e48fa33f64fad05a8fe3b15e2a4b3d2d1e"
+      ],
+      "sources": [
+        {
+          "year": 2026,
+          "q": 15,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2026-15"
+      ],
+      "related": [
+        {
+          "id": "y2020q15",
+          "label": "LAN、MAN与WAN",
+          "reason": "热点到终端的Wi-Fi段属于局域网，不能因它最终接入移动网络就把这一段也判成广域网。"
+        },
+        {
+          "id": "y2025q13",
+          "label": "校园网接入Internet需要路由转发",
+          "reason": "手机共享上网也需要转发流量，可与校园网出口比较，理解路由功能不由设备外形决定。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2020q16",
+      "count": 6,
+      "pointHashes": [
+        "cc454d091367c8ca0aaf8523beb38c8e03fb460ab4245fb9f19feb355c115584",
+        "5109c436e9eed2a2c19ab4eeedbc22d51b21d92c69c13605191f54eb8a43b205",
+        "ea29ee72da3544c12788d5aadc2e4b2c3de281ae1b9db3f35502ce3a4229ed94",
+        "5934d306d7e436b8f8df1e42cdf468394c7d9cb143758c5d77d77cbc8efff575",
+        "297e55e1ecb4de41ec2347930e795048ebf0fca26ae3dbdfcd26b91a71530c30",
+        "e18625890dd69ee4f5aa466e1f3a23456bc906eaa5eac1e20407bcf09c7e457d"
+      ],
+      "sources": [
+        {
+          "year": 2020,
+          "q": 16,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2020-16"
+      ],
+      "related": [
+        {
+          "id": "y2022q16",
+          "label": "title显示在浏览器标签，h1显示在正文",
+          "reason": "从HTML负责结构这一总概念，进一步用title与h1区分文档元信息和正文语义。"
+        },
+        {
+          "id": "y2020q36",
+          "label": "超链接标记a",
+          "reason": "a元素和href给出一个可直接阅读的HTML结构实例，链接目标也不由CSS外观决定。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2020q36",
+      "count": 3,
+      "pointHashes": [
+        "04787a603c12f43fffe4f818da80a525bf4c7f8784fd70f38cd13d006b9d897f",
+        "2d7bbdf29d5f421a8e07c24bfbd803b9353b61e1e3eb91546feaf8257773e921",
+        "8244b47a6ae6ca9cc14d6759969109b279f296f6b3f80a4a014cfe3a5f7edcf4"
+      ],
+      "sources": [
+        {
+          "year": 2020,
+          "q": 36,
+          "type": "填空"
+        }
+      ],
+      "keys": [
+        "2020-36"
+      ],
+      "related": [
+        {
+          "id": "y2026q14",
+          "label": "URL由协议、主机和资源路径等部分组成",
+          "reason": "href里的地址要按URL规则解析，尤其要同时看基准地址、末尾斜杠和相对路径。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2021q37",
+      "count": 4,
+      "pointHashes": [
+        "906b99f0c54eb910dcf3c2924d89fca7aaa0b36e6ee4abfbfefd10a3bbfcd852",
+        "5804ed1f6f3dabffc6851c8cb1930c8444c409b942a942e13e63363382b30c5f",
+        "a2bd60a85be20d5da893521c8498ec7bad778aceef43a09166557b9990383889",
+        "1a5cd2faf4110f0d97483f9a5f42fa69dba2fab07335a5dd1b186a3394f955e1"
+      ],
+      "sources": [
+        {
+          "year": 2021,
+          "q": 37,
+          "type": "填空"
+        }
+      ],
+      "keys": [
+        "2021-37"
+      ],
+      "related": [
+        {
+          "id": "y2022q16",
+          "label": "title显示在浏览器标签，h1显示在正文",
+          "reason": "meta与title都通常位于head，但前者提供元信息、后者提供文档标题；正文标题另由h1等元素承担。"
+        },
+        {
+          "id": "y2025q2",
+          "label": "字符编码、汉字机内码、字形与全角半角要分清",
+          "reason": "meta charset声明UTF-8等字符编码，需与字符码位、实际字节表示和字形显示区分。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2022q16",
+      "count": 3,
+      "pointHashes": [
+        "c66ee547aa6e96f476e14a8fda6e10fa452b5fc785b93f0fef464d570deb643c",
+        "aa61efe739f4bf55fd24c1c019780dce57827e8dde18eccda7f52bab26d23797",
+        "312499c488885dd648a3506d8c4da7a27e0833f2aaaada596257c6fb875038e6"
+      ],
+      "sources": [
+        {
+          "year": 2022,
+          "q": 16,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2022-16"
+      ],
+      "related": [
+        {
+          "id": "y2021q37",
+          "label": "meta描述网页元信息，不作为正文标题显示",
+          "reason": "把title、meta和正文标题一起比较，判断修改哪一处才会影响标签标题、页面描述或正文。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2026q38",
+      "count": 3,
+      "pointHashes": [
+        "abb0c0c526f4317b32d3f860797c903c85ce6a257dca85b227f1b4038eda7c3a",
+        "5891bf6238de3cb91c63fa2fe18382126afc82eeaa77a2803c5845c474536dd3",
+        "1959f121d7f4edf913898a2dbfa7e9086246ee4a2e8f61cf27506cad1218ef75"
+      ],
+      "sources": [
+        {
+          "year": 2026,
+          "q": 38,
+          "type": "判断"
+        }
+      ],
+      "keys": [
+        "2026-38"
+      ],
+      "related": [
+        {
+          "id": "y2020q43",
+          "label": "首行缩进属于段落，手动换行不会新建段落",
+          "reason": "HTML的br与p、Word的手动换行与新段落都体现结构差异；视觉上另起一行不代表建立新段落。"
+        },
+        {
+          "id": "y2020q16",
+          "label": "网页编辑器与文件类型",
+          "reason": "段落结构由HTML表达，段间距和外观由CSS控制，可据此判断为何不宜堆叠br来排版。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2024q17",
+      "count": 3,
+      "pointHashes": [
+        "00af8fa239d785d28f10bb6f8f7ef861af726d7e6d12735706cfac0d11210c61",
+        "07e66041549ab6aae9f0a22cb4037b56146d7c315540a868d2efdae039a24b62",
+        "16d7093ef66b38e88690dce4ef9ebc39a704d20f0f1f15e6c71e6ad1d0373d72"
+      ],
+      "sources": [
+        {
+          "year": 2024,
+          "q": 17,
+          "type": "单选"
+        }
+      ],
+      "keys": [
+        "2024-17"
+      ],
+      "related": [
+        {
+          "id": "y2026q28",
+          "label": "模糊、截词、字段和布尔条件调节查全与查准",
+          "reason": "检索结果过多或过少时，用布尔条件、字段和同义词调整检索式，并按实际相关结果评估查全与查准。"
+        },
+        {
+          "id": "y2025q37",
+          "label": "全文检索既能检索题录也可能获取全文",
+          "reason": "选择文献资源后还要区分检索题录、判断摘要相关性和是否有权限取得全文。"
+        },
+        {
+          "id": "y2025q38",
+          "label": "专利检索包括查询、专题与法律状态检索",
+          "reason": "专利任务说明资源与字段应随目标改变：定位文献、跟踪主题和核查法律状态需要不同入口。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2026q28",
+      "count": 7,
+      "pointHashes": [
+        "b5365e8c1f849da6090bfbe0c00178d5936b71c5588e54e367baf6aff487f0f8",
+        "9bf6fdc2b32bc85441c6c74b2f61a08fc6ce86cd94d60637dc266e6b95dd7b4f",
+        "3e66ec4571cd73b97864d11d3049bab3d3e5e59c98bf072d63ecae958dc651a0",
+        "3e2ff960f7abf2f3d505dd0672fd63cb3e92581311b58cbf7207800e9922072c",
+        "f884c818560dee8732e78b68b5628db5c64792981098490e768bce59ced4c6c9",
+        "a1a5df486d0e864e70c65c841a9f4d74fbfec0df6515d1226acbd5c46ec105bb",
+        "418821faa803bc34a1fbada07ebe1c56a48a1c65cb770aa6285697a8afcce3d7"
+      ],
+      "sources": [
+        {
+          "year": 2024,
+          "q": 18,
+          "type": "单选"
+        },
+        {
+          "year": 2024,
+          "q": 37,
+          "type": "判断"
+        },
+        {
+          "year": 2025,
+          "q": 14,
+          "type": "单选"
+        },
+        {
+          "year": 2026,
+          "q": 28,
+          "type": "多选"
+        }
+      ],
+      "keys": [
+        "2024-18",
+        "2024-37",
+        "2025-14",
+        "2026-28"
+      ],
+      "related": [
+        {
+          "id": "y2024q17",
+          "label": "信息检索从需求分析到结果评价形成闭环",
+          "reason": "查全与查准的结果评价应反馈到需求、资源和检索式调整，形成多轮检索过程。"
+        },
+        {
+          "id": "merged-20",
+          "label": "选择、投影、连接与集合运算",
+          "reason": "OR、AND与排除条件可借助并、交、差理解；数据库集合运算还须另查两侧关系的相容性。"
+        },
+        {
+          "id": "y2020q9",
+          "label": "高级筛选同一行是AND，不同行是OR",
+          "reason": "Excel高级筛选把同行AND、异行OR写成条件区域，可用来练习复合条件分组。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2024q28",
+      "count": 4,
+      "pointHashes": [
+        "f95df78ed063261b8dd2d13c70cb79f4ab87de16288a7ef03dc7b7216bdb0b3a",
+        "115879b2ceb8a751e51d6a04021ac05fe9a23c7f625a814383ea644b22843a92",
+        "207f34e110527ac8ff04c75bc89e441c2c59e9dd51df656649ff8a959766fc5f",
+        "109b2353996b7d1af27e89362ac267975a470c7631b0159de7d39bae270f31a9"
+      ],
+      "sources": [
+        {
+          "year": 2024,
+          "q": 28,
+          "type": "多选"
+        }
+      ],
+      "keys": [
+        "2024-28"
+      ],
+      "related": [
+        {
+          "id": "y2024q17",
+          "label": "信息检索从需求分析到结果评价形成闭环",
+          "reason": "无论使用人工目录还是计算机系统，都要先明确需求，再选择资源、评价结果并调整策略。"
+        },
+        {
+          "id": "y2025q37",
+          "label": "全文检索既能检索题录也可能获取全文",
+          "reason": "全文数据库是信息检索的一种资源；检到题录、读到摘要和取得全文是不同结果。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2025q37",
+      "count": 3,
+      "pointHashes": [
+        "37d95fd179abc32a3a17b8f482daeb0e164a719f419ec16a119f70733cbb6500",
+        "805a74d3ee49ea74e2c5098966b777fef7a6bd7d18e26683c3830e5b5253042d",
+        "5b4a784434cba5ee00696539859f945c34acfa334ffe93f14485458622cb3d4d"
+      ],
+      "sources": [
+        {
+          "year": 2025,
+          "q": 37,
+          "type": "判断"
+        }
+      ],
+      "keys": [
+        "2025-37"
+      ],
+      "related": [
+        {
+          "id": "y2026q28",
+          "label": "模糊、截词、字段和布尔条件调节查全与查准",
+          "reason": "题名、作者、摘要和正文对应不同检索字段，字段限定会改变结果范围及漏检可能。"
+        },
+        {
+          "id": "y2020q20",
+          "label": "网络行为要尊重权限、署名与责任边界",
+          "reason": "有权限下载全文仍须另行判断引用、署名和传播许可，获取权限不等于可无限复制。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "y2025q38",
+      "count": 3,
+      "pointHashes": [
+        "b4ddd4fce426dd7e39a528b67f86140ab4ee97dc3074dbe099a8882bc467f86a",
+        "af798ed3d31edaf6469d8a18f4c1479d1a19d17f289a55a129345475ceac85d0",
+        "6390d3743285204f3cc816ab5cb9bc90c3b28cbfd27c70fbb0f11cd9ce5ad477"
+      ],
+      "sources": [
+        {
+          "year": 2025,
+          "q": 38,
+          "type": "判断"
+        }
+      ],
+      "keys": [
+        "2025-38"
+      ],
+      "related": [
+        {
+          "id": "y2024q17",
+          "label": "信息检索从需求分析到结果评价形成闭环",
+          "reason": "先判断任务是定位专利、研究技术主题还是核查状态，再选择资源和字段，避免只查到相关文本就结束。"
+        },
+        {
+          "id": "y2026q28",
+          "label": "模糊、截词、字段和布尔条件调节查全与查准",
+          "reason": "专题检索需要组合同义词与限定条件；调整查全范围时仍需单独核查检出专利的法律状态。"
+        }
+      ],
+      "searchAliases": []
+    },
+    {
+      "id": "syllabus-mobile-communication",
+      "count": 2,
+      "pointHashes": [
+        "a3637f9a109e41a9f76ad86bf365c0defa393533a30b4716900de21a7e8cd92b",
+        "da700fff284a8a953eb63b0b300b751164e37de1a8c4e02daa3957fde64b6366"
+      ],
+      "sources": [],
+      "keys": null,
+      "related": [
+        {
+          "id": "y2026q15",
+          "label": "手机热点把移动网络共享给无线终端",
+          "reason": "联系相邻知识理解作用范围"
+        }
+      ],
+      "searchAliases": []
+    }
+  ],
+  "manifest": {
+    "schema": 1,
+    "shared": [
+      "src/labs/shared/math.js",
+      "src/labs/shared/syllabus.js"
+    ],
+    "chapters": {
+      "1": {
+        "files": [
+          "src/labs/chapter1/foundations.js",
+          "src/labs/chapter1/arithmetic.js"
+        ],
+        "models": 7,
+        "ids": [
+          "y2022q4",
+          "y2026q41",
+          "y2025q2",
+          "y2026q3",
+          "merged-3",
+          "merged-1",
+          "y2020q31"
+        ]
+      },
+      "2": {
+        "files": [
+          "src/labs/chapter2/windows.js",
+          "src/labs/chapter2/maintenance.js",
+          "src/labs/chapter2/settings.js",
+          "src/labs/chapter2/file-management.js"
+        ],
+        "models": 20,
+        "ids": [
+          "y2022q34",
+          "y2022q44",
+          "y2022q75",
+          "y2026q34",
+          "y2025q26",
+          "y2025q32",
+          "y2026q26",
+          "y2020q24",
+          "y2020q3",
+          "y2025q33",
+          "y2020q2",
+          "y2024q5",
+          "y2026q33",
+          "y2026q35",
+          "y2026q8",
+          "y2026q25",
+          "syllabus-windows-paths",
+          "syllabus-windows-selection",
+          "syllabus-windows-search",
+          "merged-4"
+        ]
+      },
+      "3": {
+        "files": [
+          "src/labs/chapter3/word.js",
+          "src/labs/chapter3/printing.js",
+          "src/labs/chapter3/paragraph-spacing.js",
+          "src/labs/chapter3/text-editing.js",
+          "src/labs/chapter3/columns.js"
+        ],
+        "models": 38,
+        "ids": [
+          "y2022q10",
+          "y2022q54",
+          "y2022q55",
+          "y2022q69",
+          "y2022q70",
+          "y2022q71",
+          "y2025q36",
+          "y2023q56",
+          "y2023q55",
+          "y2023q52",
+          "y2021q56",
+          "y2022q24",
+          "y2026q47",
+          "y2024q54",
+          "y2023q7",
+          "y2020q41",
+          "y2020q43",
+          "y2025q48",
+          "y2026q36",
+          "merged-8",
+          "y2025q47",
+          "y2024q8",
+          "merged-5",
+          "merged-7",
+          "y2020q63",
+          "y2024q7",
+          "merged-6",
+          "y2020q61",
+          "y2025q56",
+          "merged-9",
+          "syllabus-document-coauthor",
+          "syllabus-office-exchange",
+          "syllabus-word-smartart",
+          "syllabus-word-screen-clipping",
+          "syllabus-word-print-controls",
+          "syllabus-word-paragraph-spacing",
+          "syllabus-word-text-editing",
+          "y2020q44"
+        ]
+      },
+      "4": {
+        "files": [
+          "src/labs/chapter4/excel.js",
+          "src/labs/chapter4/workbook.js",
+          "src/labs/chapter4/syllabus.js",
+          "src/labs/chapter4/analysis.js"
+        ],
+        "models": 45,
+        "ids": [
+          "y2022q58",
+          "y2022q59",
+          "y2022q61",
+          "y2022q66",
+          "y2024q67",
+          "y2020q57",
+          "y2020q52",
+          "y2024q57",
+          "y2021q9",
+          "y2021q25",
+          "y2021q47",
+          "y2021q49",
+          "y2021q50",
+          "y2021q51",
+          "y2021q52",
+          "y2021q58",
+          "y2026q50",
+          "merged-10",
+          "y2020q59",
+          "y2020q9",
+          "y2026q51",
+          "y2025q52",
+          "y2025q50",
+          "y2025q51",
+          "y2026q52",
+          "y2020q49",
+          "y2020q58",
+          "y2026q49",
+          "y2023q11",
+          "y2024q58",
+          "y2023q10",
+          "y2024q68",
+          "y2024q59",
+          "y2023q60",
+          "y2020q56",
+          "y2020q7",
+          "y2020q48",
+          "y2024q10",
+          "y2023q57",
+          "y2020q47",
+          "y2020q8",
+          "y2024q11",
+          "syllabus-sparkline",
+          "syllabus-worksheet-protection",
+          "syllabus-excel-multikey-sort",
+          "syllabus-excel-whatif-table"
+        ]
+      },
+      "5": {
+        "files": [
+          "src/labs/chapter5/presentation.js",
+          "src/labs/chapter5/editing.js",
+          "src/labs/chapter5/output.js"
+        ],
+        "models": 20,
+        "ids": [
+          "y2022q72",
+          "y2021q10",
+          "y2023q35",
+          "y2026q54",
+          "y2025q10",
+          "y2025q53",
+          "y2020q12",
+          "y2020q11",
+          "y2020q53",
+          "y2026q55",
+          "y2024q65",
+          "y2023q13",
+          "merged-11",
+          "y2020q54",
+          "merged-12",
+          "y2024q46",
+          "y2024q12",
+          "y2026q53",
+          "y2024q26",
+          "syllabus-ppt-output"
+        ]
+      },
+      "6": {
+        "files": [
+          "src/labs/chapter6/network.js",
+          "src/labs/chapter6/printing.js"
+        ],
+        "models": 14,
+        "ids": [
+          "y2022q15",
+          "y2022q16",
+          "y2023q16",
+          "y2023q17",
+          "y2021q15",
+          "y2021q28",
+          "y2021q37",
+          "y2026q28",
+          "y2026q38",
+          "y2020q26",
+          "y2026q14",
+          "y2023q47",
+          "syllabus-mobile-communication",
+          "y2026q13"
+        ]
+      },
+      "7": {
+        "files": [
+          "src/labs/chapter7/media.js",
+          "src/labs/chapter7/playback.js"
+        ],
+        "models": 6,
+        "ids": [
+          "y2023q19",
+          "y2024q32",
+          "merged-14",
+          "y2020q38",
+          "y2023q18",
+          "syllabus-media-edit-export"
+        ]
+      },
+      "8": {
+        "files": [
+          "src/labs/chapter8/security.js"
+        ],
+        "models": 4,
+        "ids": [
+          "y2022q39",
+          "y2021q18",
+          "merged-16",
+          "merged-15"
+        ]
+      },
+      "9": {
+        "files": [
+          "src/labs/chapter9/chain.js"
+        ],
+        "models": 2,
+        "ids": [
+          "merged-17",
+          "syllabus-quantum-basics"
+        ]
+      },
+      "10": {
+        "files": [
+          "src/labs/chapter10/database.js",
+          "src/labs/chapter10/update.js"
+        ],
+        "models": 6,
+        "ids": [
+          "y2023q14",
+          "y2020q14",
+          "merged-21",
+          "merged-20",
+          "y2024q36",
+          "y2023q15"
+        ]
+      },
+      "11": {
+        "files": [
+          "src/labs/chapter11/algorithms.js"
+        ],
+        "models": 8,
+        "ids": [
+          "y2022q33",
+          "y2022q43",
+          "y2021q3",
+          "y2021q33",
+          "y2026q6",
+          "y2026q42",
+          "y2023q69",
+          "y2024q69"
+        ]
+      }
+    }
+  },
+  "otherSearchHash": "fc9a80a343488e50e7b464a68066d179d040e0b6fe943dae22130dc0dfc9f1a0",
+  "after6SearchHash": "4e27586bf259388072c6761d8742ab859f1dff98068b51f7a6c02b87f7b16df5",
+  "except56SearchHash": "cd8b855c8a3a882337d85802a8ca6c27ea077c69ad3a0ec18aa05869b7cd9d13",
+  "referenceRows": {
+    "merged-3": {
+      "count": 3,
+      "hash": "0783ff9bec6d3dba6e8b402ef72242e01dbf79cae8c096f6ecc896320c237074"
+    },
+    "y2025q2": {
+      "count": 6,
+      "hash": "668cec4116008f084e576f2a8d6649e31baf991b6597a06959be61b06feaf056"
+    },
+    "y2026q41": {
+      "count": 3,
+      "hash": "a85b68010b8bc2b6da341a26b7c51c9839ebd2097710b632d499be3aa2c53d6d"
+    },
+    "merged-1": {
+      "count": 5,
+      "hash": "aae93112187344765286f532d9e430e6dd8494d9921b9ae5fdf77cea9af167c4"
+    },
+    "y2024q41": {
+      "count": 2,
+      "hash": "9f19c53f7534156c4b72c91ccf576ee0ccfcf3cb1e305631ae3a21809d315928"
+    },
+    "y2026q3": {
+      "count": 3,
+      "hash": "fa5c4b5f81909181e21d16fa96f4ca82015b32d2f856941d69b5a60989c6cb28"
+    },
+    "y2022q4": {
+      "count": 2,
+      "hash": "3928550d5a7b1b1ac3aa356d52914e7e2924baf0b0f4af64dfce92faf1cae4bd"
+    },
+    "y2025q1": {
+      "count": 2,
+      "hash": "8f831ec839a3363138c56d7a1de35921e8893442f842729634ae2c9ec7ab9174"
+    },
+    "y2020q2": {
+      "count": 2,
+      "hash": "f482252ee77548245c22d6d3eda14bd97274490be0e812c0db074332a5b3697b"
+    },
+    "y2020q3": {
+      "count": 6,
+      "hash": "66d986d6deeb3f81b1d5c4d984b87ddbd297c6c15fb9c020c8a53f425ae6274f"
+    },
+    "y2020q24": {
+      "count": 6,
+      "hash": "dbb35894b40d0fe96aa43ce3cd800f81d51962e47a9446079cfad5608a7bb039"
+    },
+    "merged-4": {
+      "count": 10,
+      "hash": "7ccf0f30086104863685b8b204d3438eb493ab364e1d7be325d179e950be6f0c"
+    },
+    "y2026q35": {
+      "count": 3,
+      "hash": "779fd42847c56af7bba3f432b82b284ffc474e94cd6d531ad585949d1eb60fae"
+    },
+    "y2025q33": {
+      "count": 4,
+      "hash": "828f4e0098cb3cdf8909932eec04ea11c19dd06086af17c7f3be6159a63bc3fa"
+    },
+    "merged-5": {
+      "count": 6,
+      "hash": "19b96330e8d4f89dc767c0c14d73d5ddd15323b940ae1b9940cd34aa8ed409a5"
+    },
+    "y2023q55": {
+      "count": 4,
+      "hash": "462ec8b5c1e41848f5264d161cb5a1456cc72c46695798c757f50722af9b2b5d"
+    },
+    "y2025q48": {
+      "count": 4,
+      "hash": "ff35d55834199b674edbf344865ae6bbe2c705c5de1e5a24e17a029351afe826"
+    },
+    "y2020q41": {
+      "count": 9,
+      "hash": "722c273438d5fc91f420d2879927f02f74882a1dd80a143685a0c37cce8d8bb4"
+    },
+    "y2020q43": {
+      "count": 3,
+      "hash": "e2a3b615ed0ef2de1456823272228c900b10575f1080f6bc64727bbaba1e1f98"
+    },
+    "y2020q44": {
+      "count": 5,
+      "hash": "9b53e654ff61d23c750c2935b5a002d4bdf2d92a27a5cb8e8b3664e2e8cb92ce"
+    },
+    "y2020q61": {
+      "count": 9,
+      "hash": "7bccfdb9326d912739f5036edd89ddd52c612ed3ac2cb0538ada22b8a5fd6fe6"
+    },
+    "y2021q56": {
+      "count": 8,
+      "hash": "1c3dd88097b2623e76027f274228e379271a4124884bb4bababd3675a1ec6795"
+    },
+    "y2022q24": {
+      "count": 2,
+      "hash": "cbe1f741fa70fba44bafa1d4e8664ef9235c3624152434d9f58add384c1e2466"
+    },
+    "y2023q52": {
+      "count": 11,
+      "hash": "b92fe92fe3e7fc44a51f674771c30e6cc0659ba0ca78fde0db338ad817ee553c"
+    },
+    "y2020q62": {
+      "count": 4,
+      "hash": "b9412f0d01e37e6b9671937428bce53ef565b3cf6b97ef271db6dfa09267129e"
+    },
+    "y2020q63": {
+      "count": 6,
+      "hash": "6b1e1bcbad27217b996ee5d1c4a95d6b17cfb72842510f8d142be8b0b61ab2a3"
+    },
+    "y2022q69": {
+      "count": 2,
+      "hash": "15593efe9f747ee33f4a6d0aaa7ffe68079fad972d6ba742cac05e3f4273864d"
+    },
+    "y2024q8": {
+      "count": 20,
+      "hash": "e683d07db203032808878fe4845713d05a3dfbd081c7d3196832654d374eba94"
+    },
+    "y2025q47": {
+      "count": 12,
+      "hash": "adbcb47791c471d8ea549a8f9dce7a013a36f55bbb82ad49fe2c36a83fef3d87"
+    },
+    "y2026q36": {
+      "count": 14,
+      "hash": "6d64b35619f1b2983bdac786082d519e13af7a455f9634f69f67a440a3ab13f4"
+    },
+    "y2022q71": {
+      "count": 9,
+      "hash": "3b4f928ebf8fcd3835ef01e411219d4957e7de48bf60bf60824dca2c48725b98"
+    },
+    "y2023q56": {
+      "count": 3,
+      "hash": "9a5dd698093bea6af4c6364bbf1240ebea786384e5de5eb8034f9f191f024dff"
+    },
+    "y2025q36": {
+      "count": 6,
+      "hash": "eff58a6f0edc69c23f319cfb9fa345c22c231489863a19f3100c553883e798b6"
+    },
+    "y2020q48": {
+      "count": 3,
+      "hash": "c6e7226ead44760c62e0b5fccb72f7a0b9d6d893cd7b70ab84500d8d843bc24e"
+    },
+    "y2022q58": {
+      "count": 3,
+      "hash": "acc3d0268ed52b35c28a2e4b70c789fdea49d26db96223ec2e5f652121fd9304"
+    },
+    "y2023q11": {
+      "count": 1,
+      "hash": "2c20b5df35f19ac13207edb5c44eda7e5c84d1283ad184bfa2f36b4101a567e5"
+    },
+    "y2023q60": {
+      "count": 2,
+      "hash": "b803076523267e1de56b911e63722fdf2bae0709219e33d9d06f23e0aab14054"
+    },
+    "y2024q57": {
+      "count": 1,
+      "hash": "ee743f4da18a132ef609606c212fcf228170e653852a4085d422baeb56022a4f"
+    },
+    "merged-10": {
+      "count": 2,
+      "hash": "37af917c1d98c5f17dd0836858795dfed3e0e8a4d03656659faf8bc09de55640"
+    },
+    "y2020q56": {
+      "count": 1,
+      "hash": "b9ebf72bf42c94eb0d5305b0d02e7ec16d3b716f3d5f736b0cb7d469973485fb"
+    },
+    "y2020q57": {
+      "count": 2,
+      "hash": "f92264fabd4249cf103ed2e8f31303c9400bbd28fd6be63cca21cbd614605492"
+    },
+    "y2021q49": {
+      "count": 1,
+      "hash": "0fc52d9f599b0f40c2da7937dc3e844847bdbe867881a8ff5425e6e419cda54b"
+    },
+    "y2021q51": {
+      "count": 3,
+      "hash": "2ce2c1b02f9ff20fd0f2cb654f1ac793d08534d5096b15c1076d67836eb5dca5"
+    },
+    "y2026q50": {
+      "count": 2,
+      "hash": "9b9c84ba8a091a79aca5719d5ac4444a718955eafdb68e60fd4f88e724c842b0"
+    },
+    "y2026q49": {
+      "count": 3,
+      "hash": "7496802a1bf4eb5cd3aba4b3a920e94cb058bafda00e4b6dd92132fd1d7de300"
+    },
+    "y2020q47": {
+      "count": 1,
+      "hash": "68bcbb76833f959efc7cb59911e85f26a3545cb4b1a1279753c41f09e23376a8"
+    },
+    "y2020q52": {
+      "count": 1,
+      "hash": "27d4f040088fc9f7eba87782eb1082e065587590808e6a36a4437ebcc7cd9d86"
+    },
+    "y2022q61": {
+      "count": 2,
+      "hash": "2640d0db85265ba0bdffdac2c975352b919d577eca073292c7272f71cb565a62"
+    },
+    "y2025q52": {
+      "count": 1,
+      "hash": "27d4f040088fc9f7eba87782eb1082e065587590808e6a36a4437ebcc7cd9d86"
+    },
+    "y2020q9": {
+      "count": 1,
+      "hash": "fde203a988bae7df7adb0f1c7b0e514a98f761328a69ed6371aba6c084f56ae5"
+    },
+    "y2020q58": {
+      "count": 2,
+      "hash": "906dbd8f6fef2779ce5c14e882fb4f9facf674e90b1ad73a085276c2797d5ffd"
+    },
+    "y2021q58": {
+      "count": 1,
+      "hash": "94e62d6bc540c3ecdaae2f1ee44ec496d64c5d27f64ac036d8d72cb97c7261b5"
+    },
+    "y2023q57": {
+      "count": 1,
+      "hash": "a812fc5a15d347b6f65475d74454ef61dc87110426b283966f9c10d7e12b9d71"
+    },
+    "y2024q67": {
+      "count": 2,
+      "hash": "a9d5867b4dfdf0165d67ff2a672c167832c79766e164f71ccf9064e8b217cd50"
+    },
+    "y2026q51": {
+      "count": 4,
+      "hash": "107c31f5c40862f560d05b9f14eebce7e1d8a774581c0fa203d1d11c3fb3e5ec"
+    },
+    "y2025q51": {
+      "count": 1,
+      "hash": "375c569ee589735900037ec42f9a5c4522cbdd42d09a558d686d9f81c593e0dc"
+    },
+    "y2020q10": {
+      "count": 3,
+      "hash": "b6a73995093753c7492ff2cd52e093b7b4228fabb62a7a25aae5f888f258424b"
+    },
+    "y2020q12": {
+      "count": 2,
+      "hash": "ab15daed7d7dc1e4006c88eceb8045d0322fb83d4966905bad4015edde02aac5"
+    },
+    "y2020q11": {
+      "count": 3,
+      "hash": "cfb5da0e6dcf637a292cf703fb5b6378f53a44e1b19507ef4da2b4fcc1004d9b"
+    },
+    "y2020q53": {
+      "count": 5,
+      "hash": "414e5f095f5abd3133461aaa5a304d9bdd1d2f36ab0cf4800064cd42bd095c5b"
+    },
+    "y2020q54": {
+      "count": 4,
+      "hash": "0664d40886549cf4532e0e6bc0aa607555589044ff879f8ce7435744fe0c1e47"
+    },
+    "merged-11": {
+      "count": 7,
+      "hash": "65f26e949559d4159ea3f557498e60c47243a2e6831c6523b277f630fec6d9f5"
+    },
+    "y2023q13": {
+      "count": 7,
+      "hash": "dcb8d754f7cf156f18e4ef55e1152108db891d307e12c5a67c79a82a4e699ab2"
+    },
+    "y2024q65": {
+      "count": 2,
+      "hash": "1d512216c7466272f815e1ac94c819f3bb50cff4330e73887517f7b689caeb86"
+    },
+    "y2026q55": {
+      "count": 1,
+      "hash": "4c9b820187af60cebce8f4e1ab1d9c2e1946f0db4a2383aa86f88a50d1e30e1f"
+    },
+    "y2020q26": {
+      "count": 2,
+      "hash": "8fcb69a6843838386a61fae0c0865855ac689cd2c72344c1f955027fb732f5c8"
+    },
+    "merged-13": {
+      "count": 2,
+      "hash": "ca4b70d0fc0628ae4099c1126a1b238ddefdf04ed93568e7beea1ffa3978f6c7"
+    },
+    "y2023q17": {
+      "count": 3,
+      "hash": "1abdfe70d8e92c42c956b0ffd16a06d48b36551da604d946fd99fb55aca43485"
+    },
+    "y2023q47": {
+      "count": 2,
+      "hash": "5fdf0a35524d3f09df98305bfc4f67b36ca1cc7bfea1ea33fbeb007a61e66925"
+    },
+    "y2026q14": {
+      "count": 3,
+      "hash": "52af9752baa361c95d9e86f9c8032ad6bc1457d6adc542e006bcc5a53f9cf179"
+    },
+    "y2026q28": {
+      "count": 4,
+      "hash": "d8278968269099e023a560f15a17cfd4e718a5a845b82b84c07bd567eb7e7f95"
+    },
+    "merged-14": {
+      "count": 4,
+      "hash": "6db3ac88c94ff5af191471bd39030adb0fa6aba0bd3cb2d247e7dc5fd21057d1"
+    },
+    "y2020q27": {
+      "count": 2,
+      "hash": "10773ca00b654d90234569b841b34759b7a823a66fe4e69b791a76699049d768"
+    },
+    "y2023q18": {
+      "count": 2,
+      "hash": "f903c4053336e43ce3a80418a65df325876d5716e28f09a5e5ba0c5389e587c9"
+    },
+    "y2024q32": {
+      "count": 4,
+      "hash": "03b6a59328d5aede02b8d34d88580b69da252e47d5539429f325c4a91985dca7"
+    },
+    "merged-15": {
+      "count": 6,
+      "hash": "918209466f1d0384fd9cc7d54ebda0847d9398635c55788710fa81b01f8d0cbf"
+    },
+    "merged-16": {
+      "count": 2,
+      "hash": "6e09001c4e866e1838897d47bc2d6b0d21bc40e58a467424fdbc16ba72840d5f"
+    },
+    "y2026q39": {
+      "count": 2,
+      "hash": "d93c078450dcdc6269b73a1668243300d57c16d8ab48d7707789f834f472a32c"
+    },
+    "merged-20": {
+      "count": 3,
+      "hash": "70e0fcb05c849a0e699c50cd7c05ae8c8bbd1a19acd3fd8dc7b8341387aa09aa"
+    },
+    "merged-21": {
+      "count": 2,
+      "hash": "ab147ebff7c2a7bbc021e58dafb4b1dcafdf8fe21fc26a6da7ddce68f3608e6b"
+    },
+    "y2023q14": {
+      "count": 2,
+      "hash": "791523d9536f66b0256f2c15eeabc712e511758b14cbdcc66769801c9e237c32"
+    },
+    "y2024q36": {
+      "count": 5,
+      "hash": "b9cc2a829a402760e35163028e00ff68da23753afca83a4dbe02d09fe3581fa9"
+    },
+    "y2021q33": {
+      "count": 2,
+      "hash": "d761caacebe636e829fe3c585ba2e31aabcace8aa39bcc346e90ee84746c737a"
+    },
+    "y2024q69": {
+      "count": 1,
+      "hash": "260ff9bd5b4076de283db08e5c2fe0b6e0c692c44403400d5e83283e9b99f7c4"
+    },
+    "y2020q20": {
+      "count": 1,
+      "hash": "4e80aeada62bf0d0a81d1014931ee3516bceee84a7dc54b6160ec0cbf11a9aed"
+    },
+    "y2026q18": {
+      "count": 3,
+      "hash": "9b1a805ab0f8d027c7f2b03c407f32b8e21aee8d1d42aab879fc021f3ce7e0c1"
+    },
+    "y2020q31": {
+      "count": 1,
+      "hash": "5f749a0ad107251199056d01b9905fc343657f2aceb66b71a92bec61b853f560"
+    },
+    "y2020q23": {
+      "count": 1,
+      "hash": "d3097da8eaf26b48f5ad4b7bae9d69b4d524fe7fba38aeb4a7cc8e1d9769ccf9"
+    },
+    "y2022q44": {
+      "count": 1,
+      "hash": "fb245a78975eba2e346c3fdb891e603a072753cb48412f1c5838c1458f86a878"
+    },
+    "y2026q7": {
+      "count": 1,
+      "hash": "c23e82d800e091a604df8ef22a78a7f3aa3c4a6d475ed9c5c87eb7f80cc973ea"
+    },
+    "y2022q75": {
+      "count": 4,
+      "hash": "926726975109219435b7d1d5fe8f2bf46d0833a0e20d08f0a97b1aec51c7fdf9"
+    },
+    "y2026q25": {
+      "count": 3,
+      "hash": "ae394f4bcff91fcf06b7e99b54f371b0bc883bb34a2c8b5f6b18b1fad6d04f21"
+    },
+    "y2025q26": {
+      "count": 1,
+      "hash": "291d2f78e9d39a76f815c814ee21e308613819a98386836ab7a739b5bfe797cf"
+    },
+    "y2026q34": {
+      "count": 3,
+      "hash": "898e640f76fd282404e5d3b3445632d2190f6ad88e8ad255a9390e77715a4b7d"
+    },
+    "y2026q8": {
+      "count": 1,
+      "hash": "67e1d5ab98ef671ba70bb6280d3543bfffd355986a0246bde84a82d04e77f7dd"
+    },
+    "y2024q5": {
+      "count": 4,
+      "hash": "36f2062fe867c4864e8f245a2ddc441ad0d7a5f05cc4f19ab927b0a60e0f8986"
+    },
+    "y2026q33": {
+      "count": 3,
+      "hash": "5506c9f9867710fe3a57396b40e5d5dee1223bf9e7999b4325c4d2447ef4c1c5"
+    },
+    "y2025q34": {
+      "count": 5,
+      "hash": "29dcb8a5dee99f7ddc61a46fa9415f11223457eb8d36f9c4f13877a268d8a31e"
+    },
+    "y2026q54": {
+      "count": 3,
+      "hash": "4571a391b9ba49b304cf738eb2d5ff2484e09d8cf8282217ea36058f654bddd1"
+    },
+    "y2022q72": {
+      "count": 2,
+      "hash": "c6c3f9a9b653a476ec4d0a8a782cdcf475a11d5a79cb27c2649b300f04bcb381"
+    },
+    "y2020q60": {
+      "count": 10,
+      "hash": "7bf722f3dd06a74b8958ecc4629d4e2f5987a5c9cefd5d9a5d687318c0e3cd80"
+    },
+    "y2022q70": {
+      "count": 4,
+      "hash": "db0d8b68d7cccf0cfb094ec7fe3f71cff1072fe223e89234ccaf119184c29213"
+    },
+    "y2023q7": {
+      "count": 2,
+      "hash": "898b8e95bc6be1321d49bc4310a98f23280e4e427d08ee20cef247bf744389dd"
+    },
+    "y2024q55": {
+      "count": 3,
+      "hash": "bc5cc07d07bd3fd3526e1f2acb3b72435eb356220319bcbde0fb5eafb1bb5ffd"
+    },
+    "y2024q26": {
+      "count": 7,
+      "hash": "97a7e95d4b57e99fb3b582568f7bd4843de2385f47d171bb1da02d1667370847"
+    },
+    "y2024q46": {
+      "count": 1,
+      "hash": "fcd1ca2749328092839402a01ec12c0c3988d137dcd8d2022963d7367770dc8d"
+    },
+    "y2025q10": {
+      "count": 2,
+      "hash": "eb2c5f6a08c3a6fec91efe48412a33a4e2bea08889729fc3b24e04d711049e41"
+    },
+    "y2023q35": {
+      "count": 4,
+      "hash": "cb4886b15023d714b12dfec89aa39bba38adb7aac236746f5cde795d926e3e53"
+    },
+    "merged-8": {
+      "count": 1,
+      "hash": "f44692b0d23215e29d9ad436534cfb5c07a677c3738413e27805447321366e61"
+    },
+    "y2026q53": {
+      "count": 4,
+      "hash": "a76f61e627de23496c1fee9509f5a4b1f2d5ee5db60ab85c25b823b2c818b517"
+    },
+    "y2021q15": {
+      "count": 1,
+      "hash": "3921083a2c70f9f9a44c530dea376fa747beb941634da1f3cba78bfa9f4afda9"
+    },
+    "y2025q13": {
+      "count": 2,
+      "hash": "f4244dd496f32179a992fa01c2539be5da4a2d99de8aa08864c6fa37c9a07d85"
+    },
+    "y2021q28": {
+      "count": 1,
+      "hash": "0c4597200df53b0c08839967f254f81c7ebcaa1a00cf41d31f3325eb186255fb"
+    },
+    "y2023q16": {
+      "count": 1,
+      "hash": "41a8c83b9a06bc2766589a5dfe9fbcc777a951e661032e893f13f06bbf0b7df7"
+    },
+    "y2020q38": {
+      "count": 1,
+      "hash": "290cea7d8c664617b1002f86d45a3cf00163e296958a6233a89110705965508c"
+    },
+    "y2020q17": {
+      "count": 1,
+      "hash": "ac47c7ddc2e1a190e84bda767a29f721082ef882b5b775ff97d60caca2181790"
+    },
+    "y2026q16": {
+      "count": 3,
+      "hash": "80ecb1fa132bf9efe6c177d6894617523806631bfdc1a13ad5ce37ab8db8b450"
+    },
+    "merged-19": {
+      "count": 1,
+      "hash": "dc516733d9b00cc80818391d2893a628e3c92d0f2418a5e4ec5ed3e87848f33b"
+    },
+    "y2025q20": {
+      "count": 1,
+      "hash": "10b057e3697e1bc237f07fdd6ff9990af79a0550b984f6e748fa68e670c4f393"
+    },
+    "y2020q14": {
+      "count": 1,
+      "hash": "03ab338072ad2453b78d19da6e0defe4b8e2c9de0f6db2b88e2efeb04da8f8c3"
+    },
+    "y2025q11": {
+      "count": 1,
+      "hash": "ea8017a27b9d8ad634329d817d1bb1683ebad3afc7a369e8debfdec45c586af7"
+    },
+    "y2023q15": {
+      "count": 1,
+      "hash": "721d1b8267da2ce6e9fd23d6843547690f8f044514d78e919aa11cad041079ee"
+    },
+    "y2022q33": {
+      "count": 1,
+      "hash": "ff59ab0eae7c9663e6fe3ed025f50e67df919e2fdf4ffd5be2d755f2c83f4a96"
+    },
+    "y2026q6": {
+      "count": 1,
+      "hash": "431c006a4e65ae6eb5da2452b0757493eff30d80ce4e1063df8476aa962522ea"
+    },
+    "y2022q43": {
+      "count": 1,
+      "hash": "548c4ea9fb25177997e52292baa7042a896deb4fe0f8b570d37b1490146bd36f"
+    },
+    "y2023q69": {
+      "count": 1,
+      "hash": "d1941df555a08a7062ac23ede6700657be1dde4067efbd718dc32fb609ae9ec6"
+    },
+    "y2025q24": {
+      "count": 2,
+      "hash": "0baa8968312dc7903de3ba049c3e40cb668cf289e782901dbbb5ed0c30c8e780"
+    },
+    "y2020q8": {
+      "count": 4,
+      "hash": "861d57379399a2ea6d12c0311feb91d78222f0c861e131ffffba5ddb727c3267"
+    },
+    "y2021q9": {
+      "count": 1,
+      "hash": "8415a74e6b1783fb7a3437afe2ccca5b722f27a365a00f3afaa4571d4d30c4bd"
+    },
+    "y2024q11": {
+      "count": 4,
+      "hash": "27b81b26cf00542a0fbb92c8624aa559e4dabffc60f837bafd34405eca135980"
+    },
+    "y2020q49": {
+      "count": 1,
+      "hash": "472d12c74a358d5ac0f2fa1f6ad70af64736f144679661bbf3834d52ee803001"
+    },
+    "y2020q59": {
+      "count": 5,
+      "hash": "0ca2057b719baffb20677843bdb426bfbb803a9c09a9e9769015736bea5cbf5c"
+    },
+    "y2023q10": {
+      "count": 5,
+      "hash": "a45b9cd1e9c6a249cd12185c930bfd79d6fd3f003bf38f14e4ea4570e6f2431a"
+    },
+    "y2024q68": {
+      "count": 2,
+      "hash": "c1fdb3bab22b7c39c24b64ef8fc8e0fef233ab1b5719a377566e87f040b8230f"
+    },
+    "y2026q52": {
+      "count": 3,
+      "hash": "bf8774839f1bf1570a900dc72919c53c0c6a2c3e32d9a16bbd4ebe0e177e32b7"
+    },
+    "syllabus-document-coauthor": {
+      "count": 3,
+      "hash": "7966339b295025d727d6d1b2b56fd183e55f4c2284332346190fd47e6a548552"
+    },
+    "syllabus-sparkline": {
+      "count": 3,
+      "hash": "b14fedfc1ed2ae6fbd9f8d63746711dadfe3b49c69bd3b28e04facb3be3da5dd"
+    },
+    "syllabus-quantum-basics": {
+      "count": 3,
+      "hash": "3e50faaa812386f79522e29eeb44c2de04ff348f7aba976d33d7b7ead76f0b88"
+    },
+    "syllabus-mobile-communication": {
+      "count": 2,
+      "hash": "2305fa3a2f5c08c1bdc749124da1e6b16036d3aad4d2b8ca589b5b1081039cff"
+    },
+    "syllabus-office-exchange": {
+      "count": 5,
+      "hash": "1dccca241519d652114fd5da5a0b1c890a6460b9e2e7a4fdfdfdd9dbf59c53e0"
+    },
+    "syllabus-ppt-output": {
+      "count": 6,
+      "hash": "828c727843dc2eef236f5f9a4cf9229b9a51c8857ccc9e530ce251633d473849"
+    },
+    "syllabus-worksheet-protection": {
+      "count": 3,
+      "hash": "85699515a8e3f04025bd500c0b36af950e741811f6ff9d9937e99861baa68ad1"
+    },
+    "syllabus-word-smartart": {
+      "count": 3,
+      "hash": "43b84294e1fb33f274d073bb2d33cda7acb2b075b1c89eb027c5edf5bd910db7"
+    },
+    "syllabus-word-screen-clipping": {
+      "count": 1,
+      "hash": "6596f37257b012ceca8765a99b0b9a8f9354f0f70a62ad01c11c1a70ea295f04"
+    },
+    "syllabus-word-print-controls": {
+      "count": 5,
+      "hash": "1039610dea0c1953913a797b53ab548f151805b8537ba4cb48b2ed0a46dfe7c5"
+    },
+    "y2024q59": {
+      "count": 3,
+      "hash": "f50e8c7cf115fb983051a53caceedc43af39027aecd638e6e44d7e982dd13ca2"
+    },
+    "syllabus-excel-multikey-sort": {
+      "count": 1,
+      "hash": "3b2881053252caf3e8480df2de9d7307cc04c97fc1e72c2b9400005fde9a29eb"
+    },
+    "syllabus-excel-whatif-table": {
+      "count": 1,
+      "hash": "c8acb83f9c6664ed61f3dd38435a8f14b21364b9aedf6713ef86d286994dafc6"
+    },
+    "syllabus-media-edit-export": {
+      "count": 3,
+      "hash": "fccd3e6fd0074ce0b9379f0a34553cea2d9ca7f4def9b11ce6179ee9d6f885a2"
+    },
+    "y2024q6": {
+      "count": 3,
+      "hash": "a125a2462a1d53891626b8c87387d253e9f6f165048f1e5f89c1729c18731bcc"
+    },
+    "y2020q16": {
+      "count": 1,
+      "hash": "9dd0b110ab4ad78722b1988d7c820675e6a0da74ec55b687f1f08c1277517f89"
+    },
+    "y2025q4": {
+      "count": 1,
+      "hash": "7229f6d4e8d96d54e74c3c1c53260065b5a5fc37331b60512cb0804eeb0246c2"
+    },
+    "y2025q23": {
+      "count": 3,
+      "hash": "8db75b7c5773d986afb0114c3d1bbde2b891d0a6ce265bae581362529692e304"
+    },
+    "syllabus-windows-paths": {
+      "count": 8,
+      "hash": "f311ac57ca60827d0c9d53bb265de01474bb39d1bb8420d216b94230f33e1d95"
+    },
+    "syllabus-windows-selection": {
+      "count": 4,
+      "hash": "af17c4b92bfe2cef9a0ab54797410aaa77df3ed2672da05fd93f9695f364fe3f"
+    },
+    "syllabus-windows-search": {
+      "count": 4,
+      "hash": "cf6400944ceb6986161a1af9e13d41c019f701f699bc1a3808eabe8e4606ada8"
+    },
+    "syllabus-word-text-editing": {
+      "count": 5,
+      "hash": "e1e11aed6684d3c18f7c74040025ca4fcf3985b1ebdd328185c15f31c893f9a9"
+    },
+    "y2024q7": {
+      "count": 2,
+      "hash": "aaf2fc3f21b9e645b5a732f52eae2492ca57f81b952b75a66d8df5c44aa30ff5"
+    },
+    "merged-7": {
+      "count": 6,
+      "hash": "edf38a4d79d966323b122d4001a9f5953101a179bfa6caf855b2781bf8476a80"
+    },
+    "syllabus-word-paragraph-spacing": {
+      "count": 2,
+      "hash": "8b737f8734c72bf05c952cd222e92c84b3576d4188bb89804a69c91e0781eda3"
+    },
+    "y2026q47": {
+      "count": 2,
+      "hash": "498540aa518d0982f58382bdadfa2d7deeef386ebf31dff285de2f65bf1df207"
+    },
+    "y2022q10": {
+      "count": 4,
+      "hash": "d7c11e354f192dc76d08a1439054d0934a31f29a2a0b82359f3791b0cdc0ecab"
+    },
+    "merged-9": {
+      "count": 12,
+      "hash": "6ba9bbfbda0d07b4fe511aacfcbee774b1fc14eb19ae754d82ca7853c83910f2"
+    },
+    "y2022q54": {
+      "count": 4,
+      "hash": "73d4fb6d0bbd95afcf68db3e6ca9bd65a16a47b9035ca19f6e02a40802e82e01"
+    },
+    "y2025q56": {
+      "count": 7,
+      "hash": "60d0d5d916cc807b0d647d9d22ef153bd1a3bf91a179bb33111704e63f943c21"
+    },
+    "merged-6": {
+      "count": 7,
+      "hash": "63a8065510800e2a7e80dd2c81c845824c899aab4a465e6cf4a6f4e71e2b4ce1"
+    },
+    "y2022q55": {
+      "count": 2,
+      "hash": "8adf4ba309073f4ad7c73373c4ade72ec0ca795430bc4f413712ed88a2bd7d3e"
+    },
+    "y2025q21": {
+      "count": 4,
+      "hash": "c99fde1a6fed24209eb8b51f01126a68b85edd02eed022a98aa9fb8cbf49c5b3"
+    },
+    "y2021q25": {
+      "count": 1,
+      "hash": "164294d3fda78ca8b319b84d50b21c400380568cd15a21363a2dfb880057444e"
+    },
+    "y2021q52": {
+      "count": 2,
+      "hash": "d304dc8f8c27c0c7d7cb90071477d3d442cc447d5f4516bd8c725332b769cd1a"
+    },
+    "y2022q34": {
+      "count": 1,
+      "hash": "c5e97e7a9d8f9a1bcf3a6fa454c7e97f46b03ff8ef0c65066dc95f81bc418f00"
+    },
+    "y2026q26": {
+      "count": 1,
+      "hash": "950fb4c4cdcab34c91c0e5d843008d181fc9d1bed29fcdb0c259b68857e45309"
+    },
+    "y2026q32": {
+      "count": 1,
+      "hash": "9ad5a256773281e4b539a99948591edede7cf41b186fea105663f71cb28d0ce3"
+    },
+    "y2026q9": {
+      "count": 1,
+      "hash": "cd298e9a8b84fb8a467c92104d1b928591aca0bfda68d40d9f6f4ff616440ecd"
+    },
+    "y2020q1": {
+      "count": 1,
+      "hash": "4c1156ff30ee06f710c97877bfabc80a9b94c87fd375e88858d36618b5f931ba"
+    },
+    "y2024q12": {
+      "count": 4,
+      "hash": "91c31f552babb337ccf161dbd933d73c7589e04fe03e99486997f9569bcc1899"
+    },
+    "y2021q10": {
+      "count": 3,
+      "hash": "4eae3ae3b42bf908515f5d522bae7f46f13b5698585fd148d195ece3b60805b6"
+    },
+    "y2023q45": {
+      "count": 3,
+      "hash": "c380e8892417cdec8c6b18131e6d2f25d223038c996f5a8399be84df56892630"
+    },
+    "y2025q53": {
+      "count": 1,
+      "hash": "d3b110480a79e8a61e0d34418c14b9ac44c6ccdef3462d70984506770f656464"
+    },
+    "merged-12": {
+      "count": 1,
+      "hash": "0a64e75787f03bbe9dde21c1af47a2994f73dc98e9686e455c3fd6f9808fb4f7"
+    }
+  }
+}

@@ -16,7 +16,10 @@ const v61Rows=new Map(Object.values(v61Protection.chapters).flat().map(row=>[row
 // v64 Chapter 5 is guarded against formal v63 below; other chapters stay frozen.
 const pptV63=require('./powerpoint-v63-protection.json');
 const pptIds=new Set(pptV63.chapter5.map(n=>n.id));
-const reviewedChapterFile=file=>/^content\/chapter[1-5]\.json$/.test(file);
+// v65 transfers Chapter6 from old freeze guards to a formal-v64 snapshot below.
+const networkV64=require('./network-v64-protection.json');
+const networkIds=new Set(networkV64.chapter6.map(n=>n.id));
+const reviewedChapterFile=file=>/^content\/chapter[1-6]\.json$/.test(file);
 const digest=value=>require('node:crypto').createHash('sha256').update(value).digest('hex');
 function projectV61(note){
  const row=v61Rows.get(note.id),old=structuredClone(note);if(!row)return old;
@@ -1500,9 +1503,9 @@ test('v62 old and new deep links search focus and expanded return preserve four 
  }
 });
 test('v62 preserves later chapters models references and search records beyond its four chapter scope',()=>{
- const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=6);assert.equal(hash(JSON.stringify(index)),pptV63.laterSearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
+ const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json','content/chapter6.json','src/labs/chapter6/network.js'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=7);assert.equal(hash(JSON.stringify(index)),networkV64.after6SearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id)||networkIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
  for(let chapter=5;chapter<=11;chapter++){const e=env(chapter),canonical=JSON.parse(fs.readFileSync(path.join(root,`content/chapter${chapter}.json`))),sections=e.w.NOTES.chapters.find(c=>c.number===chapter).sections,expected=Array.from(sections).flatMap(s=>canonical.filter(n=>n.section===s.id).map(n=>n.id));assert.deepEqual([...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),expected);assert.deepEqual([...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1)),expected);e.dom.window.close();}
 });
 test('v62 every listed section in the first four chapters has a visible canonical entrance',()=>{
@@ -1570,14 +1573,14 @@ test('v64 default body directory and subtopics share a prerequisite-respecting o
  e.dom.window.close();
 });
 test('v64 formal v63 protection freezes other chapters search and the visual system',()=>{
- for(const [file,hash] of Object.entries(pptV63.protectedFiles))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ for(const [file,hash] of Object.entries(pptV63.protectedFiles)){if(['content/chapter6.json','src/labs/chapter6/network.js'].includes(file))continue;assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);}
  const app=fs.readFileSync(path.join(root,'notes-app.js'),'utf8'),fix=pptV63.notesApp;assert.equal(app.split(fix.to).length,2);assert.ok(!app.includes(fix.from));assert.equal(digest(app.replace(fix.to,fix.from)),fix.hash);
  const shared=fs.readFileSync(path.join(root,'src/labs/shared/syllabus.js'),'utf8');assert.ok(!shared.includes("'syllabus-ppt-output':"));const anchor="    'syllabus-quantum-basics':";assert.equal(shared.split(anchor).length,2);assert.equal(digest(shared.replace(anchor,pptV63.sharedSyllabusRemovedBlock+anchor)),pptV63.sharedSyllabusHash);
- const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];assert.deepEqual(manifest,base);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5);assert.equal(digest(JSON.stringify(index)),pptV63.otherSearchHash);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];delete manifest.chapters[6];delete base.chapters[6];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5&&r.chapter!==6);assert.equal(digest(JSON.stringify(index)),networkV64.except56SearchHash);
  const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));
- for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id))assert.equal(refs[id].length,row.count,id);}
- for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id),'reference belongs to old Chapter5 card: '+id);
+ for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id))assert.equal(refs[id].length,row.count,id);}
+ for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id)||networkIds.has(id),'reference belongs to authorized Chapter5/6 card: '+id);
 });
 test('v64 moving duplicating and changing layout preserve page identity and discard drafts',()=>{
  const e=env(5),c=open(e,'y2024q12'),ids=()=>[...c.querySelectorAll('[data-slide-id]')].map(x=>x.dataset.slideId),active=()=>c.querySelector('[data-active-slide]').dataset.activeSlide;
@@ -1622,4 +1625,76 @@ test('v64 searches added paragraphs and restores old links without losing the li
 });
 test('v64 macro-capable show readout never equates file extension with permission to execute',()=>{
  const e=env(5),c=open(e,'y2023q45');c.querySelector('[data-sim-choice="3"]').click();assert.match(c.textContent,/宏执行仍受安全设置控制/);assert.doesNotMatch(c.textContent,/直接放映并允许宏/);e.dom.window.close();
+});
+
+test('v65 preserves 26 old identities and semantic point anchors with one documented URL correction',()=>{
+ const e=env(6),notes=JSON.parse(fs.readFileSync(path.join(root,'content/chapter6.json')));
+ assert.deepEqual(notes.map(n=>n.id).sort(),networkV64.chapter6.map(n=>n.id).sort());
+ for(const row of networkV64.chapter6){const n=notes.find(n=>n.id===row.id);assert.deepEqual(n.sources,row.sources);assert.deepEqual(n.keys||null,row.keys);assert.deepEqual(n.searchAliases||[],row.searchAliases);
+  for(const link of row.related)assert.ok(n.related?.some(x=>JSON.stringify(x)===JSON.stringify(link)),n.id+' related');
+  row.pointHashes.forEach((hash,i)=>{if(n.id==='y2020q36'&&i===1){assert.equal(n.points[i],'绝对URL包含方案，不一定含域名；例如HTTP(S)的主机也可以写成IP，file地址可指向本地文件。相对地址需要基准URL，通常依据当前文档位置解析。');}else assert.equal(digest(n.points[i]),hash,n.id+' point '+i);});
+  const order=Array.from(e.w.NOTE_PRESENTATION.pointOrder(n));assert.deepEqual([...order].sort((a,b)=>a-b),Array.from({length:n.points.length},(_,i)=>i));
+  assert.deepEqual([...e.d.querySelectorAll(`#${n.id} [data-note-point]`)].map(el=>Number(el.dataset.notePoint)),order);
+  for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`),tmp=e.d.createElement('div');tmp.innerHTML=n.points[i];assert.ok(p);assert.equal(p.closest('details'),null);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),tmp.textContent);}
+ }e.dom.window.close();
+});
+test('v65 default content directory and subtopics follow prerequisites rather than exam years',()=>{
+ const e=env(6),body=[...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),toc=[...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1));assert.deepEqual(toc,body);assert.equal(new Set(body).size,26);
+ // Independently chosen pedagogical dependencies: object/function before type, address before naming, language structure before individual tags, retrieval task before metrics.
+ for(const [a,b] of [['y2026q13','y2020q15'],['y2021q15','y2025q13'],['y2025q13','merged-13'],['y2023q17','y2021q28'],['y2023q47','y2021q28'],['y2021q28','y2026q14'],['y2026q14','y2023q16'],['y2020q16','y2022q16'],['y2024q28','y2024q17'],['y2024q17','y2026q28']])assert.ok(body.indexOf(a)<body.indexOf(b),`${a} before ${b}`);
+ for(const n of e.w.NOTES.notes){const sub=Array.from(e.w.NOTE_PRESENTATION.subtopics(n),x=>x.anchor);assert.deepEqual([...e.d.querySelectorAll(`#${n.id} .note-subtopics a`)].map(a=>a.hash.slice(1)),sub);assert.deepEqual([...e.d.querySelectorAll(`#drawer .directory-subtopics a[href^="#${n.id}--point-"]`)].map(a=>a.hash.slice(1)),sub);}
+ const order=id=>Array.from(e.w.NOTE_PRESENTATION.pointOrder(e.w.NOTES.notes.find(n=>n.id===id)));
+ assert.ok(order('y2023q16').indexOf(4)<order('y2023q16').indexOf(0),'HTTP before TLS explanation');assert.ok(order('y2026q28').indexOf(2)<order('y2026q28').indexOf(0),'retrieval strategy before measurement');
+ for(let i=1;i<=5;i++)assert.ok(e.d.querySelector(`#section-6-${i} article`));e.dom.window.close();
+});
+test('v65 freezes other ten chapters labs shared UX and non-network search records at formal v64',()=>{
+ for(const [file,hash] of Object.entries(networkV64.protectedFiles))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(networkV64.manifest);delete manifest.chapters[6];delete base.chapters[6];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==6);assert.equal(digest(JSON.stringify(index)),networkV64.otherSearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(networkV64.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!networkIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(networkV64.referenceRows[id]||networkIds.has(id),id);
+});
+test('v65 topology failure changes reachability and scope selection does not repair a broken link',()=>{
+ const e=env(6),c=open(e,'y2020q15'),route=id=>c.querySelector(`[data-route="${id}"]`).textContent;
+ assert.equal(route('A-B'),'A → S → B');click(c,'link','A-S');assert.equal(route('A-B'),'不可达');assert.equal(route('B-D'),'B → S → D');change(e,c,'scope','WAN');assert.equal(route('A-B'),'不可达');assert.match(c.querySelector('.lab-output').textContent,/WAN/);
+ click(c,'center');assert.equal(route('B-D'),'不可达');click(c,'center');assert.equal(route('B-D'),'B → S → D');c.querySelector('[data-sim-reset]').click();assert.equal(route('A-B'),'A → S → B');
+ change(e,c,'topology','mesh');assert.equal(route('A-B'),'A → B');click(c,'link','A-B');assert.equal(route('A-B'),'A → C → B');click(c,'link','A-C');assert.equal(route('A-B'),'不可达');assert.equal(route('B-D'),'B → D');assert.equal(c.querySelector('[data-link="A-B"]').dataset.connected,'false');change(e,c,'topology','star');assert.equal(route('A-B'),'A → S → B');e.dom.window.close();
+});
+test('v65 SMTP submission relay and POP3 retrieval modify distinct stores and preserve copies conditionally',()=>{
+ const e=env(6),c=open(e,'y2022q15'),ids=store=>[...c.querySelectorAll(`[data-mail-store="${store}"] [data-mail-id]`)].map(x=>x.dataset.mailId);
+ change(e,c,'service','SMTP');change(e,c,'subject','实训通知');click(c,'send');assert.deepEqual(ids('queue'),['1']);assert.deepEqual(ids('server'),['0']);assert.deepEqual(ids('local'),[]);
+ change(e,c,'subject','取消这份草稿');click(c,'cancel');assert.deepEqual(ids('queue'),['1']);assert.doesNotMatch(c.querySelector('[data-mail-store="queue"]').textContent,/取消这份草稿/);click(c,'relay');assert.deepEqual(ids('queue'),[]);assert.deepEqual(ids('server'),['0','1']);assert.deepEqual(ids('local'),[]);
+ change(e,c,'service','POP3');click(c,'send');assert.deepEqual(ids('local'),['0']);assert.deepEqual(ids('server'),['0','1']);click(c,'send');assert.deepEqual(ids('local'),['0']);change(e,c,'keep',false);click(c,'send');assert.deepEqual(ids('server'),['1']);click(c,'send');assert.deepEqual(ids('local'),['0','1']);assert.deepEqual(ids('server'),[]);click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/邮箱为空/);e.dom.window.close();
+});
+test('v65 service failure and unsupported cases retain committed data and escape user text',()=>{
+ const e=env(6),c=open(e,'y2022q15');change(e,c,'connected',false);click(c,'send');assert.doesNotMatch(c.querySelector('tbody').textContent,/影像资料.zip影像资料.zip/);assert.match(c.querySelector('.lab-output').textContent,/没有转移/);change(e,c,'connected',true);click(c,'send');click(c,'send');assert.match(c.querySelector('.lab-output').textContent,/未新增/);change(e,c,'file','照片.jpg');click(c,'send');assert.match(c.querySelector('tbody').textContent,/影像资料.zip.*照片.jpg/);
+ change(e,c,'service','SMTP');change(e,c,'subject','<img src=x onerror=alert(1)>');click(c,'send');assert.equal(c.querySelector('[data-mail-store="queue"] img'),null);assert.match(c.querySelector('[data-mail-store="queue"]').textContent,/<img src=x/);change(e,c,'connected',false);click(c,'relay');assert.equal(c.querySelectorAll('[data-mail-store="queue"] [data-mail-id]').length,1);
+ change(e,c,'service','Telnet');change(e,c,'connected',true);click(c,'send');const result=c.querySelector('[data-remote-output]').textContent;change(e,c,'command','unsupported');click(c,'send');assert.equal(c.querySelector('[data-remote-output]').textContent,result);assert.match(c.querySelector('.lab-output').textContent,/不能据此/);c.querySelector('[data-sim-reset]').click();assert.equal(c.querySelector('[data-field="service"]').value,'FTP');assert.match(c.querySelector('tbody').textContent,/空/);e.dom.window.close();
+});
+test('v65 retained DNS IPv4 and HTTPS models preserve cache prefix and identity boundaries',()=>{
+ const e=env(6),c=open(e,'y2021q28');click(c,'query');assert.match(c.querySelector('.lab-tape').textContent,/192.0.2.10.*192.0.2.11/);click(c,'change');click(c,'query');assert.match(c.querySelector('.lab-tape').textContent,/192.0.2.10/);click(c,'tick');click(c,'query');assert.match(c.querySelector('.lab-tape').textContent,/192.0.2.99/);
+ const ip=open(e,'y2023q17');change(e,ip,'ip','192.168.10.70');change(e,ip,'prefix','26');assert.match(ip.querySelector('.lab-registers').textContent,/255.255.255.192.*192.168.10.64/);change(e,ip,'ip','300.1.1.1');assert.equal(ip.querySelector('.lab-ip-bits'),null);
+ const https=open(e,'y2023q16');change(e,https,'cert','invalid');click(https,'send');assert.match(https.querySelector('.lab-browser-page').textContent,/未发送/);change(e,https,'cert','valid');click(https,'send');assert.match(https.querySelector('.lab-code').textContent,/不能直接读出/);change(e,https,'scheme','http');click(https,'send');assert.match(https.querySelector('.lab-code').textContent,/姓名=王宁/);e.dom.window.close();
+});
+test('v65 retained HTML models distinguish document title metadata paragraph and line break',()=>{
+ const e=env(6),title=open(e,'y2022q16');change(e,title,'title','标签用标题');change(e,title,'heading','正文用标题');assert.match(title.querySelector('.lab-tabs').textContent,/标签用标题/);assert.equal(title.querySelector('.lab-browser-page h2').textContent,'正文用标题');
+ const meta=open(e,'y2021q37');change(e,meta,'description','只作描述');assert.doesNotMatch(meta.querySelector('.lab-browser-page').textContent,/只作描述/);click(meta,'view','meta');assert.match(meta.querySelector('.lab-browser-page').textContent,/只作描述/);
+ const para=open(e,'y2026q38');change(e,para,'mode','omit');assert.equal(para.querySelectorAll('.lab-browser-page p').length,2);change(e,para,'mode','br');assert.equal(para.querySelectorAll('.lab-browser-page p').length,1);assert.equal(para.querySelectorAll('.lab-browser-page br').length,1);
+ const code=e.d.querySelector('#y2020q16--point-8 pre').textContent;assert.ok(code.startsWith('<!doctype html>'));const page=new JSDOM(code);assert.equal(page.window.document.title,'课程笔记');assert.equal(page.window.document.querySelector('h1').textContent,'网络入门');assert.equal(page.window.document.querySelector('a').getAttribute('href'),'intro.html');page.window.close();e.dom.window.close();
+});
+test('v65 retrieval model recomputes both denominators and demonstrates non-universal precision tradeoff',()=>{
+ const e=env(6),c=open(e,'y2026q28'),body=()=>c.querySelector('.note-lab tbody').textContent;
+ click(c,'preset','exact');assert.match(body(),/5\/8.*62.5%.*5\/5.*100.0%/);click(c,'toggle',5);assert.match(body(),/6\/8.*75.0%.*6\/6.*100.0%/);click(c,'toggle',8);assert.match(body(),/6\/8.*75.0%.*6\/7.*85.7%/);click(c,'preset','none');assert.match(body(),/未定义/);
+ change(e,c,'mode','boolean');assert.match(c.querySelector('.note-lab tbody tr').textContent,/检出/);change(e,c,'expression','parentheses');assert.match(c.querySelector('.note-lab tbody tr').textContent,/未检出/);change(e,c,'mode','near');change(e,c,'gap','0');const rows=()=>[...c.querySelectorAll('.note-lab tbody tr')].map(x=>x.textContent);assert.match(rows()[1],/✓ 匹配/);change(e,c,'ordered','true');assert.match(rows()[1],/不匹配/);e.dom.window.close();
+});
+test('v65 search added subtopics old deep links and expand-return retain live model state',()=>{
+ const e=env(6,{url:'https://notes.example/chapter6.html#y2020q36--point-1'}),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json')));
+ assert.match(e.d.getElementById('y2020q36--point-1').textContent,/绝对URL包含方案/);
+ for(const [query,id,i] of [['星型','y2020q15',5],['FTTR','y2024q48',6],['商标','y2025q38',4],['保留服务器副本','y2024q16',5]]){const hit=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(hit,query);if(query!=='星型')assert.ok(hit.matches.some(m=>m.anchor===`${id}--point-${i}`),query);}
+ const c=open(e,'y2020q15');click(c,'link','A-S');const lab=c.querySelector('[data-lab]'),input=e.d.getElementById('search-input');input.value='商标';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.equal(c.classList.contains('hidden'),true);assert.ok(e.d.querySelector('#y2025q38 .note-search-jumps a[href="#y2025q38--point-4"]'));e.d.getElementById('clear-search').click();assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-route="A-B"]').textContent,'不可达');
+ e.w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};e.w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new e.w.Event('close'));};const opener=c.querySelector('[data-sim-expand]');opener.click();assert.ok(c.querySelector('dialog').open);c.querySelector('[data-demo-close]').click();assert.equal(e.d.activeElement,opener);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-route="A-B"]').textContent,'不可达');e.dom.window.close();
+});
+test('v65 model registration and narrow-layout structure use existing scroll containers without a new shell',()=>{
+ const e=env(6),manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))).chapters[6];assert.equal(manifest.models,15);assert.equal(new Set(manifest.ids).size,15);for(const id of manifest.ids)assert.ok(e.w.NOTE_SIMULATIONS.demos[id]?.kind==='lab',id);
+ const t=open(e,'y2020q15'),svg=t.querySelector('svg');assert.equal(svg.style.width,'100%');assert.ok(svg.hasAttribute('viewBox'));assert.ok(t.querySelector('.note-lab table').closest('.lab-table-scroll'));const mail=open(e,'y2022q15');change(e,mail,'service','SMTP');assert.ok(mail.querySelector('.note-lab table').closest('.lab-table-scroll'));assert.equal(mail.querySelectorAll('style').length,0);
+ assert.ok(e.d.getElementById('y2020q15').querySelector('.note-comparison[tabindex="0"]'));e.dom.window.close();
 });

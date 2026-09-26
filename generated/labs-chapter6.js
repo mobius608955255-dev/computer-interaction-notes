@@ -76,10 +76,43 @@ Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
 'use strict';
 const {register,registry,ui}=window.NOTE_LABS;
 const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
-register(['y2022q15'],'网络服务收发台','切换服务，再执行一次具体网络任务。',{service:'FTP',sent:false},s=>{
-    const info={FTP:['文件传输','影像资料.zip','文件服务器','226 Transfer complete'],SMTP:['发送邮件','会议邀请.eml','邮件服务器','250 Message accepted'],POP3:['收取邮件','收件箱中的新邮件','邮件服务器','+OK 1 message'],Telnet:['远程终端','远程命令：date','远程主机','终端返回系统日期']}; const v=info[s.service];
-    return `<div class="lab-controls">${select('service','服务',s.service,Object.keys(info).map(k=>[k,k]))}</div><div class="lab-service"><section><b>本地客户端</b><p>${v[1]}</p>${btn(v[0],'send')}</section><div class="lab-packet ${s.sent?'travel':''}">${s.sent?'已传送':'等待任务'} ${s.service==='POP3'?'←':'→'}</div><section><b>${v[2]}</b><p>${s.sent?esc(v[3]):'等待连接'}</p></section></div>${output(`${s.service}负责${v[0]}。此处不连接外网；传统FTP/Telnet的明文连接不适合传输秘密。`)}`;
-  },s=>{s.sent=true;},(s,k,v)=>{s[k]=v;s.sent=false;});
+register(['y2022q15'],'网络服务收发台：数据到了哪一端','切换协议，观察文件副本、发送队列、服务器邮箱与本地收件箱。',{
+ service:'FTP',sent:false,connected:true,file:'影像资料.zip',files:[],subject:'会议邀请',queue:[],mailbox:[{id:0,subject:'欢迎邮件'}],local:[],next:1,keep:true,command:'date',remoteOutput:'尚未执行命令',message:'邮件先提交，再投递，最后由客户端取信。'
+},s=>{
+ const messages=items=>items.length?items.map(x=>`<li data-mail-id="${x.id}">${esc(x.subject)} #${x.id}</li>`).join(''):'<li>空</li>';
+ const mail=s.service==='SMTP'||s.service==='POP3';
+ const controls=`<div class="lab-controls">${select('service','服务',s.service,['FTP','SMTP','POP3','Telnet'].map(k=>[k,k]))}<label><input type="checkbox" data-field="connected" ${s.connected?'checked':''}>示例连接可用</label></div>`;
+ const body=s.service==='FTP'?`<div class="lab-controls">${select('file','本地文件',s.file,[['影像资料.zip','影像资料.zip'],['照片.jpg','照片.jpg'],['笔记.txt','笔记.txt']])}${btn('上传文件','send')}</div>${table(['本地源文件','服务器文件副本'],[[esc(s.file),s.files.length?s.files.map(esc).join('<br>'):'空']])}`:
+ s.service==='SMTP'?`<div class="lab-controls">${field('subject','邮件主题草稿',s.subject,'text','maxlength="80"')}${btn('提交邮件','send')}${btn('取消草稿','cancel')}${btn('投递队首到收件服务器','relay')}</div>`:
+ s.service==='POP3'?`<div class="lab-controls"><label><input type="checkbox" data-field="keep" ${s.keep?'checked':''}>保留服务器副本</label>${btn('收取最早邮件并正常结束会话','send')}</div>`:
+ `<div class="lab-controls">${select('command','演示命令',s.command,[['date','date'],['whoami','whoami'],['unsupported','未模拟命令']])}${btn('在远程主机执行','send')}</div><pre class="lab-code" data-remote-output>${esc(s.remoteOutput)}</pre>`;
+ return controls+body+(mail?table(['位置','实际保存的邮件'],[['发送服务器队列',`<ul data-mail-store="queue">${messages(s.queue)}</ul>`],['收件服务器邮箱',`<ul data-mail-store="server">${messages(s.mailbox)}</ul>`],['本地收件箱',`<ul data-mail-store="local">${messages(s.local)}</ul>`]]):'')+output(esc(s.message))+coach('本例只有一个固定收件账号，按邮件ID去重；收取并结束会话合为一步，不模拟认证、重试、附件编码或完整POP3会话。传统FTP/Telnet无传输保密保证。所有结果仅在网页内，不连接外网。','本演示的范围与限制');
+},(s,a)=>{
+ if(a==='cancel'){s.subject='会议邀请';s.message='草稿已取消，已提交或已收到的邮件保持。';return;}
+ if(!['send','relay'].includes(a))return;
+ if(!s.connected){s.message='连接不可用：没有转移文件或邮件，也未执行远程命令。';return;}
+ if(a==='relay'){
+  if(s.service!=='SMTP')return;
+  if(!s.queue.length){s.message='发送队列为空，没有邮件可投递。';return;}
+  const m=s.queue.shift();s.mailbox.push({...m});s.message=`邮件 #${m.id} 已进入收件服务器邮箱，尚未由本地客户端取回。`;return;
+ }
+ s.sent=true;
+ if(s.service==='FTP'){
+  if(s.files.includes(s.file)){s.message='服务器已有同名副本；本例未模拟覆盖，本次未新增。';return;}
+  s.files.push(s.file);s.message='服务器新增文件副本，本地源文件保留；二进制文件也可传输。';
+ }else if(s.service==='SMTP'){
+  if(!s.subject.trim()){s.message='请给教学邮件填写主题以便追踪；这是演示要求，不是SMTP必须有主题的协议限制。';return;}
+  const m={id:s.next++,subject:s.subject.trim()};s.queue.push(m);s.message=`邮件 #${m.id} 已提交给发送服务器，尚未投递到收件服务器。`;
+ }else if(s.service==='POP3'){
+  if(!s.mailbox.length){s.message='服务器邮箱为空，没有可收取的邮件。';return;}
+  const m=s.mailbox[0],exists=s.local.some(x=>x.id===m.id);if(!exists)s.local.push({...m});
+  if(!s.keep)s.mailbox.shift();
+  s.message=(exists?'本例按ID识别已有本地副本，未重复插入。':'邮件已进入本地收件箱。')+(s.keep?'服务器副本保留。':'按删除选项正常结束会话后，服务器副本已移除。');
+ }else if(s.service==='Telnet'){
+  if(s.command==='unsupported'){s.message='本演示仅模拟date与whoami，不能据此判定其他真实命令非法。';return;}
+  s.remoteOutput=s.command==='date'?'远程示例主机日期：2026-01-01':'远程示例账号：student';s.message='结果来自远程示例主机，不是本机命令行或文件下载。';
+ }
+},(s,k,v)=>{if(['connected','keep'].includes(k))s[k]=!!v;else s[k]=v;if(k==='service')s.sent=false;});
 register(['y2022q16'],'编辑HTML，看标签页与正文各自改变','修改title与h1，切换两个标签页验证它们的位置。',{title:'计算机笔记',heading:'第一章 信息技术',tab:0},s=>
     `<div class="lab-code-editor">${field('title','<code>&lt;title&gt;</code>',s.title)}${field('heading','<code>&lt;h1&gt;</code>',s.heading)}</div><div class="lab-browser"><div class="lab-tabs">${btn(esc(s.title),'tab',0,`aria-pressed="${s.tab===0}"`)}${btn('参考资料','tab',1,`aria-pressed="${s.tab===1}"`)}</div><div class="lab-address">https://notes.example/${s.tab?'reference':'chapter1'}</div><div class="lab-browser-page"><h2>${s.tab?'资料索引':esc(s.heading)}</h2><p>${s.tab?'这是真正独立的一页内容。':'title不会作为正文自动显示；h1是这段内容的标题。'}</p></div></div>`,(s,a,v)=>{s.tab=Number(v);});
 register(['y2023q16'],'用HTTP和HTTPS发送同一份数据','观察传输内容是否暴露，证书校验失败时连接是否继续。',{scheme:'https',cert:'valid',sent:false},s=>
@@ -191,4 +224,34 @@ window.NOTE_LABS.networkMath={transfer,ipv6};
     (s,a,v)=>{if(a==='submit'){if(!s.shared){s.message=`电脑${v}无法提交：共享已关闭。`;return;}s.jobs.push({id:s.next++,owner:v});s.message=`电脑${v}的任务排在第${s.jobs.length}位。`;}if(a==='cancel'){s.jobs=s.jobs.filter(job=>job.id!==Number(v));s.message='指定任务已取消，其余任务保持提交顺序。';}if(a==='print'&&s.jobs.length){const job=s.jobs.shift();s.printed++;s.message=`电脑${job.owner}的任务 #${job.id} 已完成。`; }},
     (s,k,v)=>{s.shared=v;s.message=v?'共享已开启，新任务可以进入队列。':'共享已关闭，拒绝新的远程提交；已经进入主机队列的任务仍可处理。';});
 
+})();
+
+/* Chapter 6: connectivity model; geographic scope and topology are independent. */
+(() => {
+ 'use strict';
+ const {register,ui}=window.NOTE_LABS;
+ const {btn,select,table,output,coach,esc}=ui;
+ const diagrams={
+  star:{nodes:{A:[45,35],B:[315,35],S:[180,105],C:[45,180],D:[315,180]},edges:[['A','S'],['B','S'],['C','S'],['D','S']]},
+  mesh:{nodes:{A:[65,40],B:[295,40],C:[65,175],D:[295,175]},edges:[['A','B'],['A','C'],['B','C'],['B','D'],['C','D']]}
+ };
+ const edgeKey=e=>e.join('-');
+ function route(s,from,to){
+  const g=diagrams[s.topology];if(!g?.nodes[from]||!g.nodes[to]||s.failedNodes.includes(from)||s.failedNodes.includes(to))return [];
+  const queue=[[from]],seen=new Set([from]);
+  while(queue.length){const p=queue.shift(),last=p[p.length-1];if(last===to)return p;
+   for(const e of g.edges){if(s.cut.includes(edgeKey(e)))continue;const next=e[0]===last?e[1]:e[1]===last?e[0]:null;
+    if(next&&!seen.has(next)&&!s.failedNodes.includes(next)){seen.add(next);queue.push([...p,next]);}}
+  }return [];
+ }
+ register(['y2020q15'],'覆盖范围不变，断路影响会随拓扑改变','切断链路或关闭星型中心，比较A到B及B到D的真实可达路径。',{
+  topology:'star',scope:'LAN',cut:[],failedNodes:[]
+ },s=>{
+  const g=diagrams[s.topology],paths=[['A','B'],['B','D']].map(([a,b])=>({a,b,path:route(s,a,b)}));
+  const controls=`<div class="lab-controls">${select('scope','本例覆盖范围',s.scope,[['LAN','校园范围 · LAN'],['MAN','城市范围 · MAN'],['WAN','跨地区 · WAN']])}${select('topology','连接结构',s.topology,[['star','星型：中心S转发'],['mesh','网状：节点可中继']])}</div>`;
+  const drawing=`<svg viewBox="0 0 360 215" role="img" aria-label="${s.topology==='star'?'星型':'网状'}链路状态" style="display:block;width:100%;max-width:520px;margin:auto">${g.edges.map(e=>{const [x,y]=g.nodes[e[0]],[u,v]=g.nodes[e[1]],bad=s.cut.includes(edgeKey(e))||e.some(n=>s.failedNodes.includes(n));return `<line x1="${x}" y1="${y}" x2="${u}" y2="${v}" stroke="${bad?'#a63434':'#28665c'}" stroke-width="4" ${bad?'stroke-dasharray="8 6"':''} data-link="${edgeKey(e)}" data-connected="${!bad}"/>`;}).join('')}${Object.entries(g.nodes).map(([n,[x,y]])=>`<g data-node="${n}"><circle cx="${x}" cy="${y}" r="22" fill="${s.failedNodes.includes(n)?'#fee2e2':'#e5f3ef'}" stroke="#28665c" stroke-width="2"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="18" fill="#183e36">${n}</text></g>`).join('')}</svg>`;
+  return controls+drawing+`<div class="lab-controls">${g.edges.map(e=>{const k=edgeKey(e);return btn(`${s.cut.includes(k)?'接通':'切断'} ${k}`,'link',k,`aria-pressed="${s.cut.includes(k)}"`);}).join('')}${s.topology==='star'?btn(s.failedNodes.includes('S')?'恢复中心S':'关闭中心S','center'):''}</div>`+
+   table(['通信任务','当前可达路径'],paths.map(r=>[`${r.a} → ${r.b}`,`<span data-route="${r.a}-${r.b}" data-reachable="${!!r.path.length}">${r.path.length?r.path.join(' → '):'不可达'}</span>`]))+
+   output(`覆盖类型仍是${esc(s.scope)}。${s.topology==='star'?'单支线和中心故障的影响不同。':'有备用路径才可能绕行；继续切断链路也会隔离节点。'}`)+coach('仅计算无向连通路径；网状例子的各节点具备中继能力。未模拟交换协议、环路控制、容量、地址或真实网络设备。切换拓扑清除旧故障；右上重置恢复全部初始状态。','本演示的范围与限制');
+ },(s,a,v)=>{if(a==='link'&&diagrams[s.topology].edges.some(e=>edgeKey(e)===v))s.cut=s.cut.includes(v)?s.cut.filter(x=>x!==v):[...s.cut,v];if(a==='center'&&s.topology==='star')s.failedNodes=s.failedNodes.includes('S')?[]:['S'];},(s,k,v)=>{if(k==='scope'&&['LAN','MAN','WAN'].includes(v))s.scope=v;if(k==='topology'&&diagrams[v]){s.topology=v;s.cut=[];s.failedNodes=[];}});
 })();

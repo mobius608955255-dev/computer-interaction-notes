@@ -192,9 +192,10 @@
     "6": {
       "files": [
         "src/labs/chapter6/network.js",
-        "src/labs/chapter6/printing.js"
+        "src/labs/chapter6/printing.js",
+        "src/labs/chapter6/topology.js"
       ],
-      "models": 14,
+      "models": 15,
       "ids": [
         "y2022q15",
         "y2022q16",
@@ -209,7 +210,8 @@
         "y2026q14",
         "y2023q47",
         "syllabus-mobile-communication",
-        "y2026q13"
+        "y2026q13",
+        "y2020q15"
       ]
     },
     "7": {
