@@ -22,7 +22,10 @@ const networkIds=new Set(networkV64.chapter6.map(n=>n.id));
 // v66 transfers only Chapter7 to the formal-v65 guard; historical assertions stay active below.
 const multimediaV65=require('./multimedia-v65-protection.json');
 const multimediaIds=new Set([...multimediaV65.chapter7.map(n=>n.id),'syllabus-image-editing']);
-const reviewedChapterFile=file=>/^content\/chapter[1-7]\.json$/.test(file);
+// v67 transfers Chapter8 to its formal-v66 snapshot; other chapters remain frozen.
+const securityV66=require('./security-v66-protection.json');
+const securityIds=new Set([...securityV66.chapter8.map(n=>n.id),'syllabus-windows-security']);
+const reviewedChapterFile=file=>/^content\/chapter[1-8]\.json$/.test(file);
 const digest=value=>require('node:crypto').createHash('sha256').update(value).digest('hex');
 function projectV61(note){
  const row=v61Rows.get(note.id),old=structuredClone(note);if(!row)return old;
@@ -32,7 +35,7 @@ function projectV61(note){
 function v61Chapter(notes,chapter){return v61Protection.chapters[chapter].map(row=>projectV61(notes.find(n=>n.id===row.id)));}
 
 test('v47 supplements and worked examples preserve the 460 original source identities',()=>{
- const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.deepEqual(supplements.map(n=>n.id).sort(),[...multimediaV65.supplementIds,'syllabus-image-editing'].sort());
+ const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.deepEqual(supplements.map(n=>n.id).sort(),[...securityV66.supplementIds,'syllabus-windows-security'].sort());
  assert.deepEqual(supplements.filter(n=>n.chapter===2).map(n=>n.id).sort(),['syllabus-windows-paths','syllabus-windows-selection','syllabus-windows-search'].sort());
  assert.ok(supplements.every(n=>n.sources.length===0));assert.equal(notes.flatMap(n=>n.workedExamples||[]).length,16);
  for(const n of notes)for(const example of n.workedExamples||[])assert.ok(n.sources.some(s=>s.year===example.year&&s.q===example.q));
@@ -1506,9 +1509,9 @@ test('v62 old and new deep links search focus and expanded return preserve four 
  }
 });
 test('v62 preserves later chapters models references and search records beyond its four chapter scope',()=>{
- const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json','content/chapter6.json','src/labs/chapter6/network.js','content/chapter7.json'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=8);assert.equal(hash(JSON.stringify(index)),multimediaV65.after7SearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id)||networkIds.has(id)||multimediaIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id)&&!multimediaIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
+ const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json','content/chapter6.json','src/labs/chapter6/network.js','content/chapter7.json','content/chapter8.json','src/labs/chapter8/security.js'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=9);assert.equal(hash(JSON.stringify(index.filter(r=>r.kind==='note'))),securityV66.after8NotesHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id)||networkIds.has(id)||multimediaIds.has(id)||securityIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id)&&!multimediaIds.has(id)&&!securityIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
  for(let chapter=5;chapter<=11;chapter++){const e=env(chapter),canonical=JSON.parse(fs.readFileSync(path.join(root,`content/chapter${chapter}.json`))),sections=e.w.NOTES.chapters.find(c=>c.number===chapter).sections,expected=Array.from(sections).flatMap(s=>canonical.filter(n=>n.section===s.id).map(n=>n.id));assert.deepEqual([...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),expected);assert.deepEqual([...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1)),expected);e.dom.window.close();}
 });
 test('v62 every listed section in the first four chapters has a visible canonical entrance',()=>{
@@ -1576,14 +1579,14 @@ test('v64 default body directory and subtopics share a prerequisite-respecting o
  e.dom.window.close();
 });
 test('v64 formal v63 protection freezes other chapters search and the visual system',()=>{
- for(const [file,hash] of Object.entries(pptV63.protectedFiles)){if(['content/chapter6.json','src/labs/chapter6/network.js','content/chapter7.json'].includes(file))continue;assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);}
+ for(const [file,hash] of Object.entries(pptV63.protectedFiles)){if(['content/chapter6.json','src/labs/chapter6/network.js','content/chapter7.json','content/chapter8.json','src/labs/chapter8/security.js'].includes(file))continue;assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);}
  const app=fs.readFileSync(path.join(root,'notes-app.js'),'utf8'),fix=pptV63.notesApp;assert.equal(app.split(fix.to).length,2);assert.ok(!app.includes(fix.from));assert.equal(digest(app.replace(fix.to,fix.from)),fix.hash);
  const shared=fs.readFileSync(path.join(root,'src/labs/shared/syllabus.js'),'utf8');assert.ok(!shared.includes("'syllabus-ppt-output':"));const anchor="    'syllabus-quantum-basics':";assert.equal(shared.split(anchor).length,2);assert.equal(digest(shared.replace(anchor,pptV63.sharedSyllabusRemovedBlock+anchor)),pptV63.sharedSyllabusHash);
- const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];delete manifest.chapters[6];delete base.chapters[6];delete manifest.chapters[7];delete base.chapters[7];assert.deepEqual(manifest,base);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5&&r.chapter!==6&&r.chapter!==7);assert.equal(digest(JSON.stringify(index)),multimediaV65.except567SearchHash);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];delete manifest.chapters[6];delete base.chapters[6];delete manifest.chapters[7];delete base.chapters[7];delete manifest.chapters[8];delete base.chapters[8];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5&&r.chapter!==6&&r.chapter!==7&&r.chapter!==8);assert.equal(digest(JSON.stringify(index)),securityV66.except5678SearchHash);
  const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));
- for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id)&&!multimediaIds.has(id))assert.equal(refs[id].length,row.count,id);}
- for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id)||networkIds.has(id)||multimediaIds.has(id),'reference belongs to authorized Chapter5/6 card: '+id);
+ for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id)&&!multimediaIds.has(id)&&!securityIds.has(id))assert.equal(refs[id].length,row.count,id);}
+ for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id)||networkIds.has(id)||multimediaIds.has(id)||securityIds.has(id),'reference belongs to authorized Chapter5/6 card: '+id);
 });
 test('v64 moving duplicating and changing layout preserve page identity and discard drafts',()=>{
  const e=env(5),c=open(e,'y2024q12'),ids=()=>[...c.querySelectorAll('[data-slide-id]')].map(x=>x.dataset.slideId),active=()=>c.querySelector('[data-active-slide]').dataset.activeSlide;
@@ -1651,10 +1654,10 @@ test('v65 default content directory and subtopics follow prerequisites rather th
  for(let i=1;i<=5;i++)assert.ok(e.d.querySelector(`#section-6-${i} article`));e.dom.window.close();
 });
 test('v65 freezes other ten chapters labs shared UX and non-network search records at formal v64',()=>{
- for(const [file,hash] of Object.entries(networkV64.protectedFiles))if(file!=='content/chapter7.json')assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
- const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(networkV64.manifest);delete manifest.chapters[6];delete base.chapters[6];delete manifest.chapters[7];delete base.chapters[7];assert.deepEqual(manifest,base);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==6&&r.chapter!==7);assert.equal(digest(JSON.stringify(index)),multimediaV65.except67SearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(networkV64.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!networkIds.has(id)&&!multimediaIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(networkV64.referenceRows[id]||networkIds.has(id)||multimediaIds.has(id),id);
+ for(const [file,hash] of Object.entries(networkV64.protectedFiles))if(!['content/chapter7.json','content/chapter8.json','src/labs/chapter8/security.js'].includes(file))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(networkV64.manifest);delete manifest.chapters[6];delete base.chapters[6];delete manifest.chapters[7];delete base.chapters[7];delete manifest.chapters[8];delete base.chapters[8];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==6&&r.chapter!==7&&r.chapter!==8);assert.equal(digest(JSON.stringify(index)),securityV66.except678SearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(networkV64.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!networkIds.has(id)&&!multimediaIds.has(id)&&!securityIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(networkV64.referenceRows[id]||networkIds.has(id)||multimediaIds.has(id)||securityIds.has(id),id);
 });
 test('v65 topology failure changes reachability and scope selection does not repair a broken link',()=>{
  const e=env(6),c=open(e,'y2020q15'),route=id=>c.querySelector(`[data-route="${id}"]`).textContent;
@@ -1720,10 +1723,10 @@ test('v66 teaching dependencies hold in the same body directory and subtopic ord
  for(let i=1;i<=3;i++)assert.ok(e.d.querySelector(`#section-7-${i} article`));e.dom.window.close();
 });
 test('v66 freezes other ten chapters existing models references and v63 visual behavior',()=>{
- for(const [file,hash] of Object.entries(multimediaV65.protectedFiles))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
- const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(multimediaV65.manifest);assert.deepEqual(manifest.chapters[7].ids.slice(0,base.chapters[7].ids.length),base.chapters[7].ids);delete manifest.chapters[7];delete base.chapters[7];assert.deepEqual(manifest,base);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==7);assert.equal(digest(JSON.stringify(index)),multimediaV65.otherSearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(multimediaV65.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!multimediaIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(multimediaV65.referenceRows[id]||multimediaIds.has(id),id);
+ for(const [file,hash] of Object.entries(multimediaV65.protectedFiles))if(!['content/chapter8.json','src/labs/chapter8/security.js'].includes(file))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(multimediaV65.manifest);assert.deepEqual(manifest.chapters[7].ids.slice(0,base.chapters[7].ids.length),base.chapters[7].ids);delete manifest.chapters[7];delete base.chapters[7];delete manifest.chapters[8];delete base.chapters[8];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==7&&r.chapter!==8);assert.equal(digest(JSON.stringify(index)),securityV66.except78SearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(multimediaV65.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!multimediaIds.has(id)&&!securityIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(multimediaV65.referenceRows[id]||multimediaIds.has(id)||securityIds.has(id),id);
 });
 test('v66 independently computed image quantities distinguish pixel count alpha and PPI',()=>{
  const e=env(7),c=open(e,'y2020q27'),metric=()=>c.querySelector('[data-image-size]');assert.equal(metric().dataset.bytes,'1440000');assert.equal(metric().dataset.bits,'11520000');assert.match(c.querySelector('.note-lab table').textContent,/1.440000 MB；1.373291 MiB/);
@@ -1763,4 +1766,80 @@ test('v66 search old links and demo expansion retain state after the section rel
 test('v66 registration and narrow structure reuse existing controls tables and responsive SVG',()=>{
  const e=env(7),m=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))).chapters[7];assert.equal(m.models,8);assert.equal(new Set(m.ids).size,8);for(const id of m.ids)assert.equal(e.w.NOTE_SIMULATIONS.demos[id]?.kind,'lab',id);
  const calc=open(e,'y2020q27');assert.ok(calc.querySelector('.note-lab table').closest('.lab-table-scroll'));const edit=open(e,'syllabus-image-editing');click(edit,'preview');for(const svg of edit.querySelectorAll('svg')){assert.equal(svg.style.width,'100%');assert.ok(svg.hasAttribute('viewBox'));assert.ok(svg.getAttribute('aria-label'));}assert.equal(edit.querySelectorAll('style').length,0);assert.ok(edit.querySelector('.note-comparison[tabindex="0"]'));e.dom.window.close();
+});
+
+test('v67 retains eleven old identities and all 46 semantic anchors with two documented legal corrections',()=>{
+ const e=env(8),notes=e.w.NOTES.notes;assert.equal(notes.length,12);assert.equal(new Set(notes.map(n=>n.id)).size,12);
+ for(const row of securityV66.chapter8){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.equal(n.section,row.section);assert.deepEqual(JSON.parse(JSON.stringify(n.sources)),row.sources);assert.deepEqual(JSON.parse(JSON.stringify(n.keys)),row.keys);
+  assert.deepEqual(JSON.parse(JSON.stringify((n.related||[]).slice(0,row.related.length))),row.related);assert.deepEqual(JSON.parse(JSON.stringify((n.searchAliases||[]).slice(0,row.searchAliases.length))),row.searchAliases);
+  for(let i=0;i<row.count;i++){const correction=securityV66.pointCorrections[n.id]?.[i];if(correction)assert.equal(n.points[i],correction.after);else assert.equal(digest(n.points[i]),row.pointHashes[i]);}
+  for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}
+ }
+ assert.equal(e.d.getElementById('syllabus-windows-security').closest('.section-block').id,'section-8-4');assert.equal(e.w.NOTES.notes.find(n=>n.id==='y2020q20').points[3].includes('不得不合理地损害'),true);e.dom.window.close();
+});
+test('v67 objectives precede mechanisms and body directory subtopics share the teaching order',()=>{
+ const e=env(8),body=[...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),toc=[...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1));assert.deepEqual(toc,body);
+ // Independently chosen dependencies: target before control, identity before public keys,
+ // cryptography before VPN, general filtering before the Windows implementation.
+ for(const [a,b]of [['y2026q16','y2025q30'],['y2025q30','merged-15'],['merged-15','y2021q18'],['merged-15','y2023q39'],['y2026q16','y2024q49'],['y2020q28','syllabus-windows-security'],['merged-16','syllabus-windows-security'],['y2020q20','y2026q30']])assert.ok(body.indexOf(a)<body.indexOf(b),`${a} before ${b}`);
+ for(let i=1;i<=5;i++)assert.ok(e.d.querySelector(`#section-8-${i} article`));
+ for(const n of e.w.NOTES.notes){const order=Array.from(e.w.NOTE_PRESENTATION.pointOrder(n));assert.deepEqual([...order].sort((a,b)=>a-b),Array.from(n.points,(_,i)=>i));assert.deepEqual([...e.d.querySelectorAll(`#${n.id} [data-note-point]`)].map(p=>Number(p.dataset.notePoint)),order);const sub=Array.from(e.w.NOTE_PRESENTATION.subtopics(n),x=>x.anchor);assert.deepEqual([...e.d.querySelectorAll(`#${n.id} .note-subtopics a`)].map(a=>a.hash.slice(1)),sub);assert.deepEqual([...e.d.querySelectorAll(`#drawer .directory-subtopics a[href^="#${n.id}--point-"]`)].map(a=>a.hash.slice(1)),sub);}
+ const order=id=>Array.from(e.w.NOTE_PRESENTATION.pointOrder(e.w.NOTES.notes.find(n=>n.id===id)));assert.ok(order('merged-15').indexOf(9)<order('merged-15').indexOf(1),'plaintext before public key direction');assert.ok(order('y2020q28').indexOf(5)<order('y2020q28').indexOf(6),'malware parent concept before worm/Trojan');e.dom.window.close();
+});
+test('v67 formal v66 protection freezes other ten chapters labs search references and the v63 shell',()=>{
+ for(const [file,expected]of Object.entries(securityV66.protectedFiles)){
+  const fix=securityV66.modelTextCorrection;let bytes=fs.readFileSync(path.join(root,file));
+  if(file===fix.file){let text=bytes.toString();assert.equal(text.split(fix.after).length,2);assert.ok(!text.includes(fix.before));bytes=text.replace(fix.after,fix.before);}
+  assert.equal(digest(bytes),expected,file);
+ }
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(securityV66.manifest);assert.deepEqual(manifest.chapters[8].ids.slice(0,base.chapters[8].ids.length),base.chapters[8].ids);delete manifest.chapters[8];delete base.chapters[8];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==8);assert.equal(digest(JSON.stringify(index)),securityV66.otherSearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row]of Object.entries(securityV66.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!securityIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(securityV66.referenceRows[id]||securityIds.has(id),id);
+});
+test('v67 standard user credentials gate elevation and permission alone does not commit a clock change',()=>{
+ const e=env(8),c=open(e,'syllabus-windows-security'),clock=()=>c.querySelector('[data-security-clock]').textContent;assert.equal(clock(),'09:00');click(c,'request');assert.ok(c.querySelector('[data-uac-prompt]'));assert.equal(c.querySelector('[data-security-editor]'),null);
+ click(c,'approve');assert.equal(clock(),'09:00');assert.match(c.querySelector('.lab-output').textContent,/验证失败/);change(e,c,'credential','valid');click(c,'approve');assert.equal(c.querySelector('[data-security-editor]').dataset.privilege,'elevated');assert.equal(clock(),'09:00');
+ change(e,c,'draft','10:30');assert.equal(clock(),'09:00');click(c,'save');assert.equal(clock(),'10:30');assert.equal(c.querySelector('[data-field="account"]').value,'standard');assert.equal(c.querySelector('[data-security-editor]'),null);click(c,'request');assert.ok(c.querySelector('[data-uac-prompt]'));assert.equal(c.querySelector('[data-field="credential"]').value,'invalid');e.dom.window.close();
+});
+test('v67 administrator confirmation cancellation invalid drafts and reset preserve committed state',()=>{
+ const e=env(8),c=open(e,'syllabus-windows-security'),clock=()=>c.querySelector('[data-security-clock]').textContent;change(e,c,'account','admin');click(c,'request');assert.equal(c.querySelector('[data-field="credential"]'),null);click(c,'deny');assert.equal(clock(),'09:00');
+ click(c,'request');click(c,'approve');for(const value of ['','24:00','12:60','9:00','00:00<script>']){change(e,c,'draft',value);click(c,'save');assert.equal(clock(),'09:00');assert.match(c.querySelector('.lab-output').textContent,/无效草稿/);}
+ change(e,c,'draft','23:59');click(c,'cancel');assert.equal(clock(),'09:00');click(c,'request');click(c,'approve');change(e,c,'draft','00:00');click(c,'save');assert.equal(clock(),'00:00');c.querySelector('[data-sim-reset]').click();assert.equal(clock(),'09:00');assert.equal(c.querySelector('[data-field="account"]').value,'standard');assert.equal(c.querySelector('[data-uac-prompt]'),null);e.dom.window.close();
+});
+test('v67 ordinary editing is separate from elevation and safely renders user text',()=>{
+ const e=env(8),c=open(e,'syllabus-windows-security');change(e,c,'operation','memo');click(c,'request');assert.equal(c.querySelector('[data-uac-prompt]'),null);assert.equal(c.querySelector('[data-security-editor]').dataset.privilege,'ordinary');const literal='<img src=x onerror="window.intruded=true"> &lt;script&gt;';change(e,c,'draft',literal);click(c,'save');assert.equal(c.querySelector('[data-security-note]').textContent,literal);assert.equal(c.querySelector('[data-security-note] img'),null);assert.equal(e.w.intruded,undefined);assert.equal(c.querySelector('[data-security-clock]').textContent,'09:00');
+ click(c,'request');change(e,c,'draft','');click(c,'save');assert.equal(c.querySelector('[data-security-note]').textContent,'');e.dom.window.close();
+});
+test('v67 stale authorization unsupported inputs and repeated actions cannot commit a different task',()=>{
+ const e=env(8),r=e.w.NOTE_LABS.registry['syllabus-windows-security'],s=structuredClone(r.initial);r.action(s,'save');assert.equal(s.clock,'09:00');r.action(s,'approve');assert.equal(s.stage,'idle');
+ r.action(s,'request');r.change(s,'credential','valid');r.action(s,'approve');r.change(s,'draft','12:00');r.change(s,'account','admin');r.action(s,'save');assert.equal(s.clock,'09:00');assert.equal(s.pending,null);
+ r.action(s,'request');r.change(s,'operation','memo');r.action(s,'approve');assert.equal(s.stage,'idle');r.change(s,'account','<svg>');assert.equal(s.account,'admin');r.change(s,'operation','unsupported');assert.equal(s.operation,'memo');
+ r.action(s,'request');r.change(s,'draft','x'.repeat(2001));r.action(s,'save');assert.equal(s.memo,r.initial.memo);r.action(s,'cancel');assert.equal(s.pending,null);r.change(s,'account','standard');r.change(s,'operation','clock');r.action(s,'request');r.change(s,'credential','anything');r.action(s,'approve');assert.equal(s.stage,'prompt');assert.equal(s.clock,'09:00');e.dom.window.close();
+});
+test('v67 cryptographic size boundaries count UTF8 bytes and malformed ciphertext is not plaintext',async()=>{
+ const e=env(8),r=e.w.NOTE_LABS.registry['merged-15'],s=structuredClone(r.initial);await r.action(s,'keys');s.text='a'.repeat(190);await r.action(s,'encrypt');await r.action(s,'decrypt');assert.equal(s.clear,s.text);const previous=s.cipher;
+ s.text='a'.repeat(191);await r.action(s,'encrypt');assert.match(s.message,/190/);assert.equal(s.cipher,previous);s.text='汉'.repeat(63)+'a';await r.action(s,'encrypt');await r.action(s,'decrypt');assert.equal(s.clear,s.text);s.text='汉'.repeat(64);await r.action(s,'encrypt');assert.match(s.message,/190/);
+ for(const text of ['','xy','00','<svg>']){s.cipher=text;await r.action(s,'decrypt');assert.equal(s.decrypted,false);assert.equal(s.clear,'');assert.match(s.message,/256字节/);}
+ s.text='x'.repeat(20001);await r.action(s,'sign');assert.equal(s.signature,'');assert.match(s.message,/输入长度/);e.dom.window.close();
+});
+test('v67 crypto reset cannot be overwritten by an old asynchronous key generation',async()=>{
+ const e=env(8),r=e.w.NOTE_LABS.registry['merged-15'],original=r.action;let completion;r.action=(...args)=>(completion=original(...args));const c=open(e,'merged-15');click(c,'keys');assert.ok(completion?.then);c.querySelector('[data-sim-reset]').click();await completion;await Promise.resolve();assert.match(c.querySelector('.ext-key').textContent,/尚未生成/);assert.equal(c.querySelector('[data-lab-act="sign"]').disabled,true);
+ change(e,c,'text','<img src=x> &lt;b&gt;');assert.equal(c.querySelector('textarea[data-field="text"]').value,'<img src=x> &lt;b&gt;');assert.equal(c.querySelector('.note-lab img'),null);e.dom.window.close();
+});
+test('v67 firewall invalid packets rule limits and defaults preserve the policy state',()=>{
+ const e=env(8),r=e.w.NOTE_LABS.registry['merged-16'],s=structuredClone(r.initial);const initial=JSON.stringify(s.rules);
+ for(const [source,port]of [['256.1.1.1','80'],['1.2.3','80'],['1.2.3.4','0'],['1.2.3.4','65536'],['<img>','443']]){s.source=source;s.port=port;r.action(s,'send');assert.equal(s.last,null);assert.match(s.error,/有效IPv4/);assert.equal(JSON.stringify(s.rules),initial);}
+ s.draftSource='10.20.0.0/33';r.action(s,'add');assert.equal(JSON.stringify(s.rules),initial);s.draftSource='*';s.draftPort='*';for(let i=0;i<10;i++)r.action(s,'add');assert.equal(s.rules.length,12);assert.match(s.error,/最多12/);
+ s.rules=[];s.source='192.0.2.1';s.port='443';s.fallback='allow';r.action(s,'send');assert.equal(s.last.action,'allow');s.fallback='deny';r.action(s,'send');assert.equal(s.last.action,'deny');e.dom.window.close();
+});
+test('v67 retained network and phishing models change outcomes and reset with accurate timing',()=>{
+ const e=env(8),net=open(e,'y2022q39');click(net,'attack');assert.equal(net.querySelectorAll('.lab-network .danger').length,2);click(net,'segment');assert.equal(net.querySelectorAll('.lab-network .danger').length,1);click(net,'fail');assert.match(net.querySelectorAll('.lab-output')[1].textContent,/不可达/);click(net,'redundant');assert.match(net.querySelectorAll('.lab-output')[1].textContent,/服务恢复可达/);assert.doesNotMatch(net.querySelectorAll('.lab-output')[1].textContent,/事先/);net.querySelector('[data-sim-reset]').click();assert.equal(net.querySelectorAll('.lab-network .danger').length,0);
+ const phish=open(e,'y2021q18');click(phish,'inspect');assert.match(phish.querySelector('.lab-url').textContent,/claim-benefit.test/);click(phish,'verify');assert.match(phish.querySelector('.lab-browser-page').textContent,/没有该补贴/);change(e,phish,'message','1');assert.equal(phish.querySelector('.lab-browser-page'),null);click(phish,'verify');assert.match(phish.querySelector('.lab-browser-page').textContent,/公告内容与消息一致/);e.dom.window.close();
+});
+test('v67 search deep links expansion and narrow structure preserve real model state',()=>{
+ const e=env(8,{url:'https://notes.example/chapter8.html#merged-15--point-2'}),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json')));assert.match(e.d.getElementById('merged-15--point-2').textContent,/甲的私钥生成签名/);
+ for(const [q,id,i]of [['自主可控','y2025q30',6],['蠕虫','y2020q28',6],['标准账户','syllabus-windows-security',4],['显式标识','y2026q30',3]]){const hit=e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===`${id}--point-${i}`&&m.title),q);}
+ const c=open(e,'syllabus-windows-security');click(c,'request');change(e,c,'credential','valid');click(c,'approve');change(e,c,'draft','11:22');const lab=c.querySelector('[data-lab]'),input=e.d.getElementById('search-input');input.value='数字签名';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok(c.classList.contains('hidden'));e.d.getElementById('clear-search').click();assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-field="draft"]').value,'11:22');assert.equal(c.querySelector('[data-security-clock]').textContent,'09:00');
+ e.w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};e.w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new e.w.Event('close'));};const opener=c.querySelector('[data-sim-expand]');opener.click();assert.ok(c.querySelector('dialog').open);c.querySelector('[data-demo-close]').click();assert.equal(e.d.activeElement,opener);assert.equal(c.querySelector('[data-lab]'),lab);click(c,'cancel');assert.equal(c.querySelector('[data-security-clock]').textContent,'09:00');
+ assert.ok(c.querySelector('.note-lab table').closest('.lab-table-scroll'));assert.equal(c.querySelectorAll('style').length,0);assert.equal(c.querySelector('input[type="password"]'),null);const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))).chapters[8];assert.equal(manifest.models,5);assert.equal(new Set(manifest.ids).size,5);for(const id of manifest.ids)assert.equal(e.w.NOTE_SIMULATIONS.demos[id]?.kind,'lab',id);e.dom.window.close();
 });

@@ -234,14 +234,16 @@
     },
     "8": {
       "files": [
-        "src/labs/chapter8/security.js"
+        "src/labs/chapter8/security.js",
+        "src/labs/chapter8/windows-security.js"
       ],
-      "models": 4,
+      "models": 5,
       "ids": [
         "y2022q39",
         "y2021q18",
         "merged-16",
-        "merged-15"
+        "merged-15",
+        "syllabus-windows-security"
       ]
     },
     "9": {

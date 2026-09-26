@@ -5,7 +5,7 @@
 const {register,registry,ui}=window.NOTE_LABS;
 const {btn,field,select,table,coach,output,office,dialog,paper,esc,number,money}=ui;
 register(['y2022q39'],'一台终端出问题，会扩散到哪里','启用分区策略或冗余，再观察攻击和链路故障的影响。',{segmented:false,attacked:false,failed:false,redundant:false},s=>
-    `<div class="lab-controls">${btn(s.segmented?'关闭分区策略':'启用分区策略','segment')}${btn('模拟终端被攻陷','attack')}${btn(s.redundant?'关闭备用链路':'配置备用链路','redundant')}${btn('模拟主链路故障','fail')}</div><div class="lab-network"><div class="${s.attacked?'danger':''}">办公终端</div><span>→ ${s.segmented?'策略隔离':'允许互访'} →</span><div class="${s.attacked&&!s.segmented?'danger':'safe'}">核心数据库</div><span>${s.failed&&!s.redundant?'× 主链路中断':'↔ 链路可用'}</span><div>备份服务</div></div>${output(s.attacked?(s.segmented?'攻击源仍存在，但本例横向访问被策略阻止。':'本例允许互访，数据库暴露于横向攻击路径。'):'尚未注入攻击。')}${output(s.failed?(s.redundant?'已切到事先配置的备用链路。':'没有备用路径，服务不可达。'):'主链路正常。')}`,
+    `<div class="lab-controls">${btn(s.segmented?'关闭分区策略':'启用分区策略','segment')}${btn('模拟终端被攻陷','attack')}${btn(s.redundant?'关闭备用链路':'配置备用链路','redundant')}${btn('模拟主链路故障','fail')}</div><div class="lab-network"><div class="${s.attacked?'danger':''}">办公终端</div><span>→ ${s.segmented?'策略隔离':'允许互访'} →</span><div class="${s.attacked&&!s.segmented?'danger':'safe'}">核心数据库</div><span>${s.failed&&!s.redundant?'× 主链路中断':'↔ 链路可用'}</span><div>备份服务</div></div>${output(s.attacked?(s.segmented?'攻击源仍存在，但本例横向访问被策略阻止。':'本例允许互访，数据库暴露于横向攻击路径。'):'尚未注入攻击。')}${output(s.failed?(s.redundant?'本例备用链路已配置并完成切换，服务恢复可达。':'没有备用路径，服务不可达。'):'主链路正常。')}`,
     (s,a)=>{if(a==='segment')s.segmented=!s.segmented;if(a==='attack')s.attacked=true;if(a==='redundant')s.redundant=!s.redundant;if(a==='fail')s.failed=true;});
 })();
 

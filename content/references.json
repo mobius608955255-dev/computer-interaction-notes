@@ -1449,6 +1449,18 @@
     [
       "Microsoft：公钥与私钥",
       "https://learn.microsoft.com/en-us/windows/win32/seccrypto/public-private-key-pairs"
+    ],
+    [
+      "IETF RFC5280：证书字段及路径验证",
+      "https://www.rfc-editor.org/rfc/rfc5280.html"
+    ],
+    [
+      "IETF RFC6151：MD5的抗碰撞边界",
+      "https://www.rfc-editor.org/info/rfc6151/"
+    ],
+    [
+      "NIST：SHA-1与现代摘要算法适用边界",
+      "https://csrc.nist.gov/projects/hash-functions/nist-policy-on-hash-functions"
     ]
   ],
   "merged-16": [
@@ -1547,6 +1559,14 @@
     [
       "著作权法第二十四条：使用限制",
       "https://www.ncac.gov.cn/xxfb/flfg/flfg_532/202103/t20210309_50530.html"
+    ],
+    [
+      "中国人大网全文（网信办转载）：个人信息保护法第4、6、13、27、72条",
+      "https://www.cac.gov.cn/2021-08/20/c_1631050028355286.htm"
+    ],
+    [
+      "司法部现行法规库：计算机软件保护条例2013修订",
+      "https://xzfg.moj.gov.cn/front/law/detail?LawID=581"
     ]
   ],
   "y2026q18": [
@@ -1991,6 +2011,18 @@
     [
       "NIST：可用性定义",
       "https://csrc.nist.gov/glossary/term/availability"
+    ],
+    [
+      "NIST：威胁、漏洞与风险（风险定义入口）",
+      "https://csrc.nist.gov/glossary/term/risk"
+    ],
+    [
+      "NIST：漏洞",
+      "https://csrc.nist.gov/glossary/term/vulnerability"
+    ],
+    [
+      "NIST：威胁",
+      "https://csrc.nist.gov/glossary/term/threat"
     ]
   ],
   "merged-19": [
@@ -3061,6 +3093,114 @@
     [
       "Adobe：锐化的效果与限制",
       "https://helpx.adobe.com/photoshop/desktop/effects-filters/smart-filters/sharpening-overview.html"
+    ]
+  ],
+  "y2025q30": [
+    [
+      "NIST：认证身份",
+      "https://csrc.nist.gov/glossary/term/authentication"
+    ],
+    [
+      "NIST：授权与权限",
+      "https://csrc.nist.gov/glossary/term/authorization"
+    ],
+    [
+      "NIST：多因素认证",
+      "https://csrc.nist.gov/glossary/term/multi_factor_authentication"
+    ],
+    [
+      "NIST：IDS",
+      "https://csrc.nist.gov/glossary/term/intrusion_detection_system"
+    ],
+    [
+      "NIST：IPS",
+      "https://csrc.nist.gov/glossary/term/intrusion_prevention_system"
+    ],
+    [
+      "2026山东专升本官方考纲：信息安全与社会责任第五项",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ],
+    [
+      "网信办：网络安全审查办法，供应连续性及安全可控因素",
+      "https://www.cac.gov.cn/2022-01/04/c_1642894602182845.htm"
+    ],
+    [
+      "奇安信：天擎终端安全系统功能示例（厂商说明，非效果保证）",
+      "https://www.qianxin.com/product/detail/pid/330C"
+    ],
+    [
+      "网信办：网络关键设备和网络安全专用产品认证/检测查询",
+      "https://www.cac.gov.cn/wa/netWorkCriticalEquipment.htm"
+    ]
+  ],
+  "y2023q39": [
+    [
+      "NIST SP800-77：IPsec VPN的保护范围",
+      "https://csrc.nist.gov/pubs/sp/800/77/r1/final"
+    ]
+  ],
+  "y2024q49": [
+    [
+      "NIST：分布式拒绝服务的多来源条件",
+      "https://csrc.nist.gov/glossary/term/distributed_denial_of_service"
+    ]
+  ],
+  "y2020q28": [
+    [
+      "NIST：病毒与宿主",
+      "https://csrc.nist.gov/glossary/term/virus"
+    ],
+    [
+      "NIST：蠕虫的独立传播",
+      "https://csrc.nist.gov/glossary/term/worm"
+    ],
+    [
+      "NIST：木马隐藏恶意功能",
+      "https://csrc.nist.gov/glossary/term/trojan_horse"
+    ],
+    [
+      "Microsoft：勒索软件的锁定、加密及数据胁迫",
+      "https://www.microsoft.com/en-us/security/business/security-101/what-is-ransomware"
+    ],
+    [
+      "Microsoft：备份与恢复应对勒索",
+      "https://learn.microsoft.com/en-us/security/ransomware/protect-against-ransomware-phase1"
+    ]
+  ],
+  "syllabus-windows-security": [
+    [
+      "Microsoft：Windows10安全中心、扫描与保护入口",
+      "https://support.microsoft.com/en-us/windows/help-protect-my-device-with-windows-security-1a5b8102-c93d-0573-8fd3-b2d33a1e5386"
+    ],
+    [
+      "Microsoft：UAC提示、标准账户与管理员批准模式",
+      "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/user-account-control/how-it-works"
+    ],
+    [
+      "Microsoft：Defender防病毒与Windows安全界面",
+      "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-security-center-antivirus"
+    ],
+    [
+      "Microsoft：Windows防火墙规则及冲突优先级",
+      "https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/rules"
+    ],
+    [
+      "Microsoft：网络配置与防火墙入口",
+      "https://support.microsoft.com/en-us/windows/security/windows-security/firewall-and-network-protection-in-the-windows-security-app"
+    ],
+    [
+      "Microsoft：Windows更新及支持条件",
+      "https://support.microsoft.com/en-us/windows/deployment/updates-lifecycle/windows-update-faq"
+    ]
+  ],
+  "y2026q30": [
+    [
+      "网信办：人工智能生成合成内容标识办法第3、10条",
+      "https://www.cac.gov.cn/2025-03/14/c_1743654684782215.htm"
+    ],
+    [
+      "网信办：标识办法适用范围及规则解读",
+      "https://www.cac.gov.cn/2025-03/14/c_1743654685896173.htm"
     ]
   ]
 }
