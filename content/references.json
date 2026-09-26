@@ -1481,6 +1481,10 @@
     [
       "NIST SP 800-145：五项特征与三种服务模型",
       "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-145.pdf"
+    ],
+    [
+      "LLNL：并行计算、串行比例与加速限制",
+      "https://hpc.llnl.gov/documentation/tutorials/introduction-parallel-computing-tutorial"
     ]
   ],
   "merged-20": [
@@ -2029,12 +2033,36 @@
     [
       "NIST：IoT设备的传感器/执行器与网络接口",
       "https://csrc.nist.gov/glossary/term/iot_device"
+    ],
+    [
+      "ITU-T Y.4000/Y.2060：物联网参考模型、设备与指令",
+      "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-Y.2060-201206-I!!PDF-E&lang=e&type=items"
+    ],
+    [
+      "NIST SP 800-98：RFID标签、读写器与可选传感器",
+      "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-98.pdf"
+    ],
+    [
+      "NIST SP 500-325：本地与分布式处理和云的关系",
+      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.500-325.pdf"
+    ],
+    [
+      "GPS.gov：定位、导航与授时职责",
+      "https://www.gps.gov/gps"
     ]
   ],
   "y2025q20": [
     [
       "NIST：生成式人工智能的内容生成定义",
       "https://csrc.nist.gov/glossary/term/generative_artificial_intelligence"
+    ],
+    [
+      "NIST AI 600-1：生成内容错误、出处和代码核验",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+    ],
+    [
+      "NIST AI 100-2e2025：训练、部署与生成式AI定义",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-2e2025.pdf"
     ]
   ],
   "y2020q14": [
@@ -2245,6 +2273,18 @@
     [
       "IBM Quantum: Superposition with Qiskit",
       "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/superposition-with-qiskit"
+    ],
+    [
+      "IBM Quantum：同一基的连续测量与重新制备",
+      "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/stern-gerlach-measurements-with-qiskit"
+    ],
+    [
+      "NIST收录原论文：量子密钥分发与认证经典通信",
+      "https://www.nist.gov/document/worldwide-standardization-activity-quantum-key-distribution"
+    ],
+    [
+      "NIST：纠缠不允许超光速可控通信（§2.9）",
+      "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=51022"
     ]
   ],
   "syllabus-mobile-communication": [
@@ -3201,6 +3241,76 @@
     [
       "网信办：标识办法适用范围及规则解读",
       "https://www.cac.gov.cn/2025-03/14/c_1743654685896173.htm"
+    ]
+  ],
+  "merged-18": [
+    [
+      "Burdea与Coiffet教材原文：三I与交互反馈（第1章）",
+      "https://catalogimages.wiley.com/images/db/pdf/0471360899.excerpt.pdf"
+    ],
+    [
+      "Azuma原论文：AR的经典技术定义（§1.2）",
+      "https://www.ronaldazuma.com/papers/ARpresence.pdf"
+    ]
+  ],
+  "y2025q18": [
+    [
+      "NIST大数据工作组框架：规模、V特征与可扩展架构",
+      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1500-1r2.pdf"
+    ],
+    [
+      "NIST大数据工作组参考架构：采集、准备、分析与可视化",
+      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1500-6r2.pdf"
+    ]
+  ],
+  "merged-17": [
+    [
+      "NISTIR 8202：区块、共识、准入与信任边界",
+      "https://nvlpubs.nist.gov/nistpubs/ir/2018/nist.ir.8202.pdf"
+    ]
+  ],
+  "y2020q30": [
+    [
+      "《Deep Learning》第1章：AI、ML和DL关系",
+      "https://www.deeplearningbook.org/contents/intro.html"
+    ],
+    [
+      "OECD 2024说明：知识驱动方法及训练与推断",
+      "https://www.oecd.org/content/dam/oecd/en/publications/reports/2024/03/explanatory-memorandum-on-the-updated-oecd-definition-of-an-ai-system_3c815e51/623da898-en.pdf"
+    ]
+  ],
+  "y2026q45": [
+    [
+      "NERSC：计算吞吐与内存带宽的性能限制",
+      "https://docs.nersc.gov/tools/performance/roofline/"
+    ],
+    [
+      "NERSC：CPU/GPU并行任务与数据传输",
+      "https://docs.nersc.gov/performance/readiness/"
+    ]
+  ],
+  "y2024q20": [
+    [
+      "ITU-T Y.4238（2025）：元宇宙定义与虚实融合语境",
+      "https://www.itu.int/rec/T-REC-Y.4238-202511-I"
+    ],
+    [
+      "ITU-T Y.4239（2025）：数字孪生融合参考模型",
+      "https://www.itu.int/rec/T-REC-Y.4239-202511-I/en"
+    ],
+    [
+      "五部门2023—2025行动计划：技术角色与应用语境（目标不作已实现事实）",
+      "https://zwgk.mct.gov.cn/zfxxgkml/kjjy/202309/t20230909_947131.html"
+    ]
+  ],
+  "y2025q40": [
+    [
+      "NIST统计手册：相关不能证明因果",
+      "https://www.itl.nist.gov/div898/handbook/eda/section3/scatterp.htm"
+    ],
+    [
+      "NIST大数据工作组框架：数据、分析与模型语境",
+      "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1500-1r2.pdf"
     ]
   ]
 }

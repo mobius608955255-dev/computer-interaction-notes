@@ -248,12 +248,15 @@
     },
     "9": {
       "files": [
-        "src/labs/chapter9/chain.js"
+        "src/labs/chapter9/chain.js",
+        "src/labs/chapter9/frontier.js"
       ],
-      "models": 2,
+      "models": 4,
       "ids": [
         "merged-17",
-        "syllabus-quantum-basics"
+        "syllabus-quantum-basics",
+        "y2026q39",
+        "merged-19"
       ]
     },
     "10": {
