@@ -1321,6 +1321,42 @@
     [
       "MIDI Association：MIDI 概览",
       "https://midi.org/about-midi-part-1overview"
+    ],
+    [
+      "JPEG Committee: JPEG 1（适用断言见正文条件）",
+      "https://jpeg.org/jpeg/"
+    ],
+    [
+      "Microsoft Bitmap Compression（适用断言见正文条件）",
+      "https://learn.microsoft.com/en-us/windows/win32/gdi/bitmap-compression"
+    ],
+    [
+      "Adobe AEM fmt and Photoshop TIFF saving（适用断言见正文条件）",
+      "https://experienceleague.adobe.com/en/docs/dynamic-media-developer-resources/image-serving-api/image-serving-api/http-protocol-reference/command-reference/r-is-http-fmt"
+    ],
+    [
+      "W3C SVG 1.1 Second Edition（适用断言见正文条件）",
+      "https://www.w3.org/TR/SVG11/"
+    ],
+    [
+      "Microsoft File types supported by Windows Media Player（适用断言见正文条件）",
+      "https://support.microsoft.com/en-us/windows/apps/windowsmediaplayer/file-types-supported-by-windows-media-player"
+    ],
+    [
+      "ISO/IEC 14496-14:2020 MP4 file format（适用断言见正文条件）",
+      "https://www.iso.org/standard/79110.html"
+    ],
+    [
+      "Microsoft AVI RIFF and ASF overview（适用断言见正文条件）",
+      "https://learn.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference"
+    ],
+    [
+      "Apple QuickTime File Format（适用断言见正文条件）",
+      "https://developer.apple.com/standards/qtff-2001.pdf"
+    ],
+    [
+      "FADGI Compression ratio glossary（适用断言见正文条件）",
+      "https://www.digitizationguidelines.gov/term.php?term=compressionratio"
     ]
   ],
   "y2020q27": [
@@ -1331,6 +1367,22 @@
     [
       "MDN：图像文件类型与格式指南",
       "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types"
+    ],
+    [
+      "W3C PNG Specification Third Edition（适用断言见正文条件）",
+      "https://www.w3.org/TR/2025/REC-png-3-20250624/"
+    ],
+    [
+      "Adobe Understanding Photoshop color modes（适用断言见正文条件）",
+      "https://helpx.adobe.com/photoshop/using/color-modes.html"
+    ],
+    [
+      "Adobe：打印尺寸/PPI变化与保持像素尺寸",
+      "https://helpx.adobe.com/photoshop/desktop/crop-resize-transform/resize-adjust-resolution/change-print-dimensions-and-resolution.html"
+    ],
+    [
+      "Adobe：打印机分辨率与图像分辨率",
+      "https://helpx.adobe.com/photoshop/desktop/crop-resize-transform/resize-adjust-resolution/printer-resolution.html"
     ]
   ],
   "y2023q18": [
@@ -1359,6 +1411,18 @@
     [
       "Microsoft：PCM样值、声道数与存储块大小",
       "https://learn.microsoft.com/en-us/windows/win32/api/mmreg/ns-mmreg-waveformatex"
+    ],
+    [
+      "Microsoft WAVEFORMATEX（适用断言见正文条件）",
+      "https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex"
+    ],
+    [
+      "Microsoft WAVEFORMATEXTENSIBLE（适用断言见正文条件）",
+      "https://learn.microsoft.com/en-us/windows/win32/api/mmreg/ns-mmreg-waveformatextensible"
+    ],
+    [
+      "Adobe Audition Digitizing audio（适用断言见正文条件）",
+      "https://helpx.adobe.com/audition/desktop/digital-audio-fundamentals/digitizing-audio.html"
     ]
   ],
   "merged-15": [
@@ -1895,6 +1959,18 @@
     [
       "MDN：数字视频的帧与像素表示",
       "https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Video_concepts"
+    ],
+    [
+      "Microsoft MF_MT_FRAME_RATE（适用断言见正文条件）",
+      "https://learn.microsoft.com/en-us/windows/win32/medfound/mf-mt-frame-rate-attribute"
+    ],
+    [
+      "Microsoft MF_MT_AVG_BITRATE（适用断言见正文条件）",
+      "https://learn.microsoft.com/en-us/windows/win32/medfound/mf-mt-avg-bitrate-attribute"
+    ],
+    [
+      "Adobe：关键帧与补间动画",
+      "https://helpx.adobe.com/animate/desktop/animation/about-motion-tween-animations.html"
     ]
   ],
   "y2020q17": [
@@ -2291,6 +2367,22 @@
     [
       "Adobe：导出选项",
       "https://helpx.adobe.com/premiere/desktop/render-and-export/export-files/export-options-in-premiere.html"
+    ],
+    [
+      "Microsoft：媒体源、处理和输出的架构分工",
+      "https://learn.microsoft.com/en-us/windows/win32/medfound/overview-of-the-media-foundation-architecture"
+    ],
+    [
+      "Microsoft：驱动与设备通信",
+      "https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/what-is-a-driver-"
+    ],
+    [
+      "Adobe：Flash Player生命周期与动画制作软件分开",
+      "https://www.adobe.com/products/flashplayer/end-of-life.html"
+    ],
+    [
+      "Adobe：Animate动画创作与旧名Flash的语境",
+      "https://helpx.adobe.com/animate/desktop/faq.html"
     ]
   ],
   "y2024q6": [
@@ -2905,6 +2997,70 @@
     [
       "山东省2026年专升本考试要求：计算机网络与信息检索",
       "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ]
+  ],
+  "y2023q19": [
+    [
+      "W3C SVG 1.1 Second Edition（适用断言见正文条件）",
+      "https://www.w3.org/TR/SVG11/"
+    ]
+  ],
+  "y2026q4": [
+    [
+      "2026山东专升本考试要求：计算机一（五）多媒体范围",
+      "https://www.sdzk.cn/Floadup/file/20251129/6389999945835892448300421.pdf"
+    ]
+  ],
+  "syllabus-image-editing": [
+    [
+      "Adobe：图层内容与独立编辑",
+      "https://www.adobe.com/learn/photoshop/web/ps-layers-basics"
+    ],
+    [
+      "Adobe：选区限定编辑区域",
+      "https://helpx.adobe.com/photoshop/using/making-selections.html"
+    ],
+    [
+      "Adobe：重新采样改变像素尺寸",
+      "https://helpx.adobe.com/photoshop/desktop/crop-resize-transform/resize-adjust-resolution/resample-option-in-image-size-dialog-box.html"
+    ],
+    [
+      "Adobe：不重新采样时修改打印尺寸",
+      "https://helpx.adobe.com/photoshop/desktop/crop-resize-transform/resize-adjust-resolution/change-print-dimensions-and-resolution.html"
+    ],
+    [
+      "Adobe：画布、锚点与裁剪",
+      "https://helpx.adobe.com/photoshop/using/adjusting-crop-rotation-canvas.html"
+    ],
+    [
+      "Adobe：自由变换的对象与版本条件",
+      "https://helpx.adobe.com/photoshop/using/free-transformations-images-shapes-paths.html"
+    ],
+    [
+      "Adobe：调整图层及填充图层",
+      "https://helpx.adobe.com/photoshop/desktop/create-manage-layers/color-adjustment-fill-layers/work-with-adjustment-and-fill-layers.html"
+    ],
+    [
+      "Adobe：应用滤镜",
+      "https://helpx.adobe.com/photoshop/desktop/effects-filters/get-started-with-filters/apply-filters.html"
+    ],
+    [
+      "Adobe：PSD与其他文件格式保存能力",
+      "https://helpx.adobe.com/photoshop/desktop/save-and-export/export-files-to-different-formats/photoshop-file-formats-overview.html"
+    ],
+    [
+      "Adobe：导出尺寸、透明与质量",
+      "https://helpx.adobe.com/photoshop/desktop/save-and-export/export-files-to-different-formats/fine-tune-your-export-settings-using-the-export-as-option.html"
+    ],
+    [
+      "Adobe：裁剪时保留或删除外围像素",
+      "https://helpx.adobe.com/photoshop/desktop/crop-resize-transform/crop-straighten/crop-tool-options.html"
+    ]
+  ],
+  "y2024q43": [
+    [
+      "Adobe：锐化的效果与限制",
+      "https://helpx.adobe.com/photoshop/desktop/effects-filters/smart-filters/sharpening-overview.html"
     ]
   ]
 }

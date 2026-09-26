@@ -217,16 +217,19 @@
     "7": {
       "files": [
         "src/labs/chapter7/media.js",
-        "src/labs/chapter7/playback.js"
+        "src/labs/chapter7/playback.js",
+        "src/labs/chapter7/image-tools.js"
       ],
-      "models": 6,
+      "models": 8,
       "ids": [
         "y2023q19",
         "y2024q32",
         "merged-14",
         "y2020q38",
         "y2023q18",
-        "syllabus-media-edit-export"
+        "syllabus-media-edit-export",
+        "y2020q27",
+        "syllabus-image-editing"
       ]
     },
     "8": {

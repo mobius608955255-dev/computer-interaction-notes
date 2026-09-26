@@ -19,7 +19,10 @@ const pptIds=new Set(pptV63.chapter5.map(n=>n.id));
 // v65 transfers Chapter6 from old freeze guards to a formal-v64 snapshot below.
 const networkV64=require('./network-v64-protection.json');
 const networkIds=new Set(networkV64.chapter6.map(n=>n.id));
-const reviewedChapterFile=file=>/^content\/chapter[1-6]\.json$/.test(file);
+// v66 transfers only Chapter7 to the formal-v65 guard; historical assertions stay active below.
+const multimediaV65=require('./multimedia-v65-protection.json');
+const multimediaIds=new Set([...multimediaV65.chapter7.map(n=>n.id),'syllabus-image-editing']);
+const reviewedChapterFile=file=>/^content\/chapter[1-7]\.json$/.test(file);
 const digest=value=>require('node:crypto').createHash('sha256').update(value).digest('hex');
 function projectV61(note){
  const row=v61Rows.get(note.id),old=structuredClone(note);if(!row)return old;
@@ -29,7 +32,7 @@ function projectV61(note){
 function v61Chapter(notes,chapter){return v61Protection.chapters[chapter].map(row=>projectV61(notes.find(n=>n.id===row.id)));}
 
 test('v47 supplements and worked examples preserve the 460 original source identities',()=>{
- const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.equal(supplements.length,18);
+ const notes=allNotes(),supplements=notes.filter(n=>n.origin==='syllabus');assert.deepEqual(supplements.map(n=>n.id).sort(),[...multimediaV65.supplementIds,'syllabus-image-editing'].sort());
  assert.deepEqual(supplements.filter(n=>n.chapter===2).map(n=>n.id).sort(),['syllabus-windows-paths','syllabus-windows-selection','syllabus-windows-search'].sort());
  assert.ok(supplements.every(n=>n.sources.length===0));assert.equal(notes.flatMap(n=>n.workedExamples||[]).length,16);
  for(const n of notes)for(const example of n.workedExamples||[])assert.ok(n.sources.some(s=>s.year===example.year&&s.q===example.q));
@@ -1503,9 +1506,9 @@ test('v62 old and new deep links search focus and expanded return preserve four 
  }
 });
 test('v62 preserves later chapters models references and search records beyond its four chapter scope',()=>{
- const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json','content/chapter6.json','src/labs/chapter6/network.js'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=7);assert.equal(hash(JSON.stringify(index)),networkV64.after6SearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id)||networkIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
+ const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json','content/chapter6.json','src/labs/chapter6/network.js','content/chapter7.json'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=8);assert.equal(hash(JSON.stringify(index)),multimediaV65.after7SearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id)||networkIds.has(id)||multimediaIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id)&&!multimediaIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
  for(let chapter=5;chapter<=11;chapter++){const e=env(chapter),canonical=JSON.parse(fs.readFileSync(path.join(root,`content/chapter${chapter}.json`))),sections=e.w.NOTES.chapters.find(c=>c.number===chapter).sections,expected=Array.from(sections).flatMap(s=>canonical.filter(n=>n.section===s.id).map(n=>n.id));assert.deepEqual([...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),expected);assert.deepEqual([...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1)),expected);e.dom.window.close();}
 });
 test('v62 every listed section in the first four chapters has a visible canonical entrance',()=>{
@@ -1573,14 +1576,14 @@ test('v64 default body directory and subtopics share a prerequisite-respecting o
  e.dom.window.close();
 });
 test('v64 formal v63 protection freezes other chapters search and the visual system',()=>{
- for(const [file,hash] of Object.entries(pptV63.protectedFiles)){if(['content/chapter6.json','src/labs/chapter6/network.js'].includes(file))continue;assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);}
+ for(const [file,hash] of Object.entries(pptV63.protectedFiles)){if(['content/chapter6.json','src/labs/chapter6/network.js','content/chapter7.json'].includes(file))continue;assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);}
  const app=fs.readFileSync(path.join(root,'notes-app.js'),'utf8'),fix=pptV63.notesApp;assert.equal(app.split(fix.to).length,2);assert.ok(!app.includes(fix.from));assert.equal(digest(app.replace(fix.to,fix.from)),fix.hash);
  const shared=fs.readFileSync(path.join(root,'src/labs/shared/syllabus.js'),'utf8');assert.ok(!shared.includes("'syllabus-ppt-output':"));const anchor="    'syllabus-quantum-basics':";assert.equal(shared.split(anchor).length,2);assert.equal(digest(shared.replace(anchor,pptV63.sharedSyllabusRemovedBlock+anchor)),pptV63.sharedSyllabusHash);
- const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];delete manifest.chapters[6];delete base.chapters[6];assert.deepEqual(manifest,base);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5&&r.chapter!==6);assert.equal(digest(JSON.stringify(index)),networkV64.except56SearchHash);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];delete manifest.chapters[6];delete base.chapters[6];delete manifest.chapters[7];delete base.chapters[7];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5&&r.chapter!==6&&r.chapter!==7);assert.equal(digest(JSON.stringify(index)),multimediaV65.except567SearchHash);
  const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));
- for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id))assert.equal(refs[id].length,row.count,id);}
- for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id)||networkIds.has(id),'reference belongs to authorized Chapter5/6 card: '+id);
+ for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id)&&!networkIds.has(id)&&!multimediaIds.has(id))assert.equal(refs[id].length,row.count,id);}
+ for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id)||networkIds.has(id)||multimediaIds.has(id),'reference belongs to authorized Chapter5/6 card: '+id);
 });
 test('v64 moving duplicating and changing layout preserve page identity and discard drafts',()=>{
  const e=env(5),c=open(e,'y2024q12'),ids=()=>[...c.querySelectorAll('[data-slide-id]')].map(x=>x.dataset.slideId),active=()=>c.querySelector('[data-active-slide]').dataset.activeSlide;
@@ -1648,10 +1651,10 @@ test('v65 default content directory and subtopics follow prerequisites rather th
  for(let i=1;i<=5;i++)assert.ok(e.d.querySelector(`#section-6-${i} article`));e.dom.window.close();
 });
 test('v65 freezes other ten chapters labs shared UX and non-network search records at formal v64',()=>{
- for(const [file,hash] of Object.entries(networkV64.protectedFiles))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
- const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(networkV64.manifest);delete manifest.chapters[6];delete base.chapters[6];assert.deepEqual(manifest,base);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==6);assert.equal(digest(JSON.stringify(index)),networkV64.otherSearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(networkV64.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!networkIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(networkV64.referenceRows[id]||networkIds.has(id),id);
+ for(const [file,hash] of Object.entries(networkV64.protectedFiles))if(file!=='content/chapter7.json')assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(networkV64.manifest);delete manifest.chapters[6];delete base.chapters[6];delete manifest.chapters[7];delete base.chapters[7];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==6&&r.chapter!==7);assert.equal(digest(JSON.stringify(index)),multimediaV65.except67SearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(networkV64.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!networkIds.has(id)&&!multimediaIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(networkV64.referenceRows[id]||networkIds.has(id)||multimediaIds.has(id),id);
 });
 test('v65 topology failure changes reachability and scope selection does not repair a broken link',()=>{
  const e=env(6),c=open(e,'y2020q15'),route=id=>c.querySelector(`[data-route="${id}"]`).textContent;
@@ -1697,4 +1700,67 @@ test('v65 model registration and narrow-layout structure use existing scroll con
  const e=env(6),manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))).chapters[6];assert.equal(manifest.models,15);assert.equal(new Set(manifest.ids).size,15);for(const id of manifest.ids)assert.ok(e.w.NOTE_SIMULATIONS.demos[id]?.kind==='lab',id);
  const t=open(e,'y2020q15'),svg=t.querySelector('svg');assert.equal(svg.style.width,'100%');assert.ok(svg.hasAttribute('viewBox'));assert.ok(t.querySelector('.note-lab table').closest('.lab-table-scroll'));const mail=open(e,'y2022q15');change(e,mail,'service','SMTP');assert.ok(mail.querySelector('.note-lab table').closest('.lab-table-scroll'));assert.equal(mail.querySelectorAll('style').length,0);
  assert.ok(e.d.getElementById('y2020q15').querySelector('.note-comparison[tabindex="0"]'));e.dom.window.close();
+});
+
+test('v66 preserves all ten old identities and all 45 semantic point anchors',()=>{
+ const e=env(7),notes=e.w.NOTES.notes;assert.equal(notes.length,11);assert.equal(new Set(notes.map(n=>n.id)).size,11);
+ for(const row of multimediaV65.chapter7){const n=notes.find(n=>n.id===row.id);assert.ok(n);assert.deepEqual(JSON.parse(JSON.stringify(n.sources)),row.sources);assert.deepEqual(JSON.parse(JSON.stringify(n.keys??null)),row.keys);assert.deepEqual(Array.from(n.points.slice(0,row.count),digest),row.pointHashes);
+  assert.deepEqual(JSON.parse(JSON.stringify((n.related||[]).slice(0,row.related.length))),row.related);assert.deepEqual(JSON.parse(JSON.stringify((n.searchAliases||[]).slice(0,row.searchAliases.length))),row.searchAliases);
+  for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i]);}
+  if(n.id!=='syllabus-media-edit-export')assert.equal(n.section,row.section);
+ }
+ assert.equal(e.d.getElementById('syllabus-media-edit-export--point-0').closest('.section-block').id,'section-7-2');assert.match(e.d.getElementById('syllabus-media-edit-export--point-0').textContent,/Audacity/);e.dom.window.close();
+});
+test('v66 teaching dependencies hold in the same body directory and subtopic order',()=>{
+ const e=env(7),body=[...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),toc=[...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1));assert.deepEqual(toc,body);
+ // Pedagogical relationships, chosen from meaning, not a duplicate of the implementation array.
+ for(const [a,b] of [['y2026q4','y2023q19'],['y2023q19','y2020q27'],['y2020q27','merged-14'],['y2024q32','y2020q38'],['y2020q38','y2023q18'],['y2023q18','merged-14'],['syllabus-media-edit-export','syllabus-image-editing'],['syllabus-image-editing','y2024q43']])assert.ok(body.indexOf(a)<body.indexOf(b),`${a} before ${b}`);
+ for(const n of e.w.NOTES.notes){const order=Array.from(e.w.NOTE_PRESENTATION.pointOrder(n));assert.deepEqual([...order].sort((a,b)=>a-b),Array.from(n.points,(_,i)=>i));const sub=Array.from(e.w.NOTE_PRESENTATION.subtopics(n),x=>x.anchor);assert.deepEqual([...e.d.querySelectorAll(`#${n.id} .note-subtopics a`)].map(a=>a.hash.slice(1)),sub);assert.deepEqual([...e.d.querySelectorAll(`#drawer .directory-subtopics a[href^="#${n.id}--point-"]`)].map(a=>a.hash.slice(1)),sub);}
+ const order=id=>Array.from(e.w.NOTE_PRESENTATION.pointOrder(e.w.NOTES.notes.find(n=>n.id===id)));assert.ok(order('y2020q27').indexOf(7)<order('y2020q27').indexOf(1),'pixel meaning before data size');assert.ok(order('y2024q32').indexOf(8)<order('y2024q32').indexOf(1),'stored width condition before multiplying');assert.ok(order('syllabus-media-edit-export').indexOf(3)<order('syllabus-media-edit-export').indexOf(0),'system before software example');
+ for(let i=1;i<=3;i++)assert.ok(e.d.querySelector(`#section-7-${i} article`));e.dom.window.close();
+});
+test('v66 freezes other ten chapters existing models references and v63 visual behavior',()=>{
+ for(const [file,hash] of Object.entries(multimediaV65.protectedFiles))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(multimediaV65.manifest);assert.deepEqual(manifest.chapters[7].ids.slice(0,base.chapters[7].ids.length),base.chapters[7].ids);delete manifest.chapters[7];delete base.chapters[7];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==7);assert.equal(digest(JSON.stringify(index)),multimediaV65.otherSearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const [id,row] of Object.entries(multimediaV65.referenceRows)){assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!multimediaIds.has(id))assert.equal(refs[id].length,row.count,id);}for(const id of Object.keys(refs))assert.ok(multimediaV65.referenceRows[id]||multimediaIds.has(id),id);
+});
+test('v66 independently computed image quantities distinguish pixel count alpha and PPI',()=>{
+ const e=env(7),c=open(e,'y2020q27'),metric=()=>c.querySelector('[data-image-size]');assert.equal(metric().dataset.bytes,'1440000');assert.equal(metric().dataset.bits,'11520000');assert.match(c.querySelector('.note-lab table').textContent,/1.440000 MB；1.373291 MiB/);
+ change(e,c,'ppi','150');assert.equal(metric().dataset.bytes,'1440000');assert.match(c.querySelector('.note-lab table').textContent,/13.547 × 10.160 cm/);
+ change(e,c,'mode','rgba');assert.equal(metric().dataset.bytes,'1920000');assert.match(c.querySelector('.note-lab table').textContent,/16777216.*256级Alpha/);change(e,c,'width','1600');assert.equal(metric().dataset.bytes,'3840000');
+ c.querySelector('[data-sim-reset]').click();assert.equal(metric().dataset.bytes,'1440000');assert.equal(c.querySelector('[data-field="ppi"]').value,'300');e.dom.window.close();
+});
+test('v66 image calculator rejects invalid input and counts sub-byte and maximum boundaries',()=>{
+ const e=env(7),c=open(e,'y2020q27');for(const v of ['0','-1','','1.5','16385']){change(e,c,'width',v);assert.equal(c.querySelector('[data-image-size]'),null);assert.match(c.querySelector('.lab-output').textContent,/整数/);}
+ change(e,c,'width','1');change(e,c,'height','1');change(e,c,'mode','mono');const m=c.querySelector('[data-image-size]');assert.equal(m.dataset.bits,'1');assert.equal(m.dataset.bytes,'0.125');assert.equal(m.dataset.minimumBytes,'1');assert.match(c.querySelector('.lab-output').textContent,/至少需1 B/);
+ change(e,c,'ppi','0');assert.equal(c.querySelector('[data-image-size]'),null);change(e,c,'ppi','300');change(e,c,'width','16384');change(e,c,'height','16384');change(e,c,'mode','rgba');assert.equal(c.querySelector('[data-image-size]').dataset.bytes,'1073741824');assert.match(c.querySelector('.note-lab table').textContent,/1024.000000 MiB/);e.dom.window.close();
+});
+test('v66 image resampling changes pixels while canvas growth preserves their coordinates',()=>{
+ const e=env(7),c=open(e,'syllabus-image-editing'),area=role=>c.querySelector(`[data-image-${role}]`),pixel=(role,xy)=>area(role).querySelector(`[data-pixel="${xy}"]`).dataset.color;
+ assert.equal(area('committed').dataset.colored,'16');change(e,c,'width','16');change(e,c,'height','12');click(c,'preview');assert.equal(area('preview').dataset.colored,'64');assert.equal(pixel('preview','2,1'),'transparent');assert.equal(pixel('preview','4,2'),'#b64637');assert.equal(area('committed').dataset.width,'8');click(c,'cancel');assert.equal(area('preview'),null);
+ change(e,c,'operation','canvas');change(e,c,'width','16');change(e,c,'height','12');click(c,'preview');assert.equal(area('preview').dataset.colored,'16');assert.equal(pixel('preview','2,1'),'#b64637');assert.equal(pixel('preview','15,11'),'transparent');click(c,'apply');assert.equal(area('committed').dataset.width,'16');assert.equal(area('preview'),null);e.dom.window.close();
+});
+test('v66 image draft invalidation cancellation repeated crops and reset protect committed state',()=>{
+ const e=env(7),c=open(e,'syllabus-image-editing'),width=()=>c.querySelector('[data-image-committed]').dataset.width,colored=()=>c.querySelector('[data-image-committed]').dataset.colored;
+ click(c,'apply');assert.equal(width(),'8');click(c,'preview');change(e,c,'width','0');click(c,'apply');assert.equal(width(),'8');assert.equal(c.querySelector('[data-image-preview]'),null);click(c,'preview');assert.match(c.querySelector('.lab-output').textContent,/无效/);click(c,'cancel');assert.equal(width(),'8');
+ change(e,c,'operation','canvas');change(e,c,'width','4');change(e,c,'height','3');click(c,'preview');click(c,'apply');assert.equal(colored(),'4');change(e,c,'width','8');change(e,c,'height','6');click(c,'preview');click(c,'apply');assert.equal(colored(),'4','growing canvas cannot restore cropped pixels');
+ c.querySelector('[data-sim-reset]').click();assert.equal(width(),'8');assert.equal(colored(),'16');assert.equal(c.querySelector('[data-image-preview]'),null);e.dom.window.close();
+});
+test('v66 retained media models preserve scaling PCM compression frames and buffer semantics',()=>{
+ const e=env(7),vector=open(e,'y2023q19');change(e,vector,'zoom','2');assert.match(vector.querySelector('svg path').getAttribute('transform'),/scale\(2\)/);
+ const pcm=open(e,'y2024q32');change(e,pcm,'mode','pcm');change(e,pcm,'rate','4');change(e,pcm,'depth','8');change(e,pcm,'channels','2');change(e,pcm,'duration','3');assert.match(pcm.querySelector('.ext-metrics').textContent,/64 bit\/s.*24 B/);
+ const rle=open(e,'merged-14');change(e,rle,'raw','30,31');change(e,rle,'mode','reduce');assert.match(rle.querySelector('.note-lab tbody').textContent,/否，编码前已丢失/);change(e,rle,'mode','lossless');assert.doesNotMatch(rle.querySelector('.note-lab tbody').textContent,/否，/);
+ const video=open(e,'y2020q38');change(e,video,'fps','60');assert.match(video.querySelector('.note-lab tbody').textContent,/120 帧.*27,648,000 B/);
+ const stream=open(e,'y2023q18');change(e,stream,'rate','0');change(e,stream,'position','12');click(stream,'play');click(stream,'tick');assert.match(stream.querySelector('.lab-output').textContent,/等待下载/);assert.match(stream.querySelector('.note-lab tbody').textContent,/播放到12.0/);e.dom.window.close();
+});
+test('v66 search old links and demo expansion retain state after the section relocation',()=>{
+ const e=env(7,{url:'https://notes.example/chapter7.html#syllabus-media-edit-export--point-2'}),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json')));assert.match(e.d.getElementById('syllabus-media-edit-export--point-2').textContent,/工程文件改成.mp4/);
+ for(const [query,id,i] of [['画布大小','syllabus-image-editing',4],['PPI','y2020q27',10],['驱动帮助','syllabus-media-edit-export',4]]){const hit=e.w.NOTE_SEARCH.search(index,query).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===`${id}--point-${i}`&&m.title),query);}
+ const c=open(e,'syllabus-image-editing');click(c,'preview');click(c,'apply');const lab=c.querySelector('[data-lab]'),input=e.d.getElementById('search-input');input.value='码率';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.ok(c.classList.contains('hidden'));e.d.getElementById('clear-search').click();assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-image-committed]').dataset.width,'12');
+ e.w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};e.w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new e.w.Event('close'));};const opener=c.querySelector('[data-sim-expand]');opener.click();assert.ok(c.querySelector('dialog').open);c.querySelector('[data-demo-close]').click();assert.equal(e.d.activeElement,opener);assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-image-committed]').dataset.width,'12');e.dom.window.close();
+});
+test('v66 registration and narrow structure reuse existing controls tables and responsive SVG',()=>{
+ const e=env(7),m=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))).chapters[7];assert.equal(m.models,8);assert.equal(new Set(m.ids).size,8);for(const id of m.ids)assert.equal(e.w.NOTE_SIMULATIONS.demos[id]?.kind,'lab',id);
+ const calc=open(e,'y2020q27');assert.ok(calc.querySelector('.note-lab table').closest('.lab-table-scroll'));const edit=open(e,'syllabus-image-editing');click(edit,'preview');for(const svg of edit.querySelectorAll('svg')){assert.equal(svg.style.width,'100%');assert.ok(svg.hasAttribute('viewBox'));assert.ok(svg.getAttribute('aria-label'));}assert.equal(edit.querySelectorAll('style').length,0);assert.ok(edit.querySelector('.note-comparison[tabindex="0"]'));e.dom.window.close();
 });
