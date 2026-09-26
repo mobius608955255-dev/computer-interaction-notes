@@ -162,7 +162,8 @@
     "5": {
       "files": [
         "src/labs/chapter5/presentation.js",
-        "src/labs/chapter5/editing.js"
+        "src/labs/chapter5/editing.js",
+        "src/labs/chapter5/output.js"
       ],
       "models": 20,
       "ids": [

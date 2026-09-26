@@ -717,7 +717,7 @@
           ['.pptx','进入编辑界面','编辑模式'],
           ['.ppsx','直接开始放映','放映模式'],
           ['.potx','以此创建新演示文稿','模板模式'],
-          ['.ppsm','直接放映并允许宏','启用宏的放映']
+          ['.ppsm','放映；宏执行仍受安全设置控制','可含宏的放映']
         ][index] || ['.pptx','进入编辑界面','编辑模式'];
         text('[data-ppt-ext]', states[0]); text('[data-ppt-action]', states[1]); text('[data-launch-mode]', states[2]);
         break;

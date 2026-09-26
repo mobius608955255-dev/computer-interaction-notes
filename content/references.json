@@ -1059,6 +1059,10 @@
     [
       "Microsoft：按任务选择PowerPoint视图",
       "https://support.microsoft.com/en-us/powerpoint/training/choose-the-right-view-for-the-task-in-powerpoint"
+    ],
+    [
+      "Microsoft：创建演示文稿的基础对象与操作（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/basic-tasks-for-creating-a-powerpoint-presentation"
     ]
   ],
   "y2020q12": [
@@ -1097,6 +1101,14 @@
     [
       "Microsoft：应用幻灯片版式与重设",
       "https://support.microsoft.com/en-us/powerpoint/training/apply-a-slide-layout"
+    ],
+    [
+      "Microsoft：母版与版式继承（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/training/what-is-a-slide-master-in-powerpoint"
+    ],
+    [
+      "Microsoft：模板与母版分别解决什么问题（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/understand-the-difference-between-powerpoint-templates-and-themes"
     ]
   ],
   "y2020q54": [
@@ -1107,6 +1119,14 @@
     [
       "Microsoft：为幻灯片添加背景图片",
       "https://support.microsoft.com/en-us/powerpoint/training/add-a-background-picture-to-your-slides"
+    ],
+    [
+      "Microsoft：幻灯片大小与方向（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/change-the-size-of-your-powerpoint-slides"
+    ],
+    [
+      "Microsoft：页面大小、屏幕缩放与讲义纸张（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/create-or-change-a-presentation-s-handout"
     ]
   ],
   "merged-11": [
@@ -1129,6 +1149,14 @@
     [
       "Microsoft：自定义放映中的动作、超链接与放映后返回",
       "https://support.microsoft.com/en-us/powerpoint/create-and-present-a-custom-show"
+    ],
+    [
+      "Microsoft：四类动画先按对象状态判断（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/training/animate-text-or-objects"
+    ],
+    [
+      "Microsoft：建立超链接或动作并在放映中核对（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/training/add-a-hyperlink-to-a-slide"
     ]
   ],
   "y2023q13": [
@@ -1139,6 +1167,26 @@
     [
       "Microsoft：录制旁白和幻灯片计时",
       "https://support.microsoft.com/en-us/powerpoint/training/record-a-slide-show-with-narration-and-slide-timings"
+    ],
+    [
+      "Microsoft：Windows 10打开程序之间切换",
+      "https://support.microsoft.com/en-us/accessibility/windows/keyboard-shortcuts-in-windows"
+    ],
+    [
+      "Microsoft：从头、从当前页与结束放映（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/accessibility/powerpoint/use-keyboard-shortcuts-to-deliver-powerpoint-presentations"
+    ],
+    [
+      "Microsoft：先设置放映范围和推进方式（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/training/create-a-self-running-presentation"
+    ],
+    [
+      "Microsoft：演讲者视图与观众画面（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/training/start-the-presentation-and-see-your-notes-in-presenter-view"
+    ],
+    [
+      "Microsoft：放映标注与切换程序（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/draw-on-slides-during-a-presentation"
     ]
   ],
   "y2024q65": [
@@ -1675,6 +1723,30 @@
     [
       "Microsoft：旋转文本框、形状、艺术字或图片",
       "https://support.microsoft.com/en-us/office/graphics-visuals/rotate-or-flip-a-text-box-shape-wordart-or-picture"
+    ],
+    [
+      "Microsoft：对象选择与叠放次序（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/select-individual-objects-on-a-slide"
+    ],
+    [
+      "Microsoft：多对象对齐和分布（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/training/guides-for-arranging-things-on-a-slide"
+    ],
+    [
+      "Microsoft：2016/2019组合对象后按整体应用动画",
+      "https://support.microsoft.com/en-us/powerpoint/group-and-animate-a-set-of-objects"
+    ],
+    [
+      "Microsoft：PowerPoint/Excel插入艺术字（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/add-text-on-top-of-a-photo"
+    ],
+    [
+      "Microsoft：先创建形状或艺术字（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/add-shapes"
+    ],
+    [
+      "Microsoft：格式刷复制外观，不复制内容（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/word/use-the-format-painter"
     ]
   ],
   "y2024q46": [
@@ -1701,6 +1773,14 @@
     [
       "Microsoft：在线插入视频不支持PowerPoint裁剪",
       "https://support.microsoft.com/en-us/powerpoint/training/insert-a-video-from-youtube-or-another-site"
+    ],
+    [
+      "Microsoft：添加本机音频及播放设置（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/training/add-or-delete-audio-in-your-powerpoint-presentation"
+    ],
+    [
+      "Microsoft：插入媒体前确认来源（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/insert-and-play-a-video-file-from-your-computer"
     ]
   ],
   "merged-8": [
@@ -1717,6 +1797,14 @@
     [
       "Microsoft：图片动画与动画顺序",
       "https://support.microsoft.com/en-us/powerpoint/animate-a-picture-on-your-slide"
+    ],
+    [
+      "Microsoft：对象尺寸和锁定纵横比（含2016）",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/change-the-size-of-a-picture-shape-text-box-or-wordart"
+    ],
+    [
+      "Microsoft：图片裁剪及裁剪数据（含2016）",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/crop-a-picture-in-office"
     ]
   ],
   "y2021q15": [
@@ -2039,6 +2127,18 @@
     [
       "Turn your presentation into a video",
       "https://support.microsoft.com/en-us/powerpoint/export-a-presentation"
+    ],
+    [
+      "Microsoft：打印范围、备注和隐藏页（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/print-your-handouts-notes-or-slides"
+    ],
+    [
+      "Microsoft：讲义布局、母版、页眉页脚（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/create-or-change-a-presentation-s-handout"
+    ],
+    [
+      "Microsoft：共享、附件与打包的交付边界（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/package-a-presentation-for-cd-or-usb-flash-drive"
     ]
   ],
   "syllabus-worksheet-protection": [
@@ -2543,6 +2643,64 @@
     [
       "What is a microcomputer?",
       "https://www.lenovo.com/us/en/glossary/microcomputer/"
+    ]
+  ],
+  "y2024q12": [
+    [
+      "Microsoft：新建文稿与基本编辑（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/basic-tasks-for-creating-a-powerpoint-presentation"
+    ],
+    [
+      "Microsoft：版式和重设不删除内容（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/training/apply-a-slide-layout"
+    ],
+    [
+      "Microsoft：移动与复制整页（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-gb/powerpoint/training/add-rearrange-duplicate-and-delete-slides-in-powerpoint"
+    ],
+    [
+      "Microsoft：从别的文稿重用页面（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/reuse-import-slides-from-another-presentation"
+    ]
+  ],
+  "y2021q10": [
+    [
+      "Microsoft：占位符类型及版式结构（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/add-edit-or-remove-a-placeholder-on-a-slide-layout"
+    ],
+    [
+      "Microsoft：PowerPoint文字对齐、缩进、间距（含2016）",
+      "https://support.microsoft.com/en-us/powerpoint/change-text-alignment-indentation-and-spacing-in-powerpoint"
+    ],
+    [
+      "Microsoft：表格用于排列单元格内容（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/training/add-a-table-to-a-slide"
+    ]
+  ],
+  "y2023q45": [
+    [
+      "Microsoft：旧格式与另存为（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/about-compatibility-mode-in-powerpoint"
+    ],
+    [
+      "Microsoft：模板用于创建新文稿（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/create-and-save-a-powerpoint-template"
+    ],
+    [
+      "Microsoft：宏格式与宏执行权限（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/office/vba/enable-or-disable-macros-in-microsoft-365-files"
+    ]
+  ],
+  "y2025q53": [
+    [
+      "Microsoft：先按关系创建SmartArt（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/office/graphics-visuals/learn-more-about-smartart-graphics"
+    ]
+  ],
+  "merged-12": [
+    [
+      "Microsoft：插入图表后保留可编辑数据（按正文所述版本条件使用）",
+      "https://support.microsoft.com/en-us/powerpoint/training/use-charts-and-graphs-in-your-presentation"
     ]
   ]
 }

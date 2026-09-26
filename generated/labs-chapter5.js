@@ -49,12 +49,6 @@ Object.assign(window.NOTE_LABS,{radixConvert,daysBetween,clusteredChart});
       ['TXT','交换纯文本',[['保留','字符与换行'],['不保留','复杂版面、字符富格式和嵌入图片']]],
       ['PDF','按固定页面阅读或打印',[['重点','检查导出后的页数和版面'],['编辑','PDF可有编辑工具，但不等于保留完整Word源结构']]]
     ],
-    'syllabus-ppt-output':[
-      ['讲义打印','一张纸包含多张幻灯片',[['适合','课堂分发、并排查看'],['检查','每页张数、顺序、缩放和可读性']]],
-      ['备注页打印','幻灯片与演讲者备注同页',[['适合','演讲者准备讲稿'],['区别','大纲打印侧重标题和文本层级']]],
-      ['导出PDF','固定页面供阅读',[['保留目标','页面外观与可支持的链接'],['动态效果','不会按放映时间执行动画和切换']]],
-      ['导出视频','按时间形成连续画面',[['检查','旁白、对象动画和幻灯片计时'],['编辑源','仍保留PPTX，成片不保留可编辑幻灯片结构']]]
-    ],
     'syllabus-quantum-basics':[
       ['经典比特','取0或1',[['表示','以确定的二值状态编码'],['读取','读取该比特的值']]],
       ['量子基态','计算基测量为对应结果',[['|0⟩','理想计算基测量得到0'],['|1⟩','理想计算基测量得到1']]],
@@ -379,18 +373,25 @@ register(['merged-12'],'按类别和按系列，出现的是哪一组柱','同�
     (s.pane==='file'?dialog('文件','<p>应用级设置在PowerPoint选项中。</p>',btn('选项','options')+btn('返回','cancel')):s.pane==='options'?dialog('PowerPoint选项','<p>显示设置属于“高级”。</p>',btn('高级','advanced')+btn('取消','cancel')):s.pane==='advanced'?dialog('高级 → 显示',select('draft','使用此视图打开所有文档',s.draft,views),btn('确定','save')+btn('取消','cancel')):''))+output(esc(s.message)),
     (s,a)=>{if(a==='file'){s.draft=s.saved;s.pane='file';}if(a==='options'&&s.pane==='file')s.pane='options';if(a==='advanced'&&s.pane==='options')s.pane='advanced';if(a==='save'&&s.pane==='advanced'){s.saved=s.draft;s.pane=null;s.message='默认视图已保存；重新打开文稿来验证。当前页面不因保存设置自动切换。';}if(a==='cancel'){s.pane=null;s.draft=s.saved;s.message='已退出，未保存的选择已放弃。';}if(a==='reopen'&&!s.pane){s.view=s.saved;s.message='重新打开后使用已保存的'+viewLabel(s.saved)+'。';}},(s,k,v)=>{if(s.pane==='advanced'&&k==='draft')s.draft=v;});
 
-  register(['y2024q12'],'新建空白页与复制所选页，结果逐次保留','选择缩略图，再按Ctrl+M或Ctrl+D；Ctrl+N创建另一份文稿，可切回原文稿。',{
-    docs:[{id:1,slides:[{id:1,title:'牡丹',body:'花开时节，观察花瓣与叶片。'},{id:2,title:'荷花',body:'比较不同花卉的生长环境。'}],selected:1}],doc:1,nextDoc:2,nextSlide:3,message:'当前选中牡丹页。'
+  const slideLayouts=[['content','标题和内容'],['caption','标题在下（自定义版式示意）']];
+  register(['y2024q12'],'新建、复制、移动整页，再换版式检查内容','选择缩略图操作整页；移动保留身份，复制形成独立副本，版式改变内容的安排。',{
+    docs:[{id:1,slides:[{id:1,title:'牡丹',body:'花开时节，观察花瓣与叶片。',layout:'content',offset:0},{id:2,title:'荷花',body:'比较不同花卉的生长环境。',layout:'content',offset:0}],selected:1}],doc:1,nextDoc:2,nextSlide:3,layoutPane:false,draftLayout:'content',message:'当前选中牡丹页。'
   },s=>{
-    const doc=s.docs.find(d=>d.id===s.doc),slide=doc.slides.find(x=>x.id===doc.selected);
-    return controls(select('doc','演示文稿',s.doc,s.docs.map(d=>[d.id,'演示文稿'+d.id])))+office('PowerPoint','开始',btn('Ctrl+M · 新建幻灯片','new')+btn('Ctrl+D · 复制所选页','duplicate')+btn('Ctrl+N · 新建演示文稿','document'),
-      `<div class="lab-deck"><aside>${doc.slides.map((x,i)=>btn(`${i+1} · ${esc(x.title||'空白标题')}`,'page',x.id,`aria-pressed="${x.id===doc.selected}"`)).join('')}</aside><div class="lab-slide">${field('title','标题',slide.title)}<label>正文<textarea data-field="body" rows="3">${esc(slide.body)}</textarea></label></div></div>`)+output(esc(s.message))+`<p class="core-caption">本例快捷键作用于幻灯片缩略图选择。文字输入框内保留文字编辑键盘行为。</p>`;
+    const doc=s.docs.find(d=>d.id===s.doc),slide=doc.slides.find(x=>x.id===doc.selected),i=doc.slides.indexOf(slide),caption=slide.layout==='caption';
+    return `<div ${s.layoutPane?'inert':''}>`+controls(select('doc','演示文稿',s.doc,s.docs.map(d=>[d.id,'演示文稿'+d.id])))+office('PowerPoint','开始',btn('Ctrl+M · 新建幻灯片','new')+btn('Ctrl+D · 复制所选页','duplicate')+btn('Ctrl+N · 新建演示文稿','document')+btn('前移一页','up','',i===0?'disabled':'')+btn('后移一页','down','',i===doc.slides.length-1?'disabled':'')+btn('版式…','layout')+btn('重设占位符','resetLayout'),
+      `<div class="lab-deck"><aside>${doc.slides.map((x,i)=>btn(`${i+1} · ${esc(x.title||'空白标题')}`,'page',x.id,`aria-pressed="${x.id===doc.selected}" data-slide-id="${x.id}"`)).join('')}</aside><div class="lab-slide" data-active-slide="${slide.id}" data-layout="${slide.layout}" style="display:flex;flex-direction:column;gap:12px"><p>页面对象 ${slide.id} · ${caption?'上下位置变化':'标题在上、正文在下'}</p><div data-placeholder="title" style="order:${caption?2:0};margin-left:${slide.offset}px">${field('title','标题占位符',slide.title)}</div><label data-placeholder="body" style="order:1">正文占位符<textarea data-field="body" rows="3">${esc(slide.body)}</textarea></label></div></div>`)+controls(btn('手动右移标题','offset'))+'</div>'+
+      (s.layoutPane?dialog('选择本页版式',select('draftLayout','版式',s.draftLayout,slideLayouts)+'<p>本例仅改变已有两个占位符的位置，不模拟所有对象映射。</p>',btn('应用版式','applyLayout')+btn('取消','cancelLayout')):'')+output(esc(s.message))+`<p class="core-caption">本例新建页没有内容，采用示例的标题和内容版式；不据此断言Ctrl+M总插入“空白版式”。前移/后移是缩略图拖动的学习辅助。版式预览不是PowerPoint完整排版引擎；文字输入时保留文字编辑快捷键。</p>`;
   },(s,a,v)=>{
     const doc=s.docs.find(d=>d.id===s.doc),i=doc.slides.findIndex(x=>x.id===doc.selected);
-    if(a==='page')doc.selected=Number(v);
-    if(a==='new'||a==='duplicate'){const slide=a==='duplicate'?{...doc.slides[i],id:s.nextSlide++}:{id:s.nextSlide++,title:'',body:''};doc.slides.splice(i+1,0,slide);doc.selected=slide.id;s.message=a==='duplicate'?'已复制所选页的标题与正文。':'已插入空白的新页，没有复制原页内容。';}
-    if(a==='document'){const id=s.nextDoc++,slide={id:s.nextSlide++,title:'',body:''};s.docs.push({id,slides:[slide],selected:slide.id});s.doc=id;s.message='已创建另一份文稿；上方可切回保留的原文稿。';}
-  },(s,k,v)=>{if(k==='doc')s.doc=Number(v);else{const d=s.docs.find(d=>d.id===s.doc);d.slides.find(x=>x.id===d.selected)[k]=v;}});
+    if(s.layoutPane){if(a==='cancelLayout'){s.layoutPane=false;s.draftLayout=doc.slides[i].layout;s.message='已取消，版式与内容保持。';}if(a==='applyLayout'){doc.slides[i].layout=s.draftLayout;doc.slides[i].offset=0;s.layoutPane=false;s.message='已应用版式，标题和正文的内容、页面身份保持。';}return;}
+    if(a==='page'&&doc.slides.some(x=>x.id===Number(v)))doc.selected=Number(v);
+    if(a==='new'||a==='duplicate'){const slide=a==='duplicate'?{...doc.slides[i],id:s.nextSlide++}:{id:s.nextSlide++,title:'',body:'',layout:'content',offset:0};doc.slides.splice(i+1,0,slide);doc.selected=slide.id;s.message=a==='duplicate'?'已复制所选页，副本可独立修改。':'已插入没有内容的新页，使用本例的标题和内容版式。';}
+    if(a==='document'){const id=s.nextDoc++,slide={id:s.nextSlide++,title:'',body:'',layout:'content',offset:0};s.docs.push({id,slides:[slide],selected:slide.id});s.doc=id;s.message='已创建另一份文稿；上方可切回保留的原文稿。';}
+    if(a==='up'||a==='down'){const to=i+(a==='up'?-1:1);if(to<0||to>=doc.slides.length)return;[doc.slides[i],doc.slides[to]]=[doc.slides[to],doc.slides[i]];s.message='已移动整页，仍选中同一页面对象，页数不变。';}
+    if(a==='layout'){s.layoutPane=true;s.draftLayout=doc.slides[i].layout;}
+    if(a==='offset')doc.slides[i].offset=Math.min(40,doc.slides[i].offset+10);
+    if(a==='resetLayout'){doc.slides[i].offset=0;s.message='占位符恢复当前版式的位置，内容没有清空。';}
+  },(s,k,v)=>{if(s.layoutPane){if(k==='draftLayout'&&slideLayouts.some(x=>x[0]===v))s.draftLayout=v;return;}if(k==='doc'&&s.docs.some(d=>d.id===Number(v)))s.doc=Number(v);else if(['title','body'].includes(k)){const d=s.docs.find(d=>d.id===s.doc);d.slides.find(x=>x.id===d.selected)[k]=v;}});
   registry.y2024q12.keydown=(s,e)=>{if(!e.ctrlKey||e.target.closest('input,textarea,select'))return false;const action={m:'new',d:'duplicate',n:'document'}[e.key.toLowerCase()];if(!action)return false;e.preventDefault();registry.y2024q12.action(s,action);return true;};
 
   register(['y2026q53'],'更换图源，检查同一个图片对象的效果','拖右下角调整大小，拖左侧裁剪柄改变可见区域；更换图片与删除后重插分别处理。',{
@@ -403,12 +404,67 @@ register(['merged-12'],'按类别和按系列，出现的是哪一组柱','同�
     (s,k,v)=>{s[k]=Math.round(number(v,k==='width'?120:k==='height'?100:0,k==='width'?400:k==='height'?260:65));});
   registry.y2026q53.gesture=(s,g,root)=>{if(g.kind==='picture-size'){s.width=Math.round(number(s.width+g.endX-g.x,120,400));s.height=Math.round(number(s.height+g.endY-g.y,100,260));}if(g.kind==='picture-crop'){const width=root.querySelector('.lab-edit-picture').getBoundingClientRect().width||s.width;s.crop=Math.round(number(s.crop+(g.endX-g.x)/width*100,0,65));}s.message='图片对象的尺寸或裁剪已改变，图源与动画保持原状态。';};
 
-  register(['y2024q26'],'旋转艺术字，组合后继续编辑组内文字','拖动旋转手柄，或用角度输入；按住Shift拖动时按15°步长对齐。',{
-    angle:0,text:'课程展示',grouped:false,message:'艺术字保留为可编辑文字对象。'
-  },s=>office('PowerPoint','绘图工具 · 格式',btn(s.grouped?'取消组合':'与矩形组合','group')+btn('组合是否变成位图？','explain'),
-    `<div class="lab-art-stage"><div class="lab-rotating-art" style="transform:rotate(${s.angle}deg)"><button data-lab-drag="rotate-art" class="lab-rotation-grip" aria-label="旋转手柄"></button><strong>${esc(s.text)}</strong>${s.grouped?'<span>组内矩形</span>':''}</div></div>`+
-    controls(field('angle','旋转角度',s.angle,'number','min="-180" max="180"')+field('text',s.grouped?'编辑组内艺术字':'编辑艺术字',s.text,'text','maxlength="16"')))+output(esc(s.message)),
-    (s,a)=>{if(a==='group'){s.grouped=!s.grouped;s.message=s.grouped?'两个对象已组合，艺术字仍能单独编辑。':'已取消组合。';}if(a==='explain')s.message='组合只建立共同操作的对象组，不会自动栅格化为位图。现在仍可修改下面的文字。';},
-    (s,k,v)=>{s[k]=k==='angle'?Math.round(number(v,-180,180)):v;});
-  registry.y2024q26.gesture=(s,g,root)=>{if(g.kind!=='rotate-art')return;const r=root.querySelector('.lab-art-stage').getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;let angle=Math.atan2(g.endY-y,g.endX-x)*180/Math.PI+90;angle=((angle+540)%360)-180;s.angle=Math.round(g.shiftKey?Math.round(angle/15)*15:angle);s.message=`已旋转到${s.angle}°${g.shiftKey?'，按15°步长对齐':''}，内容仍可编辑。`;};
+  register(['y2024q26'],'旋转艺术字，再观察组合前后的共同移动','艺术字和矩形从开始就各自存在。选中两者才能组合，取消组合不删除成员。',{
+    angle:0,text:'课程展示',grouped:false,selection:'both',art:{x:80,y:80},rect:{x:250,y:180},message:'两个独立对象已选中；可先顶端对齐，再组合移动。'
+  },s=>office('PowerPoint','绘图工具 · 格式',btn(s.grouped?'取消组合':'组合','group')+btn('顶端对齐','align')+btn('向右移动','right')+btn('向左移动','left'),
+    controls(select('selection',s.grouped?'取消组合后可另选移动对象':'选择对象',s.selection,[['art','艺术字'],['rect','矩形'],['both','艺术字和矩形']],s.grouped?'disabled':''))+
+    `<svg class="lab-object-canvas" viewBox="0 0 420 280" style="width:100%;height:auto;display:block" role="img" aria-label="两个对象的位置与组合关系"><rect width="420" height="280" fill="#faf3f7"/>${s.grouped?`<rect data-group-boundary x="${Math.min(s.art.x,s.rect.x)-60}" y="${Math.min(s.art.y,s.rect.y)-30}" width="${Math.abs(s.art.x-s.rect.x)+120}" height="${Math.abs(s.art.y-s.rect.y)+60}" fill="none" stroke="#8161b0" stroke-dasharray="5 4"/>`:''}<g data-art-position data-x="${s.art.x}" data-y="${s.art.y}" transform="translate(${s.art.x},${s.art.y}) rotate(${s.angle})"><rect x="-60" y="-20" width="120" height="40" fill="none" stroke="#a386b7" stroke-dasharray="3 3"/><text text-anchor="middle" dominant-baseline="middle" fill="#713f79" font-size="14">${esc(s.text)}</text></g><rect data-rectangle-position data-x="${s.rect.x}" data-y="${s.rect.y}" x="${s.rect.x-40}" y="${s.rect.y-20}" width="80" height="40" fill="#cddced" stroke="#527eaa"/></svg>`+
+    controls('<button data-lab-drag="rotate-art" style="touch-action:none" aria-label="拖动旋转艺术字，或使用角度输入框">拖动旋转艺术字</button>'+field('angle','单独编辑艺术字成员：角度' ,s.angle,'number','min="-180" max="180"')+field('text',s.grouped?'编辑组内艺术字':'编辑艺术字',s.text,'text','maxlength="8"')))+output(esc(s.message))+
+    '<p class="core-caption">仅模拟这两个可组合对象的选择、顶端对齐、共同水平移动及成员文字/角度；文字上限8字，不模拟任意对象类型、组整体旋转和完整排列工具。组合时移动目标为整组，文字/角度输入只编辑艺术字成员。虚线仅表示组合关系，不是旋转后的精确选框；未把成员变成位图。</p>',
+    (s,a)=>{
+      if(a==='group'){if(s.grouped){s.grouped=false;s.message='已取消组合，两个成员及当前位置保留。';}else if(s.selection!=='both')s.message='本例须选中艺术字和矩形两个对象，单个对象不能组合。';else{s.grouped=true;s.message='两个对象已组合，共同移动时相对位置不变。';}}
+      if(a==='align'){if(s.angle!==0){s.message='本例未模拟旋转后外框的对齐计算，请先将艺术字角度设回0°再比较；不表示PowerPoint不能对齐旋转对象。';return;}if(!s.grouped&&s.selection==='both'){s.art.y=s.rect.y=Math.min(s.art.y-20,s.rect.y-20)+20;s.message='两个对象顶端对齐；文字内容保持。';}else s.message='本例先取消组合并选择两个对象，再比较顶端对齐。';}
+      if(a==='right'||a==='left'){const keys=s.grouped||s.selection==='both'?['art','rect']:[s.selection],want=a==='right'?20:-20,delta=want>0?Math.min(want,...keys.map(k=>340-s[k].x)):Math.max(want,...keys.map(k=>80-s[k].x));keys.forEach(k=>s[k].x+=delta);s.message=s.grouped?'组合成员共同移动，相对距离保持。':'移动了当前所选对象，未选对象位置保持。';}
+    },
+    (s,k,v)=>{if(k==='angle')s.angle=Math.round(number(v,-180,180));if(k==='text')s.text=v.slice(0,8);if(k==='selection'&&!s.grouped&&['art','rect','both'].includes(v))s.selection=v;});
+  registry.y2024q26.gesture=(s,g,root)=>{if(g.kind!=='rotate-art')return;const r=root.querySelector('.lab-object-canvas').getBoundingClientRect(),x=r.left+(r.width||420)*s.art.x/420,y=r.top+(r.height||280)*s.art.y/280;let angle=Math.atan2(g.endY-y,g.endX-x)*180/Math.PI+90;angle=((angle+540)%360)-180;s.angle=Math.round(g.shiftKey?Math.round(angle/15)*15:angle);s.message=`已旋转到${s.angle}°${g.shiftKey?'，按15°步长对齐':''}，内容仍可编辑。`;};
+})();
+
+/* Print objects and range selection, not a printer or PowerPoint renderer. */
+(() => {
+  'use strict';
+  const {register,ui}=window.NOTE_LABS;
+  const {btn,field,select,office,dialog,output,esc}=ui;
+  const modes=[['handout','讲义'],['slides','整页幻灯片'],['notes','备注页'],['outline','大纲']];
+  const range=raw=>{
+    const result=[];
+    for(const part of raw.split(/[,，]/)){
+      const m=part.trim().match(/^(\d+)(?:-(\d+))?$/);if(!m)return null;
+      const start=Number(m[1]),end=Number(m[2]||start);if(start<1||end>7||start>end)return null;
+      for(let n=start;n<=end;n++)if(!result.includes(n))result.push(n);
+    }
+    return result;
+  };
+  const thumbnail=slide=>`<div data-output-slide="${slide.id}" style="border:1px solid #aaa;padding:8px;min-width:0;overflow-wrap:anywhere"><b>${slide.id} · ${esc(slide.title)}</b><p>${esc(slide.body)}</p><span>自由文本框：示例标识</span></div>`;
+  register(['syllabus-ppt-output'],'把7张源幻灯片排成讲义、备注页或大纲','修改范围和输出内容，确认后观察纸面；取消只放弃草稿，源幻灯片保持7张。',{
+    slides:Array.from({length:7},(_,i)=>({id:i+1,title:['开场','任务','材料','方法','观察','结果','总结'][i],body:'正文要点'+(i+1),notes:'讲稿提示'+(i+1)})),
+    hidden4:false,applied:{mode:'handout',perPage:3,range:'1-7',includeHidden:true},draft:null,message:'初始按每页3张讲义排成3个纸面，源文稿仍是7张幻灯片。'
+  },s=>{
+    const a=s.applied,ids=range(a.range).filter(id=>a.includeHidden||!s.hidden4||id!==4),slides=ids.map(id=>s.slides.find(x=>x.id===id));
+    const per=a.mode==='handout'?a.perPage:1,pages=[];for(let i=0;i<slides.length;i+=per)pages.push(slides.slice(i,i+per));
+    const paper=(page,i)=>`<section data-output-page="${i+1}" style="border:1px solid #bbb;background:white;color:#222;margin:12px 0;padding:12px;min-width:0"><p>纸面 ${i+1}</p><div style="display:grid;gap:10px;grid-template-columns:repeat(${a.mode==='handout'?(a.perPage===3?1:a.perPage===9?3:[4,6].includes(a.perPage)?2:1):1},minmax(0,1fr))">${page.map(slide=>`<div style="min-width:0">${thumbnail(slide)}${a.mode==='notes'?`<p data-speaker-notes>${esc(slide.notes)}</p>`:a.mode==='handout'&&a.perPage===3?'<p data-handout-lines style="border-bottom:1px solid #aaa;padding:6px">读者笔记线</p>':''}</div>`).join('')}</div></section>`;
+    const preview=a.mode==='outline'?`<div data-outline-output>${slides.map(slide=>`<section data-outline-slide="${slide.id}"><h4>${slide.id} · ${esc(slide.title)}</h4><p>${esc(slide.body)}</p></section>`).join('')}<p>大纲仅展示标题和正文层级；本例不计算大纲实际分页。</p></div>`:pages.map(paper).join('');
+    return `<div ${s.draft?'inert':''}>`+office('PowerPoint','文件 · 打印',btn('设置输出…','settings')+btn(s.hidden4?'取消隐藏第4张':'隐藏第4张源幻灯片','hide'),
+      `<p data-source-count>源文稿：${s.slides.length}张；第4张：${s.hidden4?'已隐藏':'未隐藏'}。隐藏状态保存在源文稿，是否输出另看打印选项。</p><p data-output-summary>${modes.find(x=>x[0]===a.mode)[1]} · 选定输出 ${ids.length}张${a.mode==='outline'?'':` · 每份 ${pages.length}个纸面`} · 范围 ${esc(a.range)}</p>`+preview)+'</div>'+
+      (s.draft?dialog('范围与输出内容',
+        field('range','幻灯片范围（如1,3,5-7）',s.draft.range,'text','maxlength="40"')+select('mode','打印内容',s.draft.mode,modes)+select('perPage','讲义每页张数',s.draft.perPage,[1,2,3,4,6,9].map(n=>[n,String(n)]),s.draft.mode==='handout'?'':'disabled')+`<label><input type="checkbox" data-field="includeHidden" ${s.draft.includeHidden?'checked':''}>打印隐藏幻灯片</label><p>本模型只修改预览，未向打印机提交任务。</p>`,btn('确认预览','apply')+btn('取消','cancel')):'')+
+      output(esc(s.message))+'<p class="core-caption">限定为1—7张、单份单面、按行排列的教学预览，重复输入的编号去重。实际打印还受纸张、方向、字号和驱动影响；未模拟PDF、视频导出或真实打印。备注页按短讲稿示例，大纲不收录自由文本框和讲稿。</p>';
+  },(s,a)=>{
+    if(s.draft){
+      if(a==='cancel'){s.draft=null;s.message='已取消，输出预览保留上次确认的设置。';}
+      if(a==='apply'){
+        if(!range(s.draft.range)?.length){s.message='本例范围须为1—7内的编号或升序区间，如1,3,5-7；未更改已确认预览。';return;}
+        s.applied={...s.draft};s.draft=null;s.message='输出设置已确认；源幻灯片、正文与备注均未删除。';
+      }
+      return;
+    }
+    if(a==='settings')s.draft={...s.applied};
+    if(a==='hide'){s.hidden4=!s.hidden4;s.message='源文稿第4张的隐藏状态已改变；输出是否包含它由打印隐藏幻灯片选项决定。';}
+  },(s,k,v)=>{
+    if(!s.draft)return;
+    if(k==='range')s.draft.range=v;
+    if(k==='mode'&&modes.some(x=>x[0]===v))s.draft.mode=v;
+    if(k==='perPage'&&[1,2,3,4,6,9].includes(Number(v)))s.draft.perPage=Number(v);
+    if(k==='includeHidden')s.draft.includeHidden=Boolean(v);
+  });
 })();

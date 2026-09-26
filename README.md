@@ -1,10 +1,10 @@
 # 山东专升本计算机系统笔记
 
-[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=61)
+[打开网站](https://mobius608955255-dev.github.io/computer-interaction-notes/?v=63)
 
 保留教材11章结构与原题源关联，逐步建设能用于日常学习和做题的详细笔记。现有数据含460个题源标识、220条归并笔记与18条知识补充，共238条；这些是代码记录数量，不表示全站已经逐题核查或完整覆盖考纲。Windows和Office操作按Windows 10 / Office 2016解释；答案是否官方需有发布依据，出现冲突时记录版本、前提和核验来源。
 
-v61已由Work2正式发布并完成Verify、Pages及真实浏览器终验。第1章、Windows、Word和Excel的历史专项成果保留；Work1已完成v62前四章综合审计与知识顺序优化的本地冻结，尚未发布；完整自动回归270/270通过，真实Pages浏览器终验交Work2。当前综合恢复入口见[CONTENT-AUDIT-v62.md](CONTENT-AUDIT-v62.md)；各章既有记录继续保留历史语境。
+v63已由Work2正式发布并完成Verify、Pages及生产浏览器终验。第1—4章专项、综合审计和知识顺序成果保持；Work1已完成v64 PowerPoint第5章全章专项终审并本地冻结，尚未发布；完整回归281/281及最终19/19定向通过，真实Pages浏览器终验交Work2。当前恢复与维护入口见[CONTENT-POWERPOINT.md](CONTENT-POWERPOINT.md)；v62及各章既有记录保留历史语境。
 
 ## 开发
 

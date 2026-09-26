@@ -13,7 +13,11 @@ const releaseVersion=JSON.parse(fs.readFileSync(path.join(root,'site.config.json
 // taken from the current note, so existing historical hashes still catch edits.
 const v61Protection=require('./first-four-v61-protection.json');
 const v61Rows=new Map(Object.values(v61Protection.chapters).flat().map(row=>[row.id,row]));
-const reviewedChapterFile=file=>/^content\/chapter[1-4]\.json$/.test(file);
+// v64 Chapter 5 is guarded against formal v63 below; other chapters stay frozen.
+const pptV63=require('./powerpoint-v63-protection.json');
+const pptIds=new Set(pptV63.chapter5.map(n=>n.id));
+const reviewedChapterFile=file=>/^content\/chapter[1-5]\.json$/.test(file);
+const digest=value=>require('node:crypto').createHash('sha256').update(value).digest('hex');
 function projectV61(note){
  const row=v61Rows.get(note.id),old=structuredClone(note);if(!row)return old;
  for(const [field,change] of Object.entries(row.displayChanges)){if(change.had)old[field]=structuredClone(change.before);else delete old[field];}
@@ -1496,9 +1500,9 @@ test('v62 old and new deep links search focus and expanded return preserve four 
  }
 });
 test('v62 preserves later chapters models references and search records beyond its four chapter scope',()=>{
- const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles))assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);
- const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=5);assert.equal(hash(JSON.stringify(index)),v61Protection.laterSearchHash);
- const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));assert.deepEqual(Object.keys(refs),Object.keys(v61Protection.referenceRows));for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);assert.equal(refs[id].length,row.count+row.appendCount,id);}
+ const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');for(const [file,digest] of Object.entries(v61Protection.protectedFiles)){if(['content/chapter5.json','src/labs/chapter5/editing.js','src/labs/shared/syllabus.js','src/labs/manifest.json'].includes(file))continue;assert.equal(hash(fs.readFileSync(path.join(root,file))),digest,file);}
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter>=6);assert.equal(hash(JSON.stringify(index)),pptV63.laterSearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));for(const id of Object.keys(v61Protection.referenceRows))assert.ok(refs[id],id);for(const id of Object.keys(refs))assert.ok(v61Protection.referenceRows[id]||pptIds.has(id),id);for(const [id,row] of Object.entries(v61Protection.referenceRows)){assert.equal(hash(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id))assert.equal(refs[id].length,row.count+row.appendCount,id);}
  for(let chapter=5;chapter<=11;chapter++){const e=env(chapter),canonical=JSON.parse(fs.readFileSync(path.join(root,`content/chapter${chapter}.json`))),sections=e.w.NOTES.chapters.find(c=>c.number===chapter).sections,expected=Array.from(sections).flatMap(s=>canonical.filter(n=>n.section===s.id).map(n=>n.id));assert.deepEqual([...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),expected);assert.deepEqual([...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1)),expected);e.dom.window.close();}
 });
 test('v62 every listed section in the first four chapters has a visible canonical entrance',()=>{
@@ -1537,4 +1541,85 @@ test('v63 search highlight is presentation-only and does not inject markup',asyn
  const word=env(3),chips=word.d.querySelectorAll('#y2024q8 .note-subtopics a');
  assert.ok(chips.length>=20);
  word.dom.window.close();
+});
+
+// v64 expectations describe object identities and independently chosen learning prerequisites.
+test('v64 preserves every old PowerPoint point identity and its rendered semantic anchor',()=>{
+ const e=env(5),notes=e.w.NOTES.notes;
+ assert.deepEqual(Array.from(notes,n=>n.id).sort(),[...pptIds].sort());assert.equal(notes.length,22);
+ for(const row of pptV63.chapter5){
+  const n=notes.find(n=>n.id===row.id);
+  assert.equal(digest(JSON.stringify([n.id,n.points.slice(0,row.count),n.sources,n.keys])),row.prefixHash,n.id);
+  assert.deepEqual(JSON.parse(JSON.stringify(n.searchAliases||[])),row.searchAliases,n.id);
+  for(const link of row.related)assert.ok(n.related?.some(x=>JSON.stringify(x)===JSON.stringify(link)),n.id+' related');
+  const order=Array.from(e.w.NOTE_PRESENTATION.pointOrder(n));assert.deepEqual([...order].sort((a,b)=>a-b),Array.from({length:n.points.length},(_,i)=>i));
+  const actual=Array.from(e.d.getElementById(n.id).querySelectorAll('[data-note-point]'),p=>Number(p.dataset.notePoint));assert.deepEqual(actual,order,n.id);
+  for(let i=0;i<n.points.length;i++){const p=e.d.getElementById(`${n.id}--point-${i}`);assert.ok(p);assert.equal([...p.querySelectorAll(`[data-source-field="point-${i}"]`)].map(x=>x.textContent).join(''),n.points[i],p.id);}
+ }
+ e.dom.window.close();
+});
+test('v64 default body directory and subtopics share a prerequisite-respecting order',()=>{
+ const e=env(5),body=[...e.d.querySelectorAll('#notes-root article')].map(n=>n.id),toc=[...e.d.querySelectorAll('#note-list .note-list > li > a')].map(a=>a.hash.slice(1));assert.deepEqual(toc,body);
+ // Creation precedes deletion; objects precede arranging; theme/layout vocabulary precedes inheritance.
+ for(const [before,after] of [['y2020q10','y2024q12'],['y2024q12','y2020q12'],['y2021q10','y2024q26'],['y2020q53','y2020q11'],['y2020q11','merged-11'],['merged-11','y2023q13'],['y2023q13','syllabus-ppt-output']])assert.ok(body.indexOf(before)<body.indexOf(after),before+' before '+after);
+ for(let i=1;i<=6;i++)assert.ok(e.d.querySelector(`#section-5-${i} article`),'5.'+i);
+ assert.equal(e.d.getElementById('y2024q46').closest('.section-block').id,'section-5-6');
+ for(const n of e.w.NOTES.notes){const a=Array.from(e.w.NOTE_PRESENTATION.subtopics(n),x=>x.anchor);assert.deepEqual([...e.d.querySelectorAll(`#${n.id} .note-subtopics a`)].map(x=>x.hash.slice(1)),a);assert.deepEqual([...e.d.querySelectorAll(`#drawer .directory-subtopics a[href^="#${n.id}--point-"]`)].map(x=>x.hash.slice(1)),a);}
+ const order=id=>Array.from(e.w.NOTE_PRESENTATION.pointOrder(e.w.NOTES.notes.find(n=>n.id===id)));
+ assert.ok(order('y2024q26').indexOf(7)<order('y2024q26').indexOf(3),'create before arrange');assert.ok(order('y2020q53').indexOf(5)<order('y2020q53').indexOf(0),'theme meaning before scope command');
+ e.dom.window.close();
+});
+test('v64 formal v63 protection freezes other chapters search and the visual system',()=>{
+ for(const [file,hash] of Object.entries(pptV63.protectedFiles))assert.equal(digest(fs.readFileSync(path.join(root,file))),hash,file);
+ const app=fs.readFileSync(path.join(root,'notes-app.js'),'utf8'),fix=pptV63.notesApp;assert.equal(app.split(fix.to).length,2);assert.ok(!app.includes(fix.from));assert.equal(digest(app.replace(fix.to,fix.from)),fix.hash);
+ const shared=fs.readFileSync(path.join(root,'src/labs/shared/syllabus.js'),'utf8');assert.ok(!shared.includes("'syllabus-ppt-output':"));const anchor="    'syllabus-quantum-basics':";assert.equal(shared.split(anchor).length,2);assert.equal(digest(shared.replace(anchor,pptV63.sharedSyllabusRemovedBlock+anchor)),pptV63.sharedSyllabusHash);
+ const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/labs/manifest.json'))),base=structuredClone(pptV63.manifest);assert.deepEqual(manifest.chapters[5].ids,base.chapters[5].ids);assert.equal(manifest.chapters[5].models,20);delete manifest.chapters[5];delete base.chapters[5];assert.deepEqual(manifest,base);
+ const index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json'))).filter(r=>r.chapter!==5);assert.equal(digest(JSON.stringify(index)),pptV63.otherSearchHash);
+ const refs=JSON.parse(fs.readFileSync(path.join(root,'content/references.json')));
+ for(const [id,row] of Object.entries(pptV63.referenceRows)){assert.ok(refs[id],id);assert.equal(digest(JSON.stringify(refs[id].slice(0,row.count))),row.hash,id);if(!pptIds.has(id))assert.equal(refs[id].length,row.count,id);}
+ for(const id of Object.keys(refs))assert.ok(pptV63.referenceRows[id]||pptIds.has(id),'reference belongs to old Chapter5 card: '+id);
+});
+test('v64 moving duplicating and changing layout preserve page identity and discard drafts',()=>{
+ const e=env(5),c=open(e,'y2024q12'),ids=()=>[...c.querySelectorAll('[data-slide-id]')].map(x=>x.dataset.slideId),active=()=>c.querySelector('[data-active-slide]').dataset.activeSlide;
+ assert.deepEqual(ids(),['1','2']);click(c,'up');assert.deepEqual(ids(),['1','2']);click(c,'down');assert.deepEqual(ids(),['2','1']);assert.equal(active(),'1');click(c,'down');assert.deepEqual(ids(),['2','1']);
+ click(c,'duplicate');const copy=active();assert.notEqual(copy,'1');change(e,c,'title','副本');click(c,'page',1);assert.equal(c.querySelector('[data-field="title"]').value,'牡丹');
+ click(c,'offset');assert.equal(c.querySelector('[data-placeholder="title"]').style.marginLeft,'10px');click(c,'layout');change(e,c,'draftLayout','caption');click(c,'new');assert.equal(ids().length,3);click(c,'cancelLayout');assert.equal(c.querySelector('[data-active-slide]').dataset.layout,'content');assert.equal(c.querySelector('[data-placeholder="title"]').style.marginLeft,'10px');
+ click(c,'layout');change(e,c,'draftLayout','caption');click(c,'applyLayout');assert.equal(active(),'1');assert.equal(c.querySelector('[data-active-slide]').dataset.layout,'caption');assert.equal(c.querySelector('[data-placeholder="title"]').style.order,'2');assert.equal(c.querySelector('[data-field="title"]').value,'牡丹');click(c,'offset');click(c,'resetLayout');assert.equal(c.querySelector('[data-placeholder="title"]').style.marginLeft,'0px');assert.match(c.querySelector('[data-field="body"]').value,/花瓣/);
+ c.querySelector('[data-sim-reset]').click();assert.deepEqual(ids(),['1','2']);assert.equal(active(),'1');e.dom.window.close();
+});
+test('v64 grouping moves existing members together and rejects a single-object selection',()=>{
+ const e=env(5),c=open(e,'y2024q26'),pos=()=>['[data-art-position]','[data-rectangle-position]'].map(q=>{const el=c.querySelector(q);return [Number(el.dataset.x),Number(el.dataset.y)];});
+ assert.deepEqual(pos(),[[80,80],[250,180]]);change(e,c,'selection','art');click(c,'group');assert.equal(c.querySelector('[data-group-boundary]'),null);assert.match(c.querySelector('.lab-output').textContent,/单个对象不能/);click(c,'right');assert.deepEqual(pos(),[[100,80],[250,180]]);
+ change(e,c,'selection','both');change(e,c,'angle','45');click(c,'align');assert.deepEqual(pos(),[[100,80],[250,180]]);assert.match(c.querySelector('.lab-output').textContent,/未模拟旋转后/);change(e,c,'angle','0');click(c,'align');assert.deepEqual(pos(),[[100,80],[250,80]]);click(c,'group');assert.ok(c.querySelector('[data-group-boundary]'));change(e,c,'selection','art');click(c,'right');assert.deepEqual(pos(),[[120,80],[270,80]]);click(c,'group');assert.equal(c.querySelector('[data-group-boundary]'),null);change(e,c,'selection','art');click(c,'right');assert.deepEqual(pos(),[[140,80],[270,80]]);
+ change(e,c,'text','<img>&');assert.equal(c.querySelector('svg text').textContent,'<img>&');assert.equal(c.querySelector('svg img'),null);change(e,c,'angle','45');assert.match(c.querySelector('[data-art-position]').getAttribute('transform'),/rotate\(45\)/);
+ c.querySelector('[data-sim-reset]').click();assert.deepEqual(pos(),[[80,80],[250,180]]);e.dom.window.close();
+});
+test('v64 art pointer rotation retains modifier snapping and pointer cancellation',()=>{
+ const e=env(5),c=open(e,'y2024q26');const pointer=(el,type,x,y,shift=false)=>el.dispatchEvent(new e.w.MouseEvent(type,{bubbles:true,button:0,clientX:x,clientY:y,shiftKey:shift}));
+ const canvas=c.querySelector('.lab-object-canvas');canvas.getBoundingClientRect=()=>({left:0,top:0,width:420,height:280});let grip=c.querySelector('[data-lab-drag="rotate-art"]');pointer(grip,'pointerdown',80,10);pointer(grip,'pointermove',180,80,true);pointer(grip,'pointerup',180,80,true);assert.equal(c.querySelector('[data-field="angle"]').value,'90');
+ grip=c.querySelector('[data-lab-drag="rotate-art"]');pointer(grip,'pointerdown',80,10);pointer(grip,'pointermove',120,120);pointer(grip,'pointercancel',120,120);assert.equal(c.querySelector('[data-field="angle"]').value,'90');e.dom.window.close();
+});
+test('v64 output preview calculates handout paper faces without deleting source slides',()=>{
+ const e=env(5),c=open(e,'syllabus-ppt-output'),pages=()=>[...c.querySelectorAll('[data-output-page]')],ids=()=>[...c.querySelectorAll('[data-output-slide]')].map(x=>x.dataset.outputSlide);
+ assert.equal(pages().length,3);assert.deepEqual(pages().map(p=>p.querySelectorAll('[data-output-slide]').length),[3,3,1]);assert.equal(c.querySelectorAll('[data-handout-lines]').length,7);assert.equal(c.querySelectorAll('[data-speaker-notes]').length,0);
+ click(c,'settings');change(e,c,'range','2,4-5');click(c,'apply');assert.equal(pages().length,1);assert.deepEqual(ids(),['2','4','5']);assert.match(c.querySelector('[data-source-count]').textContent,/7张/);
+ click(c,'hide');click(c,'settings');change(e,c,'includeHidden',false);click(c,'apply');assert.deepEqual(ids(),['2','5']);assert.match(c.querySelector('[data-source-count]').textContent,/7张/);
+ click(c,'settings');change(e,c,'perPage','9');change(e,c,'range','0-9');click(c,'apply');assert.ok(c.querySelector('.lab-dialog'));assert.deepEqual(ids(),['2','5']);assert.match(c.querySelector('.lab-output').textContent,/未更改/);click(c,'cancel');assert.equal(c.querySelector('.lab-dialog'),null);
+ c.querySelector('[data-sim-reset]').click();assert.equal(pages().length,3);assert.deepEqual(ids(),['1','2','3','4','5','6','7']);e.dom.window.close();
+});
+test('v64 notes and outline output distinguish speaker text from slide objects',()=>{
+ const e=env(5),c=open(e,'syllabus-ppt-output');click(c,'settings');change(e,c,'mode','notes');change(e,c,'range','2,4-5');click(c,'apply');assert.equal(c.querySelectorAll('[data-output-page]').length,3);assert.deepEqual([...c.querySelectorAll('[data-speaker-notes]')].map(x=>x.textContent),['讲稿提示2','讲稿提示4','讲稿提示5']);
+ click(c,'settings');change(e,c,'mode','outline');click(c,'cancel');assert.equal(c.querySelectorAll('[data-speaker-notes]').length,3);
+ click(c,'settings');change(e,c,'mode','outline');click(c,'apply');const preview=c.querySelector('[data-outline-output]');assert.match(preview.textContent,/正文要点4/);assert.doesNotMatch(preview.textContent,/讲稿提示|自由文本框：示例标识/);assert.equal(c.querySelectorAll('[data-output-page]').length,0);assert.match(preview.textContent,/不计算大纲实际分页/);e.dom.window.close();
+});
+test('v64 searches added paragraphs and restores old links without losing the live model',()=>{
+ const e=env(5,{url:'https://notes.example/chapter5.html#y2024q46--point-0'}),index=JSON.parse(fs.readFileSync(path.join(root,'generated/search-index.json')));
+ assert.ok(e.d.getElementById('y2024q46--point-0'));assert.equal(e.d.getElementById('y2024q46').closest('.section-block').id,'section-5-6');
+ const cases=[['版式规定','y2024q12',6],['宏执行','y2023q45',5],['讲义每页张数','syllabus-ppt-output',4]];
+ for(const [q,id,i] of cases){const hit=e.w.NOTE_SEARCH.search(index,q).find(n=>n.id===id);assert.ok(hit?.matches.some(m=>m.anchor===`${id}--point-${i}`),q);}
+ const c=open(e,'y2024q12');click(c,'duplicate');change(e,c,'title','保留的副本');const lab=c.querySelector('[data-lab]'),input=e.d.getElementById('search-input');input.value='讲义每页张数';input.dispatchEvent(new e.w.Event('input',{bubbles:true}));assert.equal(c.classList.contains('hidden'),true);const hit=e.d.getElementById('syllabus-ppt-output');assert.ok(hit.querySelector('.note-search-jumps a[href="#syllabus-ppt-output--point-4"]'));e.d.getElementById('clear-search').click();assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(c.querySelector('[data-field="title"]').value,'保留的副本');
+ e.w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};e.w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new e.w.Event('close'));};const opener=c.querySelector('[data-sim-expand]');opener.click();assert.ok(c.querySelector('dialog').open);c.querySelector('[data-demo-close]').click();assert.equal(c.querySelector('[data-lab]'),lab);assert.equal(e.d.activeElement,opener);assert.equal(c.querySelector('[data-field="title"]').value,'保留的副本');e.dom.window.close();
+});
+test('v64 macro-capable show readout never equates file extension with permission to execute',()=>{
+ const e=env(5),c=open(e,'y2023q45');c.querySelector('[data-sim-choice="3"]').click();assert.match(c.textContent,/宏执行仍受安全设置控制/);assert.doesNotMatch(c.textContent,/直接放映并允许宏/);e.dom.window.close();
 });
